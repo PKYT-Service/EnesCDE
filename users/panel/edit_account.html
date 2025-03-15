@@ -80,112 +80,131 @@
         </form>
     </div>
 
-    <script>
-  // Fonction pour récupérer le token GitHub depuis l'URL de manière sécurisée
-  async function fetchGitHubToken() {
-      const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
-      const data = await response.json();
-      return data.GITHUB_TOKEN;
-  }
+<script>
+// Fonction pour récupérer le token GitHub depuis l'URL de manière sécurisée
+async function fetchGitHubToken() {
+    const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
+    const data = await response.json();
+    return data.GITHUB_TOKEN;
+}
 
-  // Fonction pour récupérer un fichier de compte GitHub
-  async function fetchAccountFile(email, password, token) {
-      const url = `https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/${email}*-*${password}.json`;
-      const response = await fetch(url, { headers: { Authorization: `token ${token}` } });
-      
-      if (!response.ok) {
-          console.error(`Erreur lors de la récupération du fichier du compte: ${response.status}`);
-          return null;
-      }
-      return await response.json();
-  }
+// Fonction pour récupérer un fichier de compte GitHub
+async function fetchAccountFile(email, password, token) {
+    const url = `https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/${email}*-*${password}.json`;
+    const response = await fetch(url, { headers: { Authorization: `token ${token}` } });
+    
+    if (!response.ok) {
+        console.error(`Erreur lors de la récupération du fichier du compte: ${response.status}`);
+        return null;
+    }
+    return await response.json();
+}
 
-  // Fonction pour mettre à jour le fichier de compte sur GitHub
-  async function updateAccountFile(email, password, updatedData, sha) {
-      const token = await fetchGitHubToken();
-      const content = btoa(JSON.stringify(updatedData, null, 2));  // Encoder en base64
+// Fonction pour mettre à jour le fichier de compte sur GitHub
+async function updateAccountFile(email, password, updatedData, sha) {
+    const token = await fetchGitHubToken();
+    const content = btoa(JSON.stringify(updatedData, null, 2));  // Encoder en base64
 
-      const url = `https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/${email}*-*${password}.json`;
-      const response = await fetch(url, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'Mise à jour du compte', content: content, sha: sha })
-      });
+    const url = `https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/${email}*-*${password}.json`;
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Mise à jour du compte', content: content, sha: sha })
+    });
 
-      if (!response.ok) {
-          console.error("Erreur lors de la mise à jour du fichier du compte.");
-          return false;
-      }
-      return true;
-  }
+    if (!response.ok) {
+        console.error("Erreur lors de la mise à jour du fichier du compte.");
+        return false;
+    }
+    return true;
+}
 
-  // Fonction pour préremplir les champs du formulaire avec les données du compte
-  function fillFormWithAccountData(accountData) {
-      document.getElementById('email').value = accountData.email || '';
-      document.getElementById('password').value = accountData.password || '';
-      document.getElementById('nom').value = accountData.ProfilInfo.Nom || '';
-      document.getElementById('prenom').value = accountData.ProfilInfo.Prenom || '';
-      document.getElementById('pseudo').value = accountData.ProfilInfo.Pseudo || '';
-      document.getElementById('reseau').value = accountData.ProfilInfo.Reseau || '';
-      document.getElementById('type').value = accountData.ProfilInfo.Type || '';
-      document.getElementById('description').value = accountData.ProfilInfo.Description || '';
-      document.getElementById('pdp').value = accountData.ProfilInfo.Pdp || '';
+// Fonction pour pré-remplir le formulaire avec les données existantes
+async function populateForm(email, password) {
+    const token = await fetchGitHubToken();
+    const accountFile = await fetchAccountFile(email, password, token);
+    if (!accountFile) {
+        alert('Compte introuvable');
+        return;
+    }
 
-      // Remplir les champs supplémentaires
-      ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'IR'].forEach(id => {
-          document.getElementById(id).value = accountData.Others[id] || '';
-      });
-  }
+    // Décoder le contenu du fichier JSON
+    let accountData = JSON.parse(atob(accountFile.content));
 
-  // Gestion du formulaire de mise à jour de compte
-  document.getElementById('account-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // Remplir le formulaire avec les données existantes
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = password;
+    document.getElementById('nom').value = accountData.ProfilInfo?.Nom || '';
+    document.getElementById('prenom').value = accountData.ProfilInfo?.Prenom || '';
+    document.getElementById('pseudo').value = accountData.ProfilInfo?.Pseudo || '';
+    document.getElementById('reseau').value = accountData.ProfilInfo?.Reseau || '';
+    document.getElementById('type').value = accountData.ProfilInfo?.Type || '';
+    document.getElementById('description').value = accountData.ProfilInfo?.Description || '';
+    document.getElementById('pdp').value = accountData.ProfilInfo?.Pdp || '';
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    // Remplir les autres champs
+    ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'IR'].forEach(id => {
+        document.getElementById(id).value = accountData.Others?.[id] || '';
+    });
+}
 
-      // Récupérer le token GitHub
-      const token = await fetchGitHubToken();
+// Fonction pour sauvegarder les modifications
+async function saveAccountChanges() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-      // Récupérer les données du compte
-      const accountFile = await fetchAccountFile(email, password, token);
-      if (!accountFile) {
-          alert('Compte introuvable');
-          return;
-      }
+    // Récupérer le token GitHub
+    const token = await fetchGitHubToken();
 
-      // Décoder le contenu du fichier JSON
-      let accountData = JSON.parse(atob(accountFile.content));
+    // Récupérer les données du compte
+    const accountFile = await fetchAccountFile(email, password, token);
+    if (!accountFile) {
+        alert('Compte introuvable');
+        return;
+    }
 
-      // Pré-remplir les champs avec les données du compte
-      fillFormWithAccountData(accountData);
+    // Décoder le contenu du fichier JSON
+    let accountData = JSON.parse(atob(accountFile.content));
 
-      // Mettre à jour les informations du compte à partir du formulaire
-      accountData.ProfilInfo = {
-          Nom: document.getElementById('nom').value.trim() || accountData.ProfilInfo.Nom,
-          Prenom: document.getElementById('prenom').value.trim() || accountData.ProfilInfo.Prenom,
-          Pseudo: document.getElementById('pseudo').value.trim() || accountData.ProfilInfo.Pseudo,
-          Reseau: document.getElementById('reseau').value.trim() || accountData.ProfilInfo.Reseau,
-          Type: document.getElementById('type').value.trim() || accountData.ProfilInfo.Type,
-          Description: document.getElementById('description').value.trim() || accountData.ProfilInfo.Description,
-          Pdp: document.getElementById('pdp').value.trim() || accountData.ProfilInfo.Pdp
-      };
+    // Mettre à jour les informations du compte à partir du formulaire
+    accountData.ProfilInfo = {
+        Nom: document.getElementById('nom').value.trim() || accountData.ProfilInfo.Nom,
+        Prenom: document.getElementById('prenom').value.trim() || accountData.ProfilInfo.Prenom,
+        Pseudo: document.getElementById('pseudo').value.trim() || accountData.ProfilInfo.Pseudo,
+        Reseau: document.getElementById('reseau').value.trim() || accountData.ProfilInfo.Reseau,
+        Type: document.getElementById('type').value.trim() || accountData.ProfilInfo.Type,
+        Description: document.getElementById('description').value.trim() || accountData.ProfilInfo.Description,
+        Pdp: document.getElementById('pdp').value.trim() || accountData.ProfilInfo.Pdp
+    };
 
-      accountData.Others = {};
-      ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'IR'].forEach(id => {
-          accountData.Others[id] = document.getElementById(id).value.trim() || accountData.Others[id];
-      });
+    accountData.Others = {};
+    ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'IR'].forEach(id => {
+        accountData.Others[id] = document.getElementById(id).value.trim() || accountData.Others[id];
+    });
 
-      // Mettre à jour le fichier du compte sur GitHub
-      const updateSuccess = await updateAccountFile(email, password, accountData, accountFile.sha);
-      if (updateSuccess) {
-          alert('Compte mis à jour avec succès');
-      } else {
-          alert('Échec de la mise à jour du compte');
-      }
-  });
+    // Mettre à jour le fichier du compte sur GitHub
+    const updateSuccess = await updateAccountFile(email, password, accountData, accountFile.sha);
+    if (updateSuccess) {
+        alert('Compte mis à jour avec succès');
+    } else {
+        alert('Échec de la mise à jour du compte');
+    }
+}
 
+// Pré-remplir le formulaire au chargement de la page
+window.onload = () => {
+    const email = 'example@example.com'; // Récupère l'email de manière sécurisée (si possible)
+    const password = 'password123'; // Récupère le mot de passe de manière sécurisée (si possible)
+    populateForm(email, password);
+};
+
+// Gestion du formulaire de mise à jour de compte
+document.getElementById('account-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveAccountChanges();
+});
 </script>
+
 
                 <!-- Footer : Deb -->
                 <div id="ecde_footer"></div>
