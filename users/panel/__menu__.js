@@ -36,60 +36,13 @@ document.addEventListener("DOMContentLoaded", function () {
 </a>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-    <!-- Overlay du popup -->
-    <div id="popup-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
-
-    <!-- Popup -->
-    <div id="popup" class="fixed inset-0 flex items-center justify-center hidden">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl w-full">
-            <h1 class="text-2xl font-semibold text-center mb-6">Gestion des Comptes</h1>
-
-            <!-- Tableau des comptes -->
-            <table class="w-full border-collapse border border-gray-300 dark:border-gray-700">
-                <thead>
-                    <tr class="bg-gray-200 dark:bg-gray-700">
-                        <th class="p-3">Email</th>
-                        <th class="p-3">Mot de passe</th>
-                        <th class="p-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="accounts-table">
-                    <!-- Rempli dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Ajouter un nouveau compte -->
-            <div class="mt-6 p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
-                <h2 class="text-xl font-semibold mb-4">Ajouter un compte</h2>
-                <input type="email" id="new-email" class="w-full p-2 mb-3 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="Email">
-                <input type="password" id="new-password" class="w-full p-2 mb-3 border rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="Mot de passe">
-                <button id="add-account" class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Ajouter</button>
-            </div>
-
-            <!-- Bouton de fermeture -->
-            <button id="close-popup" class="mt-4 w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Fermer</button>
-        </div>
-    </div>
-
-    
-        
             `;
   });
 
 
 
 
-
+document.write("<!-- Overlay du popup -->\r\n    <div id=\"popup-overlay\" class=\"fixed inset-0 bg-black bg-opacity-50 hidden\"><\/div>\r\n\r\n    <!-- Popup -->\r\n    <div id=\"popup\" class=\"fixed inset-0 flex items-center justify-center hidden\">\r\n        <div class=\"bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl w-full\">\r\n            <h1 class=\"text-2xl font-semibold text-center mb-6\">Gestion des Comptes<\/h1>\r\n\r\n            <!-- Tableau des comptes -->\r\n            <table class=\"w-full border-collapse border border-gray-300 dark:border-gray-700\">\r\n                <thead>\r\n                    <tr class=\"bg-gray-200 dark:bg-gray-700\">\r\n                        <th class=\"p-3\">Email<\/th>\r\n                        <th class=\"p-3\">Mot de passe<\/th>\r\n                        <th class=\"p-3\">Actions<\/th>\r\n                    <\/tr>\r\n                <\/thead>\r\n                <tbody id=\"accounts-table\">\r\n                    <!-- Rempli dynamiquement -->\r\n                <\/tbody>\r\n            <\/table>\r\n\r\n            <!-- Ajouter un nouveau compte -->\r\n            <div class=\"mt-6 p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg\">\r\n                <h2 class=\"text-xl font-semibold mb-4\">Ajouter un compte<\/h2>\r\n                <input type=\"email\" id=\"new-email\" class=\"w-full p-2 mb-3 border rounded-md dark:bg-gray-700 dark:border-gray-600\" placeholder=\"Email\">\r\n                <input type=\"password\" id=\"new-password\" class=\"w-full p-2 mb-3 border rounded-md dark:bg-gray-700 dark:border-gray-600\" placeholder=\"Mot de passe\">\r\n                <button id=\"add-account\" class=\"w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600\">Ajouter<\/button>\r\n            <\/div>\r\n\r\n            <!-- Bouton de fermeture -->\r\n            <button id=\"close-popup\" class=\"mt-4 w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600\">Fermer<\/button>\r\n        <\/div>\r\n    <\/div>");
 
         document.getElementById("open-popup").addEventListener("click", () => {
             document.getElementById("popup").classList.remove("hidden");
