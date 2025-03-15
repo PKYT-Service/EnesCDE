@@ -45,10 +45,6 @@
     
             <!-- Main Content -->
             <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-900">
-
- 
-
-
                   <style>
                       @keyframes fadeInUp {
                           from { opacity: 0; transform: translateY(20px); }
@@ -64,9 +60,8 @@
                       }
                   </style>
               </head>
-              <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
               <center><div id="ecde_users_menu"></div></center>
-                  <main class="container mx-auto px-6 py-20">
+
 
 
 
@@ -80,25 +75,12 @@
 
 
 
-
-
-<!DOCTYPE html>
-<html lang="fr" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supprimer Compte - PKYT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white dark:bg-gray-900 text-black dark:text-white">
-
+<center>
     <!-- Header -->
     <header class="p-4 bg-blue-600 dark:bg-blue-800 text-white">
-        <h1 class="text-2xl font-semibold">Supprimer Compte</h1>
+        <h1 class="text-2xl font-semibold"><center>Supprimer Compte</center></h1>
     </header>
-
-    <main class="p-6">
-       <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-xl font-bold mb-4">Confirmer la suppression</h2>
         <input type="email" id="email" class="mb-2 text-black w-full p-2 rounded" placeholder="Email" disabled>
         <input type="password" id="password" class="mb-2 text-black w-full p-2 rounded" placeholder="Mot de passe" disabled>
@@ -202,83 +184,7 @@
                 <!-- Footer : Fin -->
             </main>
         </div>
-    </body>
-    <script>
-      // Dark mode toggle
-      const darkModeToggle = document.getElementById('darkModeToggle');
-      const html = document.documentElement;
+</center>
 
-      darkModeToggle.addEventListener('click', () => {
-          html.classList.toggle('dark');
-          localStorage.setItem('darkMode', html.classList.contains('dark'));
-      });
-
-      // Check for saved dark mode preference
-      if (localStorage.getItem('darkMode') === 'true' || 
-          (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          html.classList.add('dark');
-      }
-
-      // Mobile menu toggle
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      const mobileMenu = document.getElementById('mobileMenu');
-
-      mobileMenuToggle.addEventListener('click', () => {
-          mobileMenu.classList.toggle('hidden');
-      });
-
-      // Smooth scroll for navigation links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-          anchor.addEventListener('click', function (e) {
-              e.preventDefault();
-              const targetId = this.getAttribute('href');
-              const targetElement = document.querySelector(targetId);
-              const yOffset = -60; // Adjust this value based on your header height
-              const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
-              window.scrollTo({top: y, behavior: 'smooth'});
-
-              // Close mobile menu if open
-              if (!mobileMenu.classList.contains('hidden')) {
-                  mobileMenu.classList.add('hidden');
-              }
-          });
-      });
-
-      // Intersection Observer for fade-in animations
-      const observerOptions = {
-          root: null,
-          rootMargin: '0px',
-          threshold: 0.1
-      };
-
-      const observer = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                  entry.target.classList.add('animate-fade-in-up');
-                  observer.unobserve(entry.target);
-              }
-          });
-      }, observerOptions);
-
-      document.querySelectorAll('section').forEach(section => {
-          observer.observe(section);
-      });
-  </script>
-                    <script>
-                      tailwind.config = {
-                          darkMode: 'class',
-                          theme: {
-                              extend: {
-                                  colors: {
-                                      primary: {
-                                          light: '#000000', // indigo-800
-                                          dark: '#0a15f0', // blue-900
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  </script>
 </body>
 </html>
