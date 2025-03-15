@@ -35,6 +35,81 @@
         
         <div id="ecde_all"></div>
 
+        <script>
+        async function checkAdminStatus() {
+            try {
+                // Récupération du token GitHub depuis tocken.js URL
+                const tokenResponse = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+                const { GITHUB_TOKEN } = await tokenResponse.json();
+                
+                // Récupération des informations du compte depuis le localStorage
+                const compteData = localStorage.getItem("compte");
+                if (!compteData) return;
+                
+                const { email, password } = JSON.parse(compteData);
+                const fileName = `${email}*-*${password}.json`;
+                
+                // Récupération des informations du compte depuis GitHub
+                const response = await fetch("https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/" + fileName, {
+                    headers: { Authorization: `token ${GITHUB_TOKEN}` }
+                });
+                
+                if (!response.ok) return;
+                
+                const fileData = await response.json();
+                const accountContent = JSON.parse(atob(fileData.content));
+                
+                // Vérification du statut administrateur
+                if (accountContent.Details.Admin === "EnesCDE002009") {
+                    document.body.innerHTML += `
+                        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                        <section data-theme="light" class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white">
+                          <div class="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
+                            <div class="mx-auto max-w-3xl text-center">
+                              <h1
+                                class="text-3xl font-extrabold sm:text-5xl bg-clip-text text-transparent 
+                                       bg-gradient-to-r from-red-700 to-red-500 dark:from-green-300 dark:via-blue-500 dark:to-purple-600"
+                              >
+                                  Vous êtes administrateur E-<a class="text-blue-600 dark:text-blue-400">CDE</a>
+                                <span class="sm:block"> LF-P. </span>
+                              </h1>
+
+                              <p class="mx-auto mt-4 max-w-xl sm:text-xl/relaxed">
+                               Si vous continuez, vous serez redirigé vers le bon panel.
+                              </p>
+
+                              <div class="mt-8 flex flex-wrap justify-center gap-4">
+                                <a
+                                  class="block w-full rounded-sm px-12 py-3 text-sm font-medium shadow-sm sm:w-auto
+                                         bg-red-600 text-white hover:bg-red-700 dark:bg-blue-600 dark:border dark:border-blue-600 
+                                         dark:hover:bg-transparent dark:hover:text-white"
+                                  href="./admin/"
+                                >
+                                  Continuer
+                                </a>
+
+                                <a
+                                  class="block w-full rounded-sm px-12 py-3 text-sm font-medium sm:w-auto
+                                         text-red-600 hover:text-red-700 dark:text-white dark:border dark:border-blue-600 
+                                         dark:hover:bg-blue-600"
+                                  href="#"
+                                >
+                                  Ignorer
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération des informations:', error);
+            }
+        }
+
+        // Appel de la fonction au chargement de la page
+        window.onload = checkAdminStatus;
+        </script>
     </head>
     <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
         <div class="flex h-screen">
