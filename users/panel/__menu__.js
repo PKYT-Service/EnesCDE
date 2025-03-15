@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   </button>
   </a>
   
-  <a href="./Profil.html">
+  <a href="./profil.html">
   <button
     class="inline-block rounded-md px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative dark:text-gray-400 dark:hover:text-gray-200"
   >
@@ -19,25 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
   </button>
   </a>
   
-<a class="text-red-400 dar:text-red-950" href="./edite_account.html">
-  <button
-    class="inline-block rounded-md bg-white px-4 py-2 text-sm text-blue-500 shadow-xs focus:relative dark:bg-gray-800"
-  >
-    Edite Profil
-  </button>
-</a>
-  
-    <button class="inline-block rounded-md px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative dark:text-gray-400 dark:hover:text-gray-200"></button>
-    
-<a class="text-red-400 dar:text-red-950" href="./delete_account.html">
-  <button
-    class="inline-block rounded-md bg-white px-4 py-2 text-sm text-blue-500 shadow-xs focus:relative dark:bg-gray-800"
-  >
-    Delete Profil
-  </button>
-</a>
 
-    <button class="inline-block rounded-md px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative dark:text-gray-400 dark:hover:text-gray-200"></button>
+
     
 <a href="./logout.html">
   <button
