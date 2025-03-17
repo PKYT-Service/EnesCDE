@@ -427,32 +427,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });</script>
 
 <!-- tableau apr profil -->
-
-                           <script>
+ <script>
     async function fetchWhitelist() {
-        const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
-        const repoURL = "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/secure/wl_m.json";
-
         try {
-            // 🔐 Récupération du token GitHub
-            const tokenRes = await fetch(tokenURL);
-            const { GITHUB_TOKEN } = await tokenRes.json();
-
-            // 📥 Récupération du fichier wl_m.json depuis GitHub
-            const res = await fetch(repoURL, {
-                headers: { Authorization: `token ${GITHUB_TOKEN}` }
-            });
+            // 📥 Charger wl_m.json en local
+            const res = await fetch("./wl_m.json");
             if (!res.ok) throw new Error("Impossible de récupérer wl_m.json");
 
-            // 📜 Décodage Base64 du fichier JSON
-            const data = await res.json();
-            const wl_m = JSON.parse(atob(data.content));
+            // 📜 Convertir en JSON
+            const wl_m = await res.json();
 
-            // 🔎 Récupération de l'email local
+            // 🔎 Récupérer l'email stocké en localStorage
             const compte = JSON.parse(localStorage.getItem("compte") || "{}");
             const emailLocal = compte.email;
 
-            // ✅ Vérification et affichage du tableau si l'email existe
+            // ✅ Vérifier si l'email existe dans wl_m.json
             if (wl_m.email && wl_m.email[emailLocal]) {
                 afficherTableau(wl_m.email[emailLocal].tableau);
             }
@@ -465,7 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function afficherTableau(donnees) {
         const tableContainer = document.getElementById("table-container");
 
-        // 🏗 Création du tableau stylisé
+        // 🏗 Création du tableau Tailwind
         const table = document.createElement("table");
         table.className = "w-full border border-gray-700 dark:border-gray-300 rounded-lg overflow-hidden shadow-md";
 
@@ -484,12 +473,12 @@ document.addEventListener("DOMContentLoaded", () => {
             table.appendChild(row);
         });
 
-        // 📌 Ajout au conteneur
+        // 📌 Affichage dans le conteneur
         tableContainer.innerHTML = "";
         tableContainer.appendChild(table);
     }
 
-    // 🚀 Lancement du script
+    // 🚀 Lancer la fonction
     fetchWhitelist();
     </script>
                           
