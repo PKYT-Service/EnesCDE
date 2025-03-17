@@ -4,7 +4,8 @@
     "ECDE_UCDPS": "http://enes-cde.vercel.app/RPP-EnesCDESys.html",
     "site": "https://enes-cde.vercel.app",
     "depot-thfbd": "./data/depot/thehorrorForeBoding.html",
-    "depot-clg": "./data/depot/CLG-depot.html"
-
+    "depot-clg": "./data/depot/CLG-depot.html",
+"C-CampyskPanel": "https://enes-cde.vercel.app/users/panel/_C-campysk-serv/"
+    
   }
   
