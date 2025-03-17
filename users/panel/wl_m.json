@@ -1,0 +1,14 @@
+{
+    "email": {
+        "campysk@gmail.com": {
+            "tableau": [
+                ["Panel Server", "BETA", "<a href='#c-campyskserv'>lien</a>"]
+            ]
+        },
+        "j.molderson@gmail.com": {
+            "tableau": [
+                ["Panel Server", "BETA", "<a href='#c-campyskserv'>lien</a>"]
+            ]
+        }
+    }
+}
