@@ -138,6 +138,21 @@
     </section>
 
 
+
+
+
+
+<br><br>
+
+
+                     <div id="table-container" class="p-6 max-w-4xl w-full"></div>
+
+
+<br><br>
+
+
+                      
+
                       
                       <section id="about" class="mb-20 pt-16 animate-fade-in-up">
                           <h1 class="text-4xl md:text-6xl font-bold mb-4 text-primary-light dark:text-primary-dark">Bienvenue <a class="text-3xl font-extrabold sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-red-500 dark:from-green-300 dark:via-blue-500 dark:to-purple-600" id="COMPTE:ProfilInfo-Prenom">Chers utilisateurs</a></h1>
@@ -410,5 +425,73 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "https://enes-cde.vercel.app/redirect.html?LB=C-CampyskPanel";
     }
 });</script>
+
+<!-- tableau apr profil -->
+
+                           <script>
+    async function fetchWhitelist() {
+        const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+        const repoURL = "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/secure/wl_m.json";
+
+        try {
+            // 🔐 Récupération du token GitHub
+            const tokenRes = await fetch(tokenURL);
+            const { GITHUB_TOKEN } = await tokenRes.json();
+
+            // 📥 Récupération du fichier wl_m.json depuis GitHub
+            const res = await fetch(repoURL, {
+                headers: { Authorization: `token ${GITHUB_TOKEN}` }
+            });
+            if (!res.ok) throw new Error("Impossible de récupérer wl_m.json");
+
+            // 📜 Décodage Base64 du fichier JSON
+            const data = await res.json();
+            const wl_m = JSON.parse(atob(data.content));
+
+            // 🔎 Récupération de l'email local
+            const compte = JSON.parse(localStorage.getItem("compte") || "{}");
+            const emailLocal = compte.email;
+
+            // ✅ Vérification et affichage du tableau si l'email existe
+            if (wl_m.email && wl_m.email[emailLocal]) {
+                afficherTableau(wl_m.email[emailLocal].tableau);
+            }
+
+        } catch (error) {
+            console.error("Erreur :", error);
+        }
+    }
+
+    function afficherTableau(donnees) {
+        const tableContainer = document.getElementById("table-container");
+
+        // 🏗 Création du tableau stylisé
+        const table = document.createElement("table");
+        table.className = "w-full border border-gray-700 dark:border-gray-300 rounded-lg overflow-hidden shadow-md";
+
+        // 🖊️ Remplissage des données
+        donnees.forEach((rowData, rowIndex) => {
+            const row = document.createElement("tr");
+            row.className = rowIndex % 2 === 0 ? "bg-gray-200 dark:bg-gray-800" : "bg-gray-300 dark:bg-gray-700";
+
+            rowData.forEach(cellData => {
+                const cell = document.createElement("td");
+                cell.className = "p-3 border border-gray-600 dark:border-gray-400 text-center";
+                cell.innerHTML = cellData; // ⚠️ HTML autorisé
+                row.appendChild(cell);
+            });
+
+            table.appendChild(row);
+        });
+
+        // 📌 Ajout au conteneur
+        tableContainer.innerHTML = "";
+        tableContainer.appendChild(table);
+    }
+
+    // 🚀 Lancement du script
+    fetchWhitelist();
+    </script>
+                          
 </body>
 </html>
