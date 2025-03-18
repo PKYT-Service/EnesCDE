@@ -44,59 +44,13 @@
 
 
 
-
-
-                   <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-4">📊 Statistiques des Logs</h1>
-
-        <!-- Statistiques générales -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="p-4 rounded-lg shadow bg-gray-800 dark:bg-gray-100 dark:text-black">
-                <p class="text-xl font-semibold">👀 Vues totales</p>
-                <p class="text-2xl font-bold" id="totalViews">0</p>
-            </div>
-            <div class="p-4 rounded-lg shadow bg-gray-800 dark:bg-gray-100 dark:text-black">
-                <p class="text-xl font-semibold">🆔 Profils enregistrés</p>
-                <p class="text-2xl font-bold" id="registeredCount">0</p>
-            </div>
-            <div class="p-4 rounded-lg shadow bg-gray-800 dark:bg-gray-100 dark:text-black">
-                <p class="text-xl font-semibold">👻 Profils non enregistrés</p>
-                <p class="text-2xl font-bold" id="unregisteredCount">0</p>
-            </div>
-            <div class="p-4 rounded-lg shadow bg-gray-800 dark:bg-gray-100 dark:text-black">
-                <p class="text-xl font-semibold">📅 Vues (3 derniers jours)</p>
-                <p class="text-2xl font-bold" id="viewsLast3Days">0</p>
-            </div>
-            <div class="p-4 rounded-lg shadow bg-gray-800 dark:bg-gray-100 dark:text-black">
-                <p class="text-xl font-semibold">⏳ Vues (10 dernières heures)</p>
-                <p class="text-2xl font-bold" id="viewsLast10Hours">0</p>
-            </div>
-        </div>
-
-        <!-- Carte des vues par pays -->
-        <h2 class="text-2xl font-semibold mt-8">🌍 Vues par Pays</h2>
-        <div class="p-4 rounded-lg shadow mt-2 bg-gray-800 dark:bg-gray-100 dark:text-black">
-            <div id="map" class="h-64 flex items-center justify-center">
-                <p class="text-gray-400 dark:text-gray-700">🗺️ Carte en cours de chargement...</p>
-            </div>
-        </div>
-
-        <!-- Logs des utilisateurs -->
-        <h2 class="text-2xl font-semibold mt-8">🔍 Détails des Logs</h2>
-        <div class="p-4 rounded-lg shadow mt-2 bg-gray-800 dark:bg-gray-100 dark:text-black">
-            <div id="logDetails" class="space-y-2">
-                <p class="text-gray-400 dark:text-gray-700">📂 Chargement des logs...</p>
-            </div>
-        </div>
-    </div>
-
-
+<div id="logStats"></div>
 
 
 
 
                 <script>
-                    async function fetchLogs() {
+                 async function fetchLogs() {
     console.log("📡 Chargement des logs...");
     
     // URL du token GitHub
@@ -226,22 +180,27 @@ async function fetchCountryFromIP(ip) {
 
 // Affichage des stats et UI
 function displayStats(stats) {
-    document.body.innerHTML = `
-        <h1>📊 Statistiques des Logs</h1>
+    let statsDiv = document.getElementById("logStats");
+    statsDiv.innerHTML = `
+        <h1 class="text-3xl font-bold">📊 Statistiques des Logs</h1>
         <p>👀 Nombre total de vues : <strong>${stats.totalViews}</strong></p>
         <p>🆔 Profils enregistrés : <strong>${stats.registeredCount}</strong></p>
         <p>👻 Profils non enregistrés : <strong>${stats.unregisteredCount}</strong></p>
         <p>📅 Vues (3 derniers jours) : <strong>${stats.viewsLast3Days}</strong></p>
         <p>⏳ Vues (10 dernières heures) : <strong>${stats.viewsLast10Hours}</strong></p>
 
-        <h2>🌍 Vues par Pays</h2>
-        <div id="map"></div>
+        <h2 class="text-2xl font-semibold mt-8">🌍 Vues par Pays</h2>
+        <div id="map" class="h-64 flex items-center justify-center">
+            <p class="text-gray-400 dark:text-gray-700">🗺️ Carte en construction...</p>
+        </div>
 
-        <h2>🔍 Détails des vues</h2>
-        <button onclick="toggleView('IP')">Afficher par IP</button>
-        <button onclick="toggleView('ID')">Afficher par ID</button>
+        <h2 class="text-2xl font-semibold mt-8">🔍 Détails des Logs</h2>
+        <button onclick="toggleView('IP')" class="p-2 bg-blue-500 text-white rounded-md">Afficher par IP</button>
+        <button onclick="toggleView('ID')" class="p-2 bg-blue-500 text-white rounded-md">Afficher par ID</button>
 
-        <div id="logDetails"></div>
+        <div id="logDetails" class="space-y-2 mt-4">
+            <p class="text-gray-400 dark:text-gray-700">📂 Chargement des logs...</p>
+        </div>
     `;
 
     renderMap(stats.viewsByCountry);
@@ -250,27 +209,22 @@ function displayStats(stats) {
 // Basculer entre l'affichage IP et ID
 function toggleView(type) {
     let logDetails = document.getElementById("logDetails");
-    logDetails.innerHTML = `<h3>📄 Logs (${type})</h3>`;
+    logDetails.innerHTML = `<h3 class="text-xl font-semibold">📄 Logs (${type})</h3>`;
 
-    fetchLogs().then(data => {
-        data.allLogs.forEach(log => {
-            let identifier = type === "IP" ? log.userIP : log.userID;
-            logDetails.innerHTML += `<p>🔗 ${identifier} - ${log.fileName}</p>`;
-        });
+    stats.allLogs.forEach(log => {
+        let identifier = type === "IP" ? log.userIP : log.userID;
+        logDetails.innerHTML += `<p class="text-gray-600 dark:text-gray-200">🔗 ${identifier} - ${log.fileName}</p>`;
     });
 }
 
-// Affichage de la carte
+// Affichage de la carte (en cours de développement)
 function renderMap(data) {
     let mapDiv = document.getElementById("map");
-    mapDiv.innerHTML = `<p>🗺️ Carte en construction...</p>`;
+    mapDiv.innerHTML = `<p class="text-gray-400 dark:text-gray-700">🗺️ Carte en construction...</p>`;
 }
 
 fetchLogs();
 
-
-
-                    
                 </script>
 
                 <!-- Footer : Deb -->
