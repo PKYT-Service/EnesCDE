@@ -1,361 +1,80 @@
 <!DOCTYPE html>
-    <html lang="fr">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="EnesCDE - Plateforme de services et documentation.">
-        <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web , PikaYutMG , GFLP , LSP , SRDMG , Ebsayder , Howard , Armory">
-        <meta name="author" content="EnesCDE">
-    
-        <!-- Open Graph (Facebook & LinkedIn) -->
-        <meta property="og:title" content="EnesCDE - Services , Accueil">
-        <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
-        <meta property="og:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
-        <meta property="og:url" content="https://enes-cde.vercel.app">
-        <meta property="og:type" content="website">
-    
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="EnesCDE - Services & Documentation">
-        <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
-        <meta name="twitter:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
-    
-        <title>EnesCDE - TH FBD</title>
-        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
-        
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
-            
-        <!-- Script -->
-        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
-        <script src="https://enes-cde.vercel.app/script/A-menu.js" defer></script>
-        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
-        <div id="ecde_all"></div>
-
-    </head>
-    <body class="bg-gray-100">
-        <div class="flex h-screen">
-            <!-- Menu : Deb -->
-            <div id="ecde_menu"  class="w-20"></div>
-            <!-- Menu : Fin -->
-    
-            <!-- Main Content -->
-            <main class="flex-1 p-6 bg-gray-100">
-                <h1 class="text-2xl font-semibold text-gray-900">Depot</h1>
-                <div class="mt-4 p-6 bg-white rounded-lg shadow-md">
-                    <p class="text-gray-600">Ici, vous retrouverez tous les fichiers et dossiers partagés publiquement ! </p>
-                </div><br>
-
-
-
-
-
-                  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/marked@5.0.2/marked.min.js"></script>
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-    }
-    pre {
-      background-color: #f8f9fa;
-      padding: 10px;
-      border-radius: 5px;
-      overflow: auto;
-      font-family: 'Courier New', Courier, monospace;
-    }
-    .markdown-render h1 {
-      font-size: 1.875rem; /* Tailwind text-3xl */
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-    .markdown-render h2 {
-      font-size: 1.5rem; /* Tailwind text-2xl */
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-    .markdown-render h3 {
-      font-size: 1.25rem; /* Tailwind text-xl */
-      font-weight: bold;
-      margin-bottom: 0.75rem;
-    }
-    .markdown-render p {
-      margin-bottom: 1rem;
-    }
-    .markdown-render a {
-      color: #1d4ed8; /* Tailwind blue-700 */
-      text-decoration: underline;
-    }
-    .markdown-render strong {
-      font-weight: bold;
-    }
-    .markdown-render em {
-      font-style: italic;
-    }
-    .markdown-render code {
-      background-color: #f3f4f6; /* Tailwind gray-100 */
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: 'Courier New', Courier, monospace;
-    }
-
-    /* Dark Mode Styles */
-    .dark body {
-      background-color: #1f2937; /* Tailwind gray-800 */
-      color: #e5e7eb; /* Tailwind gray-200 */
-    }
-    .dark header, .dark footer {
-      background-color: #111827; /* Tailwind gray-900 */
-    }
-    .dark .bg-blue-500 {
-      background-color: #3b82f6; /* Tailwind blue-500 for dark mode */
-    }
-    .dark .text-blue-500 {
-      color: #3b82f6; /* Tailwind blue-500 for dark mode */
-    }
-    .dark .bg-white {
-      background-color: #111827; /* Tailwind gray-900 for dark mode */
-    }
-    .dark .text-gray-800 {
-      color: #e5e7eb; /* Tailwind gray-200 for dark mode */
-    }
-  </style>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
-  <header class="bg-white dark:bg-gray-900 shadow">
-    <div class="container mx-auto p-4 flex justify-between items-center">
-      <h1 class="text-3xl font-bold">Drive</h1>
-      <nav>
-        <ul class="flex space-x-4">
-          <li><a href="#" class="text-blue-500 hover:underline">Recharger</a></li>
-        </ul>
-      </nav>
+<body class="min-h-screen bg-gray-900 text-white flex flex-col items-center p-6">
+    <div class="w-full max-w-2xl bg-gray-800 shadow-xl p-6 rounded-lg">
+        <input 
+            id="repoUrl" 
+            class="w-full p-3 bg-gray-700 border border-gray-600 text-white rounded-md" 
+            placeholder="GitHub Repository URL" 
+        />
+        <button 
+            onclick="fetchRepoFiles()" 
+            class="w-full mt-4 p-3 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-semibold">
+            Charger
+        </button>
     </div>
-  </header>
 
-  <div class="container mx-auto p-4">
-    <div class="mb-4">
-      <button id="loadRepoButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700">
-        <i class="fas fa-sync-alt"></i> Recharger
-      </button>
+    <div id="filesTable" class="mt-6 w-full max-w-3xl hidden">
+        <table class="w-full bg-gray-800 text-white border border-gray-600 rounded-lg">
+            <thead class="bg-gray-700">
+                <tr>
+                    <th class="p-3 text-left">Nom du fichier</th>
+                </tr>
+            </thead>
+            <tbody id="fileList"></tbody>
+        </table>
     </div>
-    <ul id="fileList" class="list-none p-0"></ul>
 
-    <div id="filePreview" class="mt-8 hidden">
-      <h2 class="text-2xl font-bold mb-4">Prévisualiser</h2>
-      <div id="previewContent" class="bg-white p-4 rounded shadow markdown-render dark:bg-gray-900 dark:text-gray-200"></div>
-      <button onclick="downloadFile()" class="bg-green-500 text-white px-4 py-2 rounded mt-4 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700">
-        <i class="fas fa-download"></i> Télécharger
-      </button>
+    <div id="fileContent" class="mt-6 w-full max-w-3xl p-4 bg-gray-800 rounded-lg shadow-lg hidden">
+        <h2 id="fileName" class="text-lg font-bold text-gray-300 mb-2"></h2>
+        <pre id="fileText" class="bg-gray-900 p-4 rounded-md text-gray-300 overflow-auto max-h-96"></pre>
     </div>
-  </div>
 
-  <footer class="bg-white dark:bg-gray-900 shadow mt-8">
-    <div class="container mx-auto p-4 text-center">
-      <p>&copy; PKYT - Service. Tous droits réservés.</p>
-    </div>
-  </footer>
+    <script>
+        async function fetchRepoFiles() {
+            const repoUrl = document.getElementById('repoUrl').value.trim();
+            if (!repoUrl) return;
 
-  <div id="fullScreenPreview" class="fixed inset-0 bg-white z-50 hidden flex flex-col dark:bg-gray-900">
-    <div class="flex justify-end p-4">
-      <button id="closeFullScreenButton" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
-        <i class="fas fa-times"></i> Fermer
-      </button>
-    </div>
-    <div id="fullScreenContent" class="flex-1 p-4 overflow-auto dark:text-gray-200"></div>
-  </div>
+            const repoPath = repoUrl.replace("https://github.com/", "").replace("blob/main/", "");
+            const apiUrl = `https://api.github.com/repos/${repoPath}/contents/`;
 
-  <script>
-    const fullScreenPreview = document.getElementById('fullScreenPreview');
-    const fullScreenContent = document.getElementById('fullScreenContent');
-    const closeFullScreenButton = document.getElementById('closeFullScreenButton');
+            try {
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error("Échec du chargement des fichiers");
+                const data = await res.json();
 
-    // Fonction pour afficher le plein écran
-    function showFullScreen() {
-      const previewContent = document.getElementById('previewContent').innerHTML;
-      fullScreenContent.innerHTML = previewContent;
-      fullScreenPreview.classList.remove('hidden');
-    }
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = "";
+                data.forEach(file => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td class="p-3 border-t border-gray-600 cursor-pointer hover:bg-gray-700">${file.name}</td>`;
+                    row.onclick = () => fetchFileContent(file);
+                    fileList.appendChild(row);
+                });
 
-    // Fonction pour fermer le plein écran
-    function closeFullScreen() {
-      fullScreenPreview.classList.add('hidden');
-    }
-
-    // Attache les événements au bouton "Fermer"
-    closeFullScreenButton.addEventListener('click', closeFullScreen);
-
-    // Ajouter un bouton "Plein écran" dans la prévisualisation
-    const filePreview = document.getElementById('filePreview');
-    const fullScreenButton = document.createElement('button');
-    fullScreenButton.className = 'bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700';
-    fullScreenButton.innerHTML = '<i class="fas fa-expand"></i> Plein écran';
-    fullScreenButton.addEventListener('click', showFullScreen);
-    filePreview.appendChild(fullScreenButton);
-  </script>
-
-  <script src="https://pkyt-database-up.vercel.app/code-source/admin-dashboard/secute_private/tocken.js"></script>
-  <script type="module">
-    import { GITHUB_TOKEN } from 'https://pkyt-database-up.vercel.app/code-source/admin-dashboard/secute_private/tocken.js';
-
-    const owner = 'PKYT-Service';
-    const repo = 'database_dev';
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/pkyt_id=TheHorrorFBD/`;
-
-    let selectedFilePath = '';
-
-    // Fonction pour décoder en UTF-8
-    function decodeBase64ToUtf8(base64String) {
-      const binaryString = atob(base64String);
-      const bytes = Uint8Array.from(binaryString, char => char.charCodeAt(0));
-      const decoder = new TextDecoder('utf-8');
-      return decoder.decode(bytes);
-    }
-
-    // Charger le contenu du dépôt
-    async function loadRepoContent(path = '') {
-      const url = `${apiUrl}${path}`;
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`
-          }
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-          displayFiles(data, path);
-        } else {
-          alert('Erreur lors du chargement du contenu du dépôt');
-        }
-      } catch (error) {
-        alert('Erreur réseau: ' + error.message);
-      }
-    }
-
-    // Afficher les fichiers et dossiers
-    function displayFiles(files, path) {
-      const fileListElement = document.getElementById('fileList');
-      fileListElement.innerHTML = '';
-
-      files.forEach(file => {
-        const listItem = document.createElement('li');
-        const filePath = path ? `${path}/${file.name}` : file.name;
-        let icon = '';
-
-        if (file.type === 'file') {
-          const fileType = file.name.split('.').pop().toLowerCase();
-          icon = ['pdf', 'html', 'doc', 'docx'].includes(fileType) ? '📄' : '📓';
-          listItem.innerHTML = `<a href="#" onclick="viewFile('${filePath}')" class="text-blue-500 hover:underline dark:text-blue-400">${icon} ${file.name}</a>`;
-        } else if (file.type === 'dir') {
-          icon = '📁';
-          listItem.innerHTML = `<a href="#" onclick="loadRepoContent('${filePath}')" class="text-blue-500 hover:underline dark:text-blue-400">${icon} ${file.name}/</a>`;
+                document.getElementById('filesTable').classList.remove("hidden");
+            } catch (error) {
+                console.error(error);
+            }
         }
 
-        fileListElement.appendChild(listItem);
-      });
-    }
-
-    // Voir un fichier
-    async function viewFile(filePath) {
-      selectedFilePath = filePath;
-      const url = `${apiUrl}${filePath}`;
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`
-          }
-        });
-        const fileData = await response.json();
-
-        if (response.ok && fileData.content) {
-          showFilePreview(fileData);
-        } else {
-          alert('Erreur lors de la récupération du fichier');
+        async function fetchFileContent(file) {
+            try {
+                const res = await fetch(file.download_url);
+                const content = await res.text();
+                document.getElementById('fileName').innerText = file.name;
+                document.getElementById('fileText').innerText = content;
+                document.getElementById('fileContent').classList.remove("hidden");
+            } catch (error) {
+                console.error(error);
+            }
         }
-      } catch (error) {
-        alert('Erreur lors de la récupération du fichier: ' + error.message);
-      }
-    }
-
-    // Afficher la prévisualisation d'un fichier
-    function showFilePreview(fileData) {
-      const previewContent = document.getElementById('previewContent');
-      const fileType = fileData.name.split('.').pop().toLowerCase();
-      const decodedContent = decodeBase64ToUtf8(fileData.content); // Décodage UTF-8
-
-      previewContent.innerHTML = '';
-
-      if (fileType === 'txt') {
-        previewContent.innerHTML = `<pre>${decodedContent}</pre>`;
-      } else if (fileType === 'md') {
-        try {
-          previewContent.innerHTML = marked.parse(decodedContent); // Rendu Markdown
-        } catch (error) {
-          console.error('Erreur lors du rendu Markdown : ', error);
-          previewContent.innerHTML = `<pre>${decodedContent}</pre>`;
-        }
-      } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
-        previewContent.innerHTML = `<img src="data:image/${fileType};base64,${fileData.content}" alt="Prévisualisation de l'image" class="max-w-full">`;
-      } else {
-        previewContent.innerHTML = `<p>Type de fichier non pris en charge pour la prévisualisation.</p>`;
-      }
-
-      document.getElementById('filePreview').classList.remove('hidden');
-    }
-
-    // Télécharger un fichier
-    async function downloadFile() {
-      if (!selectedFilePath) {
-        alert("Aucun fichier sélectionné pour le téléchargement.");
-        return;
-      }
-
-      const url = `${apiUrl}${selectedFilePath}`;
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`
-          }
-        });
-        const fileData = await response.json();
-
-        if (response.ok && fileData.content) {
-          const decodedContent = decodeBase64ToUtf8(fileData.content);
-          const blob = new Blob([decodedContent], { type: 'application/octet-stream' });
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(blob);
-          link.download = selectedFilePath.split('/').pop();
-          link.click();
-        } else {
-          alert("Erreur lors du téléchargement du fichier.");
-        }
-      } catch (error) {
-        alert("Erreur réseau: " + error.message);
-      }
-    }
-
-    // Attacher les fonctions au contexte global
-    window.loadRepoContent = loadRepoContent;
-    window.viewFile = viewFile;
-    window.downloadFile = downloadFile;
-
-    window.addEventListener('load', () => {
-      loadRepoContent();
-    });
-
-    document.getElementById('loadRepoButton').addEventListener('click', () => {
-      loadRepoContent();
-    });
-  </script>
-                
-
-
-
-                <!-- Footer : Deb -->
-                <div id="ecde_footer"></div>
-                <!-- Footer : Fin -->
-            </main>
-        </div>
+    </script>
 </body>
 </html>
