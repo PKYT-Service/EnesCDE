@@ -51,88 +51,55 @@
 
 
 
-  <!-- Priotité : Sécurité et base -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@5.0.2/marked.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Priotité : CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <script src="./data/js/private.js"></script>
-  <script src="./data/js/secure.js"></script>
-  <script src="https://pkyt-database-up.vercel.app/code-source/tout-service-lier-pkyt.js"></script>
-  <style>
-    body { font-family: 'Roboto', sans-serif; }
-  </style>
+   
+     
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://pkyt-database-up.vercel.app/code-source/API/drive/drive_loader.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://pkyt-database-up.vercel.app/code-source/API/drive/drive_loader.js" type="module"></script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div id="driveInfo" drive="01122420" class="hidden"></div>
+    
+    <div class="flex h-screen">
+        <!-- Menu à gauche -->
+        <div class="w-128 bg-gray-100 dark:bg-gray-800 p-4 overflow-y-auto">
+            <h2 class="text-xl font-bold mb-4">Menu</h2>
+            <ul id="fileList" class="space-y-2"></ul>
+        </div>
 
+        <!-- Contenu principal -->
+        <div class="flex-1 flex flex-col p-4">
+            <!-- Viewer (75% de la hauteur) -->
+            <div id="filePreview" class="hidden flex-1 overflow-y-auto">
+                <div id="previewContent" class="markdown-render"></div>
+            </div>
 
-  <!-- Header -->
-  <header class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-blue-600 text-white p-4 shadow-md dark:bg-blue-900">
-    <div drive="01122420" name="PKYT - Service | Admin" id="driveInfo" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hidden">
-      <h1 id="dynamicTitle">PKYT - Service | Howard Armory</h1>
+            <!-- Éditeur Markdown (caché par défaut) -->
+            <div id="editorContainer" class="hidden flex-1">
+                <textarea id="markdownEditor" class="w-full h-full p-4 bg-gray-50 dark:bg-gray-700 rounded-lg resize-none"></textarea>
+            </div>
+
+            <!-- Actions en bas -->
+            <div class="mt-4 space-x-4">
+                <button onclick="downloadFile()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <i class="fas fa-download"></i> Télécharger
+                </button>
+                <button onclick="showFullScreen()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <i class="fas fa-expand"></i> Plein écran
+                </button>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <!-- Navigation -->
-  <div class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white container mx-auto p-4">
-    <nav>
-      <ul class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white flex space-x-4">
-        <li><a href="./index.html" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-blue-500 hover:underline dark:text-blue-300">Retour</a></li>
-      </ul>
-    </nav>
-  </div>
-
-  <!-- Main Content -->
-  <main class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white container mx-auto mt-8 p-4 bg-white rounded shadow dark:bg-gray-800 dark:shadow-lg">
-    <h2 class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-xl font-bold mb-4 dark:text-white">Importer des documents (Extension : MD and others  )</h2>
-
-    <!-- File Input -->
-    <div class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white mb-4">
-      <input type="file" id="fileInput" multiple class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white block w-full text-gray-700 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-blue-500">
+    <!-- Full Screen Preview -->
+    <div id="fullScreenPreview" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4">
+        <div id="fullScreenContent" class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-4xl max-h-full overflow-auto markdown-render"></div>
+        <button id="closeFullScreenButton" class="absolute top-4 right-4 text-white hover:text-gray-300">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-
-    <!-- Rename Section -->
-    <div id="renameSection" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white mb-4"></div>
-
-    <!-- Upload Button -->
-    <button id="uploadButton" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 dark:bg-blue-700 dark:hover:bg-blue-800">Importer</button>
-    <p id="message" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white mt-4 text-sm font-medium"></p>
-  </main>
-
-  <!-- File List and Preview -->
-  <div class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white container mx-auto p-4">
-    <button id="loadRepoButton" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800">
-      <i class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white fas fa-sync-alt"></i> Charger
-    </button>
-    <ul id="fileList" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white list-none p-0 dark:text-white"></ul>
-    <div id="filePreview" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white mt-8 hidden">
-      <h2 class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-2xl font-bold mb-4 dark:text-white">Prévisualisation</h2>
-      <div id="previewContent" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-white p-4 rounded shadow markdown-render dark:bg-gray-700 dark:text-white"></div>
-      <button onclick="downloadFile()" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-green-500 text-white px-4 py-2 rounded mt-4 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700">
-        <i class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white fas fa-download"></i> Télécharger
-      </button>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-gray-800 text-white text-center p-4 mt-8 dark:bg-gray-900">
-    <p>&copy; 2025 PKYT - Service. Tous droits réservés.</p>
-  </footer>
-
-  <!-- Full Screen Preview -->
-  <div id="fullScreenPreview" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white fixed inset-0 bg-white z-50 hidden flex flex-col dark:bg-black">
-    <div class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white flex justify-end p-4">
-      <button id="closeFullScreenButton" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
-        <i class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white fas fa-times"></i> Fermer
-      </button>
-    </div>
-    <div id="fullScreenContent" class=" bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white flex-1 p-4 overflow-auto dark:text-white"></div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://pkyt-database-up.vercel.app/code-source/admin-dashboard/secute_private/tocken.js"></script>
-  <script src="https://pkyt-database-up.vercel.app/code-source/tout-service-lier-pkyt.js"></script>
-  <script src="https://pkyt-database-up.vercel.app/code-source/API/drive/drive_import.js" type="module"></script>
-  <script src="https://pkyt-database-up.vercel.app/code-source/API/drive/drive_loader.js" type="module"></script>
 
                 
 
