@@ -82,15 +82,56 @@
         if (appQuestionMark === 'true') {
             // Afficher le bouton
             document.getElementById('button-container').innerHTML = `
-                <a class="relative" href="#" onclick="showPopup()">
-                    <span class="fold-bold relative inline-block h-full w-full rounded border-2 border-black bg-white px-3 py-1 text-base font-bold text-black transition duration-100 hover:bg-yellow-400 hover:text-gray-900">Vous êtes dans la version APP -></span>
-                </a>
+                <a onclick="showPopup()"><span
+  class="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="-ms-1 me-1.5 size-4"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+
+  <p class="whitespace-nowrap text-sm">Paid</p>
+</span>
+
+<!-- Success - Outlined -->
+
+<span
+  class="inline-flex items-center justify-center rounded-full border border-emerald-500 px-2.5 py-0.5 text-emerald-700 dark:text-emerald-100"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="-ms-1 me-1.5 size-4"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+
+  <p class="whitespace-nowrap text-sm">Vous utiliseze l'application --> </p>
+</span></a>
+
             `;
 
             // Fonction pour afficher le pop-up
             function showPopup() {
                 document.getElementById('popup-container').innerHTML = `
-                    <div class="max-w-xs mx-auto bg-white dark:bg-gray-950 rounded-lg shadow-md overflow-hidden mt-24">
+                    <div class="max-w-3xl mx-auto bg-white dark:bg-gray-950 rounded-lg shadow-md overflow-hidden mt-24">
                         <div class="bg-gray-100 dark:bg-gray-700 px-4 py-2">
                             <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200"><b> Enes - <a class="text-blue-700 dark:text-blue-500">CDE</a> </b></h2>
                         </div>
@@ -124,7 +165,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div><br>
                 `;
             }
         }
