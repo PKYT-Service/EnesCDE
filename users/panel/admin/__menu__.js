@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <a href="./LOG_View.html">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
-                        <svg class="w-6 h-6 text-black dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7.305 4.5 3.135 7.305 1.5 12c1.635 4.695 5.805 7.5 10.5 7.5s8.865-2.805 10.5-7.5c-1.635-4.695-5.805-7.5-10.5-7.5zm0 13.5c-3.315 0-6.135-2.01-7.5-5 1.365-2.99 4.185-5 7.5-5s6.135 2.01 7.5 5c-1.365 2.99-4.185 5-7.5 5zm0-8.25c-1.8 0-3.25 1.45-3.25 3.25s1.45 3.25 3.25 3.25 3.25-1.45 3.25-3.25-1.45-3.25-3.25-3.25zm0 5.5c-1.24 0-2.25-1.01-2.25-2.25s1.01-2.25 2.25-2.25 2.25 1.01 2.25 2.25-1.01 2.25-2.25 2.25z"/>
                             <text x="4" y="22" font-family="Arial, sans-serif" font-size="4" font-weight="bold">LOG</text>
                         </svg>
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <a href="./LOG_statistiques.html">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
-                       <svg class="w-6 h-6 text-black dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                       <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 15h2v2H7v-2zm4-4h2v6h-2v-6zm4-4h2v10h-2V7z"/>
                             <text x="4" y="22" font-family="Arial, sans-serif" font-size="4" font-weight="bold" class="text-gray-500">LOG</text>
                         </svg>
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <a href="https://pkyt-database-up.vercel.app/code-source/admin-dashboard/V4/GTV3&AAS.html">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
-                       <svg class="w-6 h-6 text-black dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+                       <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
         <text x="10" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold">V3</text>
     </svg>
                 </button>
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <a href="https://enes-cde.vercel.app/users/">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
-<svg class="h-6 w-6 fill-black stroke-black dark:fill-white dark:stroke-white" 
+<svg class="h-6 w-6"
      xmlns="http://www.w3.org/2000/svg" 
      viewBox="0 0 48 48">
   <g id="SVGRepo_iconCarrier"> 
@@ -71,6 +71,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 </button>
             </a> 
+<hr>
+                        <a href="./settings.html">
+                <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+>
+    <path d="M12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 0 0 0-7z" />
+    <path d="M19.4 15.5a1.5 1.5 0 0 0 .1-1.5l-1.7-3a1.5 1.5 0 0 0-1.3-.8h-2.1a7.5 7.5 0 0 0-1.5-1.5v-2.1a1.5 1.5 0 0 0-.8-1.3l-3-1.7a1.5 1.5 0 0 0-1.5.1l-2.5 2.5a1.5 1.5 0 0 0-.1 1.5l1.7 3a1.5 1.5 0 0 0 1.3.8h2.1a7.5 7.5 0 0 0 1.5 1.5h2.1a1.5 1.5 0 0 0 1.3-.8z" />
+</svg>
+                </button>
+            </a>
+            
         </nav>
     </div>
 </aside>
