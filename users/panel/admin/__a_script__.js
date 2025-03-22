@@ -68,7 +68,37 @@
   //                //
  // Logs Send DT   //
 //                //
+    // Fonction pour gérer le switch "Admin Log"
+    function handleAdminLogSwitch(checkbox) {
+        if (checkbox.checked) {
+            localStorage.setItem('EnesCDE_ADM:Log', 'true'); // Activer la gestion des logs pour admin
+        } else {
+            localStorage.setItem('EnesCDE_ADM:Log', 'false'); // Désactiver la gestion des logs pour admin
+        }
+        updateLogSwitchState();
+    }
 
+    // Initialisation du switch basé sur le localStorage
+    function updateLogSwitchState() {
+        const switchBall = document.getElementById('switchBall');
+        const toggleAdminLog = document.getElementById('toggleAdminLog');
+        const isAdminLoggingEnabled = localStorage.getItem('EnesCDE_ADM:Log') === 'true';
+
+        if (isAdminLoggingEnabled) {
+            toggleAdminLog.checked = true;
+            switchBall.style.transform = "translateX(100%)"; // Position à droite
+            switchBall.classList.remove('bg-orange-500', 'bg-red-500');
+            switchBall.classList.add('bg-green-500');
+        } else {
+            toggleAdminLog.checked = false;
+            switchBall.style.transform = "translateX(0%)"; // Position à gauche
+            switchBall.classList.remove('bg-green-500', 'bg-red-500');
+            switchBall.classList.add('bg-orange-500');
+        }
+    }
+
+    // Initialisation de l'état du switch au chargement
+    updateLogSwitchState();
   //                //
  // Logs Send DT   //
 //                //
