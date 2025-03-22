@@ -22,7 +22,7 @@
         }
 
         // Récupérer le switch et l'élément de la "boule"
-        const switchBall = document.getElementById('switchBall');
+        const switchBallF12 = document.getElementById('switchBallF12');
         const toggleF12 = document.getElementById('toggleF12');
         let isAdmin = getCookie('EnesCDE_ADM:F12');
 
@@ -30,19 +30,19 @@
         function UpSwitchF12() {
             if (isAdmin === "ADMIN") {
                 toggleF12.checked = true;
-                switchBall.style.transform = "translateX(100%)"; // Position à droite
-                switchBall.classList.remove('bg-orange-500', 'bg-red-500');
-                switchBall.classList.add('bg-green-500');
+                switchBallF12.style.transform = "translateX(100%)"; // Position à droite
+                switchBallF12.classList.remove('bg-orange-500', 'bg-red-500');
+                switchBallF12.classList.add('bg-green-500');
             } else if (isAdmin === "none") {
                 toggleF12.checked = false;
-                switchBall.style.transform = "translateX(0%)"; // Position à gauche
-                switchBall.classList.remove('bg-orange-500', 'bg-green-500');
-                switchBall.classList.add('bg-red-500');
+                switchBallF12.style.transform = "translateX(0%)"; // Position à gauche
+                switchBallF12.classList.remove('bg-orange-500', 'bg-green-500');
+                switchBallF12.classList.add('bg-red-500');
             } else {
                 toggleF12.checked = false;
-                switchBall.style.transform = "translateX(50%)"; // Position au centre
-                switchBall.classList.remove('bg-green-500', 'bg-red-500');
-                switchBall.classList.add('bg-orange-500');
+                switchBallF12.style.transform = "translateX(50%)"; // Position au centre
+                switchBallF12.classList.remove('bg-green-500', 'bg-red-500');
+                switchBallF12.classList.add('bg-orange-500');
             }
         }
 
@@ -80,20 +80,20 @@
 
     // Initialisation du switch basé sur le localStorage
     function updateLogSwitchState() {
-        const switchBall = document.getElementById('switchBall');
+        const switchBallLog = document.getElementById('switchBallLog');
         const toggleAdminLog = document.getElementById('toggleAdminLog');
         const isAdminLoggingEnabled = localStorage.getItem('EnesCDE_ADM:Log') === 'true';
 
         if (isAdminLoggingEnabled) {
             toggleAdminLog.checked = true;
-            switchBall.style.transform = "translateX(100%)"; // Position à droite
-            switchBall.classList.remove('bg-orange-500', 'bg-red-500');
-            switchBall.classList.add('bg-green-500');
+            switchBallLog.style.transform = "translateX(100%)"; // Position à droite
+            switchBallLog.classList.remove('bg-orange-500', 'bg-red-500');
+            switchBallLog.classList.add('bg-green-500');
         } else {
             toggleAdminLog.checked = false;
-            switchBall.style.transform = "translateX(0%)"; // Position à gauche
-            switchBall.classList.remove('bg-green-500', 'bg-red-500');
-            switchBall.classList.add('bg-orange-500');
+            switchBallLog.style.transform = "translateX(0%)"; // Position à gauche
+            switchBallLog.classList.remove('bg-green-500', 'bg-red-500');
+            switchBallLog.classList.add('bg-orange-500');
         }
     }
 
