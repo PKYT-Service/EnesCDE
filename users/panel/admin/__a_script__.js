@@ -27,7 +27,7 @@
         let isAdmin = getCookie('EnesCDE_ADM:F12');
 
         // Initialisation du switch en fonction du cookie
-        function updateSwitchState() {
+        function UpSwitchF12() {
             if (isAdmin === "ADMIN") {
                 toggleF12.checked = true;
                 switchBall.style.transform = "translateX(100%)"; // Position à droite
@@ -47,7 +47,7 @@
         }
 
         // Mettre à jour l'état du switch au chargement
-        updateSwitchState();
+        UpSwitchF12();
 
         // Fonction de gestion du changement d'état
         function handleF12Switch(checkbox) {
@@ -57,8 +57,18 @@
                 setCookie('EnesCDE_ADM:F12', 'none', 7); // Expire dans 7 jours
             }
             isAdmin = getCookie('EnesCDE_ADM:F12'); // Met à jour la variable isAdmin après modification du cookie
-            updateSwitchState(); // Met à jour l'apparence du switch
+            UpSwitchF12(); // Met à jour l'apparence du switch
         }
   //                //
  // F12 Switcher   //
+//                //
+
+  // - - - - - - - - - - //
+
+  //                //
+ // Logs Send DT   //
+//                //
+
+  //                //
+ // Logs Send DT   //
 //                //
