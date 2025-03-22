@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="EnesCDE - Plateforme de services et documentation.">
+        <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web , LosFly , LsFly , PikaYutMG , GFLP , LSP , SRDMG , Ebsayder , Howard , Armory , PikaYut , enes , enesgp , egp , ecde ; enes cde , communitydeveloppement , developpement , community PikaYutMG , Projet , MultiGaming, Gaming HTML  ">
+        <meta name="author" content="EnesCDE">
+    
+        <!-- Open Graph (Facebook & LinkedIn) -->
+        <meta property="og:title" content="EnesCDE - Services , Accueil">
+        <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta property="og:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+        <meta property="og:url" content="https://enes-cde.vercel.app">
+        <meta property="og:type" content="website">
+    
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="EnesCDE - Services & Documentation">
+        <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta name="twitter:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+    
+        <title>EnesCDE - Accueil</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+            <style>
+        .hidden { display: none; }
+    </style>
+            
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+            
+        <!-- Script -->
+        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-menu.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+        <div id="ecde_all"></div>
+
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+
+
+
+    <script>
+        // Fonction pour envoyer des commandes via RCON
+        function sendCommand(command) {
+            fetch('/execute_command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ command: command }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Commande exécutée: ' + data.message);
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+        }
+    </script>
+    <div class="container mx-auto p-5">
+        <div class="flex flex-col items-center space-y-5">
+            <!-- Section de commandes -->
+            <div class="space-y-4">
+                <button class="w-full py-2 px-4 bg-red-600 text-white rounded-md shadow-lg hover:bg-red-700 transition" onclick="sendCommand('stop')">Fermer le serveur</button>
+                <button class="w-full py-2 px-4 bg-yellow-500 text-white rounded-md shadow-lg hover:bg-yellow-600 transition" onclick="sendCommand('reload')">Reload</button>
+                <button class="w-full py-2 px-4 bg-blue-500 text-white rounded-md shadow-lg hover:bg-blue-600 transition" onclick="sendCommand('kill @e')">Kill @e</button>
+                <button class="w-full py-2 px-4 bg-green-600 text-white rounded-md shadow-lg hover:bg-green-700 transition" onclick="sendCommand('tp @a spawn')">Tp spawn</button>
+            </div>
+
+            <!-- Section des commandes personnalisées -->
+            <div class="w-full space-y-4 mt-5">
+                <label class="block text-lg font-semibold">Commandes personnalisées</label>
+                <input type="text" id="customCommandName" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md" placeholder="Nom de la commande">
+                <input type="text" id="customCommand" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md" placeholder="Commande à exécuter">
+                <button onclick="saveCustomCommand()" class="w-full py-2 px-4 bg-purple-500 text-white rounded-md shadow-lg hover:bg-purple-600 transition">Sauvegarder la commande</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sauvegarde la commande personnalisée dans la session locale
+        function saveCustomCommand() {
+            const name = document.getElementById('customCommandName').value;
+            const command = document.getElementById('customCommand').value;
+
+            if (name && command) {
+                let customCommands = JSON.parse(localStorage.getItem('CustomCommands') || '[]');
+                customCommands.push({ name: name, command: command });
+                localStorage.setItem('CustomCommands', JSON.stringify(customCommands));
+
+                alert('Commande personnalisée enregistrée');
+            } else {
+                alert('Veuillez entrer un nom et une commande');
+            }
+        }
+
+        // Ajout des commandes personnalisées dans l'interface au chargement
+        window.onload = () => {
+            let customCommands = JSON.parse(localStorage.getItem('CustomCommands') || '[]');
+            const commandSection = document.querySelector('.space-y-4');
+            
+            customCommands.forEach((cmd) => {
+                const button = document.createElement('button');
+                button.classList.add('w-full', 'py-2', 'px-4', 'bg-gray-600', 'text-white', 'rounded-md', 'shadow-lg', 'hover:bg-gray-700', 'transition');
+                button.textContent = cmd.name;
+                button.onclick = () => sendCommand(cmd.command);
+                commandSection.appendChild(button);
+            });
+        };
+    </script>
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+    </body>
+</html>
