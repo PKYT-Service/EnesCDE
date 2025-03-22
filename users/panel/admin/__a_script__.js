@@ -50,7 +50,7 @@
         updateSwitchState();
 
         // Fonction de gestion du changement d'état
-        function toggleF12(checkbox) {
+        function handleF12Switch(checkbox) {
             if (checkbox.checked) {
                 setCookie('EnesCDE', 'ADMIN', 7); // Expire dans 7 jours
             } else {
