@@ -24,7 +24,7 @@
         // Récupérer le switch et l'élément de la "boule"
         const switchBall = document.getElementById('switchBall');
         const toggleF12 = document.getElementById('toggleF12');
-        let isAdmin = getCookie('EnesCDE');
+        let isAdmin = getCookie('EnesCDE_ADM:F12');
 
         // Initialisation du switch en fonction du cookie
         function updateSwitchState() {
@@ -52,11 +52,11 @@
         // Fonction de gestion du changement d'état
         function handleF12Switch(checkbox) {
             if (checkbox.checked) {
-                setCookie('EnesCDE', 'ADMIN', 7); // Expire dans 7 jours
+                setCookie('EnesCDE_ADM:F12', 'ADMIN', 7); // Expire dans 7 jours
             } else {
-                setCookie('EnesCDE', 'none', 7); // Expire dans 7 jours
+                setCookie('EnesCDE_ADM:F12', 'none', 7); // Expire dans 7 jours
             }
-            isAdmin = getCookie('EnesCDE'); // Met à jour la variable isAdmin après modification du cookie
+            isAdmin = getCookie('EnesCDE_ADM:F12'); // Met à jour la variable isAdmin après modification du cookie
             updateSwitchState(); // Met à jour l'apparence du switch
         }
   //                //
