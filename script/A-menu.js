@@ -68,6 +68,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
             </a>
 
+
+
+         <a href="https://enes-cde.vercel.app/search.html">
+                <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
+       <svg xmlns="http://www.w3.org/2000/svg" class="class="h-6 w-6"" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18a8 8 0 100-16 8 8 0 000 16zm6-2l4 4" />
+        </svg>
+                </button>
+            </a>
+
+            
             <a href="https://enes-cde.vercel.app/users/">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
 <svg class="h-6 w-6 fill-black stroke-black dark:fill-white dark:stroke-white" 
@@ -81,6 +92,9 @@ document.addEventListener("DOMContentLoaded", function () {
   </g>
 </svg>
 
+
+
+ 
                 </button>
             </a> 
         </nav>
