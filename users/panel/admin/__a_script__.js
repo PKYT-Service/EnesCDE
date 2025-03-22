@@ -1,7 +1,7 @@
   //                //
  // F12 Switcher   //
 //                //
-        // Fonction pour définir un cookie
+       // Fonction pour définir un cookie
         function setCookie(name, value, days) {
             let date = new Date();
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // expiration en jours
@@ -21,27 +21,42 @@
             return null;
         }
 
-        // Changer le statut entre "ADMIN" et "none"
-        const button = document.getElementById('adminSwitch');
+        // Récupération de l'élément et du switch
+        const switchBall = document.getElementById('switchBall');
+        const adminSwitch = document.getElementById('adminSwitch');
         let isAdmin = getCookie('EnesCDE');
 
-        // Vérifie l'état initial du cookie pour adapter le texte du bouton
-        if (isAdmin === "ADMIN") {
-            button.innerText = "Passer à NONE";
-        } else {
-            button.innerText = "Passer à ADMIN";
+        // Initialisation du switch en fonction du cookie
+        function updateSwitchState() {
+            if (isAdmin === "ADMIN") {
+                switchBall.style.transform = "translateX(100%)"; // Position à droite
+                switchBall.classList.remove('bg-orange-500', 'bg-red-500');
+                switchBall.classList.add('bg-green-500');
+            } else if (isAdmin === "none") {
+                switchBall.style.transform = "translateX(0%)"; // Position à gauche
+                switchBall.classList.remove('bg-orange-500', 'bg-green-500');
+                switchBall.classList.add('bg-red-500');
+            } else {
+                switchBall.style.transform = "translateX(50%)"; // Position au centre
+                switchBall.classList.remove('bg-green-500', 'bg-red-500');
+                switchBall.classList.add('bg-orange-500');
+            }
         }
 
-        // Écoute l'événement de clic sur le bouton
-        button.addEventListener('click', () => {
+        // Initialiser l'état du switch au chargement
+        updateSwitchState();
+
+        // Écoute l'événement de clic sur le bouton switch
+        adminSwitch.addEventListener('click', () => {
             if (isAdmin === "ADMIN") {
                 setCookie('EnesCDE', 'none', 7); // Expire dans 7 jours
-                button.innerText = "Passer à ADMIN";
-            } else {
+            } else if (isAdmin === "none") {
                 setCookie('EnesCDE', 'ADMIN', 7); // Expire dans 7 jours
-                button.innerText = "Passer à NONE";
+            } else {
+                setCookie('EnesCDE', 'ADMIN', 7); // Expire dans 7 jours par défaut
             }
-            isAdmin = getCookie('EnesCDE');
+            isAdmin = getCookie('EnesCDE'); // Met à jour la variable isAdmin après modification du cookie
+            updateSwitchState(); // Met à jour l'apparence du switch
         });
   //                //
  // F12 Switcher   //
