@@ -23,7 +23,22 @@ html, body {
           user-select: none;
   text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
 }
-
+.text-des-container {
+  z-index: 100;
+  width: 100vw;
+  height: 120vh;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 96px;
+  color: white;
+  opacity: 0.8;
+  user-select: none;
+  text-shadow: 1px 1px rgba(0,0,0,0.1);
+}
 :root {
   --color-bg1: rgb(108, 0, 162);
   --color-bg2: rgb(0, 17, 82);
