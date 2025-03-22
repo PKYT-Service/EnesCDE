@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="EnesCDE - Plateforme de services et documentation.">
+        <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web , LosFly , LsFly , PikaYutMG , GFLP , LSP , SRDMG , Ebsayder , Howard , Armory , PikaYut , enes , enesgp , egp , ecde ; enes cde , communitydeveloppement , developpement , community PikaYutMG , Projet , MultiGaming, Gaming HTML  ">
+        <meta name="author" content="EnesCDE">
+    
+        <!-- Open Graph (Facebook & LinkedIn) -->
+        <meta property="og:title" content="EnesCDE - Services , Accueil">
+        <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta property="og:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+        <meta property="og:url" content="https://enes-cde.vercel.app">
+        <meta property="og:type" content="website">
+    
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="EnesCDE - Services & Documentation">
+        <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta name="twitter:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+    
+        <title>EnesCDE - Recherche</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+            <style>
+        .hidden { display: none; }
+    </style>
+            
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+            
+        <!-- Script -->
+        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-menu.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+        <div id="ecde_all"></div>
+
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Recherche</h1>
+
+    
+
+
+
+
+
+    <script>
+        const codes = {
+            "Campyskerie": "https://enes-cde.vercel.app/users/panel/_C-campysk-serv/",
+            "XYZ789": " ",
+            "PKYT2024": "https://pkyt-database-up.vercel.app"
+        };
+
+        function checkCode() {
+            const inputCode = document.getElementById("codeInput").value;
+            const message = document.getElementById("message");
+
+            if (codes[inputCode]) {
+                window.location.href = codes[inputCode];
+            } else {
+                message.textContent = "Aucune correspondance trouvée.";
+                message.classList.add("text-red-500");
+            }
+        }
+    </script>
+
+
+    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md w-80">
+        <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Entrez un code :</h2>
+        <input type="text" id="codeInput" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:text-white" placeholder="Votre code ici">
+        <button onclick="checkCode()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Valider</button>
+        <p id="message" class="mt-2 text-sm text-gray-900 dark:text-gray-100"></p>
+    </div>
+
+
+
+
+
+
+
+
+
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+    </body>
+</html>
