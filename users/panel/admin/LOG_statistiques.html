@@ -35,197 +35,141 @@
 
 
 
-<div class="mt-4 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
-        <p class="text-red-600 dark:text-red-300">
-                    <b><u>Les logs prennent du temps a charger !</u></b>
-        </p>
-     </div>
+    <h1 class="text-2xl font-bold mb-4">📊 Statistiques des logs</h1>
 
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gray-800 p-4 rounded-lg">
+            <h2 class="text-lg font-semibold">📈 Données générales</h2>
+            <p><strong>ID Reconnu :</strong> <span id="idReconnus">0</span></p>
+            <p><strong>ID Inconnu :</strong> <span id="idInconnus">0</span></p>
+            <p><strong>Total des vues :</strong> <span id="totalVues">0</span></p>
+            <p><strong>Vues en 7 jours :</strong> <span id="vues7J">0</span></p>
+        </div>
 
+        <div class="bg-gray-800 p-4 rounded-lg">
+            <h2 class="text-lg font-semibold">🌐 Pages Consultées</h2>
+            <ul id="liste_pages"></ul>
+        </div>
+    </div>
 
+    <div class="mt-6 bg-gray-800 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold">👤 Liste des utilisateurs</h2>
+        <ul id="liste_users"></ul>
+    </div>
 
-<div id="logStats"></div>
+    <script>
+        async function fetchLogs() {
+            const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+            const repo = "database_EnesCDE";
+            const owner = "PKYT-Service";
+            const path = "log/users";
 
+            let headers = {};
+            try {
+                // 🔐 Récupération du token GitHub
+                const tokenRes = await fetch(tokenURL);
+                const tokenData = await tokenRes.json();
+                headers = { "Authorization": "token " + tokenData.GITHUB_TOKEN };
+            } catch (error) {
+                console.error("❌ Erreur récupération token", error);
+                return;
+            }
 
+            try {
+                // 📂 Récupération des fichiers de logs
+                const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                const response = await fetch(apiURL, { headers });
+                if (!response.ok) throw new Error("Impossible de récupérer les logs.");
+                
+                const data = await response.json();
 
+                let idReconnus = 0, idInconnus = 0, totalVues = 0, vues7J = 0;
+                let pages = {}, users = {};
 
-                <script>
-                 async function fetchLogs() {
-    console.log("📡 Chargement des logs...");
-    
-    // URL du token GitHub
-    const tokenUrl = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
-    let githubToken;
-    
-    try {
-        const tokenResponse = await fetch(tokenUrl);
-        if (!tokenResponse.ok) throw new Error("Impossible de récupérer le token GitHub.");
-        const tokenData = await tokenResponse.json();
-        githubToken = tokenData.GITHUB_TOKEN;
-    } catch (error) {
-        console.error("🔴 Erreur lors de la récupération du token :", error.message);
-        return;
-    }
+                const dateLimite = new Date();
+                dateLimite.setDate(dateLimite.getDate() - 7);
 
-    const owner = "PKYT-Service";
-    const repo = "database_EnesCDE";
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/log/users/`;
+                for (const file of data) {
+                    if (!file.name.endsWith(".json")) continue; // Ignorer les fichiers non JSON
 
-    try {
-        const response = await fetch(apiUrl, {
-            headers: { Authorization: `token ${githubToken}` }
-        });
+                    // 📜 Récupération du contenu du fichier JSON
+                    const fileResponse = await fetch(file.download_url);
+                    const fileText = await fileResponse.text();
 
-        if (!response.ok) throw new Error("Impossible de récupérer les fichiers logs.");
-        const files = await response.json();
+                    totalVues++;
+                    const matchID = fileText.match(/ECDE:ID\s*=\s*(\S+)/);
+                    const userID = matchID ? matchID[1] : "Non trouvé";
 
-        console.log(`📂 ${files.length} fichiers trouvés.`);
+                    if (userID !== "Non trouvé") {
+                        idReconnus++;
+                        users[userID] = fileText;
+                    } else {
+                        idInconnus++;
+                    }
 
-        let allLogs = [];
-        let totalViews = 0;
-        let viewsLast3Days = 0;
-        let viewsLast10Hours = 0;
-        let registeredProfiles = new Set();
-        let unregisteredCount = 0;
-        let viewsByCountry = {};
+                    // 🔗 Récupération des URLs visitées
+                    const pageMatch = fileText.match(/### Log : #\s*(https?:\/\/\S+)/);
+                    if (pageMatch) {
+                        const page = pageMatch[1];
+                        pages[page] = (pages[page] || 0) + 1;
+                    }
 
-        const now = new Date();
-        const threeDaysAgo = new Date(now);
-        threeDaysAgo.setDate(now.getDate() - 3);
-        const tenHoursAgo = new Date(now);
-        tenHoursAgo.setHours(now.getHours() - 10);
-
-        for (let file of files) {
-            if (file.type === "dir") continue;
-
-            const fileResponse = await fetch(file.download_url);
-            const fileContent = await fileResponse.text();
-
-            const lines = fileContent.split("\n");
-            let logDate = null;
-            let userID = null;
-            let userIP = null;
-            let country = "Unknown";
-
-            lines.forEach(line => {
-                if (line.startsWith("--- Date")) {
-                    const dateParts = line.match(/(\d{2}\/\d{2}\/\d{4})/);
-                    if (dateParts) {
-                        logDate = new Date(dateParts[0].split("/").reverse().join("-"));
+                    // 📅 Vérification si log < 7 jours
+                    const dateMatch = fileText.match(/Date\s+(\d{2}\/\d{2}\/\d{4})/);
+                    if (dateMatch) {
+                        const logDate = new Date(dateMatch[1].split("/").reverse().join("-"));
+                        if (logDate >= dateLimite) {
+                            vues7J++;
+                        }
                     }
                 }
-                if (line.includes("ECDE:ID =")) {
-                    userID = line.split("=")[1].trim();
+
+                // 🏆 Mise à jour des statistiques
+                document.getElementById("idReconnus").textContent = idReconnus;
+                document.getElementById("idInconnus").textContent = idInconnus;
+                document.getElementById("totalVues").textContent = totalVues;
+                document.getElementById("vues7J").textContent = vues7J;
+
+                // 📌 Affichage des pages consultées
+                const listePages = document.getElementById("liste_pages");
+                listePages.innerHTML = "";
+                for (const [page, count] of Object.entries(pages)) {
+                    const li = document.createElement("li");
+                    li.textContent = `${page} (${count} vues)`;
+                    li.className = "cursor-pointer text-blue-400 hover:underline";
+                    li.onclick = () => afficherClients(page, users);
+                    listePages.appendChild(li);
                 }
-                if (line.includes("ECDE:ID_IP =")) {
-                    userIP = line.split("=")[1].trim();
+
+                // 👤 Affichage des utilisateurs
+                const listeUsers = document.getElementById("liste_users");
+                listeUsers.innerHTML = "";
+                for (const [id, info] of Object.entries(users)) {
+                    const li = document.createElement("li");
+                    li.textContent = id;
+                    li.className = "cursor-pointer text-green-400 hover:underline";
+                    li.onclick = () => afficherInfoUser(info);
+                    listeUsers.appendChild(li);
                 }
-            });
-
-            totalViews++;
-
-            if (!userID || userID === "Non trouvé") {
-                unregisteredCount++;
-            } else {
-                registeredProfiles.add(userID);
-            }
-
-            if (logDate) {
-                if (logDate >= threeDaysAgo) viewsLast3Days++;
-                if (logDate >= tenHoursAgo) viewsLast10Hours++;
-            }
-
-            allLogs.push({ userID, userIP, logDate, fileName: file.name });
-
-            if (userIP) {
-                country = await fetchCountryFromIP(userIP);
-                viewsByCountry[country] = (viewsByCountry[country] || 0) + 1;
+            } catch (error) {
+                console.error("❌ Erreur récupération logs", error);
             }
         }
 
-        console.log("📊 Statistiques :");
-        console.log("👤 Profils enregistrés :", registeredProfiles.size);
-        console.log("🚀 Profils non enregistrés :", unregisteredCount);
-        console.log("📈 Vues totales :", totalViews);
-        console.log("📅 Vues (3 derniers jours) :", viewsLast3Days);
-        console.log("⏳ Vues (10 dernières heures) :", viewsLast10Hours);
-        console.log("🌍 Répartition par pays :", viewsByCountry);
+        // 🕵️‍♂️ Affiche la liste des utilisateurs ayant consulté une page
+        function afficherClients(page, users) {
+            let clients = Object.keys(users).filter(id => users[id].includes(page));
+            alert(`👥 Clients ayant consulté ${page} :\n` + (clients.length ? clients.join("\n") : "Aucun"));
+        }
 
-        displayStats({
-            totalViews,
-            registeredCount: registeredProfiles.size,
-            unregisteredCount,
-            viewsLast3Days,
-            viewsLast10Hours,
-            viewsByCountry,
-            allLogs
-        });
+        // 🔍 Affiche les informations d'un utilisateur
+        function afficherInfoUser(info) {
+            alert("ℹ️ Informations du compte :\n\n" + info);
+        }
 
-    } catch (error) {
-        console.error("🔴 Erreur lors du fetch des logs :", error.message);
-    }
-}
-
-// Fonction pour récupérer le pays d'une IP
-async function fetchCountryFromIP(ip) {
-    try {
-        const response = await fetch(`https://ipapi.co/${ip}/json/`);
-        const data = await response.json();
-        return data.country_name || "Unknown";
-    } catch (error) {
-        console.warn(`⚠ Erreur lors de la récupération du pays pour IP ${ip}`);
-        return "Unknown";
-    }
-}
-
-// Affichage des stats et UI
-function displayStats(stats) {
-    let statsDiv = document.getElementById("logStats");
-    statsDiv.innerHTML = `
-        <h1 class="text-3xl font-bold">📊 Statistiques des Logs</h1>
-        <p>👀 Nombre total de vues : <strong>${stats.totalViews}</strong></p>
-        <p>🆔 Profils enregistrés : <strong>${stats.registeredCount}</strong></p>
-        <p>👻 Profils non enregistrés : <strong>${stats.unregisteredCount}</strong></p>
-        <p>📅 Vues (3 derniers jours) : <strong>${stats.viewsLast3Days}</strong></p>
-        <p>⏳ Vues (10 dernières heures) : <strong>${stats.viewsLast10Hours}</strong></p>
-
-        <h2 class="text-2xl font-semibold mt-8">🌍 Vues par Pays</h2>
-        <div id="map" class="h-64 flex items-center justify-center">
-            <p class="text-gray-400 dark:text-gray-700">🗺️ Carte en construction...</p>
-        </div>
-
-        <h2 class="text-2xl font-semibold mt-8">🔍 Détails des Logs</h2>
-        <button onclick="toggleView('IP')" class="p-2 bg-blue-500 text-white rounded-md">Afficher par IP</button>
-        <button onclick="toggleView('ID')" class="p-2 bg-blue-500 text-white rounded-md">Afficher par ID</button>
-
-        <div id="logDetails" class="space-y-2 mt-4">
-            <p class="text-gray-400 dark:text-gray-700">📂 Chargement des logs...</p>
-        </div>
-    `;
-
-    renderMap(stats.viewsByCountry);
-}
-
-// Basculer entre l'affichage IP et ID
-function toggleView(type) {
-    let logDetails = document.getElementById("logDetails");
-    logDetails.innerHTML = `<h3 class="text-xl font-semibold">📄 Logs (${type})</h3>`;
-
-    stats.allLogs.forEach(log => {
-        let identifier = type === "IP" ? log.userIP : log.userID;
-        logDetails.innerHTML += `<p class="text-gray-600 dark:text-gray-200">🔗 ${identifier} - ${log.fileName}</p>`;
-    });
-}
-
-// Affichage de la carte (en cours de développement)
-function renderMap(data) {
-    let mapDiv = document.getElementById("map");
-    mapDiv.innerHTML = `<p class="text-gray-400 dark:text-gray-700">🗺️ Carte en construction...</p>`;
-}
-
-fetchLogs();
-
-                </script>
+        // ▶ Charger les logs au démarrage
+        fetchLogs();
+    </script>
 
                 <!-- Footer : Deb -->
                 <div id="ecde_footer"></div>
