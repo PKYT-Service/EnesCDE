@@ -93,15 +93,13 @@ loadScriptAndApply();
 
 
 
-document.querySelectorAll("style").forEach(styleTag => styleTag.remove());
+document.querySelectorAll("style").forEach(styleTag => {
+    styleTag.innerHTML = styleTag.innerHTML
+        .replace(/\.dark \.bg-red-800/g, ".dark .bg-temp") // Temporaire pour éviter conflit
+        .replace(/\.dark \.bg-red-950/g, ".dark .bg-red-800")
+        .replace(/\.dark \.bg-temp/g, ".dark .bg-red-950");
+});
 
-const newStyle = document.createElement("style");
-newStyle.innerHTML = `
-  .bg-red-500 { background-color: #3b82f6 !important; }
-  .dark .bg-red-950 { background-color: #1e3a8a !important; } /* Inversé */
-  .dark .bg-red-800 { background-color: #1e3a8a !important; } /* Inversé */
-`;
-document.head.appendChild(newStyle);
 
 
 
