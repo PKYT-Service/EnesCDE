@@ -30,166 +30,137 @@
 
     
                 
-
-
-
-
-
-    <h1 class="text-2xl font-bold mb-4">📊 Statistiques des logs</h1>
+   <h1 class="text-2xl font-bold mb-4">Statistiques des logs</h1>
 
     <div class="grid grid-cols-2 gap-4">
         <div class="bg-gray-800 p-4 rounded-lg">
-            <h2 class="text-lg font-semibold">📈 Données générales</h2>
-            <p><strong>ID Reconnu :</strong> <span id="idReconnus">0</span></p>
-            <p><strong>ID Inconnu :</strong> <span id="idInconnus">0</span></p>
-            <p><strong>Total des vues :</strong> <span id="totalVues">0</span></p>
-            <p><strong>Vues en 7 jours :</strong> <span id="vues7J">0</span></p>
+            <h2 class="text-lg font-semibold">Données générales</h2>
+            <p>ID Reconnu : <span id="id_reconnus">0</span></p>
+            <p>ID Inconnu : <span id="id_inconnus">0</span></p>
+            <p>Vues Totales : <span id="vues_totales">0</span></p>
+            <p>Vues (7 derniers jours) : <span id="vues_7j">0</span></p>
         </div>
 
         <div class="bg-gray-800 p-4 rounded-lg">
-            <h2 class="text-lg font-semibold">🌐 Pages Consultées</h2>
+            <h2 class="text-lg font-semibold">Pages Consultées</h2>
             <ul id="liste_pages"></ul>
         </div>
     </div>
 
     <div class="mt-6 bg-gray-800 p-4 rounded-lg">
-        <h2 class="text-lg font-semibold">👤 Liste des utilisateurs</h2>
+        <h2 class="text-lg font-semibold">Liste des utilisateurs</h2>
         <ul id="liste_users"></ul>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => fetchLogs());
+        async function fetchLogs() {
+            const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+            const repo = "database_EnesCDE";
+            const owner = "PKYT-Service";
+            const path = "log/users";
 
-async function fetchLogs() {
-    const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
-    const repo = "database_EnesCDE";
-    const owner = "PKYT-Service";
-    const path = "log/users";
+            let headers = {};
+            try {
+                const tokenRes = await fetch(tokenURL);
+                const tokenData = await tokenRes.json();
+                headers = { "Authorization": "token " + tokenData.GITHUB_TOKEN };
+            } catch (error) {
+                console.error("Erreur récupération token", error);
+                return;
+            }
 
-    try {
-        // 🔐 Récupération du token GitHub
-        const tokenData = await fetch(tokenURL).then(res => res.json());
-        const headers = { "Authorization": "token " + tokenData.GITHUB_TOKEN };
+            try {
+                const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                const response = await fetch(apiURL, { headers });
+                const data = await response.json();
 
-        // 📂 Récupération des fichiers de logs
-        const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-        const data = await fetch(apiURL, { headers }).then(res => res.json());
+                let idReconnus = 0, idInconnus = 0, vuesTotales = 0, vues7J = 0;
+                let pages = {}, users = {};
 
-        if (!Array.isArray(data)) throw new Error("Impossible de récupérer les logs.");
+                const dateLimite = new Date();
+                dateLimite.setDate(dateLimite.getDate() - 7);
 
-        // 📥 Téléchargement des fichiers JSON en parallèle
-        const filePromises = data
-            .filter(file => file.name.endsWith(".json"))
-            .map(async file => {
-                try {
-                    const content = await fetch(file.download_url).then(res => res.text());
-                    return { name: file.name, content };
-                } catch {
-                    return null;
+                for (const folder of data) {
+                    if (folder.type === "dir") {
+                        const daysResponse = await fetch(folder.url, { headers });
+                        const daysData = await daysResponse.json();
+
+                        for (const dayFolder of daysData) {
+                            if (dayFolder.type === "dir") {
+                                const logsResponse = await fetch(dayFolder.url, { headers });
+                                const logsData = await logsResponse.json();
+
+                                for (const file of logsData) {
+                                    const fileResponse = await fetch(file.download_url);
+                                    const fileText = await fileResponse.text();
+
+                                    vuesTotales++;
+                                    const matchID = fileText.match(/ECDE:ID\s*=\s*(\S+)/);
+                                    const userID = matchID ? matchID[1] : "Non trouvé";
+
+                                    if (userID !== "Non trouvé") {
+                                        idReconnus++;
+                                        users[userID] = fileText;
+                                    } else {
+                                        idInconnus++;
+                                    }
+
+                                    const pageMatch = fileText.match(/### Log : #\s*(https?:\/\/\S+)/);
+                                    if (pageMatch) {
+                                        const page = pageMatch[1];
+                                        pages[page] = (pages[page] || 0) + 1;
+                                    }
+
+                                    const dateMatch = fileText.match(/Date\s+(\d{2}\/\d{2}\/\d{4})/);
+                                    if (dateMatch) {
+                                        const logDate = new Date(dateMatch[1].split("/").reverse().join("-"));
+                                        if (logDate >= dateLimite) {
+                                            vues7J++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-            });
 
-        const files = (await Promise.all(filePromises)).filter(f => f);
+                document.getElementById("id_reconnus").textContent = idReconnus;
+                document.getElementById("id_inconnus").textContent = idInconnus;
+                document.getElementById("vues_totales").textContent = vuesTotales;
+                document.getElementById("vues_7j").textContent = vues7J;
 
-        // 📊 Traitement des logs
-        processLogs(files);
-    } catch (error) {
-        console.error("❌ Erreur récupération logs", error);
-    }
-}
+                const listePages = document.getElementById("liste_pages");
+                for (const [page, count] of Object.entries(pages)) {
+                    const li = document.createElement("li");
+                    li.textContent = `${page} (${count} vues)`;
+                    li.className = "cursor-pointer text-blue-400 hover:underline";
+                    li.onclick = () => afficherClients(page, users);
+                    listePages.appendChild(li);
+                }
 
-function processLogs(files) {
-    let idReconnus = 0, idInconnus = 0, totalVues = files.length, vues7J = 0;
-    let pages = {}, users = {};
-
-    const dateLimite = new Date();
-    dateLimite.setDate(dateLimite.getDate() - 7);
-
-    for (const { content } of files) {
-        // 📌 Extraction de l'ID utilisateur
-        const matchID = content.match(/ECDE:ID\s*=\s*([\w-]+)/);
-        const userID = matchID ? matchID[1] : "Inconnu";
-
-        if (userID !== "Inconnu") {
-            idReconnus++;
-            users[userID] = content;
-        } else {
-            idInconnus++;
+                const listeUsers = document.getElementById("liste_users");
+                for (const [id, info] of Object.entries(users)) {
+                    const li = document.createElement("li");
+                    li.textContent = id;
+                    li.className = "cursor-pointer text-green-400 hover:underline";
+                    li.onclick = () => afficherInfoUser(info);
+                    listeUsers.appendChild(li);
+                }
+            } catch (error) {
+                console.error("Erreur récupération logs", error);
+            }
         }
 
-        // 🔗 Extraction des URLs visitées
-        const pageMatch = content.match(/### Log : #\s*(https?:\/\/\S+)/);
-        if (pageMatch) {
-            const page = pageMatch[1];
-            pages[page] = (pages[page] || 0) + 1;
+        function afficherClients(page, users) {
+            let clients = Object.keys(users).filter(id => users[id].includes(page));
+            alert(`Clients ayant consulté ${page} :\n` + clients.join("\n"));
         }
 
-        // 📅 Vérification si log < 7 jours
-        const dateMatch = content.match(/Date\s*:\s*(\d{2})\.(\d{2})\.(\d{4})/);
-        if (dateMatch) {
-            const logDate = new Date(`${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`);
-            if (logDate >= dateLimite) vues7J++;
+        function afficherInfoUser(info) {
+            alert("Informations du compte :\n\n" + info);
         }
-    }
 
-    // 🔄 Mise à jour de l'interface
-    updateStats(idReconnus, idInconnus, totalVues, vues7J);
-    updatePageList(pages, users);
-    updateUserList(users);
-}
-
-function updateStats(idReconnus, idInconnus, totalVues, vues7J) {
-    document.getElementById("idReconnus").textContent = idReconnus;
-    document.getElementById("idInconnus").textContent = idInconnus;
-    document.getElementById("totalVues").textContent = totalVues;
-    document.getElementById("vues7J").textContent = vues7J;
-}
-
-function updatePageList(pages, users) {
-    const listePages = document.getElementById("liste_pages");
-    listePages.innerHTML = "";
-    
-    const fragment = document.createDocumentFragment();
-
-    Object.entries(pages).forEach(([page, count]) => {
-        const li = document.createElement("li");
-        li.textContent = `${page} (${count} vues)`;
-        li.className = "cursor-pointer text-blue-400 hover:underline";
-        li.onclick = () => afficherClients(page, users);
-        fragment.appendChild(li);
-    });
-
-    listePages.appendChild(fragment);
-}
-
-function updateUserList(users) {
-    const listeUsers = document.getElementById("liste_users");
-    listeUsers.innerHTML = "";
-
-    const fragment = document.createDocumentFragment();
-
-    Object.entries(users).forEach(([id, info]) => {
-        const li = document.createElement("li");
-        li.textContent = id;
-        li.className = "cursor-pointer text-green-400 hover:underline";
-        li.onclick = () => afficherInfoUser(info);
-        fragment.appendChild(li);
-    });
-
-    listeUsers.appendChild(fragment);
-}
-
-// 🕵️‍♂️ Affiche la liste des utilisateurs ayant consulté une page
-function afficherClients(page, users) {
-    const clients = Object.keys(users).filter(id => users[id].includes(page));
-    alert(`👥 Clients ayant consulté ${page} :\n` + (clients.length ? clients.join("\n") : "Aucun"));
-}
-
-// 🔍 Affiche les informations d'un utilisateur
-function afficherInfoUser(info) {
-    alert("ℹ️ Informations du compte :\n\n" + info);
-}
-
+        fetchLogs();
     </script>
 
                 <!-- Footer : Deb -->
