@@ -89,17 +89,9 @@ loadScriptAndApply();
 
 
 
-
-
-
-
-document.querySelectorAll("style").forEach(styleTag => {
-    styleTag.innerHTML = styleTag.innerHTML
-        .replace(/\.dark \.bg-red-800/g, ".dark .bg-temp") // Temporaire pour éviter conflit
-        .replace(/\.dark \.bg-red-950/g, ".dark .bg-red-800")
-        .replace(/\.dark \.bg-temp/g, ".dark .bg-red-950");
-});
-
+document.documentElement.classList.replace("dark:bg-gray-800", "dark:bg-gray-850");
+document.documentElement.classList.replace("bg-red-500", "bg-blue-500");
+document.documentElement.classList.replace("bg-red-500", "bg-blue-500");
 
 
 
