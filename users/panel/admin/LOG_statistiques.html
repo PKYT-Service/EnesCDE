@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
-    <head>
+    <html lang="fr">
+        <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
         <title>EnesCDE - Admin > LOG-Statistiques</title>
         <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
         
         <!-- Script pour ajouter dynamiquement le footer -->
         <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
@@ -13,70 +14,162 @@
         <script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js" defer></script>
         <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
         <script src="./__sessions__.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.9/datamaps.world.min.js"></script>
         <div id="ecde_all"></div>
+
     </head>
     <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
         <div class="flex h-screen">
-            <!-- Menu -->
-            <div id="ecde_menu" class="w-20"></div>
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
     
             <!-- Main Content -->
             <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
-                <h1 class="text-2xl font-semibold">Admin - Consulter les logs :</h1>
-                <h1 class="text-2xl font-bold mb-4">Statistiques des logs</h1>
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Admin - Consulter les logs :</h1>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-gray-950 p-4 rounded-lg">
-                        <h2 class="text-lg font-semibold">Données générales</h2>
-                        <p>ID Reconnu : <span id="id_reconnus">0</span></p>
-                        <p>ID Inconnu : <span id="id_inconnus">0</span></p>
-                        <p>Vues Totales : <span id="vues_totales">0</span></p>
-                        <p>Vues (7 derniers jours) : <span id="vues_7j">0</span></p>
-                    </div>
-                    <div class="bg-gray-950 p-4 rounded-lg">
-                        <h2 class="text-lg font-semibold">Pages Consultées</h2>
-                        <ul id="liste_pages"></ul>
-                    </div>
-                </div>
-                <div class="mt-6 bg-gray-950 p-4 rounded-lg">
-                    <h2 class="text-lg font-semibold">Liste des utilisateurs</h2>
-                    <ul id="liste_users"></ul>
-                </div>
+
+    
                 
-                <!-- Carte de répartition des utilisateurs -->
-                <div id="hs-users-datamap" class="mt-6 bg-gray-950 p-4 rounded-lg h-96"></div>
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        const dataSet = {
-                            USA: { fillKey: "MAJOR" },
-                            CHN: { fillKey: "MAJOR" },
-                            IND: { fillKey: "MAJOR" },
-                            DEU: { fillKey: "MAJOR" },
-                            GBR: { fillKey: "MAJOR" },
-                            BRA: { fillKey: "MAJOR" }
-                        };
-                        new Datamap({
-                            element: document.getElementById("hs-users-datamap"),
-                            projection: "mercator",
-                            responsive: true,
-                            fills: {
-                                defaultFill: "#d1d5db",
-                                MAJOR: "#9ca3af"
-                            },
-                            data: dataSet,
-                            geographyConfig: {
-                                borderColor: "rgba(0, 0, 0, .09)",
-                                highlightFillColor: "#3b82f6",
-                                highlightBorderColor: "#3b82f6"
+   <h1 class="text-2xl font-bold mb-4">Statistiques des logs</h1>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gray-950 p-4 rounded-lg">
+            <h2 class="text-lg font-semibold">Données générales</h2>
+            <p>ID Reconnu : <span id="id_reconnus">0</span></p>
+            <p>ID Inconnu : <span id="id_inconnus">0</span></p>
+            <p>Vues Totales : <span id="vues_totales">0</span></p>
+            <p>Vues (7 derniers jours) : <span id="vues_7j">0</span></p>
+        </div>
+
+        <div class="bg-gray-950 p-4 rounded-lg">
+            <h2 class="text-lg font-semibold">Pages Consultées</h2>
+            <ul id="liste_pages"></ul>
+        </div>
+    </div>
+
+    <div class="mt-6 bg-gray-950 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold">Liste des utilisateurs</h2>
+        <ul id="liste_users"></ul>
+    </div>
+
+    <script>
+        async function fetchLogs() {
+            const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+            const repo = "database_EnesCDE";
+            const owner = "PKYT-Service";
+            const path = "log/users";
+
+            let headers = {};
+            try {
+                const tokenRes = await fetch(tokenURL);
+                const tokenData = await tokenRes.json();
+                headers = { "Authorization": "token " + tokenData.GITHUB_TOKEN };
+            } catch (error) {
+                console.error("Erreur récupération token", error);
+                return;
+            }
+
+            try {
+                const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                const response = await fetch(apiURL, { headers });
+                const data = await response.json();
+
+                let idReconnus = 0, idInconnus = 0, vuesTotales = 0, vues7J = 0;
+                let pages = {}, users = {};
+
+                const dateLimite = new Date();
+                dateLimite.setDate(dateLimite.getDate() - 7);
+
+                for (const folder of data) {
+                    if (folder.type === "dir") {
+                        const daysResponse = await fetch(folder.url, { headers });
+                        const daysData = await daysResponse.json();
+
+                        for (const dayFolder of daysData) {
+                            if (dayFolder.type === "dir") {
+                                const logsResponse = await fetch(dayFolder.url, { headers });
+                                const logsData = await logsResponse.json();
+
+                                for (const file of logsData) {
+                                    const fileResponse = await fetch(file.download_url);
+                                    const fileText = await fileResponse.text();
+
+                                    vuesTotales++;
+                                    const matchID = fileText.match(/ECDE:ID\s*=\s*(\S+)/);
+                                    const userID = matchID ? matchID[1] : "Non trouvé";
+
+                                    if (userID !== "Non trouvé") {
+                                        idReconnus++;
+                                        users[userID] = fileText;
+                                    } else {
+                                        idInconnus++;
+                                    }
+
+                                    const pageMatch = fileText.match(/### Log : #\s*(https?:\/\/\S+)/);
+                                    if (pageMatch) {
+                                        const page = pageMatch[1];
+                                        pages[page] = (pages[page] || 0) + 1;
+                                    }
+
+                                    const dateMatch = fileText.match(/Date\s+(\d{2}\/\d{2}\/\d{4})/);
+                                    if (dateMatch) {
+                                        const logDate = new Date(dateMatch[1].split("/").reverse().join("-"));
+                                        if (logDate >= dateLimite) {
+                                            vues7J++;
+                                        }
+                                    }
+                                }
                             }
-                        });
-                    });
-                </script>
-                
-                <!-- Footer -->
+                        }
+                    }
+                }
+
+                document.getElementById("id_reconnus").textContent = idReconnus;
+                document.getElementById("id_inconnus").textContent = idInconnus;
+                document.getElementById("vues_totales").textContent = vuesTotales;
+                document.getElementById("vues_7j").textContent = vues7J;
+
+                const listePages = document.getElementById("liste_pages");
+                for (const [page, count] of Object.entries(pages)) {
+                    const li = document.createElement("li");
+                    li.textContent = `${page} (${count} vues)`;
+                    li.className = "cursor-pointer text-blue-400 hover:underline";
+                    li.onclick = () => afficherClients(page, users);
+                    listePages.appendChild(li);
+                }
+
+                const listeUsers = document.getElementById("liste_users");
+                for (const [id, info] of Object.entries(users)) {
+                    const li = document.createElement("li");
+                    li.textContent = id;
+                    li.className = "cursor-pointer text-green-400 hover:underline";
+                    li.onclick = () => afficherInfoUser(info);
+                    listeUsers.appendChild(li);
+                }
+            } catch (error) {
+                console.error("Erreur récupération logs", error);
+            }
+        }
+
+        function afficherClients(page, users) {
+            let clients = Object.keys(users).filter(id => users[id].includes(page));
+            alert(`Clients ayant consulté ${page} :\n` + clients.join("\n"));
+        }
+
+        function afficherInfoUser(info) {
+            alert("Informations du compte :\n\n" + info);
+        }
+
+        fetchLogs();
+    </script>
+
+                <!-- Footer : Deb -->
                 <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
             </main>
         </div>
-    </body>
+
+        
+
+</body>
 </html>
