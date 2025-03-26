@@ -58,117 +58,138 @@
     </div>
 
     <script>
-        async function fetchLogs() {
-            const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
-            const repo = "database_EnesCDE";
-            const owner = "PKYT-Service";
-            const path = "log/users";
+        document.addEventListener("DOMContentLoaded", () => fetchLogs());
 
-            let headers = {};
-            try {
-                // 🔐 Récupération du token GitHub
-                const tokenRes = await fetch(tokenURL);
-                const tokenData = await tokenRes.json();
-                headers = { "Authorization": "token " + tokenData.GITHUB_TOKEN };
-            } catch (error) {
-                console.error("❌ Erreur récupération token", error);
-                return;
-            }
+async function fetchLogs() {
+    const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+    const repo = "database_EnesCDE";
+    const owner = "PKYT-Service";
+    const path = "log/users";
 
-            try {
-                // 📂 Récupération des fichiers de logs
-                const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-                const response = await fetch(apiURL, { headers });
-                if (!response.ok) throw new Error("Impossible de récupérer les logs.");
-                
-                const data = await response.json();
+    try {
+        // 🔐 Récupération du token GitHub
+        const tokenData = await fetch(tokenURL).then(res => res.json());
+        const headers = { "Authorization": "token " + tokenData.GITHUB_TOKEN };
 
-                let idReconnus = 0, idInconnus = 0, totalVues = 0, vues7J = 0;
-                let pages = {}, users = {};
+        // 📂 Récupération des fichiers de logs
+        const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+        const data = await fetch(apiURL, { headers }).then(res => res.json());
 
-                const dateLimite = new Date();
-                dateLimite.setDate(dateLimite.getDate() - 7);
+        if (!Array.isArray(data)) throw new Error("Impossible de récupérer les logs.");
 
-                for (const file of data) {
-                    if (!file.name.endsWith(".json")) continue; // Ignorer les fichiers non JSON
-
-                    // 📜 Récupération du contenu du fichier JSON
-                    const fileResponse = await fetch(file.download_url);
-                    const fileText = await fileResponse.text();
-
-                    totalVues++;
-                    const matchID = fileText.match(/ECDE:ID\s*=\s*(\S+)/);
-                    const userID = matchID ? matchID[1] : "Non trouvé";
-
-                    if (userID !== "Non trouvé") {
-                        idReconnus++;
-                        users[userID] = fileText;
-                    } else {
-                        idInconnus++;
-                    }
-
-                    // 🔗 Récupération des URLs visitées
-                    const pageMatch = fileText.match(/### Log : #\s*(https?:\/\/\S+)/);
-                    if (pageMatch) {
-                        const page = pageMatch[1];
-                        pages[page] = (pages[page] || 0) + 1;
-                    }
-
-                    // 📅 Vérification si log < 7 jours
-                    const dateMatch = fileText.match(/Date\s+(\d{2}\/\d{2}\/\d{4})/);
-                    if (dateMatch) {
-                        const logDate = new Date(dateMatch[1].split("/").reverse().join("-"));
-                        if (logDate >= dateLimite) {
-                            vues7J++;
-                        }
-                    }
+        // 📥 Téléchargement des fichiers JSON en parallèle
+        const filePromises = data
+            .filter(file => file.name.endsWith(".json"))
+            .map(async file => {
+                try {
+                    const content = await fetch(file.download_url).then(res => res.text());
+                    return { name: file.name, content };
+                } catch {
+                    return null;
                 }
+            });
 
-                // 🏆 Mise à jour des statistiques
-                document.getElementById("idReconnus").textContent = idReconnus;
-                document.getElementById("idInconnus").textContent = idInconnus;
-                document.getElementById("totalVues").textContent = totalVues;
-                document.getElementById("vues7J").textContent = vues7J;
+        const files = (await Promise.all(filePromises)).filter(f => f);
 
-                // 📌 Affichage des pages consultées
-                const listePages = document.getElementById("liste_pages");
-                listePages.innerHTML = "";
-                for (const [page, count] of Object.entries(pages)) {
-                    const li = document.createElement("li");
-                    li.textContent = `${page} (${count} vues)`;
-                    li.className = "cursor-pointer text-blue-400 hover:underline";
-                    li.onclick = () => afficherClients(page, users);
-                    listePages.appendChild(li);
-                }
+        // 📊 Traitement des logs
+        processLogs(files);
+    } catch (error) {
+        console.error("❌ Erreur récupération logs", error);
+    }
+}
 
-                // 👤 Affichage des utilisateurs
-                const listeUsers = document.getElementById("liste_users");
-                listeUsers.innerHTML = "";
-                for (const [id, info] of Object.entries(users)) {
-                    const li = document.createElement("li");
-                    li.textContent = id;
-                    li.className = "cursor-pointer text-green-400 hover:underline";
-                    li.onclick = () => afficherInfoUser(info);
-                    listeUsers.appendChild(li);
-                }
-            } catch (error) {
-                console.error("❌ Erreur récupération logs", error);
-            }
+function processLogs(files) {
+    let idReconnus = 0, idInconnus = 0, totalVues = files.length, vues7J = 0;
+    let pages = {}, users = {};
+
+    const dateLimite = new Date();
+    dateLimite.setDate(dateLimite.getDate() - 7);
+
+    for (const { content } of files) {
+        // 📌 Extraction de l'ID utilisateur
+        const matchID = content.match(/ECDE:ID\s*=\s*([\w-]+)/);
+        const userID = matchID ? matchID[1] : "Inconnu";
+
+        if (userID !== "Inconnu") {
+            idReconnus++;
+            users[userID] = content;
+        } else {
+            idInconnus++;
         }
 
-        // 🕵️‍♂️ Affiche la liste des utilisateurs ayant consulté une page
-        function afficherClients(page, users) {
-            let clients = Object.keys(users).filter(id => users[id].includes(page));
-            alert(`👥 Clients ayant consulté ${page} :\n` + (clients.length ? clients.join("\n") : "Aucun"));
+        // 🔗 Extraction des URLs visitées
+        const pageMatch = content.match(/### Log : #\s*(https?:\/\/\S+)/);
+        if (pageMatch) {
+            const page = pageMatch[1];
+            pages[page] = (pages[page] || 0) + 1;
         }
 
-        // 🔍 Affiche les informations d'un utilisateur
-        function afficherInfoUser(info) {
-            alert("ℹ️ Informations du compte :\n\n" + info);
+        // 📅 Vérification si log < 7 jours
+        const dateMatch = content.match(/Date\s*:\s*(\d{2})\.(\d{2})\.(\d{4})/);
+        if (dateMatch) {
+            const logDate = new Date(`${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`);
+            if (logDate >= dateLimite) vues7J++;
         }
+    }
 
-        // ▶ Charger les logs au démarrage
-        fetchLogs();
+    // 🔄 Mise à jour de l'interface
+    updateStats(idReconnus, idInconnus, totalVues, vues7J);
+    updatePageList(pages, users);
+    updateUserList(users);
+}
+
+function updateStats(idReconnus, idInconnus, totalVues, vues7J) {
+    document.getElementById("idReconnus").textContent = idReconnus;
+    document.getElementById("idInconnus").textContent = idInconnus;
+    document.getElementById("totalVues").textContent = totalVues;
+    document.getElementById("vues7J").textContent = vues7J;
+}
+
+function updatePageList(pages, users) {
+    const listePages = document.getElementById("liste_pages");
+    listePages.innerHTML = "";
+    
+    const fragment = document.createDocumentFragment();
+
+    Object.entries(pages).forEach(([page, count]) => {
+        const li = document.createElement("li");
+        li.textContent = `${page} (${count} vues)`;
+        li.className = "cursor-pointer text-blue-400 hover:underline";
+        li.onclick = () => afficherClients(page, users);
+        fragment.appendChild(li);
+    });
+
+    listePages.appendChild(fragment);
+}
+
+function updateUserList(users) {
+    const listeUsers = document.getElementById("liste_users");
+    listeUsers.innerHTML = "";
+
+    const fragment = document.createDocumentFragment();
+
+    Object.entries(users).forEach(([id, info]) => {
+        const li = document.createElement("li");
+        li.textContent = id;
+        li.className = "cursor-pointer text-green-400 hover:underline";
+        li.onclick = () => afficherInfoUser(info);
+        fragment.appendChild(li);
+    });
+
+    listeUsers.appendChild(fragment);
+}
+
+// 🕵️‍♂️ Affiche la liste des utilisateurs ayant consulté une page
+function afficherClients(page, users) {
+    const clients = Object.keys(users).filter(id => users[id].includes(page));
+    alert(`👥 Clients ayant consulté ${page} :\n` + (clients.length ? clients.join("\n") : "Aucun"));
+}
+
+// 🔍 Affiche les informations d'un utilisateur
+function afficherInfoUser(info) {
+    alert("ℹ️ Informations du compte :\n\n" + info);
+}
+
     </script>
 
                 <!-- Footer : Deb -->
