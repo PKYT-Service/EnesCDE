@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <a href="./LOG_statistiques.html">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
-<svg class="h-6 w-6 stroke-current text-gray-800" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+<svg class="h-6 w-6 stroke-current text-gray-500" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
     <g id="SVGRepo_iconCarrier">
