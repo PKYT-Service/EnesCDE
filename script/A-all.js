@@ -97,10 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     app.className = `min-h-screen p-5 relative bg-${theme}-100 text-${theme}-800 dark:bg-${theme}-900 dark:text-${theme}-100`;
     document.body.appendChild(app);
     
-    const title = document.createElement("h1");
-    title.className = "text-3xl font-bold";
-    title.innerText = "Sélecteur de Thème";
-    app.appendChild(title);
+);
     
     const openPopup = document.createElement("button");
     openPopup.id = "openPopup";
