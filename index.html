@@ -94,68 +94,66 @@
         `;
     }
 
-    // Fonction pour afficher le pop-up
-    function showPopup() {
-        document.getElementById('popup-container').innerHTML = `
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div class="max-w-3xl mx-auto bg-white dark:bg-gray-950 rounded-lg shadow-md overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-2 flex justify-between items-center">
-                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">
-                            <b> Enes - <a class="text-blue-700 dark:text-blue-500">CDE</a> </b>
-                        </h2>
-                        <button onclick="closePopup()" class="text-gray-500 dark:text-gray-300 hover:text-red-500">
-                            ✖
-                        </button>
+function showPopup() {
+    document.getElementById('popup-container').innerHTML = `
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-950 rounded-lg shadow-md overflow-hidden mt-24">
+            <div class="bg-gray-100 dark:bg-gray-700 px-4 py-2">
+                <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">
+                    <b> Enes - <a class="text-blue-700 dark:text-blue-500">CDE</a> </b>
+                </h2>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex flex-col items-start justify-between mb-6">
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-300">By</span>
+                    <span class="text-lg font-medium text-gray-800 dark:text-gray-100">EnesGP , ECDE .</span>
+                </div>
+
+                <div class="flex flex-col items-start justify-between mb-6">
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Sync</span>
+                    <span class="text-lg font-medium text-gray-800 dark:text-gray-100"> 
+                        <a class="text-red-400 dark:text-red-700">BETA</a> 
+                    </span>
+                </div>
+
+                <div class="flex flex-col items-start justify-between mb-6">
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Système :</span>
+                    <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-system"></span>
+                </div>
+
+                <div class="flex flex-row items-center justify-between mb-6">
+                    <div class="flex flex-col items-start">
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Dernière mise à jour</span>
+                        <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-last-update"></span>
                     </div>
-                    <div class="px-4 py-5 sm:p-6">
-                        <div class="flex flex-col items-start justify-between mb-6">
-                            <span class="text-sm font-medium text-gray-600 dark:text-gray-300">By</span>
-                            <span class="text-lg font-medium text-gray-800 dark:text-gray-100">EnesGP , ECDE .</span>
-                        </div>
+                    <div class="flex flex-col items-start">
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Type :</span>
+                        <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-outdated"></span>
+                    </div>
+                </div>
 
-                        <div class="flex flex-col items-start justify-between mb-6">
-                            <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Sync</span>
-                            <span class="text-lg font-medium text-gray-800 dark:text-gray-100"> 
-                                <a class="text-red-400 dark:text-red-700">BETA</a> 
-                            </span>
-                        </div>
-
-                        <div class="flex flex-col items-start justify-between mb-6">
-                            <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Système :</span>
-                            <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-system"></span>
-                        </div>
-
-                        <div class="flex flex-row items-center justify-between mb-6">
-                            <div class="flex flex-col items-start">
-                                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Dernière mise à jour</span>
-                                <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-last-update"></span>
-                            </div>
-                            <div class="flex flex-col items-start">
-                                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Type :</span>
-                                <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-outdated"></span>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-row items-center justify-between">
-                            <div class="flex flex-col items-start">
-                                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Version</span>
-                                <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-version"></span>
-                            </div>
-                            <div class="flex flex-col items-start">
-                                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Numéro de Build</span>
-                                <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-build"></span>
-                            </div>
-                        </div>
+                <div class="flex flex-row items-center justify-between">
+                    <div class="flex flex-col items-start">
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Version</span>
+                        <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-version"></span>
+                    </div>
+                    <div class="flex flex-col items-start">
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Numéro de Build</span>
+                        <span class="text-lg font-medium text-gray-800 dark:text-gray-100" id="app-build"></span>
                     </div>
                 </div>
             </div>
-        `;
-    }
+        </div>
+        <br>
+    `;
 
-    // Fonction pour fermer le popup
-    function closePopup() {
-        document.getElementById('popup-container').innerHTML = "";
-    }
+    // Assigner les valeurs récupérées de localStorage aux champs du popup
+    document.getElementById('app-system').textContent = localStorage.getItem('APP:SE') || 'Non défini';
+    document.getElementById('app-last-update').textContent = localStorage.getItem('APP:DT') || 'Non défini';
+    document.getElementById('app-outdated').textContent = localStorage.getItem('APP:OutDated') || 'Non défini';
+    document.getElementById('app-version').textContent = localStorage.getItem('APP:VS') || 'Non défini';
+    document.getElementById('app-build').textContent = localStorage.getItem('APP:BD') || 'Non défini';
+}
+
 </script>
 <!-- Enes CDe APP Type -->
 
