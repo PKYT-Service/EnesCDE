@@ -155,3 +155,66 @@ document.addEventListener("DOMContentLoaded", () => {
   //                //
  // Refresh 1      //
 //                //
+
+  //                //
+ // Rules Secure   //
+//                //
+// Fonction pour définir une valeur dans localStorage
+function setLocalStorage(name, value) {
+    localStorage.setItem(name, value);
+}
+
+// Fonction pour récupérer une valeur depuis localStorage
+function getLocalStorage(name) {
+    return localStorage.getItem(name);
+}
+
+// Récupérer le switch et l'élément de la "boule"
+const switchBallRPE = document.getElementById('switchBallRPE');
+const toggleRPE = document.getElementById('toggleAdminRPE');
+
+// Initialisation du switch en fonction de la valeur stockée
+function UpSwitchRPE() {
+    let isRPE = getLocalStorage('EnesCDE_ADM:RPE'); // Récupère la dernière valeur stockée
+
+    if (isRPE === "true") {
+        toggleAdminRPE.checked = true;
+        switchBallRPE.style.transform = "translateX(100%)"; // Position à droite
+        switchBallRPE.classList.remove('bg-orange-500', 'bg-red-500');
+        switchBallRPE.classList.add('bg-green-500');
+
+        // Active le rafraîchissement automatique si true
+        setTimeout(() => {
+            location.reload();
+        }, 60000);
+        
+    } else if (isRPE === "false") {
+        toggleAdminRPE.checked = false;
+        switchBallRPE.style.transform = "translateX(0%)"; // Position à gauche
+        switchBallRPE.classList.remove('bg-orange-500', 'bg-green-500');
+        switchBallRPE.classList.add('bg-red-500');
+    } else {
+        toggleAdminRPE.checked = false;
+        switchBallRPE.style.transform = "translateX(50%)"; // Position au centre
+        switchBallRPE.classList.remove('bg-green-500', 'bg-red-500');
+        switchBallRPE.classList.add('bg-orange-500');
+    }
+}
+
+// Fonction de gestion du changement d'état
+function handleAdminRPESwitch(checkbox) {
+    if (checkbox.checked) {
+        setLocalStorage('EnesCDE_ADM:RPE', 'true');
+    } else {
+        setLocalStorage('EnesCDE_ADM:RPE', 'false');
+    }
+    UpSwitchRefresh(); // Met à jour l'apparence du switch après modification
+}
+
+// Exécuter UpSwitchRefresh après le chargement de la page
+document.addEventListener("DOMContentLoaded", () => {
+    UpSwitchRPE(); 
+});
+  //                //
+ // Rules Secure   //
+//                //
