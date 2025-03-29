@@ -92,3 +92,66 @@ function handleF12Switch(checkbox) {
   //                //
  // Logs Send DT   //
 //                //
+
+  //                //
+ // Refresh 1      //
+//                //
+// Fonction pour définir une valeur dans localStorage
+function setLocalStorage(name, value) {
+    localStorage.setItem(name, value);
+}
+
+// Fonction pour récupérer une valeur depuis localStorage
+function getLocalStorage(name) {
+    return localStorage.getItem(name);
+}
+
+// Récupérer le switch et l'élément de la "boule"
+const switchBallRef = document.getElementById('switchBallRef');
+const toggleRefresh = document.getElementById('toggleAdminRefresh');
+
+// Initialisation du switch en fonction de la valeur stockée
+function UpSwitchRefresh() {
+    let isRefresh = getLocalStorage('EnesCDE_ADM:Refresh'); // Récupère la dernière valeur stockée
+
+    if (isRefresh === "true") {
+        toggleAdminRef.checked = true;
+        switchBallRef.style.transform = "translateX(100%)"; // Position à droite
+        switchBallRef.classList.remove('bg-orange-500', 'bg-red-500');
+        switchBallRef.classList.add('bg-green-500');
+
+        // Active le rafraîchissement automatique si true
+        setTimeout(() => {
+            location.reload();
+        }, 60000);
+        
+    } else if (isRefresh === "false") {
+        toggleAdminRef.checked = false;
+        switchBallRef.style.transform = "translateX(0%)"; // Position à gauche
+        switchBallRef.classList.remove('bg-orange-500', 'bg-green-500');
+        switchBallRef.classList.add('bg-red-500');
+    } else {
+        toggleAdminRef.checked = false;
+        switchBallRef.style.transform = "translateX(50%)"; // Position au centre
+        switchBallRef.classList.remove('bg-green-500', 'bg-red-500');
+        switchBallRef.classList.add('bg-orange-500');
+    }
+}
+
+// Fonction de gestion du changement d'état
+function handleAdminRefSwitch(checkbox) {
+    if (checkbox.checked) {
+        setLocalStorage('EnesCDE_ADM:Refresh', 'true');
+    } else {
+        setLocalStorage('EnesCDE_ADM:Refresh', 'false');
+    }
+    UpSwitchRefresh(); // Met à jour l'apparence du switch après modification
+}
+
+// Exécuter UpSwitchRefresh après le chargement de la page
+document.addEventListener("DOMContentLoaded", () => {
+    UpSwitchRefresh(); 
+});
+  //                //
+ // Refresh 1      //
+//                //
