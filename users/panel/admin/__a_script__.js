@@ -77,7 +77,7 @@ function handleF12Switch(checkbox) {
         if (isAdminLoggingEnabled) {
             toggleAdminLog.checked = true;
             switchBallLog.style.transform = "translateX(100%)"; // Position à droite
-            switchBallLog.classList.remove('bg-orange-500', 'bg-red-500');
+            switchBallLog.classList.remove('bg-red-500', 'bg-red-500');
             switchBallLog.classList.add('bg-green-500');
         } else {
             toggleAdminLog.checked = false;
