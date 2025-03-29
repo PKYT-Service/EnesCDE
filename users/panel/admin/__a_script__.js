@@ -83,7 +83,7 @@ function handleF12Switch(checkbox) {
             toggleAdminLog.checked = false;
             switchBallLog.style.transform = "translateX(0%)"; // Position à gauche
             switchBallLog.classList.remove('bg-green-500', 'bg-red-500');
-            switchBallLog.classList.add('bg-orange-500');
+            switchBallLog.classList.add('bg-red-500');
         }
     }
 
