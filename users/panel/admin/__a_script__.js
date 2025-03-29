@@ -174,40 +174,41 @@ function getLocalStorage(name) {
 const switchBallRPE = document.getElementById('switchBallRPE');
 const toggleRPE = document.getElementById('toggleAdminRPE');
 
-// Initialisation du switch en fonction de la valeur stockée
+// Initialisation du switch en fonction des valeurs stockées
 function UpSwitchRPE() {
-    let isRPE = getLocalStorage('rules'); // Utilisation de "rules"
+    let isRules = getLocalStorage('rules'); // Vérifie "rules"
+    let isEnesRPE = getLocalStorage('EnesCDE_ADM:RPE'); // Vérifie "EnesCDE_ADM:RPE"
 
-    if (isRPE === "true") {
+    if (isRules === "true") {
         toggleRPE.checked = true;
         switchBallRPE.style.transform = "translateX(100%)"; // Position à droite
         switchBallRPE.classList.remove('bg-orange-500', 'bg-red-500');
         switchBallRPE.classList.add('bg-green-500');
 
-        // Rafraîchissement automatique (évite les rafraîchissements en boucle)
-        if (!sessionStorage.getItem('RPERefreshed')) {
-            sessionStorage.setItem('RPERefreshed', 'true');
-            setTimeout(() => {
-                location.reload();
-            }, 60000);
-        }
-
-    } else if (isRPE === "false") {
+    } else if (isEnesRPE === "true") {
         toggleRPE.checked = false;
         switchBallRPE.style.transform = "translateX(0%)"; // Position à gauche
         switchBallRPE.classList.remove('bg-orange-500', 'bg-green-500');
         switchBallRPE.classList.add('bg-red-500');
+
     } else {
         toggleRPE.checked = false;
         switchBallRPE.style.transform = "translateX(50%)"; // Position au centre
         switchBallRPE.classList.remove('bg-green-500', 'bg-red-500');
         switchBallRPE.classList.add('bg-orange-500');
+
+        // Supprime "rules" si sa valeur est "false" ou null
+        localStorage.removeItem('rules');
     }
 }
 
 // Fonction de gestion du changement d'état
 function handleAdminRPESwitch(checkbox) {
-    setLocalStorage('rules', checkbox.checked ? 'true' : 'false');
+    if (checkbox.checked) {
+        setLocalStorage('rules', 'true');
+    } else {
+        localStorage.removeItem('rules'); // Supprime "rules" si décoché
+    }
     UpSwitchRPE(); // Met à jour l'apparence du switch après modification
 }
 
@@ -215,7 +216,6 @@ function handleAdminRPESwitch(checkbox) {
 document.addEventListener("DOMContentLoaded", () => {
     UpSwitchRPE();
 });
-
 
   //                //
  // Rules Secure   //
