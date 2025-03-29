@@ -204,9 +204,9 @@ function UpSwitchRPE() {
 // Fonction de gestion du changement d'état
 function handleAdminRPESwitch(checkbox) {
     if (checkbox.checked) {
-        setLocalStorage('EnesCDE_ADM:RPE', 'true');
+        setLocalStorage('rules', 'true');
     } else {
-        setLocalStorage('EnesCDE_ADM:RPE', 'false');
+        setLocalStorage('rules', 'false');
     }
     UpSwitchRefresh(); // Met à jour l'apparence du switch après modification
 }
