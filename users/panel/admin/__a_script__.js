@@ -159,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //                //
  // Rules Secure   //
 //                //
+
 // Fonction pour définir une valeur dans localStorage
 function setLocalStorage(name, value) {
     localStorage.setItem(name, value);
@@ -175,26 +176,29 @@ const toggleRPE = document.getElementById('toggleAdminRPE');
 
 // Initialisation du switch en fonction de la valeur stockée
 function UpSwitchRPE() {
-    let isRPE = getLocalStorage('EnesCDE_ADM:RPE'); // Récupère la dernière valeur stockée
+    let isRPE = getLocalStorage('rules'); // Utilisation de "rules"
 
     if (isRPE === "true") {
-        toggleAdminRPE.checked = true;
+        toggleRPE.checked = true;
         switchBallRPE.style.transform = "translateX(100%)"; // Position à droite
         switchBallRPE.classList.remove('bg-orange-500', 'bg-red-500');
         switchBallRPE.classList.add('bg-green-500');
 
-        // Active le rafraîchissement automatique si true
-        setTimeout(() => {
-            location.reload();
-        }, 60000);
-        
+        // Rafraîchissement automatique (évite les rafraîchissements en boucle)
+        if (!sessionStorage.getItem('RPERefreshed')) {
+            sessionStorage.setItem('RPERefreshed', 'true');
+            setTimeout(() => {
+                location.reload();
+            }, 60000);
+        }
+
     } else if (isRPE === "false") {
-        toggleAdminRPE.checked = false;
+        toggleRPE.checked = false;
         switchBallRPE.style.transform = "translateX(0%)"; // Position à gauche
         switchBallRPE.classList.remove('bg-orange-500', 'bg-green-500');
         switchBallRPE.classList.add('bg-red-500');
     } else {
-        toggleAdminRPE.checked = false;
+        toggleRPE.checked = false;
         switchBallRPE.style.transform = "translateX(50%)"; // Position au centre
         switchBallRPE.classList.remove('bg-green-500', 'bg-red-500');
         switchBallRPE.classList.add('bg-orange-500');
@@ -203,18 +207,16 @@ function UpSwitchRPE() {
 
 // Fonction de gestion du changement d'état
 function handleAdminRPESwitch(checkbox) {
-    if (checkbox.checked) {
-        setLocalStorage('rules', 'true');
-    } else {
-        setLocalStorage('rules', 'false');
-    }
-    UpSwitchRefresh(); // Met à jour l'apparence du switch après modification
+    setLocalStorage('rules', checkbox.checked ? 'true' : 'false');
+    UpSwitchRPE(); // Met à jour l'apparence du switch après modification
 }
 
-// Exécuter UpSwitchRefresh après le chargement de la page
+// Exécuter UpSwitchRPE après le chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
-    UpSwitchRPE(); 
+    UpSwitchRPE();
 });
+
+
   //                //
  // Rules Secure   //
 //                //
