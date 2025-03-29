@@ -159,7 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //                //
  // Rules Secure   //
 //                //
-
 // Fonction pour définir une valeur dans localStorage
 function setLocalStorage(name, value) {
     localStorage.setItem(name, value);
@@ -170,14 +169,19 @@ function getLocalStorage(name) {
     return localStorage.getItem(name);
 }
 
+// Fonction pour supprimer une clé du localStorage
+function removeLocalStorage(name) {
+    localStorage.removeItem(name);
+}
+
 // Récupérer le switch et l'élément de la "boule"
 const switchBallRPE = document.getElementById('switchBallRPE');
 const toggleRPE = document.getElementById('toggleAdminRPE');
 
 // Initialisation du switch en fonction des valeurs stockées
 function UpSwitchRPE() {
-    let isRules = getLocalStorage('rules'); // Vérifie "rules"
-    let isEnesRPE = getLocalStorage('EnesCDE_ADM:RPE'); // Vérifie "EnesCDE_ADM:RPE"
+    let isRules = getLocalStorage('rules');
+    let isEnesRPE = getLocalStorage('EnesCDE_ADM:RPE');
 
     if (isRules === "true") {
         toggleRPE.checked = true;
@@ -196,20 +200,19 @@ function UpSwitchRPE() {
         switchBallRPE.style.transform = "translateX(50%)"; // Position au centre
         switchBallRPE.classList.remove('bg-green-500', 'bg-red-500');
         switchBallRPE.classList.add('bg-orange-500');
-
-        // Supprime "rules" si sa valeur est "false" ou null
-        localStorage.removeItem('rules');
     }
 }
 
 // Fonction de gestion du changement d'état
 function handleAdminRPESwitch(checkbox) {
     if (checkbox.checked) {
-        setLocalStorage('rules', 'true');
+        setLocalStorage('rules', 'true'); // Active "rules"
+        removeLocalStorage('EnesCDE_ADM:RPE'); // Supprime "EnesCDE_ADM:RPE"
     } else {
-        localStorage.removeItem('rules'); // Supprime "rules" si décoché
+        setLocalStorage('EnesCDE_ADM:RPE', 'true'); // Active "EnesCDE_ADM:RPE"
+        removeLocalStorage('rules'); // Supprime "rules"
     }
-    UpSwitchRPE(); // Met à jour l'apparence du switch après modification
+    UpSwitchRPE(); // Met à jour l'affichage
 }
 
 // Exécuter UpSwitchRPE après le chargement de la page
