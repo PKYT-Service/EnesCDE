@@ -1,7 +1,6 @@
 # Télécharge et exécute le script depuis l'URL
 $versions = @{ 
-    "1.1" = "http://enes-cde.vercel.app/data/apps/files/Windows_latest[19.03.2025].exe" 
-    "1.2" = "http://enes-cde.vercel.app/data/apps/files/Windows_latest[20.03.2025].exe" 
+    " 1.7 - 005 [Last] " = "http://enes-cde.vercel.app/data/apps/files/Windows_latest[19.03.2025].exe" 
 }
 
 # Création de l'UI
