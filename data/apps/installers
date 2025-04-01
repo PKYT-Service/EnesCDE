@@ -1,0 +1,48 @@
+# Télécharge et exécute le script depuis l'URL
+$versions = @{ 
+    "1.1" = "http://enes-cde.vercel.app/data/apps/files/Windows_latest[19.03.2025].exe" 
+    "1.2" = "http://enes-cde.vercel.app/data/apps/files/Windows_latest[20.03.2025].exe" 
+}
+
+# Création de l'UI
+Add-Type -AssemblyName System.Windows.Forms
+$form = New-Object System.Windows.Forms.Form
+$form.Text = "Installation Enes CDE"
+$form.Size = New-Object System.Drawing.Size(350,200)
+$form.StartPosition = "CenterScreen"
+
+$comboBox = New-Object System.Windows.Forms.ComboBox
+$comboBox.Location = New-Object System.Drawing.Point(50,50)
+$comboBox.Size = New-Object System.Drawing.Size(200,30)
+$versions.Keys | ForEach-Object { $comboBox.Items.Add($_) }
+$form.Controls.Add($comboBox)
+
+$button = New-Object System.Windows.Forms.Button
+$button.Text = "Installer"
+$button.Location = New-Object System.Drawing.Point(100,100)
+$button.Add_Click({
+    $selectedVersion = $comboBox.SelectedItem
+    if ($selectedVersion) {
+        $url = $versions[$selectedVersion]
+        $installPath = "C:\EnesCDE\Apps"
+        $exePath = "$installPath\EnesCDE_$selectedVersion.exe"
+
+        if (!(Test-Path $installPath)) { New-Item -ItemType Directory -Path $installPath -Force }
+        Invoke-WebRequest -Uri $url -OutFile $exePath
+        Start-Process -FilePath $exePath -Wait
+
+        # Afficher message de succès
+        [System.Windows.Forms.MessageBox]::Show("Enes CDE a bien été installé/mis à jour.", "Installation Réussie", "OK", "Information")
+
+        # Création du raccourci
+        $desktop = [System.Environment]::GetFolderPath("Desktop")
+        $shortcutPath = "$desktop\Enes CDE.lnk"
+        $WScriptShell = New-Object -ComObject WScript.Shell
+        $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
+        $shortcut.TargetPath = $exePath
+        $shortcut.Save()
+    }
+})
+$form.Controls.Add($button)
+
+$form.ShowDialog()
