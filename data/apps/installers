@@ -27,19 +27,27 @@ $button.Add_Click({
         $exePath = "$installPath\EnesCDE_$selectedVersion.exe"
 
         if (!(Test-Path $installPath)) { New-Item -ItemType Directory -Path $installPath -Force }
-        Invoke-WebRequest -Uri $url -OutFile $exePath
-        Start-Process -FilePath $exePath -Wait
+        
+        # Suivre les redirections
+        Invoke-WebRequest -Uri $url -OutFile $exePath -MaximumRedirection 5
+        
+        # Vérifier si le fichier a bien été téléchargé
+        if (Test-Path $exePath) {
+            Start-Process -FilePath $exePath -Wait
 
-        # Afficher message de succès
-        [System.Windows.Forms.MessageBox]::Show("Enes CDE a bien été installé/mis à jour.", "Installation Réussie", "OK", "Information")
+            # Afficher message de succès
+            [System.Windows.Forms.MessageBox]::Show("Enes CDE a bien été installé/mis à jour.", "Installation Réussie", "OK", "Information")
 
-        # Création du raccourci
-        $desktop = [System.Environment]::GetFolderPath("Desktop")
-        $shortcutPath = "$desktop\Enes CDE.lnk"
-        $WScriptShell = New-Object -ComObject WScript.Shell
-        $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
-        $shortcut.TargetPath = $exePath
-        $shortcut.Save()
+            # Création du raccourci
+            $desktop = [System.Environment]::GetFolderPath("Desktop")
+            $shortcutPath = "$desktop\Enes CDE.lnk"
+            $WScriptShell = New-Object -ComObject WScript.Shell
+            $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
+            $shortcut.TargetPath = $exePath
+            $shortcut.Save()
+        } else {
+            [System.Windows.Forms.MessageBox]::Show("Le téléchargement a échoué.", "Erreur", "OK", "Error")
+        }
     }
 })
 $form.Controls.Add($button)
