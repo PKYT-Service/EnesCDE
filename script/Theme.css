@@ -1,47 +1,23 @@
-        .theme-light {
-            --bg-site: #e5ffe5;
-            --bg-menu: #c8f7c5;
-            --bg-icon: #a3e6a1;
-            --bg-acceuil: #dfffe0;
-            --bg-bulle: #b5e9b1;
-            --bg-footer: #e5ffe5;
-            --text-color: #064e3b;
-        }
-        .theme-dark-green {
-            --bg-site: #064e3b;
-            --bg-menu: #052e2a;
-            --bg-icon: #0a4d3b;
-            --bg-acceuil: #093e35;
-            --bg-bulle: #0c6b5b;
-            --bg-footer: #064e3b;
-            --text-color: #e5ffe5;
-        }
-        .theme-dark-purple {
-            --bg-site: #23272a;
-            --bg-menu: #2c2f33;
-            --bg-icon: #40444b;
-            --bg-acceuil: #292b2f;
-            --bg-bulle: #7289da;
-            --bg-footer: #23272a;
-            --text-color: #ffffff;
-        }
-        body {
-            background-color: var(--bg-site);
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-        .menu {
-            background-color: var(--bg-menu);
-        }
-        .menu-icon::before, .menu-icon::after {
-            background-color: var(--bg-icon);
-        }
-        .acceuil {
-            background-color: var(--bg-acceuil);
-        }
-        .bulle {
-            background-color: var(--bg-bulle);
-        }
-        .footer {
-            background-color: var(--bg-footer);
-        }
+/* Thème Rouge */
+.theme-red {
+    --bg-white: red; /* Couleur de fond (light mode) */
+    --text-dark: white; /* Couleur du texte (light mode) */
+    --dark-bg-gray: darkred; /* Couleur de fond (dark mode) */
+    --dark-text-white: lightgray; /* Couleur du texte (dark mode) */
+}
+
+/* Thème Gris */
+.theme-gray {
+    --bg-white: gray; /* Couleur de fond (light mode) */
+    --text-dark: black; /* Couleur du texte (light mode) */
+    --dark-bg-gray: darkgray; /* Couleur de fond (dark mode) */
+    --dark-text-white: white; /* Couleur du texte (dark mode) */
+}
+
+/* Thème Bleu */
+.theme-blue {
+    --bg-white: blue; /* Couleur de fond (light mode) */
+    --text-dark: white; /* Couleur du texte (light mode) */
+    --dark-bg-gray: darkblue; /* Couleur de fond (dark mode) */
+    --dark-text-white: lightblue; /* Couleur du texte (dark mode) */
+}
