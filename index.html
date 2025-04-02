@@ -205,8 +205,21 @@ function showPopup() {
 
 
 
+<script>
+    // Vérifier la valeur de APP:?? (ici, supposons que vous récupérez cela depuis le localStorage ou un autre mécanisme)
+const appSetting = localStorage.getItem('APP:??');
 
-
+// Si la valeur est true, afficher les boutons
+if (appSetting === 'true') {
+  document.getElementById('theme-buttons').style.display = 'block';
+}
+    </script>
+                
+<div id="theme-buttons" style="display: none;">
+  <button id="theme-red-btn">Thème Rouge</button>
+  <button id="theme-gray-btn">Thème Gris</button>
+  <button id="theme-blue-btn">Thème Bleu</button>
+</div>
     
 
 
