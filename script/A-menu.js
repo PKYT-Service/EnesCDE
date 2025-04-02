@@ -105,3 +105,21 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
   });
 
+
+
+
+
+
+
+    function setTheme(theme) {
+        document.body.className = theme + " min-h-screen flex flex-col transition-all duration-300";
+        localStorage.setItem('selectedTheme', theme);
+    }
+    
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'theme-light';
+        document.body.className = savedTheme + " min-h-screen flex flex-col transition-all duration-300";
+    }
+    
+    window.onload = loadTheme;
+
