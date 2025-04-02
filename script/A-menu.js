@@ -111,16 +111,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-    function setTheme(theme) {
-        document.body.className = theme + " min-h-screen flex flex-col transition-all duration-300";
-        localStorage.setItem('selectedTheme', theme);
+document.addEventListener("DOMContentLoaded", () => {
+    // Récupérer le thème stocké dans localStorage ou définir un thème par défaut
+    const storedTheme = localStorage.getItem("theme") || "theme-red";
+    
+    // Appliquer la classe du thème au body
+    document.body.classList.add(storedTheme);
+    
+    // Fonction pour changer dynamiquement le thème
+    function changeTheme(theme) {
+        // Enlever toutes les classes de thème existantes
+        document.body.classList.remove("theme-red", "theme-gray", "theme-blue");
+        
+        // Ajouter la nouvelle classe pour le thème choisi
+        document.body.classList.add(theme);
+        
+        // Sauvegarder le thème dans le localStorage
+        localStorage.setItem("theme", theme);
+        
+        // Appliquer les variables de couleur du thème sélectionné
+        applyThemeColors(theme);
     }
     
-    function loadTheme() {
-        const savedTheme = localStorage.getItem('selectedTheme') || 'theme-light';
-        document.body.className = savedTheme + " min-h-screen flex flex-col transition-all duration-300";
+    // Fonction pour appliquer les couleurs du thème
+    function applyThemeColors(theme) {
+        const root = document.documentElement; // Récupère : <html>
+        
+        if (theme === "theme-red") {
+            root.style.setProperty("--bg-white", "red");
+            root.style.setProperty("--text-dark", "white");
+            root.style.setProperty("--dark-bg-gray", "darkred");
+            root.style.setProperty("--dark-text-white", "lightgray");
+        } else if (theme === "theme-gray") {
+            root.style.setProperty("--bg-white", "gray");
+            root.style.setProperty("--text-dark", "black");
+            root.style.setProperty("--dark-bg-gray", "darkgray");
+            root.style.setProperty("--dark-text-white", "white");
+        } else if (theme === "theme-blue") {
+            root.style.setProperty("--bg-white", "blue");
+            root.style.setProperty("--text-dark", "white");
+            root.style.setProperty("--dark-bg-gray", "darkblue");
+            root.style.setProperty("--dark-text-white", "lightblue");
+        }
     }
-    
-    window.onload = loadTheme;
 
+    // Appliquer directement le thème lors du chargement de la page
+    applyThemeColors(storedTheme);
+
+    // Exemple d'utilisation : change le thème au clic sur un bouton
+    document.getElementById("theme-red-btn").addEventListener("click", () => {
+        changeTheme("theme-red");
+    });
+    document.getElementById("theme-gray-btn").addEventListener("click", () => {
+        changeTheme("theme-gray");
+    });
+    document.getElementById("theme-blue-btn").addEventListener("click", () => {
+        changeTheme("theme-blue");
+    });
+});
+    
