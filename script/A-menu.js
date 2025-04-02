@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ecde_menu").innerHTML = `     
+<link href="https://enes-cde.vercel.app/script/Theme.css" rel="stylesheet" />
 
     <style>
   .MF {
