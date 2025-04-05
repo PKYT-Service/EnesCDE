@@ -310,10 +310,11 @@ function renderStateTags(site) {
                 case 'PDT': tag = `<a href="#"  class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> Production </a>`; break;
 
                 case 'MTNC': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Maintenance </a>`; break;
-                case 'Indéfini': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Indéfini </a>`; break;
+                case 'indefinie': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Indéfini </a>`; break;
 
                 case 'DPCT': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Duplication </a>`; break;
                 case 'Disable': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Désactivé </a>`; break;
+                case 'neutre': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> neutre </a>`; break;
                     
                 default: tag = `<a href="#" class="bg-stone-200 hover:bg-stone-300 dark:bg-stone-700 hover:dark:bg-stone-800 py-1 px-2 rounded-lg text-sm">Neutre</a>`;
             }
