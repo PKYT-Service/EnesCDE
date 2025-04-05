@@ -267,18 +267,18 @@ function renderStateTags(site) {
     const tags = [];
 
     if (site.BlackListe.Statut) {
-        tags.push(`<a href="#" class="bg-red-200 hover:bg-red-300 py-1 px-2 rounded-lg text-sm">Blacklist</a>`);
+        tags.push(`<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm">Blacklist</a>`);
     }
     if (site.Maintenance.Statut) {
-        tags.push(`<a href="#" class="bg-yellow-200 hover:bg-yellow-300 py-1 px-2 rounded-lg text-sm">Maintenance</a>`);
+        tags.push(`<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm">Maintenance</a>`);
     }
     if (site.Rappel.Statut) {
-        tags.push(`<a href="#" class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm">Rappel</a>`);
+        tags.push(`<a href="#" class="bg-blue-200 hover:bg-blue-300 dark:bg-blue-700 hover:dark:bg-blue-800 py-1 px-2 rounded-lg text-sm">Rappel</a>`);
     }
     if (tags.length === 0) {
-        tags.push(`<a href="#" class="bg-gray-200 hover:bg-gray-300 py-1 px-2 rounded-lg text-sm">Neutre</a>`);
+        tags.push(`<a href="#" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-800 py-1 px-2 rounded-lg text-sm">Neutre</a>`);
     } else if (tags.length >= 2) {
-        tags.push(`<a href="#" class="bg-purple-200 hover:bg-purple-300 py-1 px-2 rounded-lg text-sm">2+</a>`);
+        tags.push(`<a href="#" class="bg-purple-200 hover:bg-purple-300 dark:bg-purple-700 hover:dark:bg-purple-800 py-1 px-2 rounded-lg text-sm">2+</a>`);
     }
 
     return tags.join(' ');
@@ -314,7 +314,8 @@ function renderStateTags(site) {
 
                 case 'DPCT': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Duplication </a>`; break;
                 case 'Disable': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Désactivé </a>`; break;
-                default: tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 py-1 px-2 rounded-lg text-sm">Neutre</a>`;
+                    
+                default: tag = `<a href="#" class="bg-stone-200 hover:bg-stone-300 dark:bg-stone-700 hover:dark:bg-stone-800 py-1 px-2 rounded-lg text-sm">Neutre</a>`;
             }
             return tag;
         }
