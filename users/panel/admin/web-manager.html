@@ -132,6 +132,20 @@
                     <option value="aff">AFF</option>
                     <option value="officel">ECDE - Service</option>
                     <option value="sys">ECDE - Système</option>
+                    <option value="DL">Developpement local</option>
+                    <option value="DE">Developpement externe</option>
+                    <option value="DO">Developpement officiel</option>
+                    <option value="PG">Preview Git</option>
+                    <option value="PV">Preview Vercel</option>
+                    <option value="PGB">Preview Git [BOT]</option>
+                    <option value="PVB">Preview Vercel [BOT]</option>
+                    <option value="TEST">Test</option>
+                    <option value="BT">Beta</option>
+                    <option value="SDG">Standing</option>
+                    <option value="PDT">Production</option>
+                    <option value="MTNC">Maintenance</option>
+                    <option value="DPCT">Duplication</option>
+                    <option value="Disable">Disable</option>
                 </select>
             </div>
             <div class="flex justify-end">
@@ -275,11 +289,31 @@ function renderStateTags(site) {
         function renderTypeTag(type) {
             let tag = '';
             switch (type) {
-                case 'lie': tag = `<a href="#" class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm">Lié</a>`; break;
-                case 'aff': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 py-1 px-2 rounded-lg text-sm">AFF</a>`; break;
-                case 'officel': tag = `<a href="#" class="bg-green-200 hover:bg-green-300 py-1 px-2 rounded-lg text-sm">ECDE - Service</a>`; break;
-                case 'sys': tag = `<a href="#" class="bg-green-200 hover:bg-green-300 py-1 px-2 rounded-lg text-sm">ECDE - Systeme</a>`; break;
-                case 'Indéfini': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 py-1 px-2 rounded-lg text-sm">Indéfini</a>`; break;
+                case 'lie': tag = `<a href="#" class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"> Lié </a>`; break;
+                case 'aff': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 py-1 px-2 rounded-lg text-sm">AFF </a>`; break;
+
+                case 'officel': tag = `<a href="#" class="bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-800 py-1 px-2 rounded-lg text-sm"> ECDE - Service </a>`; break;
+                case 'sys': tag = `<a href="#" class="bg-green-200 hover:bg-green-300 py-1 px-2 rounded-lg text-sm"> ECDE - Systeme </a>`; break;
+
+                case 'DL': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm"> Dev Local </a>`; break;
+                case 'DE': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm"> Dev - Externe </a>`; break;
+                case 'DO': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm"> Dev - Officiel </a>`; break;
+
+                case 'PG': tag = `<a href="#"  class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview GITHUB </a>`; break;
+                case 'PV': tag = `<a href="#"  class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview Vercel </a>`; break;
+                case 'PGB': tag = `<a href="#" class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview GITHUB [BOT] </a>`; break;
+                case 'PVB': tag = `<a href="#" class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview Vercel [BOT] </a>`; break;
+
+                case 'TEST': tag = `<a href="#" class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> TEST </a>`; break;
+                case 'BT': tag = `<a href="#"   class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> BETA </a>`; break;
+                case 'SDG': tag = `<a href="#"  class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> Standing </a>`; break;
+                case 'PDT': tag = `<a href="#"  class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> Production </a>`; break;
+
+                case 'MTNC': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Maintenance </a>`; break;
+                case 'Indéfini': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Indéfini </a>`; break;
+
+                case 'DPCT': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Duplication </a>`; break;
+                case 'Disable': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Désactivé </a>`; break;
                 default: tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 py-1 px-2 rounded-lg text-sm">Neutre</a>`;
             }
             return tag;
