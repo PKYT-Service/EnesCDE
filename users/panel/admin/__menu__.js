@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
             </a>
 
-            <a href="https://pkyt-database-up.vercel.app/code-source/admin-dashboard/V4/GTV3&AAS.html">
+            <a href="./web-manager.html">
                 <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
         <text x="10" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold">V3</text>
@@ -66,6 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
             </a>
 
+
+            <a href="https://pkyt-database-up.vercel.app/code-source/admin-dashboard/V4/GTV3&AAS.html">
+                <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c4.97 0 9 3.582 9 8s-4.03 8-9 8-9-3.582-9-8 4.03-8 9-8z" />
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.5 12h19M12 3c2.5 3.5 2.5 9 0 13.5M12 3c-2.5 3.5-2.5 9 0 13.5" />
+</svg>
+                </button>
+            </a>
 
 <hr>
 
