@@ -225,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //                //
 
 
+
   //                //
  // Console Secure //
 //                //
@@ -238,34 +239,32 @@ function getLocalStorage(name) {
     return localStorage.getItem(name);
 }
 
-// Fonction pour supprimer une clé du localStorage
-function removeLocalStorage(name) {
-    localStorage.removeItem(name);
-}
-
 // Récupérer le switch et l'élément de la "boule"
 const switchBallCSL = document.getElementById('switchBallCSL');
 const toggleCSL = document.getElementById('toggleAdminCSL');
 
-// Initialisation du switch en fonction des valeurs stockées
+// Initialisation du switch en fonction de la valeur stockée
 function UpSwitchCSL() {
-    let isRules = getLocalStorage('rules');
-    let isEnesCSL = getLocalStorage('EnesCDE_ADM:CSL');
+    let isCSL = getLocalStorage('EnesCDE_ADM:CSL'); // Récupère la dernière valeur stockée
 
-    if (isRules === "true") {
-        toggleCSL.checked = true;
+    if (isCSL === "true") {
+        toggleAdminCSL.checked = true;
         switchBallCSL.style.transform = "translateX(100%)"; // Position à droite
         switchBallCSL.classList.remove('bg-orange-500', 'bg-red-500');
         switchBallCSL.classList.add('bg-green-500');
 
-    } else if (isEnesCSL === "true") {
-        toggleCSL.checked = false;
+        // Active le rafraîchissement automatique si true
+        setTimeout(() => {
+            location.reload();
+        }, 60000);
+        
+    } else if (isCSL === "false") {
+        toggleAdminCSL.checked = false;
         switchBallCSL.style.transform = "translateX(0%)"; // Position à gauche
         switchBallCSL.classList.remove('bg-orange-500', 'bg-green-500');
         switchBallCSL.classList.add('bg-red-500');
-
     } else {
-        toggleCSL.checked = false;
+        toggleAdminCSL.checked = false;
         switchBallCSL.style.transform = "translateX(50%)"; // Position au centre
         switchBallCSL.classList.remove('bg-green-500', 'bg-red-500');
         switchBallCSL.classList.add('bg-orange-500');
@@ -275,20 +274,17 @@ function UpSwitchCSL() {
 // Fonction de gestion du changement d'état
 function handleAdminCSLSwitch(checkbox) {
     if (checkbox.checked) {
-        setLocalStorage('rules', 'true'); // Active "rules"
-        removeLocalStorage('EnesCDE_ADM:CSL'); // Supprime "EnesCDE_ADM:CSL"
+        setLocalStorage('EnesCDE_ADM:CSL', 'true');
     } else {
-        setLocalStorage('EnesCDE_ADM:CSL', 'true'); // Active "EnesCDE_ADM:CSL"
-        removeLocalStorage('rules'); // Supprime "rules"
+        setLocalStorage('EnesCDE_ADM:CSL', 'false');
     }
-    UpSwitchCSL(); // Met à jour l'affichage
+    UpSwitchCSL(); // Met à jour l'apparence du switch après modification
 }
 
 // Exécuter UpSwitchCSL après le chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
-    UpSwitchCSL();
+    UpSwitchCSL(); 
 });
-
   //                //
  // Console Secure //
 //                //
