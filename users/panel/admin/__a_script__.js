@@ -223,3 +223,72 @@ document.addEventListener("DOMContentLoaded", () => {
   //                //
  // Rules Secure   //
 //                //
+
+
+  //                //
+ // Console Secure //
+//                //
+// Fonction pour définir une valeur dans localStorage
+function setLocalStorage(name, value) {
+    localStorage.setItem(name, value);
+}
+
+// Fonction pour récupérer une valeur depuis localStorage
+function getLocalStorage(name) {
+    return localStorage.getItem(name);
+}
+
+// Fonction pour supprimer une clé du localStorage
+function removeLocalStorage(name) {
+    localStorage.removeItem(name);
+}
+
+// Récupérer le switch et l'élément de la "boule"
+const switchBallCSL = document.getElementById('switchBallCSL');
+const toggleCSL = document.getElementById('toggleAdminCSL');
+
+// Initialisation du switch en fonction des valeurs stockées
+function UpSwitchCSL() {
+    let isRules = getLocalStorage('rules');
+    let isEnesCSL = getLocalStorage('EnesCDE_ADM:CSL');
+
+    if (isRules === "true") {
+        toggleCSL.checked = true;
+        switchBallCSL.style.transform = "translateX(100%)"; // Position à droite
+        switchBallCSL.classList.remove('bg-orange-500', 'bg-red-500');
+        switchBallCSL.classList.add('bg-green-500');
+
+    } else if (isEnesCSL === "true") {
+        toggleCSL.checked = false;
+        switchBallCSL.style.transform = "translateX(0%)"; // Position à gauche
+        switchBallCSL.classList.remove('bg-orange-500', 'bg-green-500');
+        switchBallCSL.classList.add('bg-red-500');
+
+    } else {
+        toggleCSL.checked = false;
+        switchBallCSL.style.transform = "translateX(50%)"; // Position au centre
+        switchBallCSL.classList.remove('bg-green-500', 'bg-red-500');
+        switchBallCSL.classList.add('bg-orange-500');
+    }
+}
+
+// Fonction de gestion du changement d'état
+function handleAdminCSLSwitch(checkbox) {
+    if (checkbox.checked) {
+        setLocalStorage('rules', 'true'); // Active "rules"
+        removeLocalStorage('EnesCDE_ADM:CSL'); // Supprime "EnesCDE_ADM:CSL"
+    } else {
+        setLocalStorage('EnesCDE_ADM:CSL', 'true'); // Active "EnesCDE_ADM:CSL"
+        removeLocalStorage('rules'); // Supprime "rules"
+    }
+    UpSwitchCSL(); // Met à jour l'affichage
+}
+
+// Exécuter UpSwitchCSL après le chargement de la page
+document.addEventListener("DOMContentLoaded", () => {
+    UpSwitchCSL();
+});
+
+  //                //
+ // Console Secure //
+//                //
