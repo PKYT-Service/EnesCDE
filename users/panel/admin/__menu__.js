@@ -78,6 +78,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <hr>
 
+<a href="./@@FCT@@-ClientId_manage.html">
+        <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
+            <svg class="h-6 w-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
+  <!-- Circle background -->
+  <circle cx="2.5" cy="2.5" r="2" fill="#f0f0f0" stroke="#ccc" stroke-width="0.1"/>
+  
+  <!-- User icon (simple circle) -->
+  <circle cx="2.5" cy="2" r="0.5" fill="#333"/>
+
+  <!-- Gear icon (bottom right) -->
+  <path d="M3.6,3.4 L3.8,3.2 L4,3.4 L3.8,3.6 Z" fill="#aaa"/>
+  <path d="M3.5,3.5 L3.7,3.7 L3.5,3.9 L3.3,3.7 Z" fill="#aaa"/>
+  <path d="M3.4,3.8 L3.6,4 L3.8,3.8 L3.6,3.6 Z" fill="#aaa"/>
+  
+  <!-- User label -->
+  <text x="2.5" y="3.1" font-size="0.3" text-anchor="middle" fill="#333">User</text>
+</svg>
+        </button>
+    </a>
+    
+    <a href="">
+        <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
+            
+        </button>
+    </a>
+    
+<hr>
     <a href="https://enes-cde.vercel.app/users/">
         <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
             <svg class="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
