@@ -81,19 +81,12 @@ document.addEventListener("DOMContentLoaded", function () {
 <a href="./@@FCT@@-ClientId_manage.html">
         <button class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800">
             <svg class="h-6 w-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5">
-  <!-- Circle background -->
-  <circle cx="2.5" cy="2.5" r="2" fill="#f0f0f0" stroke="#ccc" stroke-width="0.1"/>
-  
-  <!-- User icon (simple circle) -->
-  <circle cx="2.5" cy="2" r="0.5" fill="#333"/>
-
-  <!-- Gear icon (bottom right) -->
-  <path d="M3.6,3.4 L3.8,3.2 L4,3.4 L3.8,3.6 Z" fill="#aaa"/>
-  <path d="M3.5,3.5 L3.7,3.7 L3.5,3.9 L3.3,3.7 Z" fill="#aaa"/>
-  <path d="M3.4,3.8 L3.6,4 L3.8,3.8 L3.6,3.6 Z" fill="#aaa"/>
-  
-  <!-- User label -->
-  <text x="2.5" y="3.1" font-size="0.3" text-anchor="middle" fill="#333">User</text>
+<svg class="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+  <g id="SVGRepo_iconCarrier">
+    <path d="M11 21H5.6C5.03995 21 4.75992 21 4.54601 20.891C4.35785 20.7951 4.20487 20.6422 4.10899 20.454C4 20.2401 4 19.9601 4 19.4V17.6841C4 17.0485 4 16.7306 4.04798 16.4656C4.27087 15.2344 5.23442 14.2709 6.46558 14.048C6.5425 14.0341 6.6237 14.0242 6.71575 14.0172C6.94079 14 7.05331 13.9914 7.20361 14.0026C7.35983 14.0143 7.4472 14.0297 7.59797 14.0722C7.74302 14.1131 8.00429 14.2315 8.52682 14.4682C8.98953 14.6778 9.48358 14.8304 10 14.917M19.8726 15.2038C19.8044 15.2079 19.7357 15.21 19.6667 15.21C18.6422 15.21 17.7077 14.7524 17 14C16.2923 14.7524 15.3578 15.2099 14.3333 15.2099C14.2643 15.2099 14.1956 15.2078 14.1274 15.2037C14.0442 15.5853 14 15.9855 14 16.3979C14 18.6121 15.2748 20.4725 17 21C18.7252 20.4725 20 18.6121 20 16.3979C20 15.9855 19.9558 15.5853 19.8726 15.2038ZM15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
 </svg>
         </button>
     </a>
