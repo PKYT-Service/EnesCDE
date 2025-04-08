@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>EnesCDE - Admin > Panel Administratif > Settings</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        
+        <!-- Script pour ajouter dynamiquement le footer -->
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+        <script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+        <script src="./__sessions__.js"></script>
+        <div id="ecde_all"></div>
+
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Admin - Home :</h1>
+
+
+  
+
+
+              
+
+
+
+
+
+
+                    <div class="max-w-3xl mx-auto bg-white dark:bg-gray-950 text-gray-600 dark:text-gray-300 shadow-lg rounded-lg p-6">
+        <h1 class="text-3xl font-bold">
+            Dev<span class="font-extrabold text-blue-600 dark:text-blue-400"> Settings</span>
+        </h1>
+
+        <h2 class="text-xl font-semibold mt-4">Voici les parametres de developpement :</h2>
+        
+        <br>
+
+<!-- F12 Settings & LOG Settings -->
+<div class="flex items-center space-x-4">
+    <!-- F12 Settings -->
+    <div class="bg-indigo-50 dark:bg-slate-800" style="border-radius: 20px; padding: 10px;">
+        <span class="mr-3 text-gray-600 dark:text-gray-300">[Consol] F12</span>
+        <label for="toggleF12" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input type="checkbox" id="toggleF12" class="sr-only" onchange="handleF12Switch(this)" />
+                <div class="block bg-gray-300 dark:bg-gray-700 w-14 h-8 rounded-full shadow-neumorphic-toggle-outset transition-all duration-300 ease-in-out"></div>
+                <div id="switchBallF12" class="dot absolute left-1 top-1 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+            </div>
+        </label>
+    </div>
+    <!-- F12 Settings -->
+
+    <!-- LOG Settings -->
+    <div class="bg-indigo-50 dark:bg-slate-800" style="border-radius: 20px; padding: 10px;">
+        <span class="mr-3 text-gray-600 dark:text-gray-300">[POST-E] Log</span>
+        <label for="toggleAdminLog" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input type="checkbox" id="toggleAdminLog" class="sr-only" onchange="handleAdminLogSwitch(this)" />
+                <div class="block bg-gray-300 dark:bg-gray-700 w-14 h-8 rounded-full shadow-neumorphic-toggle-outset transition-all duration-300 ease-in-out"></div>
+                <div id="switchBallLog" class="dot absolute left-1 top-1 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+            </div>
+        </label>
+    </div>
+    <!-- LOG Settings -->
+
+    <!-- REF Settings -->
+    <div class="bg-indigo-50 dark:bg-slate-800" style="border-radius: 20px; padding: 10px;">
+        <span class="mr-3 text-gray-600 dark:text-gray-300">[Refresh] 1M</span>
+        <label for="toggleAdminRef" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input type="checkbox" id="toggleAdminRef" class="sr-only" onchange="handleAdminRefSwitch(this)" />
+                <div class="block bg-gray-300 dark:bg-gray-700 w-14 h-8 rounded-full shadow-neumorphic-toggle-outset transition-all duration-300 ease-in-out"></div>
+                <div id="switchBallRef" class="dot absolute left-1 top-1 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+            </div>
+        </label>
+    </div>
+    <!-- REF Settings -->
+
+    <!-- RPE Settings -->
+    <div  class="bg-indigo-50 dark:bg-slate-800" style="border-radius: 20px; padding: 10px;">
+        <span class="mr-3 text-gray-600 dark:text-gray-300">[📜Rules] RPE</span>
+        <label for="toggleAdminRPE" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input type="checkbox" id="toggleAdminRPE" class="sr-only" onchange="handleAdminRPESwitch(this)" />
+                <div class="block bg-gray-300 dark:bg-gray-700 w-14 h-8 rounded-full transition-all duration-300 ease-in-out"></div>
+                <div id="switchBallRPE" class="absolute left-1 top-1 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+            </div>
+        </label>
+    </div>
+    <!-- RPE Settings -->
+
+    <!-- CSL Settings -->
+    <div class="bg-indigo-50 dark:bg-slate-800" style="border-radius: 20px; padding: 10px;">
+        <span class="mr-3 text-gray-600 dark:text-gray-300">[Console]CSL</span>
+        <label for="toggleAdminCSL" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input type="checkbox" id="toggleAdminCSL" class="sr-only" onchange="handleAdminCSLSwitch(this)" />
+                <div class="block bg-gray-300 dark:bg-gray-700 w-14 h-8 rounded-full shadow-neumorphic-toggle-outset transition-all duration-300 ease-in-out"></div>
+                <div id="switchBallCSL" class="dot absolute left-1 top-1 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+            </div>
+        </label>
+    </div>
+    <!-- CSL Settings -->
+    
+    <!-- COM Settings -->
+    <div class="bg-indigo-50 dark:bg-slate-800" style="border-radius: 20px; padding: 10px;">
+        <span class="mr-3 text-gray-600 dark:text-gray-300">Coming</span>
+        <label for="toggleAdminCOM" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input type="checkbox" id="toggleAdminCOM" class="sr-only" onchange="handleAdminCOMSwitch(this)" />
+                <div class="block bg-gray-300 dark:bg-gray-700 w-14 h-8 rounded-full shadow-neumorphic-toggle-outset transition-all duration-300 ease-in-out"></div>
+                <div id="switchBallCOM" class="dot absolute left-1 top-1 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out"></div>
+            </div>
+        </label>
+    </div>
+    <!-- COM Settings -->
+</div>
+<!-- F12 Settings & LOG Settings -->
+
+
+
+
+                        
+                
+
+
+
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+<script src="./__BscSettings_script__.js"></script>
+</body>
+</html>
