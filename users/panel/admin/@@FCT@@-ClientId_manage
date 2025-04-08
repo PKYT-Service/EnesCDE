@@ -1,1 +1,246 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>EnesCDE - Admin > Panel Administratif > ClientId manager</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        
+        <!-- Script pour ajouter dynamiquement le footer -->
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+        <script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+        <script src="./__sessions__.js"></script>
+        <div id="ecde_all"></div>
 
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Admin - Client Id manager :</h1>
+
+
+    
+                
+
+
+
+    <div class="container mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-4">Gestion des Ban ECDE</h1>
+
+        <div class="mb-6">
+            <label for="action" class="block text-lg font-semibold">Choisir une action</label>
+            <select id="action" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
+                <option value="add">Ajouter une entrée</option>
+                <option value="edit">Modifier une entrée</option>
+                <option value="delete">Supprimer une entrée</option>
+            </select>
+        </div>
+
+        <!-- Formulaire Ajouter une entrée -->
+        <div id="addForm" class="actionForm">
+            <h2 class="text-xl font-semibold mb-4">Ajouter une entrée</h2>
+            <div class="mb-4">
+                <label for="type" class="block text-lg">Sélectionner le type</label>
+                <select id="type" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
+                    <option value="ECDE:ID">ECDE:ID</option>
+                    <option value="ECDE:ID_IP">ECDE:ID_IP</option>
+                    <option value="ECDE:ID_DF">ECDE:ID_DF</option>
+                    <option value="ECDE:ID_RP">ECDE:ID_RP</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="valeurs" class="block text-lg">Valeur</label>
+                <input id="valeurs" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
+            </div>
+            <div class="mb-4">
+                <label for="raison" class="block text-lg">Raison</label>
+                <input id="raison" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
+            </div>
+            <div class="mb-4">
+                <label for="date" class="block text-lg">Date</label>
+                <input id="date" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="date">
+            </div>
+            <div class="mb-4">
+                <label for="par" class="block text-lg">Par</label>
+                <input id="par" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
+            </div>
+            <div class="mb-4">
+                <label for="bloqueAll" class="block text-lg">Bloqué (All)</label>
+                <input id="bloqueAll" type="checkbox" class="mt-2">
+            </div>
+            <div class="mb-4">
+                <label for="webUrl" class="block text-lg">URLs Web (séparées par des virgules)</label>
+                <input id="webUrl" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
+            </div>
+            <button id="addBtn" class="w-full mt-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Ajouter</button>
+        </div>
+
+        <!-- Formulaire Modifier une entrée -->
+        <div id="editForm" class="actionForm hidden">
+            <h2 class="text-xl font-semibold mb-4">Modifier une entrée</h2>
+            <div class="mb-4">
+                <label for="entryList" class="block text-lg">Sélectionner une entrée à modifier</label>
+                <select id="entryList" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
+                    <!-- Liste des entrées à afficher ici -->
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="editAll" class="block text-lg">Bloqué (All)</label>
+                <input id="editAll" type="checkbox" class="mt-2">
+            </div>
+            <div class="mb-4">
+                <label for="editWebUrl" class="block text-lg">URLs Web (séparées par des virgules)</label>
+                <input id="editWebUrl" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
+            </div>
+            <button id="editBtn" class="w-full mt-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Modifier</button>
+        </div>
+
+        <!-- Formulaire Supprimer une entrée -->
+        <div id="deleteForm" class="actionForm hidden">
+            <h2 class="text-xl font-semibold mb-4">Supprimer une entrée</h2>
+            <div class="mb-4">
+                <label for="deleteList" class="block text-lg">Sélectionner une entrée à supprimer</label>
+                <select id="deleteList" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
+                    <!-- Liste des entrées à afficher ici -->
+                </select>
+            </div>
+            <button id="deleteBtn" class="w-full mt-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Supprimer</button>
+        </div>
+    </div>
+
+    <script>
+        const actionSelect = document.getElementById('action');
+        const addForm = document.getElementById('addForm');
+        const editForm = document.getElementById('editForm');
+        const deleteForm = document.getElementById('deleteForm');
+        let jsonData = [
+            {
+                "Type": "ECDE:ID",
+                "Valeurs": "12345",
+                "Raison": "Accès bloqué pour maintenance",
+                "Date": "2025-03-02",
+                "Par": "Admin",
+                "bloque": {
+                    "All": true,
+                    "web": true,
+                    "web_url": [
+                        "https://enes-cde.vercel.app",
+                        "https://howardarmory.vercel.app"
+                    ]
+                }
+            }
+        ];
+
+        // Afficher l'action sélectionnée
+        actionSelect.addEventListener('change', () => {
+            const action = actionSelect.value;
+            if (action === 'add') {
+                addForm.classList.remove('hidden');
+                editForm.classList.add('hidden');
+                deleteForm.classList.add('hidden');
+            } else if (action === 'edit') {
+                addForm.classList.add('hidden');
+                editForm.classList.remove('hidden');
+                deleteForm.classList.add('hidden');
+                updateEntryList();
+            } else if (action === 'delete') {
+                addForm.classList.add('hidden');
+                editForm.classList.add('hidden');
+                deleteForm.classList.remove('hidden');
+                updateEntryList();
+            }
+        });
+
+        // Mise à jour des listes déroulantes pour les actions Modifier et Supprimer
+        function updateEntryList() {
+            const entryList = document.getElementById('entryList');
+            const deleteList = document.getElementById('deleteList');
+            entryList.innerHTML = '';
+            deleteList.innerHTML = '';
+
+            jsonData.forEach(entry => {
+                const option = document.createElement('option');
+                option.value = entry.Valeurs;
+                option.textContent = entry.Valeurs;
+                entryList.appendChild(option);
+
+                const deleteOption = document.createElement('option');
+                deleteOption.value = entry.Valeurs;
+                deleteOption.textContent = entry.Valeurs;
+                deleteList.appendChild(deleteOption);
+            });
+        }
+
+        // Ajouter une nouvelle entrée
+        document.getElementById('addBtn').addEventListener('click', () => {
+            const type = document.getElementById('type').value;
+            const valeurs = document.getElementById('valeurs').value;
+            const raison = document.getElementById('raison').value;
+            const date = document.getElementById('date').value;
+            const par = document.getElementById('par').value;
+            const bloqueAll = document.getElementById('bloqueAll').checked;
+            const webUrl = document.getElementById('webUrl').value.split(',');
+
+            const newEntry = {
+                Type: type,
+                Valeurs: valeurs,
+                Raison: raison,
+                Date: date,
+                Par: par,
+                bloque: {
+                    All: bloqueAll,
+                    web: true,
+                    web_url: webUrl
+                }
+            };
+
+            jsonData.push(newEntry);
+            alert('Entrée ajoutée avec succès !');
+        });
+
+        // Modifier une entrée
+        document.getElementById('editBtn').addEventListener('click', () => {
+            const valeurs = document.getElementById('entryList').value;
+            const updatedEntry = jsonData.find(entry => entry.Valeurs === valeurs);
+            
+            if (updatedEntry) {
+                updatedEntry.bloque.All = document.getElementById('editAll').checked;
+                updatedEntry.bloque.web_url = document.getElementById('editWebUrl').value.split(',');
+                alert('Entrée modifiée avec succès !');
+            }
+        });
+
+        // Supprimer une entrée
+        document.getElementById('deleteBtn').addEventListener('click', () => {
+            const valeurs = document.getElementById('deleteList').value;
+            jsonData = jsonData.filter(entry => entry.Valeurs !== valeurs);
+            alert('Entrée supprimée avec succès !');
+        });
+    </script>
+
+
+              
+
+
+
+
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+
+</body>
+</html>
