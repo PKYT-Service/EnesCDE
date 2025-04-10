@@ -76,6 +76,15 @@
                                 <span class="text-xl font-bold" id="rappel-count">0</span>
                             </div>
                         </div>
+                        <div class="flex items-center p-4 rounded-lg shadow-md bg-gray-300 dark:bg-gray-700">
+                            <div class="flex flex-shrink-0 items-center justify-center h-16 w-16 rounded-lg bg-gray-400 dark:bg-gray-600">
+                                <i class="bi bi-arrow-left-right text-3xl"></i>
+                            </div>
+                            <div class="flex-grow flex flex-col ml-4">
+                                <span class="text-gray-700 dark:text-gray-400">Redirections</span>
+                                <span class="text-xl font-bold" id="redirection-count">0</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -105,27 +114,32 @@
             <h3 class="text-xl font-semibold mb-4">Gérer le Site</h3>
             <div class="mb-4">
                 <label for="statut" class="block">Statut</label>
-                <select id="statut" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    <option value="blacklist">Blacklist</option>
-                    <option value="rappel">Rappel</option>
-                    <option value="maintenance">Maintenance</option>
-                    <option value="redirection">Redirection</option>
-                    <option value="clear">Clear</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <div id="extraFields" class="mb-4 hidden">
-                    <label class="block">Raison</label>
-                    <input id="reason" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Comportement abusif">
-                    <label class="block">Par</label>
-                    <input id="by" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Admin">
-                    <label class="block">URL ( afficher uniquement si Statut : Redirection )</label>
-                    <input id="URL" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: HTTPS ">
-                    <label class="block">Date</label>
-                    <input id="date" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date">
-                    <label class="block">Fin (facultatif)</label>
-                    <input id="end" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date">
-                </div>
+                    <select id="statut" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="blacklist">Blacklist</option>
+                        <option value="rappel">Rappel</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="redirection">Redirection</option>
+                        <option value="clear">Clear</option>
+                    </select>
+                    
+                    <!-- Dans les extraFields, ajoutez un champ pour l'URL de redirection -->
+                    <div id="extraFields" class="mb-4 hidden">
+                        <label class="block">Raison</label>
+                        <input id="reason" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Comportement abusif">
+                        
+                        <!-- Ajoutez ce nouveau champ -->
+                        <div id="redirectionUrlField" class="hidden">
+                            <label class="block">URL de redirection</label>
+                            <input id="redirectionUrl" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: https://nouveau-site.com">
+                        </div>
+                        
+                        <label class="block">Par</label>
+                        <input id="by" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Admin">
+                        <label class="block">Date</label>
+                        <input id="date" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date">
+                        <label class="block">Fin (facultatif)</label>
+                        <input id="end" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date">
+                    </div>
                 
                 <label for="type" class="block">Type</label>
                 <select id="type" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -158,276 +172,286 @@
         </div>
     </div>
     <script>
-    async function fetchToken() {
-      const response = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
-      const data = await response.json();
-      return data.GITHUB_TOKEN;
-    }
-    
-    async function fetchData() {
-      const token = await fetchToken();
-      const response = await fetch("https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json", {
+async function fetchToken() {
+    const response = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+    const data = await response.json();
+    return data.GITHUB_TOKEN;
+}
+
+async function fetchData() {
+    const token = await fetchToken();
+    const response = await fetch("https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json", {
         headers: {
-          Authorization: `token ${token}`
+            Authorization: `token ${token}`
         }
-      });
-      const data = await response.json();
-      const content = atob(data.content);
-      const jsonData = JSON.parse(content);
-    
-      let blacklistCount = 0;
-      let maintenanceCount = 0;
-      let rappelCount = 0;
-    
-      jsonData.Sites.forEach(site => {
+    });
+    const data = await response.json();
+    const content = atob(data.content);
+    const jsonData = JSON.parse(content);
+
+    let blacklistCount = 0;
+    let maintenanceCount = 0;
+    let rappelCount = 0;
+    let redirectionCount = 0;
+
+    jsonData.Sites.forEach(site => {
         if (site.BlackListe.Statut) blacklistCount++;
         if (site.Maintenance.Statut) maintenanceCount++;
         if (site.Rappel.Statut) rappelCount++;
-      });
-    
-      document.getElementById("blacklist-count").textContent = blacklistCount;
-      document.getElementById("maintenance-count").textContent = maintenanceCount;
-      document.getElementById("rappel-count").textContent = rappelCount;
-    }
-    
-    fetchData();
+        if (site.Redirection?.Statut) redirectionCount++;
+    });
+
+    document.getElementById("blacklist-count").textContent = blacklistCount;
+    document.getElementById("maintenance-count").textContent = maintenanceCount;
+    document.getElementById("rappel-count").textContent = rappelCount;
+    document.getElementById("redirection-count").textContent = redirectionCount;
+}
+
+fetchData();
     </script>
     <script>
-        const tokenUrl = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js'; // URL du token
-        const apiUrl = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json';
-        const tableBody = document.getElementById('sitesTable');
-        const managePopup = document.getElementById('managePopup');
-        const closeBtn = document.getElementById('closeBtn');
-        const saveBtn = document.getElementById('saveBtn');
+const tokenUrl = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
+const apiUrl = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json';
+const tableBody = document.getElementById('sitesTable');
+const managePopup = document.getElementById('managePopup');
+const closeBtn = document.getElementById('closeBtn');
+const saveBtn = document.getElementById('saveBtn');
 
-        let currentSite = null;
-        let jsonData = null;
-        let sha = null;
+let currentSite = null;
+let jsonData = null;
+let sha = null;
 
-        // Fetch the GitHub token dynamically
-        async function getGitHubToken() {
-            const response = await fetch(tokenUrl);
-            const data = await response.json();
-            return data.GITHUB_TOKEN;
+async function getGitHubToken() {
+    const response = await fetch(tokenUrl);
+    const data = await response.json();
+    return data.GITHUB_TOKEN;
+}
+
+async function fetchData() {
+    const token = await getGitHubToken();
+    const response = await fetch(apiUrl, {
+        headers: {
+            'Authorization': `token ${token}`
         }
+    });
 
-        // Fetch JSON data from GitHub API
-        async function fetchData() {
-            const token = await getGitHubToken();
-            const response = await fetch(apiUrl, {
-                headers: {
-                    'Authorization': `token ${token}`
-                }
-            });
+    const data = await response.json();
+    const fileContent = atob(data.content);
+    jsonData = JSON.parse(fileContent);
+    sha = data.sha;
 
-            const data = await response.json();
-            const fileContent = atob(data.content); // Decode Base64 content
-            jsonData = JSON.parse(fileContent);
+    renderTable(jsonData.Sites);
+}
 
-            sha = data.sha; // Store the SHA for later use
+function renderTable(sites) {
+    tableBody.innerHTML = '';
 
-            renderTable(jsonData.Sites);
-        }
+    sites.forEach(site => {
+        const row = document.createElement('tr');
 
-        // Render the sites in the table
-        function renderTable(sites) {
-            tableBody.innerHTML = ''; // Clear the table before rendering
+        const urlCell = document.createElement('td');
+        urlCell.className = 'px-4 py-2 border dark:border-gray-700';
+        urlCell.textContent = site.URL || 'Non défini';
 
-            sites.forEach(site => {
-                const row = document.createElement('tr');
+        const typeCell = document.createElement('td');
+        typeCell.className = 'px-4 py-2 border dark:border-gray-700';
+        typeCell.innerHTML = renderTypeTag(site.Type);
 
-                const urlCell = document.createElement('td');
-                urlCell.className = 'px-4 py-2 border';
-                urlCell.textContent = site.URL || 'Non défini';
+        const stateCell = document.createElement('td');
+        stateCell.className = 'px-4 py-2 border dark:border-gray-700';
+        stateCell.innerHTML = renderStateTags(site);
 
-                const typeCell = document.createElement('td');
-                typeCell.className = 'px-4 py-2 border';
-                typeCell.innerHTML = renderTypeTag(site.Type);
+        const actionCell = document.createElement('td');
+        actionCell.className = 'px-4 py-2 border dark:border-gray-700';
+        const manageButton = document.createElement('button');
+        manageButton.className = 'bg-green-500 text-white py-1 px-2 rounded-lg';
+        manageButton.textContent = 'Gérer';
+        manageButton.onclick = () => openManagePopup(site);
+        actionCell.appendChild(manageButton);
 
-                const stateCell = document.createElement('td');
-                stateCell.className = 'px-4 py-2 border';
-                stateCell.innerHTML = renderStateTags(site);
+        row.appendChild(urlCell);
+        row.appendChild(typeCell);
+        row.appendChild(stateCell);
+        row.appendChild(actionCell);
 
-                const actionCell = document.createElement('td');
-                actionCell.className = 'px-4 py-2 border';
-                const manageButton = document.createElement('button');
-                manageButton.className = 'bg-green-500 text-white py-1 px-2 rounded-lg';
-                manageButton.textContent = 'Gérer';
-                manageButton.onclick = () => openManagePopup(site);
-                actionCell.appendChild(manageButton);
+        tableBody.appendChild(row);
+    });
+}
 
-                row.appendChild(urlCell);
-                row.appendChild(typeCell);
-                row.appendChild(stateCell);
-                row.appendChild(actionCell);
-
-                tableBody.appendChild(row);
-            });
-        }
-
-// Render state tags based on the site status
 function renderStateTags(site) {
     const tags = [];
 
     if (site.BlackListe.Statut) {
-        tags.push(`<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm">Blacklist</a>`);
+        tags.push(`<span class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm">Blacklist</span>`);
     }
     if (site.Maintenance.Statut) {
-        tags.push(`<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm">Maintenance</a>`);
+        tags.push(`<span class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm">Maintenance</span>`);
     }
     if (site.Rappel.Statut) {
-        tags.push(`<a href="#" class="bg-blue-200 hover:bg-blue-300 dark:bg-blue-700 hover:dark:bg-blue-800 py-1 px-2 rounded-lg text-sm">Rappel</a>`);
+        tags.push(`<span class="bg-blue-200 hover:bg-blue-300 dark:bg-blue-700 hover:dark:bg-blue-800 py-1 px-2 rounded-lg text-sm">Rappel</span>`);
+    }
+    if (site.Redirection?.Statut) {
+        tags.push(`<span class="bg-orange-200 hover:bg-orange-300 dark:bg-orange-700 hover:dark:bg-orange-800 py-1 px-2 rounded-lg text-sm">Redirection</span>`);
     }
     if (tags.length === 0) {
-        tags.push(`<a href="#" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-800 py-1 px-2 rounded-lg text-sm">Neutre</a>`);
+        tags.push(`<span class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-800 py-1 px-2 rounded-lg text-sm">Neutre</span>`);
     } else if (tags.length >= 2) {
-        tags.push(`<a href="#" class="bg-purple-200 hover:bg-purple-300 dark:bg-purple-700 hover:dark:bg-purple-800 py-1 px-2 rounded-lg text-sm">2+</a>`);
+        tags.push(`<span class="bg-purple-200 hover:bg-purple-300 dark:bg-purple-700 hover:dark:bg-purple-800 py-1 px-2 rounded-lg text-sm">2+</span>`);
     }
 
     return tags.join(' ');
 }
 
+function renderTypeTag(type) {
+    let tag = '';
+    switch (type) {
+        case 'lie': tag = `<span class="bg-blue-200 hover:bg-blue-300 dark:bg-blue-700 hover:dark:bg-blue-800 py-1 px-2 rounded-lg text-sm">Lié</span>`; break;
+        case 'aff': tag = `<span class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm">AFF</span>`; break;
+        case 'officiel': tag = `<span class="bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-800 py-1 px-2 rounded-lg text-sm">ECDE - Service</span>`; break;
+        case 'sys': tag = `<span class="bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-800 py-1 px-2 rounded-lg text-sm">ECDE - Systeme</span>`; break;
+        case 'DL': tag = `<span class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm">Dev Local</span>`; break;
+        case 'DE': tag = `<span class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm">Dev - Externe</span>`; break;
+        case 'DO': tag = `<span class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm">Dev - Officiel</span>`; break;
+        case 'PG': tag = `<span class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm">Preview GITHUB</span>`; break;
+        case 'PV': tag = `<span class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm">Preview Vercel</span>`; break;
+        case 'PGB': tag = `<span class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm">Preview GITHUB [BOT]</span>`; break;
+        case 'PVB': tag = `<span class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm">Preview Vercel [BOT]</span>`; break;
+        case 'TEST': tag = `<span class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm">TEST</span>`; break;
+        case 'BT': tag = `<span class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm">BETA</span>`; break;
+        case 'SDG': tag = `<span class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm">Standing</span>`; break;
+        case 'PDT': tag = `<span class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm">Production</span>`; break;
+        case 'MTNC': tag = `<span class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm">Maintenance</span>`; break;
+        case 'indefinie': tag = `<span class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm">Indéfini</span>`; break;
+        case 'DPCT': tag = `<span class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm">Duplication</span>`; break;
+        case 'Disable': tag = `<span class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm">Désactivé</span>`; break;
+        case 'neutre': tag = `<span class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-800 py-1 px-2 rounded-lg text-sm">Neutre</span>`; break;
+        default: tag = `<span class="bg-stone-200 hover:bg-stone-300 dark:bg-stone-700 hover:dark:bg-stone-800 py-1 px-2 rounded-lg text-sm">Neutre</span>`;
+    }
+    return tag;
+}
 
-        // Render the type tag based on the site type
-        function renderTypeTag(type) {
-            let tag = '';
-            switch (type) {
-                case 'lie': tag = `<a href="#" class="bg-blue-200 hover:bg-blue-300 py-1 px-2 rounded-lg text-sm"> Lié </a>`; break;
-                case 'aff': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 py-1 px-2 rounded-lg text-sm">AFF </a>`; break;
+function openManagePopup(site) {
+    currentSite = site;
+    let currentStatus = 'clear';
+    if (site.BlackListe.Statut) currentStatus = 'blacklist';
+    else if (site.Maintenance.Statut) currentStatus = 'maintenance';
+    else if (site.Rappel.Statut) currentStatus = 'rappel';
+    else if (site.Redirection?.Statut) currentStatus = 'redirection';
 
-                case 'officiel': tag = `<a href="#" class="bg-green-200 hover:bg-green-300 dark:bg-green-700 hover:dark:bg-green-800 py-1 px-2 rounded-lg text-sm"> ECDE - Service </a>`; break;
-                case 'sys': tag = `<a href="#" class="bg-green-200 hover:bg-green-300 py-1 px-2 rounded-lg text-sm"> ECDE - Systeme </a>`; break;
+    document.getElementById('statut').value = currentStatus;
+    document.getElementById('type').value = site.Type || 'indefinie';
 
-                case 'DL': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm"> Dev Local </a>`; break;
-                case 'DE': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm"> Dev - Externe </a>`; break;
-                case 'DO': tag = `<a href="#" class="bg-indigo-200 hover:bg-indigo-300 dark:bg-indigo-700 hover:dark:bg-indigo-800 py-1 px-2 rounded-lg text-sm"> Dev - Officiel </a>`; break;
+    if (currentStatus !== 'clear') {
+        const extra = document.getElementById('extraFields');
+        extra.classList.remove('hidden');
+        
+        const redirectionUrlField = document.getElementById('redirectionUrlField');
+        redirectionUrlField.classList.toggle('hidden', currentStatus !== 'redirection');
 
-                case 'PG': tag = `<a href="#"  class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview GITHUB </a>`; break;
-                case 'PV': tag = `<a href="#"  class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview Vercel </a>`; break;
-                case 'PGB': tag = `<a href="#" class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview GITHUB [BOT] </a>`; break;
-                case 'PVB': tag = `<a href="#" class="bg-cyan-200 hover:bg-cyan-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 py-1 px-2 rounded-lg text-sm"> Preview Vercel [BOT] </a>`; break;
-
-                case 'TEST': tag = `<a href="#" class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> TEST </a>`; break;
-                case 'BT': tag = `<a href="#"   class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> BETA </a>`; break;
-                case 'SDG': tag = `<a href="#"  class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> Standing </a>`; break;
-                case 'PDT': tag = `<a href="#"  class="bg-violet-200 hover:bg-violet-300 dark:bg-violet-700 hover:dark:bg-violet-800 py-1 px-2 rounded-lg text-sm"> Production </a>`; break;
-
-                case 'MTNC': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Maintenance </a>`; break;
-                case 'indefinie': tag = `<a href="#" class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm"> Indéfini </a>`; break;
-
-                case 'DPCT': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Duplication </a>`; break;
-                case 'Disable': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> Désactivé </a>`; break;
-                case 'neutre': tag = `<a href="#" class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm"> neutre </a>`; break;
-                    
-                default: tag = `<a href="#" class="bg-stone-200 hover:bg-stone-300 dark:bg-stone-700 hover:dark:bg-stone-800 py-1 px-2 rounded-lg text-sm">Neutre</a>`;
-            }
-            return tag;
+        const activeStatus = site[currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)];
+        document.getElementById('reason').value = activeStatus.Raison || '';
+        document.getElementById('by').value = activeStatus.Par || '';
+        document.getElementById('date').value = activeStatus.Date || '';
+        document.getElementById('end').value = activeStatus.Fin || '';
+        
+        if (currentStatus === 'redirection') {
+            document.getElementById('redirectionUrl').value = activeStatus.Url || '';
         }
+    }
+    
+    managePopup.classList.remove('hidden');
+}
 
-        // Open the manage popup
-        function openManagePopup(site) {
-            currentSite = site;
-            document.getElementById('statut').value = site.Rappel.Statut ? 'rappel' : site.Maintenance.Statut ? 'maintenance' : 'clear';
-            document.getElementById('type').value = site.Type || 'indefinie';
-            managePopup.classList.remove('hidden');
-        }
-
-        document.getElementById('statut').addEventListener('change', function () {
+document.getElementById('statut').addEventListener('change', function() {
     const value = this.value;
     const extra = document.getElementById('extraFields');
-    if (['blacklist', 'rappel', 'maintenance'].includes(value)) {
+    const redirectionUrlField = document.getElementById('redirectionUrlField');
+    
+    if (['blacklist', 'rappel', 'maintenance', 'redirection'].includes(value)) {
         extra.classList.remove('hidden');
+        redirectionUrlField.classList.toggle('hidden', value !== 'redirection');
     } else {
         extra.classList.add('hidden');
     }
 });
 
+closeBtn.onclick = () => managePopup.classList.add('hidden');
 
-        // Close the manage popup
-        closeBtn.onclick = () => managePopup.classList.add('hidden');
+saveBtn.onclick = async () => {
+    const statut = document.getElementById('statut').value;
+    const type = document.getElementById('type').value;
+    const reason = document.getElementById('reason').value.trim();
+    const by = document.getElementById('by').value.trim();
+    const date = document.getElementById('date').value;
+    const end = document.getElementById('end').value;
+    const redirectionUrl = statut === 'redirection' ? document.getElementById('redirectionUrl').value.trim() : '';
 
-        // Handle save action in the manage popup
-        saveBtn.onclick = async () => {
-        // Update site status and type
-        const statut = document.getElementById('statut').value;
-        const type = document.getElementById('type').value;
-// Récupère les champs supplémentaires
-const reason = document.getElementById('reason').value.trim();
-const by = document.getElementById('by').value.trim();
-const date = document.getElementById('date').value;
-const end = document.getElementById('end').value;
+    currentSite.BlackListe.Statut = false;
+    currentSite.Maintenance.Statut = false;
+    currentSite.Rappel.Statut = false;
+    currentSite.Redirection.Statut = false;
 
-// Réinitialisation des statuts
-currentSite.BlackListe.Statut = false;
-currentSite.Maintenance.Statut = false;
-currentSite.Rappel.Statut = false;
+    switch (statut) {
+        case 'blacklist':
+            currentSite.BlackListe.Statut = true;
+            currentSite.BlackListe.Raison = reason;
+            currentSite.BlackListe.Par = by;
+            currentSite.BlackListe.Date = date;
+            currentSite.BlackListe.Fin = end;
+            break;
+        case 'maintenance':
+            currentSite.Maintenance.Statut = true;
+            currentSite.Maintenance.Raison = reason;
+            currentSite.Maintenance.Par = by;
+            currentSite.Maintenance.Date = date;
+            currentSite.Maintenance.Fin = end;
+            break;
+        case 'rappel':
+            currentSite.Rappel.Statut = true;
+            currentSite.Rappel.Raison = reason;
+            currentSite.Rappel.Par = by;
+            currentSite.Rappel.Date = date;
+            currentSite.Rappel.Fin = end;
+            break;
+        case 'redirection':
+            currentSite.Redirection.Statut = true;
+            currentSite.Redirection.Raison = reason;
+            currentSite.Redirection.Url = redirectionUrl;
+            currentSite.Redirection.Par = by;
+            currentSite.Redirection.Date = date;
+            currentSite.Redirection.Fin = end;
+            break;
+    }
 
-switch (statut) {
-    case 'blacklist':
-        currentSite.BlackListe.Statut = true;
-        currentSite.BlackListe.Raison = reason;
-        currentSite.BlackListe.Par = by;
-        currentSite.BlackListe.Date = date;
-        currentSite.BlackListe.Fin = end;
-        break;
-    case 'rappel':
-        currentSite.Rappel.Statut = true;
-        currentSite.Rappel.Raison = reason;
-        currentSite.Rappel.Par = by;
-        currentSite.Rappel.Date = date;
-        currentSite.Rappel.Fin = end;
-        break;
-    case 'maintenance':
-        currentSite.Maintenance.Statut = true;
-        currentSite.Maintenance.Raison = reason;
-        currentSite.Maintenance.Par = by;
-        currentSite.Maintenance.Date = date;
-        currentSite.Maintenance.Fin = end;
-        break;
-    case 'redirection':
-        currentSite.Redirection.URL = reason; // Assuming the "reason" holds the redirection URL
-        currentSite.Redirection.Statut = true;
-        break;
-    case 'clear':
-        currentSite.BlackListe.Statut = false;
-        currentSite.Maintenance.Statut = false;
-        currentSite.Rappel.Statut = false;
-        currentSite.Redirection.Statut = false;
-        break;
-}
+    currentSite.Type = type;
 
-// Update site type
-currentSite.Type = type;
+    const updatedData = JSON.stringify(jsonData);
+    const base64Data = btoa(updatedData);
+    const token = await getGitHubToken();
 
-// Update JSON content on GitHub
-const updatedContent = JSON.stringify(jsonData, null, 2);
-const base64Content = btoa(updatedContent); // Base64 encode the JSON
+    const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: 'Update site data',
+            content: base64Data,
+            sha: sha
+        })
+    });
 
-// Send the update request to GitHub API
-const token = await getGitHubToken();
-const updateResponse = await fetch(apiUrl, {
-    method: 'PUT',
-    headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        message: `Mise à jour du site ${currentSite.URL}`,
-        content: base64Content,
-        sha: sha
-    })
-});
-
-if (updateResponse.ok) {
-    alert('Modifications sauvegardées avec succès.');
-    fetchData(); // Reload the table after saving changes
-    managePopup.classList.add('hidden'); // Close the popup
-} else {
-    alert('Une erreur est survenue lors de la sauvegarde.');
-}
+    if (response.ok) {
+        alert('Les modifications ont été sauvegardées sur GitHub!');
+        managePopup.classList.add('hidden');
+        fetchData(); // Recharge les données
+    } else {
+        alert('Erreur lors de la sauvegarde sur GitHub.');
+    }
 };
 
-// Initial fetch to load the data
+// Initialisation
 fetchData();
     </script>
 
