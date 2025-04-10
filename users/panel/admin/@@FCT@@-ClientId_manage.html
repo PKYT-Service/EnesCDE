@@ -30,287 +30,256 @@
 
     
                 
+ <div class="max-w-lg mx-auto p-6 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
+  <form id="banForm" class="space-y-4">
 
-
-
-    <div class="container mx-auto p-6">
-        <h1 class="text-2xl font-bold mb-4">Gestion des Ban ECDE</h1>
-
-        <div class="mb-6">
-            <label for="action" class="block text-lg font-semibold">Choisir une action</label>
-            <select id="action" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
-                <option value="add">Ajouter une entrée</option>
-                <option value="edit">Modifier une entrée</option>
-                <option value="delete">Supprimer une entrée</option>
-            </select>
-        </div>
-
-        <!-- Formulaire Ajouter une entrée -->
-        <div id="addForm" class="actionForm">
-            <h2 class="text-xl font-semibold mb-4">Ajouter une entrée</h2>
-            <div class="mb-4">
-                <label for="type" class="block text-lg">Sélectionner le type</label>
-                <select id="type" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
-                    <option value="ECDE:ID">ECDE:ID</option>
-                    <option value="ECDE:ID_IP">ECDE:ID_IP</option>
-                    <option value="ECDE:ID_DF">ECDE:ID_DF</option>
-                    <option value="ECDE:ID_RP">ECDE:ID_RP</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="valeurs" class="block text-lg">Valeur</label>
-                <input id="valeurs" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
-            </div>
-            <div class="mb-4">
-                <label for="raison" class="block text-lg">Raison</label>
-                <input id="raison" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
-            </div>
-            <div class="mb-4">
-                <label for="date" class="block text-lg">Date</label>
-                <input id="date" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="date">
-            </div>
-            <div class="mb-4">
-                <label for="par" class="block text-lg">Par</label>
-                <input id="par" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
-            </div>
-            <div class="mb-4">
-                <label for="bloqueAll" class="block text-lg">Bloqué (All)</label>
-                <input id="bloqueAll" type="checkbox" class="mt-2">
-            </div>
-            <div class="mb-4">
-                <label for="webUrl" class="block text-lg">URLs Web (séparées par des virgules)</label>
-                <input id="webUrl" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
-            </div>
-            <button id="addBtn" class="w-full mt-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Ajouter</button>
-        </div>
-
-        <!-- Formulaire Modifier une entrée -->
-        <div id="editForm" class="actionForm hidden">
-            <h2 class="text-xl font-semibold mb-4">Modifier une entrée</h2>
-            <div class="mb-4">
-                <label for="entryList" class="block text-lg">Sélectionner une entrée à modifier</label>
-                <select id="entryList" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
-                    <!-- Liste des entrées à afficher ici -->
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="editAll" class="block text-lg">Bloqué (All)</label>
-                <input id="editAll" type="checkbox" class="mt-2">
-            </div>
-            <div class="mb-4">
-                <label for="editWebUrl" class="block text-lg">URLs Web (séparées par des virgules)</label>
-                <input id="editWebUrl" class="mt-2 w-full p-2 bg-gray-700 text-white rounded" type="text">
-            </div>
-            <button id="editBtn" class="w-full mt-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Modifier</button>
-        </div>
-
-        <!-- Formulaire Supprimer une entrée -->
-        <div id="deleteForm" class="actionForm hidden">
-            <h2 class="text-xl font-semibold mb-4">Supprimer une entrée</h2>
-            <div class="mb-4">
-                <label for="deleteList" class="block text-lg">Sélectionner une entrée à supprimer</label>
-                <select id="deleteList" class="mt-2 w-full p-2 bg-gray-700 text-white rounded">
-                    <!-- Liste des entrées à afficher ici -->
-                </select>
-            </div>
-            <button id="deleteBtn" class="w-full mt-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Supprimer</button>
-        </div>
+    <!-- Type de Ban -->
+    <div class="flex items-center space-x-4">
+      <label for="type" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Type:</label>
+      <select id="type" class="p-2 border rounded-md w-2/3 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700">
+        <option value="ECDE:ID">ECDE:ID</option>
+        <option value="ECDE:ID_IP">ECDE:ID_IP</option>
+        <option value="ECDE:ID_RP">ECDE:ID_RP</option>
+        <option value="ECDE:ID_DF">ECDE:ID_DF</option>
+      </select>
     </div>
 
+    <!-- Valeurs -->
+    <div class="flex items-center space-x-4">
+      <label for="valeurs" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Valeurs:</label>
+      <input type="text" id="valeurs" class="p-2 border rounded-md w-2/3 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700" placeholder="Entrez la valeur" />
+    </div>
+
+    <!-- Date -->
+    <div class="flex items-center space-x-4">
+      <label for="date" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Date:</label>
+      <input type="date" id="date" class="p-2 border rounded-md w-2/3 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700" disabled value="" />
+    </div>
+
+    <!-- Raison -->
+    <div class="flex items-center space-x-4">
+      <label for="raison" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Raison:</label>
+      <input type="text" id="raison" class="p-2 border rounded-md w-2/3 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700" placeholder="Entrez la raison" />
+    </div>
+
+    <!-- Par -->
+    <div class="flex items-center space-x-4">
+      <label for="par" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Par:</label>
+      <input type="text" id="par" class="p-2 border rounded-md w-2/3 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700" placeholder="Défini automatiquement ou vous" />
+    </div>
+
+    <!-- Bloquer toutes les accès -->
+    <div class="flex items-center space-x-4">
+      <label for="bloquer-all" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Bloquer toutes les accès:</label>
+      <input type="checkbox" id="bloquer-all" class="p-2" />
+    </div>
+
+    <!-- Bloquer sur certaines URL -->
+    <div class="flex items-center space-x-4">
+      <label for="web-url" class="w-1/3 font-semibold text-gray-800 dark:text-gray-200">Bloquer sur URL:</label>
+      <input type="text" id="web-url" class="p-2 border rounded-md w-2/3 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700" placeholder="Entrez une URL" />
+      <button type="button" id="add-url" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter</button>
+    </div>
+
+    <ul id="url-list" class="list-disc ml-8 mt-2 text-gray-800 dark:text-gray-200">
+      <!-- URLs bloquées ajoutées ici -->
+    </ul>
+
+    <!-- Actions -->
+    <div class="flex justify-between space-x-4">
+      <button type="button" id="add" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Ajouter</button>
+      <button type="button" id="modify" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Modifier</button>
+    </div>
+  </form>
+
+  <!-- Liste des bannissements existants -->
+  <div class="mt-6">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Bannissements Existants</h2>
+    <ul id="ban-list" class="space-y-4 text-gray-800 dark:text-gray-200">
+      <!-- Les entrées seront ajoutées ici -->
+    </ul>
+  </div>
+ </div>
 <script>
-const actionSelect = document.getElementById('action');
-const addForm = document.getElementById('addForm');
-const editForm = document.getElementById('editForm');
-const deleteForm = document.getElementById('deleteForm');
-const entryList = document.getElementById('entryList');
-const deleteList = document.getElementById('deleteList');
+// Initialise la date d'aujourd'hui
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
-let jsonData = [];
+// Variables
+let urls = [];
+let banData = [];
 
-const repoOwner = 'PKYT-Service'; // Propriétaire du repo
-const repoName = 'database_EnesCDE'; // Nom du repo
-const filePath = 'ecde/data/BanECDE:ID.json'; // Chemin du fichier
-
-// Fonction pour récupérer dynamiquement le token GitHub depuis l'URL
-async function getGitHubToken() {
-    try {
-        const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
-        if (response.ok) {
-            const data = await response.json();
-            return data.GITHUB_TOKEN; // Récupère le token depuis la clé GITHUB_TOKEN
-        } else {
-            throw new Error('Erreur lors de la récupération du token GitHub');
-        }
-    } catch (error) {
-        console.error(error);
-        return null;
-    }
-}
-
-// Fonction pour récupérer le contenu du fichier JSON depuis GitHub
-async function fetchJsonData(githubToken) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        headers: {
-            Authorization: `Bearer ${githubToken}`,
-            Accept: 'application/vnd.github.v3.raw'
-        }
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        // Si le contenu est déjà en JSON brut, il n'y a pas besoin de décoder en base64
-        jsonData = JSON.parse(data.content); // Utilisation directe de JSON.parse sur le contenu
-        updateEntryList();
-    } else {
-        console.error('Erreur lors de la récupération du fichier:', response.status);
-    }
-}
-
-// Mise à jour des listes déroulantes pour les actions Modifier et Supprimer
-function updateEntryList() {
-    entryList.innerHTML = '';
-    deleteList.innerHTML = '';
-
-    jsonData.forEach(entry => {
-        const option = document.createElement('option');
-        option.value = entry.Valeurs;
-        option.textContent = entry.Valeurs;
-        entryList.appendChild(option);
-
-        const deleteOption = document.createElement('option');
-        deleteOption.value = entry.Valeurs;
-        deleteOption.textContent = entry.Valeurs;
-        deleteList.appendChild(deleteOption);
-    });
-}
-
-// Envoi des données mises à jour sur GitHub
-async function pushJsonData(githubToken) {
-    try {
-        const jsonString = JSON.stringify(jsonData, null, 2);
-        const encodedContent = btoa(jsonString); // Encodage en base64
-
-        const sha = await getFileSha(githubToken); // Récupérer le SHA du fichier existant
-
-        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-                message: 'Mise à jour des données du fichier BanECDE:ID.json',
-                content: encodedContent,
-                sha: sha
-            })
-        });
-
-        if (response.ok) {
-            console.log('Fichier mis à jour avec succès');
-            updateEntryList();  // Mettre à jour la liste après l'ajout/modification/suppression
-        } else {
-            throw new Error('Erreur lors de la mise à jour du fichier');
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// Récupération du SHA actuel du fichier
-async function getFileSha(githubToken) {
-    try {
-        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-            headers: {
-                Authorization: `Bearer ${githubToken}`
-            }
-        });
-
-        const data = await response.json();
-        return data.sha;
-    } catch (error) {
-        console.error('Erreur lors de la récupération du SHA :', error);
-        return null;
-    }
-}
-
-// Actions selon le choix dans le menu
-actionSelect.addEventListener('change', () => {
-    const action = actionSelect.value;
-    if (action === 'add') {
-        addForm.classList.remove('hidden');
-        editForm.classList.add('hidden');
-        deleteForm.classList.add('hidden');
-    } else if (action === 'edit') {
-        addForm.classList.add('hidden');
-        editForm.classList.remove('hidden');
-        deleteForm.classList.add('hidden');
-    } else if (action === 'delete') {
-        addForm.classList.add('hidden');
-        editForm.classList.add('hidden');
-        deleteForm.classList.remove('hidden');
-    }
+// Ajouter une URL
+document.getElementById('add-url').addEventListener('click', () => {
+  const urlInput = document.getElementById('web-url').value;
+  if (urlInput && !urls.includes(urlInput)) {
+    urls.push(urlInput);
+    document.getElementById('web-url').value = '';
+    updateUrlList();
+  }
 });
+
+function updateUrlList() {
+  const urlList = document.getElementById('url-list');
+  urlList.innerHTML = '';
+  urls.forEach(url => {
+    const li = document.createElement('li');
+    li.textContent = url;
+    urlList.appendChild(li);
+  });
+}
+
+// Récupération du token depuis Tocken.js
+async function getGitHubToken() {
+  const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
+  const data = await response.json();
+  return data.GITHUB_TOKEN;
+}
+
+// Récupération du SHA du fichier
+async function getFileSha() {
+  const token = await getGitHubToken();
+  const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
+    headers: {
+      'Authorization': `token ${token}`
+    }
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.sha;
+}
+
+// Sauvegarde les données modifiées sur GitHub
+async function saveToGitHub(data) {
+  const token = await getGitHubToken();
+  const sha = await getFileSha();
+  const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: 'Mise à jour BanECDE:ID.json',
+      content: btoa(JSON.stringify(data, null, 2)),
+      sha: sha
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    alert(`Erreur GitHub: ${err.message}`);
+  } else {
+    alert('Données sauvegardées sur GitHub');
+    loadBanData();
+  }
+}
+
+// Charger les données existantes
+async function loadBanData() {
+  const token = await getGitHubToken();
+  const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
+    headers: {
+      'Authorization': `token ${token}`
+    }
+  });
+  if (!res.ok) return;
+
+  const file = await res.json();
+  banData = JSON.parse(atob(file.content));
+  renderList();
+}
+
+// Affiche la liste
+function renderList() {
+  const container = document.getElementById('ban-list');
+  container.innerHTML = '';
+
+  banData.forEach((entry, index) => {
+    const card = document.createElement('div');
+    card.className = "bg-gray-50 p-4 border rounded shadow mb-4";
+
+    card.innerHTML = `
+      <p><strong>Type:</strong> ${entry.Type}</p>
+      <p><strong>Valeurs:</strong> ${entry.Valeurs}</p>
+      <p><strong>Raison:</strong> ${entry.Raison}</p>
+      <p><strong>Date:</strong> ${entry.Date}</p>
+      <p><strong>Par:</strong> ${entry.Par}</p>
+      <p><strong>Bloqué (All):</strong> ${entry.bloque.All}</p>
+      <p><strong>URLs:</strong> ${entry.bloque.web_url.join(', ')}</p>
+      <div class="flex space-x-2 mt-2">
+        <button onclick="editEntry(${index})" class="bg-yellow-400 text-white px-2 py-1 rounded">Modifier</button>
+        <button onclick="removeEntry(${index})" class="bg-red-500 text-white px-2 py-1 rounded">Supprimer</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
 
 // Ajouter une entrée
-document.getElementById('addBtn').addEventListener('click', async () => {
-    const newEntry = {
-        "Type": document.getElementById('newType').value,
-        "Valeurs": document.getElementById('newValeurs').value,
-        "Raison": document.getElementById('newRaison').value,
-        "Date": new Date().toISOString(),
-        "Par": "Admin", // À personnaliser
-        "bloque": {
-            "All": document.getElementById('newAll').checked,
-            "web": document.getElementById('newWeb').checked,
-            "web_url": [document.getElementById('newWebUrl').value]
-        }
-    };
+document.getElementById('add').addEventListener('click', () => {
+  const type = document.getElementById('type').value;
+  const valeurs = document.getElementById('valeurs').value;
+  const date = document.getElementById('date').value;
+  const par = document.getElementById('par').value || 'Admin';
+  const raison = document.getElementById('raison').value || 'Non précisé';
+  const bloqueAll = document.getElementById('bloquer-all').checked;
 
-    jsonData.push(newEntry);
+  const newEntry = {
+    Type: type,
+    Valeurs: valeurs,
+    Raison: raison,
+    Date: date,
+    Par: par,
+    bloque: {
+      All: bloqueAll,
+      web: bloqueAll,
+      web_url: urls,
+    },
+  };
 
-    const githubToken = await getGitHubToken();
-    if (githubToken) {
-        await pushJsonData(githubToken);
-    }
-});
-
-// Modifier une entrée
-document.getElementById('editBtn').addEventListener('click', async () => {
-    const selectedValue = entryList.value;
-    const updatedEntry = jsonData.find(entry => entry.Valeurs === selectedValue);
-
-    if (updatedEntry) {
-        updatedEntry.Raison = document.getElementById('editRaison').value;
-        updatedEntry.bloque.All = document.getElementById('editAll').checked;
-        updatedEntry.bloque.web = document.getElementById('editWeb').checked;
-        updatedEntry.bloque.web_url = [document.getElementById('editWebUrl').value];
-
-        const githubToken = await getGitHubToken();
-        if (githubToken) {
-            await pushJsonData(githubToken);
-        }
-    }
+  banData.push(newEntry);
+  saveToGitHub(banData);
 });
 
 // Supprimer une entrée
-document.getElementById('deleteBtn').addEventListener('click', async () => {
-    const selectedValue = deleteList.value;
-    jsonData = jsonData.filter(entry => entry.Valeurs !== selectedValue);
+async function removeEntry(index) {
+  if (!confirm("Tu es sûr de vouloir supprimer cette entrée ?")) return;
+  banData.splice(index, 1);
+  await saveToGitHub(banData);
+}
 
-    const githubToken = await getGitHubToken();
-    if (githubToken) {
-        await pushJsonData(githubToken);
-    }
-});
+// Modifier une entrée (préremplissage)
+window.editEntry = function(index) {
+  const entry = banData[index];
+  document.getElementById('type').value = entry.Type;
+  document.getElementById('valeurs').value = entry.Valeurs;
+  document.getElementById('date').value = entry.Date;
+  document.getElementById('raison').value = entry.Raison;
+  document.getElementById('par').value = entry.Par;
+  document.getElementById('bloquer-all').checked = entry.bloque.All;
+  urls = [...entry.bloque.web_url];
+  updateUrlList();
 
-// Initialiser la page
-(async function init() {
-    const githubToken = await getGitHubToken();
-    if (githubToken) {
-        await fetchJsonData(githubToken);
-    }
-})();
+  // Réenregistrement remplacera l’entrée existante
+  document.getElementById('modify').onclick = () => {
+    banData[index] = {
+      Type: document.getElementById('type').value,
+      Valeurs: document.getElementById('valeurs').value,
+      Raison: document.getElementById('raison').value || 'Non précisé',
+      Date: document.getElementById('date').value,
+      Par: document.getElementById('par').value || 'Admin',
+      bloque: {
+        All: document.getElementById('bloquer-all').checked,
+        web: document.getElementById('bloquer-all').checked,
+        web_url: [...urls],
+      },
+    };
+    saveToGitHub(banData);
+  };
+};
 
+// Chargement initial
+window.addEventListener('DOMContentLoaded', loadBanData);
 </script>
 
                 <!-- Footer : Deb -->
