@@ -109,6 +109,7 @@
                     <option value="blacklist">Blacklist</option>
                     <option value="rappel">Rappel</option>
                     <option value="maintenance">Maintenance</option>
+                    <option value="redirection">Redirection</option>
                     <option value="clear">Clear</option>
                 </select>
             </div>
@@ -118,6 +119,8 @@
                     <input id="reason" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Comportement abusif">
                     <label class="block">Par</label>
                     <input id="by" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Admin">
+                    <label class="block">URL ( afficher uniquement si Statut : Redirection )</label>
+                    <input id="URL" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: HTTPS ">
                     <label class="block">Date</label>
                     <input id="date" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date">
                     <label class="block">Fin (facultatif)</label>
@@ -367,13 +370,6 @@ switch (statut) {
         currentSite.BlackListe.Date = date;
         currentSite.BlackListe.Fin = end;
         break;
-    case 'maintenance':
-        currentSite.Maintenance.Statut = true;
-        currentSite.Maintenance.Raison = reason;
-        currentSite.Maintenance.Par = by;
-        currentSite.Maintenance.Date = date;
-        currentSite.Maintenance.Fin = end;
-        break;
     case 'rappel':
         currentSite.Rappel.Statut = true;
         currentSite.Rappel.Raison = reason;
@@ -381,45 +377,58 @@ switch (statut) {
         currentSite.Rappel.Date = date;
         currentSite.Rappel.Fin = end;
         break;
+    case 'maintenance':
+        currentSite.Maintenance.Statut = true;
+        currentSite.Maintenance.Raison = reason;
+        currentSite.Maintenance.Par = by;
+        currentSite.Maintenance.Date = date;
+        currentSite.Maintenance.Fin = end;
+        break;
+    case 'redirection':
+        currentSite.Redirection.URL = reason; // Assuming the "reason" holds the redirection URL
+        currentSite.Redirection.Statut = true;
+        break;
+    case 'clear':
+        currentSite.BlackListe.Statut = false;
+        currentSite.Maintenance.Statut = false;
+        currentSite.Rappel.Statut = false;
+        currentSite.Redirection.Statut = false;
+        break;
 }
 
+// Update site type
+currentSite.Type = type;
 
-        // Update site type
-        currentSite.Type = type;
+// Update JSON content on GitHub
+const updatedContent = JSON.stringify(jsonData, null, 2);
+const base64Content = btoa(updatedContent); // Base64 encode the JSON
 
-        // Encode the updated data into Base64
-        const updatedData = JSON.stringify(jsonData); // jsonData is the fetched data
-        const base64Data = btoa(updatedData);
+// Send the update request to GitHub API
+const token = await getGitHubToken();
+const updateResponse = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+        'Authorization': `token ${token}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        message: `Mise à jour du site ${currentSite.URL}`,
+        content: base64Content,
+        sha: sha
+    })
+});
 
-        // Get GitHub token from tocken.js
-        const token = await getGitHubToken(); // This fetches the token from the tocken.js URL
+if (updateResponse.ok) {
+    alert('Modifications sauvegardées avec succès.');
+    fetchData(); // Reload the table after saving changes
+    managePopup.classList.add('hidden'); // Close the popup
+} else {
+    alert('Une erreur est survenue lors de la sauvegarde.');
+}
+};
 
-        // Make API request to update the file on GitHub
-        const response = await fetch(apiUrl, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                message: 'Update site data',
-                content: base64Data,
-                sha: sha // You need to pass the sha of the existing file (from the initial fetch request)
-            })
-        });
-
-        if (response.ok) {
-            alert('Les modifications ont été sauvegardées sur GitHub!');
-            managePopup.classList.add('hidden');
-            renderTable([currentSite]); // Re-render the table with updated info
-        } else {
-            alert('Erreur lors de la sauvegarde sur GitHub.');
-        }
-    };
-
-
-        // Fetch the data when the page loads
-        fetchData();
+// Initial fetch to load the data
+fetchData();
     </script>
 
 
