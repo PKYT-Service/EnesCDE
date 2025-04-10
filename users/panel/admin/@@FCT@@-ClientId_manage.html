@@ -118,7 +118,7 @@
     </div>
 
 <script>
-    const actionSelect = document.getElementById('action');
+const actionSelect = document.getElementById('action');
 const addForm = document.getElementById('addForm');
 const editForm = document.getElementById('editForm');
 const deleteForm = document.getElementById('deleteForm');
@@ -133,30 +133,38 @@ const filePath = 'ecde/data/BanECDE:ID.json'; // Chemin du fichier
 
 // Fonction pour récupérer dynamiquement le token GitHub depuis l'URL
 async function getGitHubToken() {
-    const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
-    if (response.ok) {
-        const data = await response.json();
-        return data.GITHUB_TOKEN; // Récupère le token depuis la clé GITHUB_TOKEN
-    } else {
-        console.error('Erreur lors de la récupération du token GitHub:', response.status);
+    try {
+        const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
+        if (response.ok) {
+            const data = await response.json();
+            return data.GITHUB_TOKEN; // Récupère le token depuis la clé GITHUB_TOKEN
+        } else {
+            throw new Error('Erreur lors de la récupération du token GitHub');
+        }
+    } catch (error) {
+        console.error(error);
         return null;
     }
 }
 
 // Fonction pour récupérer le contenu du fichier JSON depuis GitHub
 async function fetchJsonData(githubToken) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        headers: {
-            Authorization: `Bearer ${githubToken}`,
-            Accept: 'application/vnd.github.v3.raw'
+    try {
+        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+            headers: {
+                Authorization: `Bearer ${githubToken}`,
+                Accept: 'application/vnd.github.v3.raw'
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            jsonData = JSON.parse(atob(data.content)); // Décodage du contenu en base64
+            updateEntryList();
+        } else {
+            throw new Error('Erreur lors de la récupération du fichier');
         }
-    });
-    if (response.ok) {
-        const data = await response.json();
-        jsonData = JSON.parse(atob(data.content)); // Décodage du contenu en base64
-        updateEntryList();
-    } else {
-        console.error('Erreur lors de la récupération du fichier:', response.status);
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -180,39 +188,51 @@ function updateEntryList() {
 
 // Envoi des données mises à jour sur GitHub
 async function pushJsonData(githubToken) {
-    const jsonString = JSON.stringify(jsonData, null, 2);
-    const encodedContent = btoa(jsonString); // Encodage en base64
+    try {
+        const jsonString = JSON.stringify(jsonData, null, 2);
+        const encodedContent = btoa(jsonString); // Encodage en base64
 
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `Bearer ${githubToken}`,
-            'Accept': 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify({
-            message: 'Mise à jour des données du fichier BanECDE:ID.json',
-            content: encodedContent,
-            sha: await getFileSha(githubToken) // Récupérer le SHA du fichier existant
-        })
-    });
+        const sha = await getFileSha(githubToken); // Récupérer le SHA du fichier existant
 
-    if (response.ok) {
-        console.log('Fichier mis à jour avec succès');
-    } else {
-        console.error('Erreur lors de la mise à jour du fichier:', response.status);
+        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({
+                message: 'Mise à jour des données du fichier BanECDE:ID.json',
+                content: encodedContent,
+                sha: sha
+            })
+        });
+
+        if (response.ok) {
+            console.log('Fichier mis à jour avec succès');
+            updateEntryList();  // Mettre à jour la liste après l'ajout/modification/suppression
+        } else {
+            throw new Error('Erreur lors de la mise à jour du fichier');
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
 
 // Récupération du SHA actuel du fichier
 async function getFileSha(githubToken) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        headers: {
-            Authorization: `Bearer ${githubToken}`
-        }
-    });
+    try {
+        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+            headers: {
+                Authorization: `Bearer ${githubToken}`
+            }
+        });
 
-    const data = await response.json();
-    return data.sha;
+        const data = await response.json();
+        return data.sha;
+    } catch (error) {
+        console.error('Erreur lors de la récupération du SHA :', error);
+        return null;
+    }
 }
 
 // Actions selon le choix dans le menu
@@ -234,7 +254,7 @@ actionSelect.addEventListener('change', () => {
 });
 
 // Ajouter une entrée
-document.getElementById('addButton').addEventListener('click', () => {
+document.getElementById('addButton').addEventListener('click', async () => {
     const newEntry = {
         "Type": document.getElementById('newType').value,
         "Valeurs": document.getElementById('newValeurs').value,
@@ -249,15 +269,15 @@ document.getElementById('addButton').addEventListener('click', () => {
     };
 
     jsonData.push(newEntry);
-    getGitHubToken().then(githubToken => {
-        if (githubToken) {
-            pushJsonData(githubToken);
-        }
-    });
+
+    const githubToken = await getGitHubToken();
+    if (githubToken) {
+        await pushJsonData(githubToken);
+    }
 });
 
 // Modifier une entrée
-document.getElementById('editButton').addEventListener('click', () => {
+document.getElementById('editButton').addEventListener('click', async () => {
     const selectedValue = entryList.value;
     const updatedEntry = jsonData.find(entry => entry.Valeurs === selectedValue);
 
@@ -267,32 +287,31 @@ document.getElementById('editButton').addEventListener('click', () => {
         updatedEntry.bloque.web = document.getElementById('editWeb').checked;
         updatedEntry.bloque.web_url = [document.getElementById('editWebUrl').value];
 
-        getGitHubToken().then(githubToken => {
-            if (githubToken) {
-                pushJsonData(githubToken);
-            }
-        });
+        const githubToken = await getGitHubToken();
+        if (githubToken) {
+            await pushJsonData(githubToken);
+        }
     }
 });
 
 // Supprimer une entrée
-document.getElementById('deleteButton').addEventListener('click', () => {
+document.getElementById('deleteButton').addEventListener('click', async () => {
     const selectedValue = deleteList.value;
     jsonData = jsonData.filter(entry => entry.Valeurs !== selectedValue);
-    
-    getGitHubToken().then(githubToken => {
-        if (githubToken) {
-            pushJsonData(githubToken);
-        }
-    });
+
+    const githubToken = await getGitHubToken();
+    if (githubToken) {
+        await pushJsonData(githubToken);
+    }
 });
 
 // Initialiser la page
-getGitHubToken().then(githubToken => {
+(async function init() {
+    const githubToken = await getGitHubToken();
     if (githubToken) {
-        fetchJsonData(githubToken);
+        await fetchJsonData(githubToken);
     }
-});
+})();
 
 </script>
 
