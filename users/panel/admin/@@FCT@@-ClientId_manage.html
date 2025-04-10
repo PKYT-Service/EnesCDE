@@ -155,25 +155,16 @@ async function fetchJsonData(githubToken) {
             Accept: 'application/vnd.github.v3.raw'
         }
     });
+
     if (response.ok) {
         const data = await response.json();
-
-        // Vérification si le contenu est encodé en base64
-        try {
-            const decodedContent = atob(data.content); // Tentative de décodage base64
-            jsonData = JSON.parse(decodedContent); // Si décodage réussi, parser le JSON
-        } catch (error) {
-            // Si erreur, peut-être que le contenu est déjà en JSON
-            console.log("Le contenu n'est pas encodé en base64, traitement direct...");
-            jsonData = JSON.parse(data.content); // Traitement direct si déjà du JSON
-        }
-
+        // Si le contenu est déjà en JSON brut, il n'y a pas besoin de décoder en base64
+        jsonData = JSON.parse(data.content); // Utilisation directe de JSON.parse sur le contenu
         updateEntryList();
     } else {
         console.error('Erreur lors de la récupération du fichier:', response.status);
     }
 }
-
 
 // Mise à jour des listes déroulantes pour les actions Modifier et Supprimer
 function updateEntryList() {
