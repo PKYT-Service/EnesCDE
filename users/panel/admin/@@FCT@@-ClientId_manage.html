@@ -117,122 +117,184 @@
         </div>
     </div>
 
-    <script>
-        const actionSelect = document.getElementById('action');
-        const addForm = document.getElementById('addForm');
-        const editForm = document.getElementById('editForm');
-        const deleteForm = document.getElementById('deleteForm');
-        let jsonData = [
-            {
-                "Type": "ECDE:ID",
-                "Valeurs": "12345",
-                "Raison": "Accès bloqué pour maintenance",
-                "Date": "2025-03-02",
-                "Par": "Admin",
-                "bloque": {
-                    "All": true,
-                    "web": true,
-                    "web_url": [
-                        "https://enes-cde.vercel.app",
-                        "https://howardarmory.vercel.app"
-                    ]
-                }
-            }
-        ];
+<script>
+    const actionSelect = document.getElementById('action');
+const addForm = document.getElementById('addForm');
+const editForm = document.getElementById('editForm');
+const deleteForm = document.getElementById('deleteForm');
+const entryList = document.getElementById('entryList');
+const deleteList = document.getElementById('deleteList');
 
-        // Afficher l'action sélectionnée
-        actionSelect.addEventListener('change', () => {
-            const action = actionSelect.value;
-            if (action === 'add') {
-                addForm.classList.remove('hidden');
-                editForm.classList.add('hidden');
-                deleteForm.classList.add('hidden');
-            } else if (action === 'edit') {
-                addForm.classList.add('hidden');
-                editForm.classList.remove('hidden');
-                deleteForm.classList.add('hidden');
-                updateEntryList();
-            } else if (action === 'delete') {
-                addForm.classList.add('hidden');
-                editForm.classList.add('hidden');
-                deleteForm.classList.remove('hidden');
-                updateEntryList();
-            }
-        });
+let jsonData = [];
 
-        // Mise à jour des listes déroulantes pour les actions Modifier et Supprimer
-        function updateEntryList() {
-            const entryList = document.getElementById('entryList');
-            const deleteList = document.getElementById('deleteList');
-            entryList.innerHTML = '';
-            deleteList.innerHTML = '';
+const repoOwner = 'PKYT-Service'; // Propriétaire du repo
+const repoName = 'database_EnesCDE'; // Nom du repo
+const filePath = 'ecde/data/BanECDE:ID.json'; // Chemin du fichier
 
-            jsonData.forEach(entry => {
-                const option = document.createElement('option');
-                option.value = entry.Valeurs;
-                option.textContent = entry.Valeurs;
-                entryList.appendChild(option);
+// Fonction pour récupérer dynamiquement le token GitHub depuis l'URL
+async function getGitHubToken() {
+    const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
+    if (response.ok) {
+        const data = await response.json();
+        return data.GITHUB_TOKEN; // Récupère le token depuis la clé GITHUB_TOKEN
+    } else {
+        console.error('Erreur lors de la récupération du token GitHub:', response.status);
+        return null;
+    }
+}
 
-                const deleteOption = document.createElement('option');
-                deleteOption.value = entry.Valeurs;
-                deleteOption.textContent = entry.Valeurs;
-                deleteList.appendChild(deleteOption);
-            });
+// Fonction pour récupérer le contenu du fichier JSON depuis GitHub
+async function fetchJsonData(githubToken) {
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        headers: {
+            Authorization: `Bearer ${githubToken}`,
+            Accept: 'application/vnd.github.v3.raw'
         }
+    });
+    if (response.ok) {
+        const data = await response.json();
+        jsonData = JSON.parse(atob(data.content)); // Décodage du contenu en base64
+        updateEntryList();
+    } else {
+        console.error('Erreur lors de la récupération du fichier:', response.status);
+    }
+}
 
-        // Ajouter une nouvelle entrée
-        document.getElementById('addBtn').addEventListener('click', () => {
-            const type = document.getElementById('type').value;
-            const valeurs = document.getElementById('valeurs').value;
-            const raison = document.getElementById('raison').value;
-            const date = document.getElementById('date').value;
-            const par = document.getElementById('par').value;
-            const bloqueAll = document.getElementById('bloqueAll').checked;
-            const webUrl = document.getElementById('webUrl').value.split(',');
+// Mise à jour des listes déroulantes pour les actions Modifier et Supprimer
+function updateEntryList() {
+    entryList.innerHTML = '';
+    deleteList.innerHTML = '';
 
-            const newEntry = {
-                Type: type,
-                Valeurs: valeurs,
-                Raison: raison,
-                Date: date,
-                Par: par,
-                bloque: {
-                    All: bloqueAll,
-                    web: true,
-                    web_url: webUrl
-                }
-            };
+    jsonData.forEach(entry => {
+        const option = document.createElement('option');
+        option.value = entry.Valeurs;
+        option.textContent = entry.Valeurs;
+        entryList.appendChild(option);
 
-            jsonData.push(newEntry);
-            alert('Entrée ajoutée avec succès !');
-        });
+        const deleteOption = document.createElement('option');
+        deleteOption.value = entry.Valeurs;
+        deleteOption.textContent = entry.Valeurs;
+        deleteList.appendChild(deleteOption);
+    });
+}
 
-        // Modifier une entrée
-        document.getElementById('editBtn').addEventListener('click', () => {
-            const valeurs = document.getElementById('entryList').value;
-            const updatedEntry = jsonData.find(entry => entry.Valeurs === valeurs);
-            
-            if (updatedEntry) {
-                updatedEntry.bloque.All = document.getElementById('editAll').checked;
-                updatedEntry.bloque.web_url = document.getElementById('editWebUrl').value.split(',');
-                alert('Entrée modifiée avec succès !');
+// Envoi des données mises à jour sur GitHub
+async function pushJsonData(githubToken) {
+    const jsonString = JSON.stringify(jsonData, null, 2);
+    const encodedContent = btoa(jsonString); // Encodage en base64
+
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({
+            message: 'Mise à jour des données du fichier BanECDE:ID.json',
+            content: encodedContent,
+            sha: await getFileSha(githubToken) // Récupérer le SHA du fichier existant
+        })
+    });
+
+    if (response.ok) {
+        console.log('Fichier mis à jour avec succès');
+    } else {
+        console.error('Erreur lors de la mise à jour du fichier:', response.status);
+    }
+}
+
+// Récupération du SHA actuel du fichier
+async function getFileSha(githubToken) {
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        headers: {
+            Authorization: `Bearer ${githubToken}`
+        }
+    });
+
+    const data = await response.json();
+    return data.sha;
+}
+
+// Actions selon le choix dans le menu
+actionSelect.addEventListener('change', () => {
+    const action = actionSelect.value;
+    if (action === 'add') {
+        addForm.classList.remove('hidden');
+        editForm.classList.add('hidden');
+        deleteForm.classList.add('hidden');
+    } else if (action === 'edit') {
+        addForm.classList.add('hidden');
+        editForm.classList.remove('hidden');
+        deleteForm.classList.add('hidden');
+    } else if (action === 'delete') {
+        addForm.classList.add('hidden');
+        editForm.classList.add('hidden');
+        deleteForm.classList.remove('hidden');
+    }
+});
+
+// Ajouter une entrée
+document.getElementById('addButton').addEventListener('click', () => {
+    const newEntry = {
+        "Type": document.getElementById('newType').value,
+        "Valeurs": document.getElementById('newValeurs').value,
+        "Raison": document.getElementById('newRaison').value,
+        "Date": new Date().toISOString(),
+        "Par": "Admin", // À personnaliser
+        "bloque": {
+            "All": document.getElementById('newAll').checked,
+            "web": document.getElementById('newWeb').checked,
+            "web_url": [document.getElementById('newWebUrl').value]
+        }
+    };
+
+    jsonData.push(newEntry);
+    getGitHubToken().then(githubToken => {
+        if (githubToken) {
+            pushJsonData(githubToken);
+        }
+    });
+});
+
+// Modifier une entrée
+document.getElementById('editButton').addEventListener('click', () => {
+    const selectedValue = entryList.value;
+    const updatedEntry = jsonData.find(entry => entry.Valeurs === selectedValue);
+
+    if (updatedEntry) {
+        updatedEntry.Raison = document.getElementById('editRaison').value;
+        updatedEntry.bloque.All = document.getElementById('editAll').checked;
+        updatedEntry.bloque.web = document.getElementById('editWeb').checked;
+        updatedEntry.bloque.web_url = [document.getElementById('editWebUrl').value];
+
+        getGitHubToken().then(githubToken => {
+            if (githubToken) {
+                pushJsonData(githubToken);
             }
         });
+    }
+});
 
-        // Supprimer une entrée
-        document.getElementById('deleteBtn').addEventListener('click', () => {
-            const valeurs = document.getElementById('deleteList').value;
-            jsonData = jsonData.filter(entry => entry.Valeurs !== valeurs);
-            alert('Entrée supprimée avec succès !');
-        });
-    </script>
+// Supprimer une entrée
+document.getElementById('deleteButton').addEventListener('click', () => {
+    const selectedValue = deleteList.value;
+    jsonData = jsonData.filter(entry => entry.Valeurs !== selectedValue);
+    
+    getGitHubToken().then(githubToken => {
+        if (githubToken) {
+            pushJsonData(githubToken);
+        }
+    });
+});
 
+// Initialiser la page
+getGitHubToken().then(githubToken => {
+    if (githubToken) {
+        fetchJsonData(githubToken);
+    }
+});
 
-              
-
-
-
-
+</script>
 
                 <!-- Footer : Deb -->
                 <div id="ecde_footer"></div>
