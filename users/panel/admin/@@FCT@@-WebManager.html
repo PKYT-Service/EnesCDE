@@ -397,24 +397,23 @@ function renderTypeTag(type) {
 function openManagePopup(site) {
     currentSite = site;
     
-    // Initialise Redirection si non existant
-    if (!currentSite.Redirection) {
-        currentSite.Redirection = {
-            Statut: false,
-            Raison: "",
-            Url: "",
-            Par: "",
-            Date: "",
-            Fin: ""
-        };
-    }
+    // Initialisation des propriétés si elles n'existent pas
+    if (!currentSite.BlackListe) currentSite.BlackListe = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+    if (!currentSite.Maintenance) currentSite.Maintenance = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+    if (!currentSite.Rappel) currentSite.Rappel = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+    if (!currentSite.Redirection) currentSite.Redirection = { Statut: false, Raison: "", Url: "", Par: "", Date: "", Fin: "" };
 
     // Détermine le statut actuel
     let currentStatus = 'clear';
-    if (site.BlackListe.Statut) currentStatus = 'blacklist';
-    else if (site.Maintenance.Statut) currentStatus = 'maintenance';
-    else if (site.Rappel.Statut) currentStatus = 'rappel';
-    else if (site.Redirection.Statut) currentStatus = 'redirection';
+    const statusPriority = ['blacklist', 'maintenance', 'rappel', 'redirection'];
+    
+    for (const status of statusPriority) {
+        const statusKey = status.charAt(0).toUpperCase() + status.slice(1);
+        if (currentSite[statusKey]?.Statut) {
+            currentStatus = status;
+            break;
+        }
+    }
 
     // Remplit les champs du formulaire
     document.getElementById('statut').value = currentStatus;
@@ -427,7 +426,9 @@ function openManagePopup(site) {
         const redirectionUrlField = document.getElementById('redirectionUrlField');
         redirectionUrlField.classList.toggle('hidden', currentStatus !== 'redirection');
 
-        const activeStatus = site[currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)];
+        const statusKey = currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1);
+        const activeStatus = currentSite[statusKey] || {};
+        
         document.getElementById('reason').value = activeStatus.Raison || '';
         document.getElementById('by').value = activeStatus.Par || '';
         document.getElementById('date').value = activeStatus.Date || '';
