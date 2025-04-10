@@ -254,7 +254,7 @@ actionSelect.addEventListener('change', () => {
 });
 
 // Ajouter une entrée
-document.getElementById('addButton').addEventListener('click', async () => {
+document.getElementById('addBtn').addEventListener('click', async () => {
     const newEntry = {
         "Type": document.getElementById('newType').value,
         "Valeurs": document.getElementById('newValeurs').value,
@@ -277,7 +277,7 @@ document.getElementById('addButton').addEventListener('click', async () => {
 });
 
 // Modifier une entrée
-document.getElementById('editButton').addEventListener('click', async () => {
+document.getElementById('editBtn').addEventListener('click', async () => {
     const selectedValue = entryList.value;
     const updatedEntry = jsonData.find(entry => entry.Valeurs === selectedValue);
 
@@ -295,7 +295,7 @@ document.getElementById('editButton').addEventListener('click', async () => {
 });
 
 // Supprimer une entrée
-document.getElementById('deleteButton').addEventListener('click', async () => {
+document.getElementById('deleteBtn').addEventListener('click', async () => {
     const selectedValue = deleteList.value;
     jsonData = jsonData.filter(entry => entry.Valeurs !== selectedValue);
 
