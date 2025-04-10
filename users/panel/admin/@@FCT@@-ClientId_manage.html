@@ -149,24 +149,31 @@ async function getGitHubToken() {
 
 // Fonction pour récupérer le contenu du fichier JSON depuis GitHub
 async function fetchJsonData(githubToken) {
-    try {
-        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-            headers: {
-                Authorization: `Bearer ${githubToken}`,
-                Accept: 'application/vnd.github.v3.raw'
-            }
-        });
-        if (response.ok) {
-            const data = await response.json();
-            jsonData = JSON.parse(atob(data.content)); // Décodage du contenu en base64
-            updateEntryList();
-        } else {
-            throw new Error('Erreur lors de la récupération du fichier');
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        headers: {
+            Authorization: `Bearer ${githubToken}`,
+            Accept: 'application/vnd.github.v3.raw'
         }
-    } catch (error) {
-        console.error(error);
+    });
+    if (response.ok) {
+        const data = await response.json();
+
+        // Vérification si le contenu est encodé en base64
+        try {
+            const decodedContent = atob(data.content); // Tentative de décodage base64
+            jsonData = JSON.parse(decodedContent); // Si décodage réussi, parser le JSON
+        } catch (error) {
+            // Si erreur, peut-être que le contenu est déjà en JSON
+            console.log("Le contenu n'est pas encodé en base64, traitement direct...");
+            jsonData = JSON.parse(data.content); // Traitement direct si déjà du JSON
+        }
+
+        updateEntryList();
+    } else {
+        console.error('Erreur lors de la récupération du fichier:', response.status);
     }
 }
+
 
 // Mise à jour des listes déroulantes pour les actions Modifier et Supprimer
 function updateEntryList() {
