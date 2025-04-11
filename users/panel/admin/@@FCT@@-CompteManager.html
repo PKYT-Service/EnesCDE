@@ -131,7 +131,7 @@
       list.innerHTML = "";
       for (const file of files) {
         const btn = document.createElement("button");
-        btn.className = "btn bg-white shadow hover:bg-gray-100 text-left p-4 border";
+        btn.className = "btn bg-white shadow hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-left p-4 border";
         btn.innerText = file.name;
         btn.onclick = async () => {
           const fileData = await fetch(file.download_url);
