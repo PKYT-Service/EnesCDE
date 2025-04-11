@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>EnesCDE - Admin > Panel Administratif > Compte manager</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        
+        <!-- Script pour ajouter dynamiquement le footer -->
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+        <script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+        <script src="./__sessions__.js"></script>
+        <div id="ecde_all"></div>
+
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Admin - compte manager :</h1>
+
+
+
+
+    
+                
+
+                <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Gestion de Compte</h1>
+
+    <!-- 📋 Liste des comptes -->
+    <div id="compte-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"></div>
+
+    <!-- 📝 Détails du compte -->
+    <div id="compte-detail" class="hidden bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4">Détails du Compte</h2>
+      <form id="compte-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- CompteInfo -->
+        <h3 class="col-span-2 font-bold text-blue-500">CompteInfo</h3>
+        <input type="text" name="CompteInfo.Email" placeholder="Email" class="input">
+        <input type="text" name="CompteInfo.MDP" placeholder="Mot de passe" class="input">
+        <input type="text" name="CompteInfo.ECDE-ID" placeholder="ECDE-ID" class="input">
+        <input type="text" name="CompteInfo.Date" placeholder="Date" class="input">
+        <input type="text" name="CompteInfo.Service" placeholder="Service" class="input">
+
+        <!-- ProfilInfo -->
+        <h3 class="col-span-2 font-bold text-green-500 mt-6">ProfilInfo</h3>
+        <input type="text" name="ProfilInfo.Nom" placeholder="Nom" class="input">
+        <input type="text" name="ProfilInfo.Prenom" placeholder="Prénom" class="input">
+        <input type="text" name="ProfilInfo.Pdp" placeholder="Pdp URL" class="input">
+        <input type="text" name="ProfilInfo.Pseudo" placeholder="Pseudo" class="input">
+        <input type="text" name="ProfilInfo.Reseau" placeholder="Réseau" class="input">
+        <input type="text" name="ProfilInfo.Type" placeholder="Type" class="input">
+        <input type="text" name="ProfilInfo.Description" placeholder="Description" class="input">
+
+        <!-- Others -->
+        <h3 class="col-span-2 font-bold text-purple-500 mt-6">Others</h3>
+        <div id="others-fields" class="col-span-2 grid grid-cols-2 gap-4"></div>
+
+        <!-- Details -->
+        <h3 class="col-span-2 font-bold text-red-500 mt-6">Details</h3>
+        <input type="text" name="Details.Permissions" placeholder="Permissions" class="input">
+        <input type="text" name="Details.Admin" placeholder="Admin" class="input">
+      </form>
+
+      <div class="flex flex-wrap gap-2 mt-6">
+        <button id="btn-lock-toggle" class="btn bg-yellow-500 hover:bg-yellow-600">🔒 Lock</button>
+        <button id="btn-save" class="btn bg-blue-500 hover:bg-blue-600">💾 Enregistrer</button>
+        <button id="btn-delete" class="btn bg-red-500 hover:bg-red-600">🗑️ Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .input {
+      @apply border rounded-md px-3 py-2 w-full;
+    }
+    .btn {
+      @apply px-4 py-2 rounded-md text-white font-medium;
+    }
+  </style>
+
+  <script>
+    const repoOwner = "PKYT-Service";
+    const repoName = "database_EnesCDE";
+    const tokenURL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+    const pathPrefix = "compte/v4/";
+    const banFilePath = "compte/v4/ban.json";
+    let currentFile = "";
+    let currentData = {};
+
+    async function getToken() {
+      const res = await fetch(tokenURL);
+      const json = await res.json();
+      return json.GITHUB_TOKEN;
+    }
+
+    function buildForm(data) {
+      currentData = data;
+      const form = document.getElementById("compte-form");
+      Object.entries(data).forEach(([section, fields]) => {
+        Object.entries(fields).forEach(([key, value]) => {
+          const input = form.querySelector(`[name="${section}.${key}"]`);
+          if (input) input.value = value;
+        });
+      });
+
+      const others = data.Others || {};
+      const container = document.getElementById("others-fields");
+      container.innerHTML = "";
+      Object.entries(others).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.name = `Others.${key}`;
+        input.placeholder = key;
+        input.className = "input";
+        input.value = value;
+        container.appendChild(input);
+      });
+    }
+
+    async function fetchComptes() {
+      const token = await getToken();
+      const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${pathPrefix}`, {
+        headers: { Authorization: `token ${token}` }
+      });
+      const files = await res.json();
+      const list = document.getElementById("compte-list");
+      list.innerHTML = "";
+      for (const file of files) {
+        const btn = document.createElement("button");
+        btn.className = "btn bg-white shadow hover:bg-gray-100 text-left p-4 border";
+        btn.innerText = file.name;
+        btn.onclick = async () => {
+          const fileData = await fetch(file.download_url);
+          const json = await fileData.json();
+          currentFile = file.name;
+          buildForm(json);
+          document.getElementById("compte-detail").classList.remove("hidden");
+        };
+        list.appendChild(btn);
+      }
+    }
+
+    function getFormData() {
+      const form = document.getElementById("compte-form");
+      const formData = new FormData(form);
+      const data = {};
+      for (const [key, value] of formData.entries()) {
+        const [section, field] = key.split(".");
+        if (!data[section]) data[section] = {};
+        data[section][field] = value;
+      }
+      return data;
+    }
+
+    document.getElementById("btn-save").onclick = async () => {
+      const token = await getToken();
+      const content = JSON.stringify(getFormData(), null, 2);
+      const getRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${pathPrefix}${currentFile}`, {
+        headers: { Authorization: `token ${token}` }
+      });
+      const meta = await getRes.json();
+      await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${pathPrefix}${currentFile}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `token ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `update ${currentFile}`,
+          content: btoa(unescape(encodeURIComponent(content))),
+          sha: meta.sha
+        })
+      });
+      alert("✅ Compte mis à jour !");
+    };
+
+    document.getElementById("btn-delete").onclick = async () => {
+      if (!confirm("Supprimer ce compte et le bannir ?")) return;
+      const token = await getToken();
+      const getRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${pathPrefix}${currentFile}`, {
+        headers: { Authorization: `token ${token}` }
+      });
+      const meta = await getRes.json();
+      await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${pathPrefix}${currentFile}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `token ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `delete ${currentFile}`,
+          sha: meta.sha
+        })
+      });
+
+      // Ajouter à la liste des bannis
+      const banGet = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${banFilePath}`, {
+        headers: { Authorization: `token ${token}` }
+      });
+      const banMeta = await banGet.json();
+      const contentDecoded = JSON.parse(decodeURIComponent(escape(atob(banMeta.content))));
+      const ecdeId = currentData?.CompteInfo?.["ECDE-ID"] || "UNKNOWN";
+      if (!contentDecoded.includes(ecdeId)) contentDecoded.push(ecdeId);
+      await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${banFilePath}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `token ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `ban ${ecdeId}`,
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(contentDecoded, null, 2)))),
+          sha: banMeta.sha
+        })
+      });
+
+      alert("🗑️ Compte supprimé et ECDE-ID banni.");
+      location.reload();
+    };
+
+    document.getElementById("btn-lock-toggle").onclick = () => {
+      const emailInput = document.querySelector('[name="CompteInfo.Email"]');
+      if (emailInput.value.endsWith("--lock")) {
+        emailInput.value = emailInput.value.replace("--lock", "");
+        document.getElementById("btn-lock-toggle").innerText = "🔒 Lock";
+      } else {
+        emailInput.value += "--lock";
+        document.getElementById("btn-lock-toggle").innerText = "🔓 Unlock";
+      }
+    };
+
+    fetchComptes();
+  </script>
+
+
+
+
+
+
+
+
+              
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+
+</body>
+    </html>
