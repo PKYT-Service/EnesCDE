@@ -33,52 +33,46 @@
 
     
                 
+<div class="max-w-5xl mx-auto p-6 dark:bg-gray-900 dark:text-white">
+  <h1 class="text-3xl font-bold text-center text-blue-600 dark:text-blue-400 mb-6">Gestion de Compte</h1>
 
-                <div class="max-w-5xl mx-auto p-6">
-    <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Gestion de Compte</h1>
+  <div id="compte-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"></div>
 
-    <!-- 📋 Liste des comptes -->
-    <div id="compte-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"></div>
+  <div id="compte-detail" class="hidden bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Détails du Compte</h2>
 
-    <!-- 📝 Détails du compte -->
-    <div id="compte-detail" class="hidden bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-4">Détails du Compte</h2>
-      <form id="compte-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- CompteInfo -->
-        <h3 class="col-span-2 font-bold text-blue-500">CompteInfo</h3>
-        <input type="text" name="CompteInfo.Email" placeholder="Email" class="input">
-        <input type="text" name="CompteInfo.MDP" placeholder="Mot de passe" class="input">
-        <input type="text" name="CompteInfo.ECDE-ID" placeholder="ECDE-ID" class="input">
-        <input type="text" name="CompteInfo.Date" placeholder="Date" class="input">
-        <input type="text" name="CompteInfo.Service" placeholder="Service" class="input">
+    <form id="compte-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h3 class="col-span-2 font-bold text-blue-500 dark:text-blue-300">CompteInfo</h3>
+      <input type="text" name="CompteInfo.Email" placeholder="Email" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="CompteInfo.MDP" placeholder="Mot de passe" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="CompteInfo.ECDE-ID" placeholder="ECDE-ID" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="CompteInfo.Date" placeholder="Date" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="CompteInfo.Service" placeholder="Service" class="input dark:bg-gray-700 dark:text-white">
 
-        <!-- ProfilInfo -->
-        <h3 class="col-span-2 font-bold text-green-500 mt-6">ProfilInfo</h3>
-        <input type="text" name="ProfilInfo.Nom" placeholder="Nom" class="input">
-        <input type="text" name="ProfilInfo.Prenom" placeholder="Prénom" class="input">
-        <input type="text" name="ProfilInfo.Pdp" placeholder="Pdp URL" class="input">
-        <input type="text" name="ProfilInfo.Pseudo" placeholder="Pseudo" class="input">
-        <input type="text" name="ProfilInfo.Reseau" placeholder="Réseau" class="input">
-        <input type="text" name="ProfilInfo.Type" placeholder="Type" class="input">
-        <input type="text" name="ProfilInfo.Description" placeholder="Description" class="input">
+      <h3 class="col-span-2 font-bold text-green-500 dark:text-green-300 mt-6">ProfilInfo</h3>
+      <input type="text" name="ProfilInfo.Nom" placeholder="Nom" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="ProfilInfo.Prenom" placeholder="Prénom" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="ProfilInfo.Pdp" placeholder="Pdp URL" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="ProfilInfo.Pseudo" placeholder="Pseudo" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="ProfilInfo.Reseau" placeholder="Réseau" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="ProfilInfo.Type" placeholder="Type" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="ProfilInfo.Description" placeholder="Description" class="input dark:bg-gray-700 dark:text-white">
 
-        <!-- Others -->
-        <h3 class="col-span-2 font-bold text-purple-500 mt-6">Others</h3>
-        <div id="others-fields" class="col-span-2 grid grid-cols-2 gap-4"></div>
+      <h3 class="col-span-2 font-bold text-purple-500 dark:text-purple-300 mt-6">Others</h3>
+      <div id="others-fields" class="col-span-2 grid grid-cols-2 gap-4"></div>
 
-        <!-- Details -->
-        <h3 class="col-span-2 font-bold text-red-500 mt-6">Details</h3>
-        <input type="text" name="Details.Permissions" placeholder="Permissions" class="input">
-        <input type="text" name="Details.Admin" placeholder="Admin" class="input">
-      </form>
+      <h3 class="col-span-2 font-bold text-red-500 dark:text-red-300 mt-6">Details</h3>
+      <input type="text" name="Details.Permissions" placeholder="Permissions" class="input dark:bg-gray-700 dark:text-white">
+      <input type="text" name="Details.Admin" placeholder="Admin" class="input dark:bg-gray-700 dark:text-white">
+    </form>
 
-      <div class="flex flex-wrap gap-2 mt-6">
-        <button id="btn-lock-toggle" class="btn bg-yellow-500 hover:bg-yellow-600">🔒 Lock</button>
-        <button id="btn-save" class="btn bg-blue-500 hover:bg-blue-600">💾 Enregistrer</button>
-        <button id="btn-delete" class="btn bg-red-500 hover:bg-red-600">🗑️ Supprimer</button>
-      </div>
+    <div class="flex flex-wrap gap-2 mt-6">
+      <button id="btn-lock-toggle" class="btn bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500">🔒 Lock</button>
+      <button id="btn-save" class="btn bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500">💾 Enregistrer</button>
+      <button id="btn-delete" class="btn bg-red-500 hover:bg-red-600 dark:bg-red-400 dark:hover:bg-red-500">🗑️ Supprimer</button>
     </div>
   </div>
+</div>
 
   <style>
     .input {
