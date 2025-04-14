@@ -1,0 +1,252 @@
+// Service lié par EnesCDE 
+// PKYT - Service , Tous droits reservées .
+// 2020 - 2024 [ NaxeWayz , FayzXase , LosFlyTM by PikaYutMG , GFLP - LSP # SRDMG , SourceDevMG , PikaYutMG , PKYT - service / PKYT - DATABASE + PKYT - DATABASE - UP , nom appartenant a E-CDE ( D.Enes )  . ]
+// 2017 - 2022 [ LosFly ] deretour en 2025(../02.2024)
+// Patch : 3 04/02/2025
+// Sortie officielle : 10/09/2024
+// By EnesGP ( Enes D-GP ) 
+
+//////////////////////////////////////////////
+// LosFLy | Sections                    //
+//////////////////////////////////////////////
+
+ 
+(function() {
+    console.log("⌛ | AllService ✅ [ Les script on etait chargés]");
+})();
+
+
+console.log(" [❇️🔰] | ToutServiceLierPkyt : Enes - CDE , Tous droits reservées ");
+console.log(" [❇️🔰] | ToutServiceLierPkyt : LosFly , Tous droits reservées ");
+console.log(" [❇️🔰] | ToutServiceLierPkyt : PKYT - Service , Tous droits reservées ");
+console.log(" [❇️🔰] | ToutServiceLierPkyt : 2020 - 2024 [ NaxeWayz , FayzXase , LosFlyTM by PikaYutMG , GFLP - LSP # SRDMG , SourceDevMG , PikaYutMG , PKYT - service / PKYT - DATABASE + PKYT - DATABASE - UP , nom appartenant a E-CDE ( D.Enes )  . ]");
+console.log(" [❇️🔰] | ToutServiceLierPkyt : 2017 - 2022 [ LosFly ] deretour en 2025(../02.2024).");
+console.log(" [❇️🔰] | ToutServiceLierPkyt : By EnesGP ( Enes D-GP ");
+
+
+
+//////////////////////////////////////////////
+// Enes - CDE | Allow FCT                   //
+//////////////////////////////////////////////
+
+
+// Nop
+
+//////////////////////////////////////////////
+// Enes - CDE | Sections                    //
+//////////////////////////////////////////////
+
+     //  //| PopUp : UCD UsersConsentSData .
+     import { pu_ucd_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/PU_InfoUCD.js";
+     pu_ucd_ecde();
+          //
+     //  //| Ajouts des ID's : ECDE:ID_IP , ECDE:ID_RP , ECDE:ID_DF , ECDE:ID .
+     import { ID_stock_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_storage.js";
+     ID_stock_ecde();
+          //
+     //  //| Verification des ID's : ECDE:ID_IP , ECDE:ID_RP , ECDE:ID_DF , ECDE:ID .
+     import { ID_verif_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_verif.js";
+     ID_verif_ecde();
+          //
+     //  //| Verification des ID's : ECDE:ID_IP , ECDE:ID_RP , ECDE:ID_DF , ECDE:ID .
+     import { ID_log_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_log.js";
+     ID_log_ecde();
+          //
+     //  //| Clean la console sur les avertissements CHROME . 
+     import { CO_Cleaner_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/CO_Cleaner.js";
+     CO_Cleaner_ecde();
+          //
+     //  //| F12 : Stop .
+     import {  Secure_F12 } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure_F12.js";
+      Secure_F12();
+          //
+     //  //| Sync .
+     import {  PU_Sync } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/PU_Sync.js";
+      PU_Sync();
+          //
+     //  //| Refresh > true > reload all 1 minutes  .
+     import {  Secure_Ref } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure_Ref.js";
+      Secure_Ref();
+          //
+     //  //| Refresh > true > reload all 1 minutes  .
+     import {  WebManager } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/AFF_web-manager.js";
+      WebManager();
+          //
+     //  //| Console Web  .
+     import { ECDE_Console } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/PU_Console.js";
+      ECDE_Console();
+          //
+     //  //| Verifie ID si dans ban .
+     import {  ecde_client } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_client.js";
+      ecde_client();
+
+
+//////////////////////////////////////////////
+// E - CDE | patcher for security           //
+//////////////////////////////////////////////
+
+          import {  Rules } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Patcher.js"; Rules();
+          import {  ADM_RPE } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Patcher.js"; ADM_RPE();
+
+//////////////////////////////////////////////
+// PKYT - Service | Sections                //
+//////////////////////////////////////////////
+     //  //| Verifier si le compte n'est pas ban .
+     import { checkBanAccount3V_pkyt } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/checkBanAccount3V.js";
+     checkBanAccount3V_pkyt();
+          //
+     //  //| Verifier si une maintenance est disponible.
+     // import { CheckMaintenceWeb } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/CheckMaintenceWeb.js";
+     // CheckMaintenceWeb();
+          //
+     //  //| Limite l'ouverture d'onglet par site .
+     import { CheckTabsOpenLimit } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/CheckTabsOpenLimit.js";
+     CheckTabsOpenLimit();
+          //
+     //  //| All perm's user's .
+     import { CheckRulesToAcces } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/CheckRulesIsTrue.js";
+     CheckRulesToAcces();
+
+//////////////////////////////////////////////
+// Google & Microsoft & Instatus | Sections //
+//////////////////////////////////////////////
+
+
+// Microsoft
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "p48i5fvwyv");
+
+
+// Google
+     window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+
+       gtag('config', 'G-MHN0VB5ENT');
+       document.write("<script async src=\"https:\/\/www.googletagmanager.com\/gtag\/js?id=G-MHN0VB5ENT\"><\/script>");
+// Instatus
+
+     //const script_AD = document.createElement('script');
+     //script_AD.src = 'https://pikayut.instatus.com/fr/7c9cc48b/widget/script.js';
+     //document.body.appendChild(script_AD);
+
+
+document.write("<meta name=\"viewport\" content=\"initial-scale=1\" \/>");
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  autre                                                                                                                              ///
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+// | PKYT - Service ST : A [ PKYT - Service , tous droits réservées |
+// |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Charger la police Google Fonts
+      const fontLink = document.createElement("link");
+      fontLink.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap";
+      fontLink.rel = "stylesheet";
+      document.head.appendChild(fontLink);
+    
+      // Création de l'overlay de chargement
+      const loadingOverlay = document.createElement("div");
+      Object.assign(loadingOverlay.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "black",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "'Poppins', sans-serif", // Police appliquée
+        zIndex: "1000",
+      });
+    
+      // Texte principal "PKYT - Service"
+      const mainText = document.createElement("div");
+      mainText.innerHTML = `PKYT - <span style="color: #145af2;">Service</span> <br> <font color="red">Maintenance</font>`;
+      Object.assign(mainText.style, {
+        fontSize: "24px",
+        fontWeight: "bold",
+        marginBottom: "10px",
+      });
+    
+      // Texte secondaire "By LosFlyProtect" en gras et italique
+      const subText = document.createElement("div");
+      subText.innerHTML = `By <b><i>EnesGP</i></b>`;
+      Object.assign(subText.style, {
+        color: "#ADAFB6",
+        fontSize: "16px",
+        marginBottom: "20px",
+      });
+    
+      // Conteneur pour les points clignotants
+      const dotFlashingContainer = document.createElement("div");
+      Object.assign(dotFlashingContainer.style, {
+        display: "flex",
+        position: "absolute",
+        bottom: "50px",
+        justifyContent: "center",
+        alignItems: "center",
+      });
+    
+      // Création des points clignotants
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement("div");
+        Object.assign(dot.style, {
+          width: "10px",
+          height: "10px",
+          margin: "0 5px",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          animation: `dotFlashing 1s infinite alternate`,
+          animationDelay: `${i * 0.2}s`,
+        });
+        dotFlashingContainer.appendChild(dot);
+      }
+    
+      // Ajout du texte en bas à gauche
+      const bottomLeftText = document.createElement("div");
+      bottomLeftText.innerHTML = "<b>PKYT - <font color='#145af2'>Service </font> </b><i>DEBUT : 03/02/2025 </i>: <b><mark>all rights reserved .</mark> </b>";
+      Object.assign(bottomLeftText.style, {
+        position: "absolute",
+        bottom: "10px",
+        left: "10px",
+        fontSize: "14px",
+        color: "#ADAFB6",
+      });
+    
+      // Ajout des éléments au conteneur de chargement
+      loadingOverlay.appendChild(mainText);
+      loadingOverlay.appendChild(subText);
+      loadingOverlay.appendChild(dotFlashingContainer);
+      loadingOverlay.appendChild(bottomLeftText);
+    
+      // Ajoute le conteneur de chargement au body
+      document.body.appendChild(loadingOverlay);
+    
+      // Retire l'overlay après 3 secondes
+      setTimeout(() => {
+        loadingOverlay.remove();
+      }, 0);
+    
+      // Définition de l'animation des points clignotants
+      const style = document.createElement("style");
+      style.innerHTML = `
+        @keyframes dotFlashing {
+          0% { opacity: 0.2; }
+          50%, 100% { opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+      
