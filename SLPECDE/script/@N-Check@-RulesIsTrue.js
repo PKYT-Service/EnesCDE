@@ -137,5 +137,5 @@ function createPopup() {
 
 // Fonction principale appelée par mains.js
 export function CheckRulesToAcces() {
-    ConditionDaccesService();
+    Check_ConditionDaccesService();
 }
