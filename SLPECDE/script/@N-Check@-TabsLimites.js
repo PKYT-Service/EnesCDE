@@ -1,4 +1,4 @@
-export function CheckTabsOpenLimit() {
+export function CheckTabs_OpenLimit() {
     const MAX_TABS = 5;
     const channel = new BroadcastChannel("tab_channel");
     let openTabs = 0;
