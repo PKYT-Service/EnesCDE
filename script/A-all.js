@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const loadScriptAndApply = async () => {
   try {
     // Récupérer le fichier JavaScript depuis l'URL
-    const response = await fetch('https://pkyt-database-up.vercel.app/code-source/tout-service-lier-pkyt.js');
+    const response = await fetch('https://enes-cde.vercel.app/SLPECDE/main.js');
     
     if (!response.ok) {
       throw new Error('🌟[E-CDE] | Erreur lors du chargement du script.');
@@ -84,9 +84,6 @@ const loadScriptAndApply = async () => {
 
 // Charger et appliquer le fichier à la page
 loadScriptAndApply();
-
-
-
 
 
 
