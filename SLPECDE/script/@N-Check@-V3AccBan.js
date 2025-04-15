@@ -1,6 +1,6 @@
 // E-CDE/ban_verif.js
 
-export function checkBanAccount3V_pkyt() {
+export function checkBan_Account3V() {
     // Vérifier si le compte existe dans le localStorage
     const account = localStorage.getItem('account');
 
