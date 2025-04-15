@@ -41,6 +41,8 @@ Secure_Ref();
 // Vérifie si l'utilisateur a accepté les règles, sinon redirige vers google.com.
 import { Check_ConditionDaccesService } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js";
 Check_ConditionDaccesService();
+import { CheckRulesToAcces } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js";
+CheckRulesToAcces();
 
 // Limite à 4/5 onglets ouverts maximum.
 import { CheckTabs_OpenLimit } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-TabsLimites.js";
