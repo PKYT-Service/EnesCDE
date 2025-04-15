@@ -1,1 +1,82 @@
+A propos des @?-???@ : 
+la valeur avant le "-" est pour indiquer si le code est désigné a : 
+U : Utilisateur 
+A : Administration 
+N : Au système ou indefini 
+W : Au web ( avec l'import du ../main.js / https://enes-cde.vercel
+app/SLPECDE/main.js ) .
+
+aprer le "-" c'est sont genre / type : 
+FCT : Fonction 
+TOOL : Outil 
+Ckeck : Verif Rapide 
+PV : Privee ( dedie au staff / systeme ) 
+ID : Designee au 4 ID applique quand on entre dans les sites.
+
+et aprer les @?-?@- C'est les nom des fichier ( voir la base du code ) .
+
+
+// les fichiers dans ./script/ : 
+
+@A-FCT@-Csl.js : 
+permet d'afficher une console dans le site si "EnesCDE_ADM:CSL" = true .
+
+@A-FCT@-F12.js : Bloque les entree pour acceder au code / modifier le site , sauf si "EnesCDE_ADM:F12" = ADMIN
+
+@A-FCT@-Rfh.js : 
+Réactualise la page toute les 1 minute , uniquement si 
+EnesCDE_ADM:Refresh est en true 
+
+* les EnesCDE_ADM:? leurs valeurs sont dans le LocalStorage 
+
+
+@N-FCT@-ClearCsl.js : 
+clear automatique de la console ( uniquement les warn.s ).
+
+@N-PV@-CG-SE.js : 
+Ce code est le " tocken.js , mais le code est identique au tocken.js ECDE ) 
+
+@N-TOOL@-Patcher.js : 
+corrige les mauvaise valeurs ( dans : cookies / localstorage et sessions ) .
+
+
+@U-FCT@-E.CDE-Sys.js : 
+un simple popup rangeable et rétractable qui indique que les sites sont sous EnesCDE Sys ( Sécurité contre personne malveillant) 
+
+
+@U-FCT@-SyncData.js : 
+synchronisation des données de la personne du site enes cde sur les autres , en se référant via l'id EnesCDE:ID_IP .
+
+
+
+@U-ID@-Ban.js : Pareil que Vérification mais en mieux : redirection vers une page si lun des 4 ids est present dans PPDS
+@U-ID@-Verification.js :
+Veridi si l'un des 4 ids est dans un fichier de repo ( PPDS ) 
+si oui , ban .
+
+@U-ID@-Log.js :
+Save dans le PPDS tout l'historique 
+Page consultée, Et donne cookies localsto et session .
+
+@U-ID@-Storage.js : 
+Permet d'appliquer les 4 id ( si indispo / ou inexistant).
+
+* PPDS : 
+Base de données réservée au système PPDS (Project Private Data Service)
+
+@W-FCT@WebMng.js : 
+le WebManager permet d'ajouter un site sur PPDS et le controler sur un panel ECDe Staff.
+
+
+@N-Check@-RulesIsTrue.js
+Le fameux Rules , si l'user accepte il pourras naviguer partout chez EnesCDE / Site lie ou projet lié , si non : bye bye sur google.com .
+
+N-Check@-TabsLimites.js : 
+une limite de 4/5 onglets est fixé.
+
+@N-Check@-V3AccBan.js :
+ Utiliser pour les comptes en v3 de PKYT , meme si EnesCDe a fzit la v4 avec PPDS , le code verifie si l'un des compte en v3 est ban , si oui le rediriger vers sa page dédiée.
+
+
+
 
