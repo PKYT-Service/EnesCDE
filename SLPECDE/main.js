@@ -7,7 +7,7 @@
 // By EnesGP ( Enes D-GP ) 
 
 //////////////////////////////////////////////
-// LosFLy | Sections                    //
+// E-CDE | BASE                             //
 //////////////////////////////////////////////
 
  
@@ -23,89 +23,73 @@ console.log(" [❇️🔰] | ToutServiceLierPkyt : 2020 - 2024 [ NaxeWayz , Fayz
 console.log(" [❇️🔰] | ToutServiceLierPkyt : 2017 - 2022 [ LosFly ] deretour en 2025(../02.2024).");
 console.log(" [❇️🔰] | ToutServiceLierPkyt : By EnesGP ( Enes D-GP ");
 
-
-
 //////////////////////////////////////////////
-// Enes - CDE | Allow FCT                   //
+// Enes - CDE | SCRIPT                      //
 //////////////////////////////////////////////
+// Affiche une console spéciale si "EnesCDE_ADM:CSL" = true.
+import { ECDE_Console } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Csl.js";
+ECDE_Console();
 
+// Bloque les accès devtools (F12) sauf si "EnesCDE_ADM:F12" = ADMIN.
+import { Secure_F12 } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js";
+Secure_F12();
 
-// Nop
+// Réactualise la page toutes les minutes si "EnesCDE_ADM:Refresh" est true.
+import { Secure_Ref } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Rfh.js";
+Secure_Ref();
 
-//////////////////////////////////////////////
-// Enes - CDE | Sections                    //
-//////////////////////////////////////////////
+// Vérifie si l'utilisateur a accepté les règles, sinon redirige vers google.com.
+import { Check_ConditionDaccesService } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js";
+Check_ConditionDaccesService();
 
-     //  //| PopUp : UCD UsersConsentSData .
-     import { pu_ucd_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/PU_InfoUCD.js";
-     pu_ucd_ecde();
-          //
-     //  //| Ajouts des ID's : ECDE:ID_IP , ECDE:ID_RP , ECDE:ID_DF , ECDE:ID .
-     import { ID_stock_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_storage.js";
-     ID_stock_ecde();
-          //
-     //  //| Verification des ID's : ECDE:ID_IP , ECDE:ID_RP , ECDE:ID_DF , ECDE:ID .
-     import { ID_verif_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_verif.js";
-     ID_verif_ecde();
-          //
-     //  //| Verification des ID's : ECDE:ID_IP , ECDE:ID_RP , ECDE:ID_DF , ECDE:ID .
-     import { ID_log_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_log.js";
-     ID_log_ecde();
-          //
-     //  //| Clean la console sur les avertissements CHROME . 
-     import { CO_Cleaner_ecde } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/CO_Cleaner.js";
-     CO_Cleaner_ecde();
-          //
-     //  //| F12 : Stop .
-     import {  Secure_F12 } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure_F12.js";
-      Secure_F12();
-          //
-     //  //| Sync .
-     import {  PU_Sync } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/PU_Sync.js";
-      PU_Sync();
-          //
-     //  //| Refresh > true > reload all 1 minutes  .
-     import {  Secure_Ref } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure_Ref.js";
-      Secure_Ref();
-          //
-     //  //| Refresh > true > reload all 1 minutes  .
-     import {  WebManager } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/AFF_web-manager.js";
-      WebManager();
-          //
-     //  //| Console Web  .
-     import { ECDE_Console } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/PU_Console.js";
-      ECDE_Console();
-          //
-     //  //| Verifie ID si dans ban .
-     import {  ecde_client } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/ID_client.js";
-      ecde_client();
+// Limite à 4/5 onglets ouverts maximum.
+import { CheckTabs_OpenLimit } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-TabsLimites.js";
+CheckTabs_OpenLimit();
 
+// Utilisé pour les comptes v3 PKYT. Si banni, redirige vers leur page dédiée.
+import { checkBan_Account3V } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-V3AccBan.js";
+checkBan_Account3V();
 
-//////////////////////////////////////////////
-// E - CDE | patcher for security           //
-//////////////////////////////////////////////
+// Nettoie automatiquement la console (seulement les warnings).
+import { CO_Cleaner_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@N-FCT@-ClearCsl.js";
+CO_Cleaner_ecde();
 
-          import {  Rules } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Patcher.js"; Rules();
-          import {  ADM_RPE } from "https://pkyt-database-up.vercel.app/code-source/E-CDE/Patcher.js"; ADM_RPE();
+// Corrige les valeurs incorrectes dans cookies / localStorage / session.
+import { Rules } from "https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js";
+Rules();
 
-//////////////////////////////////////////////
-// PKYT - Service | Sections                //
-//////////////////////////////////////////////
-     //  //| Verifier si le compte n'est pas ban .
-     import { checkBanAccount3V_pkyt } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/checkBanAccount3V.js";
-     checkBanAccount3V_pkyt();
-          //
-     //  //| Verifier si une maintenance est disponible.
-     // import { CheckMaintenceWeb } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/CheckMaintenceWeb.js";
-     // CheckMaintenceWeb();
-          //
-     //  //| Limite l'ouverture d'onglet par site .
-     import { CheckTabsOpenLimit } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/CheckTabsOpenLimit.js";
-     CheckTabsOpenLimit();
-          //
-     //  //| All perm's user's .
-     import { CheckRulesToAcces } from "https://pkyt-database-up.vercel.app/code-source/PKYT-Service/CheckRulesIsTrue.js";
-     CheckRulesToAcces();
+// Corrige les valeurs incorrectes dans cookies / localStorage / session (version ADM).
+import { ADM_RPE } from "https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js";
+ADM_RPE();
+
+// Affiche un popup signalant que le site est protégé par EnesCDE Sys.
+import { pu_ucd_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-E.CDE-Sys.js";
+pu_ucd_ecde();
+
+// Synchronise les données d’un utilisateur sur les sites ECDE via son ID_IP.
+import { PU_Sync } from "https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-SyncData.js";
+PU_Sync();
+
+// Redirige si l’un des 4 IDs est banni dans la base PPDS.
+import { ecde_client } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Ban.js";
+ecde_client();
+
+// Loggue l’activité utilisateur dans PPDS (pages visitées, cookies, etc).
+import { ID_log_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Log.js";
+ID_log_ecde();
+
+// Applique les 4 IDs de sécurité si absents ou non définis.
+import { ID_stock_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Storage.js";
+ID_stock_ecde();
+
+// Vérifie si l’un des 4 IDs est dans PPDS, et déclenche un bannissement.
+import { ID_verif_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js";
+ID_verif_ecde();
+
+// Le WebManager permet d’ajouter un site au système PPDS et de le contrôler via un panel dédié au staff ECDE.
+import { WebManager } from "https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMng.js";
+WebManager();
+
 
 //////////////////////////////////////////////
 // Google & Microsoft & Instatus | Sections //
