@@ -39,8 +39,6 @@ import { Secure_Ref } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-R
 Secure_Ref();
 
 // Vérifie si l'utilisateur a accepté les règles, sinon redirige vers google.com.
-import { Check_ConditionDaccesService } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js";
-Check_ConditionDaccesService();
 import { CheckRulesToAcces } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js";
 CheckRulesToAcces();
 
