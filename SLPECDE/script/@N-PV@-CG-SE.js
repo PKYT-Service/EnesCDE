@@ -1,3 +1,3 @@
 {
-  "GITHUB_TOKEN": "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"
+  "GITHUB_TOKEN": "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"
 }
