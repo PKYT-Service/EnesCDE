@@ -12,12 +12,12 @@ export function ADM_RPE() {
 // Fonction de nettoyage des caractères spéciaux
 function cleanString(input) {
   return input
-    .normalize('NFD') // Sépare les accents (comme é => e)
-    .replace(/[\u0300-\u036f]/g, '') // Enlève les accents
-    .replace(/[^A-Za-z0-9\-_\/. ]/g, '') // Supprime les caractères non autorisés
-    .trim(); // Enlève les espaces au début et à la fin
+    .normalize('NFD')                            // Décompose les caractères accentués
+    .replace(/[\u0300-\u036f]/g, '')             // Supprime les accents
+    .replace(/[^A-Za-z0-9@\-_/\. \n]/g, '')      // Supprime les caractères non autorisés
+    .replace(/[ ]{2,}/g, ' ');                   // Remplace les espaces multiples par un seul
 }
-
+ 
 // Applique le nettoyage en temps réel sur tous les inputs
 document.querySelectorAll('input').forEach(inputElement => {
   inputElement.addEventListener('input', function(event) {
