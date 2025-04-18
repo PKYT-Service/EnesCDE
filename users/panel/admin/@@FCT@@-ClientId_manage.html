@@ -105,67 +105,57 @@
   </div>
  </div>
 <script defer>
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('date').value = new Date().toISOString().split('T')[0];
-  loadBanData();
-});
+// Initialise la date d'aujourd'hui
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
+// Variables
 let urls = [];
 let banData = [];
 
-// Ajout d'URL
+// Ajouter une URL
 document.getElementById('add-url').addEventListener('click', () => {
-  const input = document.getElementById('web-url');
-  const url = input.value.trim();
-  if (url && !urls.includes(url)) {
-    urls.push(url);
-    input.value = '';
+  const urlInput = document.getElementById('web-url').value;
+  if (urlInput && !urls.includes(urlInput)) {
+    urls.push(urlInput);
+    document.getElementById('web-url').value = '';
     updateUrlList();
   }
 });
 
 function updateUrlList() {
-  const list = document.getElementById('url-list');
-  list.innerHTML = '';
-  urls.forEach((url, i) => {
+  const urlList = document.getElementById('url-list');
+  urlList.innerHTML = '';
+  urls.forEach(url => {
     const li = document.createElement('li');
-    li.className = 'flex justify-between items-center';
-    li.innerHTML = `
-      <span>${url}</span>
-      <button onclick="removeUrl(${i})" class="text-red-600 font-bold ml-2">X</button>
-    `;
-    list.appendChild(li);
+    li.textContent = url;
+    urlList.appendChild(li);
   });
 }
 
-window.removeUrl = (i) => {
-  urls.splice(i, 1);
-  updateUrlList();
-};
-
-// Récupère le token
+// Récupération du token depuis Tocken.js
 async function getGitHubToken() {
-  const res = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
-  const data = await res.json();
+  const response = await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js');
+  const data = await response.json();
   return data.GITHUB_TOKEN;
 }
 
-// SHA du fichier GitHub
+// Récupération du SHA du fichier
 async function getFileSha() {
   const token = await getGitHubToken();
   const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
-    headers: { 'Authorization': `token ${token}` }
+    headers: {
+      'Authorization': `token ${token}`
+    }
   });
   if (!res.ok) return null;
   const data = await res.json();
   return data.sha;
 }
 
-// Sauvegarde sur GitHub
+// Sauvegarde les données modifiées sur GitHub
 async function saveToGitHub(data) {
   const token = await getGitHubToken();
   const sha = await getFileSha();
-
   const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
     method: 'PUT',
     headers: {
@@ -179,59 +169,80 @@ async function saveToGitHub(data) {
     })
   });
 
-  const result = await res.json();
   if (!res.ok) {
-    alert(`Erreur GitHub : ${result.message}`);
+    const err = await res.json();
+    alert(`Erreur GitHub: ${err.message}`);
   } else {
-    alert('Données sauvegardées avec succès !');
+    alert('Données sauvegardées sur GitHub');
     loadBanData();
   }
 }
 
-// Charger les données existantes
+// Charger les données existantes depuis GitHub
 async function loadBanData() {
   const token = await getGitHubToken();
-  const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
-    headers: {
-      'Authorization': `token ${token}`
-    }
-  });
-
-  if (!res.ok) {
-    console.warn('Erreur lors du chargement des données.');
-    return;
-  }
-
-  const file = await res.json();
 
   try {
-    // Vérification si encodé en base64
-    if (file.encoding === 'base64') {
-      const decoded = atob(file.content);
-      banData = JSON.parse(decoded);
-    } else {
-      console.error("Format de contenu inattendu :", file.encoding);
-      alert("Erreur : Le contenu GitHub n'est pas encodé en base64.");
+    const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
+      headers: {
+        'Authorization': `token ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      console.warn('❌ Erreur lors du chargement du fichier GitHub.');
+      banData = []; // Fallback par défaut
+      renderList();
       return;
+    }
+
+    const file = await res.json();
+
+    if (file.encoding !== 'base64') {
+      console.error('❌ Le fichier GitHub n’est pas encodé en base64.');
+      alert("Erreur : contenu GitHub inattendu.");
+      banData = []; // Fallback vide
+      renderList();
+      return;
+    }
+
+    const decoded = atob(file.content || "");
+
+    // Si le contenu décodé est vide, on initialise une liste vide
+    if (!decoded.trim()) {
+      console.warn('⚠️ Contenu vide, initialisation de banData en tableau vide.');
+      banData = [];
+    } else {
+      try {
+        banData = JSON.parse(decoded);
+        if (!Array.isArray(banData)) {
+          console.warn("⚠️ Structure inattendue, banData doit être un tableau. Utilisation d'une liste vide.");
+          banData = [];
+        }
+      } catch (parseError) {
+        console.error("❌ Erreur de parsing JSON :", parseError);
+        banData = [];
+      }
     }
 
     renderList();
   } catch (err) {
-    console.error("Erreur lors du décodage JSON :", err);
-    alert("Erreur lors de la lecture des données du fichier GitHub.");
+    console.error("❌ Erreur générale lors de la récupération des données :", err);
+    banData = []; // Encore une fois, on fallback pour que ça continue à tourner
+    renderList();
   }
 }
 
-
-// Affichage
+// Affiche la liste
 function renderList() {
   const container = document.getElementById('ban-list');
   container.innerHTML = '';
-  banData.forEach((entry, index) => {
-    const div = document.createElement('div');
-    div.className = "bg-gray-50 dark:bg-gray-900 p-4 border rounded shadow mb-4";
 
-    div.innerHTML = `
+  banData.forEach((entry, index) => {
+    const card = document.createElement('div');
+    card.className = "bg-gray-50  dark:bg-gray-950  p-4 border rounded shadow mb-4";
+
+    card.innerHTML = `
       <p><strong>Type:</strong> ${entry.Type}</p>
       <p><strong>Valeurs:</strong> ${entry.Valeurs}</p>
       <p><strong>Raison:</strong> ${entry.Raison}</p>
@@ -244,20 +255,18 @@ function renderList() {
         <button onclick="removeEntry(${index})" class="bg-red-500 text-white px-2 py-1 rounded">Supprimer</button>
       </div>
     `;
-    container.appendChild(div);
+    container.appendChild(card);
   });
 }
 
-// Ajouter
+// Ajouter une entrée
 document.getElementById('add').addEventListener('click', () => {
-  const type = document.getElementById('type').value.trim();
-  const valeurs = document.getElementById('valeurs').value.trim();
+  const type = document.getElementById('type').value;
+  const valeurs = document.getElementById('valeurs').value;
   const date = document.getElementById('date').value;
-  const raison = document.getElementById('raison').value.trim() || 'Non précisé';
-  const par = document.getElementById('par').value.trim() || 'Admin';
+  const par = document.getElementById('par').value || 'Admin';
+  const raison = document.getElementById('raison').value || 'Non précisé';
   const bloqueAll = document.getElementById('bloquer-all').checked;
-
-  if (!type || !valeurs) return alert("Type et Valeurs sont obligatoires");
 
   const newEntry = {
     Type: type,
@@ -268,28 +277,24 @@ document.getElementById('add').addEventListener('click', () => {
     bloque: {
       All: bloqueAll,
       web: bloqueAll,
-      web_url: [...urls]
-    }
+      web_url: urls,
+    },
   };
 
   banData.push(newEntry);
-  urls = [];
-  updateUrlList();
   saveToGitHub(banData);
 });
 
-// Supprimer
-window.removeEntry = async (index) => {
-  if (confirm("Tu veux vraiment supprimer cette entrée ?")) {
-    banData.splice(index, 1);
-    await saveToGitHub(banData);
-  }
-};
+// Supprimer une entrée
+async function removeEntry(index) {
+  if (!confirm("Tu es sûr de vouloir supprimer cette entrée ?")) return;
+  banData.splice(index, 1);
+  await saveToGitHub(banData);
+}
 
-// Modifier
-window.editEntry = (index) => {
+// Modifier une entrée (préremplissage)
+window.editEntry = function(index) {
   const entry = banData[index];
-
   document.getElementById('type').value = entry.Type;
   document.getElementById('valeurs').value = entry.Valeurs;
   document.getElementById('date').value = entry.Date;
@@ -299,25 +304,26 @@ window.editEntry = (index) => {
   urls = [...entry.bloque.web_url];
   updateUrlList();
 
+  // Réenregistrement remplacera l’entrée existante
   document.getElementById('modify').onclick = () => {
     banData[index] = {
-      Type: document.getElementById('type').value.trim(),
-      Valeurs: document.getElementById('valeurs').value.trim(),
-      Raison: document.getElementById('raison').value.trim() || 'Non précisé',
+      Type: document.getElementById('type').value,
+      Valeurs: document.getElementById('valeurs').value,
+      Raison: document.getElementById('raison').value || 'Non précisé',
       Date: document.getElementById('date').value,
-      Par: document.getElementById('par').value.trim() || 'Admin',
+      Par: document.getElementById('par').value || 'Admin',
       bloque: {
         All: document.getElementById('bloquer-all').checked,
         web: document.getElementById('bloquer-all').checked,
-        web_url: [...urls]
-      }
+        web_url: [...urls],
+      },
     };
-
-    urls = [];
-    updateUrlList();
     saveToGitHub(banData);
   };
 };
+
+// Chargement initial
+window.addEventListener('DOMContentLoaded', loadBanData);
 </script>
 
 
