@@ -198,21 +198,10 @@ async function loadBanData() {
 
     const file = await res.json();
 
+    // Si le fichier n'est pas encodé en base64
     if (file.encoding !== 'base64') {
-      console.error('❌ Le fichier GitHub n’est pas encodé en base64.');
-      alert("Erreur : contenu GitHub inattendu.");
-      banData = []; // Fallback vide
-      renderList();
-      return;
-    }
-
-    const decoded = atob(file.content || "");
-
-    // Si le contenu décodé est vide, on initialise une liste vide
-    if (!decoded.trim()) {
-      console.warn('⚠️ Contenu vide, initialisation de banData en tableau vide.');
-      banData = [];
-    } else {
+      console.log('✅ Le fichier n\'est pas encodé en base64, récupération directe du contenu.');
+      const decoded = file.content;
       try {
         banData = JSON.parse(decoded);
         if (!Array.isArray(banData)) {
@@ -222,6 +211,24 @@ async function loadBanData() {
       } catch (parseError) {
         console.error("❌ Erreur de parsing JSON :", parseError);
         banData = [];
+      }
+    } else {
+      // Si le fichier est encodé en base64, on le décode
+      const decoded = atob(file.content || "");
+      if (!decoded.trim()) {
+        console.warn('⚠️ Contenu vide, initialisation de banData en tableau vide.');
+        banData = [];
+      } else {
+        try {
+          banData = JSON.parse(decoded);
+          if (!Array.isArray(banData)) {
+            console.warn("⚠️ Structure inattendue, banData doit être un tableau. Utilisation d'une liste vide.");
+            banData = [];
+          }
+        } catch (parseError) {
+          console.error("❌ Erreur de parsing JSON :", parseError);
+          banData = [];
+        }
       }
     }
 
