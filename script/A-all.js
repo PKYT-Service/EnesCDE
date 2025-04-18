@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const loadScriptAndApply = async () => {
   try {
     // Récupérer le fichier JavaScript depuis l'URL
-    const response = await fetch('https://enes-cde.vercel.app/SLPECDE/main.js');
+    const response = await fetch('https://enes-cde.vercel.app/SLPECDE/m ain.js');
     
     if (!response.ok) {
       throw new Error('🌟[E-CDE] | Erreur lors du chargement du script.');
