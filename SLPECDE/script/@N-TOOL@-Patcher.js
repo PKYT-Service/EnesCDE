@@ -14,7 +14,7 @@ function cleanString(input) {
   return input
     .normalize('NFD')                            // Décompose les caractères accentués
     .replace(/[\u0300-\u036f]/g, '')             // Supprime les accents
-    .replace(/[^A-Za-z0-9@\-_/\. \n]/g, '')      // Supprime les caractères non autorisés
+    .replace(/[^A-Za-z0-9@\-_/\. \n:]/g, '')     // Supprime les caractères non autorisés sauf :, @, -, _, /, ., espace et retour à la ligne
     .replace(/[ ]{2,}/g, ' ');                   // Remplace les espaces multiples par un seul
 }
  
