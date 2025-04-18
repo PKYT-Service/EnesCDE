@@ -20,7 +20,7 @@ function Check_ConditionDaccesService() {
 function showFloatingReminder(message) {
     let reminder = document.createElement('span');
     reminder.className = "inline-flex items-center justify-center rounded-full border border-red-500 px-2.5 py-0.5 text-red-700 dark:text-red-100 fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-900 shadow-lg";
-    reminder.innerHTML = `
+    reminder.innerHTML = ` 
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ms-1 me-1.5 size-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
         </svg>
@@ -68,7 +68,7 @@ function createPopup() {
     popup.style.zIndex = '9999';
     popup.style.width = '300px';
 
-    popup.innerHTML = `
+    popup.innerHTML = ` 
         <div class="flex items-start gap-4 dark:bg-gray-900 p-4 rounded-lg">
             <span class="text-green-600 dark:text-green-400">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -109,11 +109,15 @@ function createPopup() {
     let acceptBtn = document.getElementById("accept-terms-btn");
     let checkbox = document.getElementById("terms-checkbox");
 
+    // Vérifier si le setTimeout fonctionne
     setTimeout(() => {
-        checkbox.disabled = false;
+        console.log("Activating checkbox");
+        checkbox.disabled = false; // Activer le checkbox après 5 secondes
     }, 5000);
 
+    // Ajouter un écouteur d'événements sur le checkbox
     checkbox.addEventListener("change", function () {
+        console.log("Checkbox changé");  // Log pour vérifier si l'événement est bien déclenché
         acceptBtn.style.pointerEvents = checkbox.checked ? "auto" : "none";
         acceptBtn.classList.toggle("bg-gray-400", !checkbox.checked);
         acceptBtn.classList.toggle("cursor-not-allowed", !checkbox.checked);
@@ -121,14 +125,17 @@ function createPopup() {
         acceptBtn.classList.toggle("hover:bg-indigo-700", checkbox.checked);
     });
 
+    // Lors de l'acceptation des conditions
     acceptBtn.addEventListener("click", function () {
         if (checkbox.checked) {
+            console.log("Conditions acceptées");
             localStorage.setItem('rules', 'true');
             document.body.removeChild(popup);
             enableInteraction();
         }
     });
 
+    // Lors du refus des conditions
     document.getElementById('refuse-terms-btn').addEventListener('click', () => {
         alert("Sans accepter, vous ne pourrez pas accéder et utiliser les sites officiels ou affiliés.");
         window.location.href = "https://www.google.com";
