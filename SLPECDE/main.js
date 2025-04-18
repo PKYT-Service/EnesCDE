@@ -83,8 +83,8 @@ import { ID_stock_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@
 ID_stock_ecde();
 
 // Vérifie si l’un des 4 IDs est dans PPDS, et déclenche un bannissement.
-import { ID_verif_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js";
-ID_verif_ecde();
+// import { ID_verif_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js";
+// ID_verif_ecde();
 
 // Le WebManager permet d’ajouter un site au système PPDS et de le contrôler via un panel dédié au staff ECDE.
 import { WebManager } from "https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMng.js";
