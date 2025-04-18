@@ -164,7 +164,7 @@ async function saveToGitHub(data) {
     },
     body: JSON.stringify({
       message: 'Mise à jour BanECDE:ID.json',
-      content: btoa(JSON.stringify(data, null, 2)),
+      content: btoa(JSON.stringify(data, null, 2)), // Encodage base64
       sha: sha
     })
   });
@@ -174,104 +174,131 @@ async function saveToGitHub(data) {
     alert(`Erreur GitHub: ${err.message}`);
   } else {
     alert('Données sauvegardées sur GitHub');
-    loadBanData();
+    loadBanData(); // Recharger les données après modification
   }
 }
 
-// Charger les données existantes depuis GitHub
+// Charger les données existantes
 async function loadBanData() {
   const token = await getGitHubToken();
+  const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
+    headers: {
+      'Authorization': `token ${token}`
+    }
+  });
+  if (!res.ok) {
+    alert("Erreur de récupération du fichier depuis GitHub.");
+    return;
+  }
 
+  const file = await res.json();
+  if (!file.content) {
+    alert("Le fichier est vide ou son contenu est manquant.");
+    return;
+  }
+
+  // Si le fichier est encodé en base64, on le décode
   try {
-    const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
-      headers: {
-        'Authorization': `token ${token}`
-      }
-    });
-
-    if (!res.ok) {
-      console.warn('❌ Erreur lors du chargement du fichier GitHub.');
-      banData = []; // Fallback par défaut
-      renderList();
-      return;
-    }
-
-    const file = await res.json();
-
-    // Vérification si le fichier a un contenu valide
-    if (!file.content) {
-      console.warn('❌ Le fichier est vide ou son contenu est manquant.');
-      banData = []; // Si le contenu est vide ou manquant
-      renderList();
-      return;
-    }
-
-    // Si le fichier n'est pas encodé en base64
-    if (file.encoding !== 'base64') {
-      console.log('✅ Le fichier n\'est pas encodé en base64, récupération directe du contenu.');
-      const decoded = file.content;
-      try {
-        // Parse le JSON, gère les chaînes vides
-        banData = JSON.parse(decoded);
-        if (!Array.isArray(banData)) {
-          console.warn("⚠️ Structure inattendue, banData doit être un tableau. Utilisation d'une liste vide.");
-          banData = [];
-        }
-      } catch (parseError) {
-        console.error("❌ Erreur de parsing JSON :", parseError);
-        banData = [];
-      }
-    } else {
-      // Si le fichier est encodé en base64, on le décode
-      const decoded = atob(file.content || "");
-      if (!decoded.trim()) {
-        console.warn('⚠️ Contenu vide, initialisation d\'une liste vide.');
-        banData = [];
-      } else {
-        try {
-          // Parser et vérifier la structure du JSON
-          banData = JSON.parse(decoded);
-          if (!Array.isArray(banData)) {
-            console.warn("⚠️ Structure inattendue après décodage base64. Utilisation d'une liste vide.");
-            banData = [];
-          }
-        } catch (error) {
-          console.error('❌ Erreur de parsing après décodage base64 :', error);
-          banData = [];
-        }
-      }
-    }
-
-    renderList(); // Affiche les données dans l'interface utilisateur
-
+    const decodedContent = atob(file.content);
+    banData = JSON.parse(decodedContent);
+    renderList(); // Affiche les données chargées
   } catch (error) {
-    console.error("❌ Erreur générale lors de la récupération des données :", error);
-    banData = []; // Initialisation d'un tableau vide en cas d'erreur
-    renderList();
+    alert("Erreur de parsing JSON : " + error.message);
   }
 }
 
-// Fonction pour afficher les données bannies
+// Affiche la liste
 function renderList() {
-  const listElement = document.getElementById('ban-list');
-  listElement.innerHTML = ''; // Réinitialiser la liste
+  const container = document.getElementById('ban-list');
+  container.innerHTML = '';
 
-  if (banData.length === 0) {
-    listElement.innerHTML = '<li>Aucune donnée disponible</li>';
-  } else {
-    banData.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = item ? item : 'Valeur vide'; // Gestion des valeurs vides
-      listElement.appendChild(li);
-    });
-  }
+  banData.forEach((entry, index) => {
+    const card = document.createElement('div');
+    card.className = "bg-gray-50 dark:bg-gray-950 p-4 border rounded shadow mb-4";
+
+    card.innerHTML = `
+      <p><strong>Type:</strong> ${entry.Type}</p>
+      <p><strong>Valeurs:</strong> ${entry.Valeurs}</p>
+      <p><strong>Raison:</strong> ${entry.Raison}</p>
+      <p><strong>Date:</strong> ${entry.Date}</p>
+      <p><strong>Par:</strong> ${entry.Par}</p>
+      <p><strong>Bloqué (All):</strong> ${entry.bloque.All}</p>
+      <p><strong>URLs:</strong> ${entry.bloque.web_url.join(', ')}</p>
+      <div class="flex space-x-2 mt-2">
+        <button onclick="editEntry(${index})" class="bg-yellow-400 text-white px-2 py-1 rounded">Modifier</button>
+        <button onclick="removeEntry(${index})" class="bg-red-500 text-white px-2 py-1 rounded">Supprimer</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
 }
 
-// Appel initial pour charger les données
-loadBanData();
+// Ajouter une entrée
+document.getElementById('add').addEventListener('click', () => {
+  const type = document.getElementById('type').value;
+  const valeurs = document.getElementById('valeurs').value;
+  const date = document.getElementById('date').value;
+  const par = document.getElementById('par').value || 'Admin';
+  const raison = document.getElementById('raison').value || 'Non précisé';
+  const bloqueAll = document.getElementById('bloquer-all').checked;
+
+  const newEntry = {
+    Type: type,
+    Valeurs: valeurs,
+    Raison: raison,
+    Date: date,
+    Par: par,
+    bloque: {
+      All: bloqueAll,
+      web: bloqueAll,
+      web_url: urls,
+    },
+  };
+
+  banData.push(newEntry);
+  saveToGitHub(banData);
+});
+
+// Supprimer une entrée
+async function removeEntry(index) {
+  if (!confirm("Tu es sûr de vouloir supprimer cette entrée ?")) return;
+  banData.splice(index, 1);
+  await saveToGitHub(banData);
+}
+
+// Modifier une entrée (préremplissage)
+window.editEntry = function(index) {
+  const entry = banData[index];
+  document.getElementById('type').value = entry.Type;
+  document.getElementById('valeurs').value = entry.Valeurs;
+  document.getElementById('date').value = entry.Date;
+  document.getElementById('raison').value = entry.Raison;
+  document.getElementById('par').value = entry.Par;
+  document.getElementById('bloquer-all').checked = entry.bloque.All;
+  urls = [...entry.bloque.web_url];
+  updateUrlList();
+
+  // Réenregistrement remplacera l’entrée existante
+  document.getElementById('modify').onclick = () => {
+    banData[index] = {
+      Type: document.getElementById('type').value,
+      Valeurs: document.getElementById('valeurs').value,
+      Raison: document.getElementById('raison').value || 'Non précisé',
+      Date: document.getElementById('date').value,
+      Par: document.getElementById('par').value || 'Admin',
+      bloque: {
+        All: document.getElementById('bloquer-all').checked,
+        web: document.getElementById('bloquer-all').checked,
+        web_url: [...urls],
+      },
+    };
+    saveToGitHub(banData);
+  };
+};
+
+// Chargement initial
+window.addEventListener('DOMContentLoaded', loadBanData);
 </script>
-
-
 
                 <!-- Footer : Deb -->
                 <div id="ecde_footer"></div>
