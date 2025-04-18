@@ -188,22 +188,40 @@ async function saveToGitHub(data) {
   }
 }
 
-// Charge les données existantes
+// Charger les données existantes
 async function loadBanData() {
   const token = await getGitHubToken();
   const res = await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json', {
-    headers: { 'Authorization': `token ${token}` }
+    headers: {
+      'Authorization': `token ${token}`
+    }
   });
 
   if (!res.ok) {
-    console.error("Erreur lors du chargement");
+    console.warn('Erreur lors du chargement des données.');
     return;
   }
 
   const file = await res.json();
-  banData = JSON.parse(atob(file.content));
-  renderList();
+
+  try {
+    // Vérification si encodé en base64
+    if (file.encoding === 'base64') {
+      const decoded = atob(file.content);
+      banData = JSON.parse(decoded);
+    } else {
+      console.error("Format de contenu inattendu :", file.encoding);
+      alert("Erreur : Le contenu GitHub n'est pas encodé en base64.");
+      return;
+    }
+
+    renderList();
+  } catch (err) {
+    console.error("Erreur lors du décodage JSON :", err);
+    alert("Erreur lors de la lecture des données du fichier GitHub.");
+  }
 }
+
 
 // Affichage
 function renderList() {
