@@ -106,7 +106,7 @@
     const path = folder === "Non trier" ? `${BASE_PATH}/${filename}` : `${BASE_PATH}/${folder}/${filename}`;
     try {
       const dateStr = new Date().toISOString().split('T')[0];
-      const defaultContent = `**Date :** ${dateStr}  \n**RAPPEL :** \nNe pas supprimer cette ligne !`;
+      const defaultContent = ` \` :: Votre Texte ICI :: \`  \n \n \n \` **Date :** ${dateStr} \`  \n \` **RAPPEL :** \n :: Ne pas supprimer cette ligne ! :: \` `;
       const contentEncoded = btoa(unescape(encodeURIComponent(defaultContent)));
       const commitMessage = `Création du fichier ${filename} dans ${folder} via Explorateur MD`;
       const putRes = await fetch(
