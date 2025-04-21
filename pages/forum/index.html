@@ -73,42 +73,13 @@
       <i class="fas fa-folder-open"></i> - -/ Explorateur MD
     </h1>
     <div class="flex items-center gap-3">
-      <button
-        id="btn-create-folder"
-        class="bg-yellow-500 hover:bg-yellow-600 transition rounded px-3 py-1 flex items-center gap-2"
-        title="Créer un nouveau dossier"
-      >
-        <i class="fas fa-folder-plus"></i> Nouveau dossier
-      </button>
-      <button
-        id="btn-create-file"
-        class="bg-green-500 hover:bg-green-600 transition rounded px-3 py-1 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        title="Créer un nouveau fichier Markdown"
-        disabled
-      >
-        <i class="fas fa-file-medical"></i> Nouveau fichier MD
-      </button>
-      <button
-        id="btn-import"
-        class="bg-blue-500 hover:bg-blue-700 transition rounded px-3 py-1 flex items-center gap-2"
-        title="Importer un fichier Markdown"
-      >
-        <i class="fas fa-file-upload"></i> Importer MD
-      </button>
     </div>
-    <input
-      type="file"
-      id="file-input"
-      accept=".md"
-      class="hidden"
-      multiple
-      aria-label="Importer fichiers Markdown"
-    />
+
   </header>
 
   <main class="flex flex-1 overflow-hidden">
                   <!-- Menu : Deb -->
-                  <div id="ecde_menu"  class="w-20"></div>
+                  <div id="ecde_menu"  class="w-12"></div>
                   <!-- Menu : Fin -->
     <nav
       id="folder-list"
@@ -153,14 +124,6 @@
       >
         <h3 id="file-view-title" class="text-lg font-semibold text-gray-700 truncate max-w-[70%]"></h3>
         <div class="flex items-center gap-3">
-          <button
-            id="btn-toggle-view"
-            class="text-gray-600 hover:text-gray-900"
-            title="Basculer entre visualisation et édition"
-            aria-label="Basculer entre visualisation et édition"
-          >
-            <i class="fas fa-eye"></i>
-          </button>
           <button
             id="btn-share"
             class="text-blue-600 hover:text-blue-800"
