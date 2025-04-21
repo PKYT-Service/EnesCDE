@@ -6,7 +6,7 @@
     const BASE_PATH_PREFIX = "NEW*DRIVE";
     let TOKEN = null;
 
-    // DOM Elements
+    // DOM Elements (may be null if not present)
     const foldersUl = document.getElementById("folders-ul");
     const filesUl = document.getElementById("files-ul");
     const currentFolderName = document.getElementById("current-folder-name");
@@ -165,11 +165,11 @@
     async function loadRoot() {
       currentFolder = null;
       historyStack = [];
-      currentFolderName.textContent = "Racine / Non trié";
-      btnBackFolder.disabled = true;
-      btnCreateFile.disabled = true;
-      filesUl.innerHTML = "";
-      foldersUl.innerHTML = "";
+      if(currentFolderName) currentFolderName.textContent = "Racine / Non trié";
+      if(btnBackFolder) btnBackFolder.disabled = true;
+      if(btnCreateFile) btnCreateFile.disabled = true;
+      if(filesUl) filesUl.innerHTML = "";
+      if(foldersUl) foldersUl.innerHTML = "";
       folders = [];
       filesByFolder = {};
 
@@ -208,6 +208,7 @@
 
     // Render folders list
     function renderFolders() {
+      if(!foldersUl) return;
       foldersUl.innerHTML = "";
       folders.forEach((folder) => {
         const li = document.createElement("li");
@@ -233,20 +234,23 @@
     // Render files list for a folder
     function renderFiles(folder) {
       currentFolder = folder;
-      currentFolderName.textContent = folder === "Non trier" ? "Non trié" : folder;
-      filesUl.innerHTML = "";
-      btnBackFolder.disabled = historyStack.length === 0;
-      btnCreateFile.disabled = false;
+      if(currentFolderName) currentFolderName.textContent = folder === "Non trier" ? "Non trié" : folder;
+      if(filesUl) filesUl.innerHTML = "";
+      if(btnBackFolder) btnBackFolder.disabled = historyStack.length === 0;
+      if(btnCreateFile) btnCreateFile.disabled = false;
 
       const files = filesByFolder[folder] || [];
       if (files.length === 0) {
-        const li = document.createElement("li");
-        li.className = "text-gray-500 italic p-4";
-        li.textContent = "Aucun fichier Markdown dans ce dossier.";
-        filesUl.appendChild(li);
+        if(filesUl) {
+          const li = document.createElement("li");
+          li.className = "text-gray-500 italic p-4";
+          li.textContent = "Aucun fichier Markdown dans ce dossier.";
+          filesUl.appendChild(li);
+        }
         return;
       }
 
+      if(!filesUl) return;
       files.forEach((file) => {
         const li = document.createElement("li");
         li.className =
@@ -279,7 +283,6 @@
 
     // Custom markdown rendering with specified replacements
     function customMarkdownRender(md) {
-      // Escape HTML special chars
       const escapeHtml = (text) =>
         text.replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
@@ -287,22 +290,17 @@
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
 
-      // We will parse line by line and build HTML respecting markdown syntax
-      // This is a simple parser, not full CommonMark compliant but covers basics
-
-      // Split input into lines
       const lines = md.split(/\r?\n/);
 
       let html = "";
       let inCodeBlock = false;
       let codeBlockLang = "";
       let inList = false;
-      let listType = null; // "ul" or "ol"
+      let listType = null;
       let listBuffer = [];
       let inBlockquote = false;
       let blockquoteBuffer = [];
 
-      // Helper to flush list buffer
       function flushList() {
         if (!inList) return;
         const tag = listType;
@@ -316,7 +314,6 @@
         listType = null;
       }
 
-      // Helper to flush blockquote buffer
       function flushBlockquote() {
         if (!inBlockquote) return;
         html += `<blockquote class="border-l-4 border-gray-400 pl-4 italic mb-4">`;
@@ -326,42 +323,23 @@
         inBlockquote = false;
       }
 
-      // Inline replacements for bold, italic, code, links, inline math, mark, footnotes
       function inlineReplacements(text) {
-        // Escape HTML first
         text = escapeHtml(text);
-
-        // Inline code: `code`
         text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 rounded px-1 font-mono text-sm">$1</code>');
-
-        // Bold **text** or __text__
         text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
         text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
-
-        // Italic *text* or _text_
-        // Avoid conflict with bold by negative lookahead/lookbehind
         text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
         text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
-
-        // Mark ::text::
         text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
-
-        // Inline math $...$
         text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
-
-        // Footnotes [^1]
         text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
-
-        // Links [text](url)
         text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
-
         return text;
       }
 
       for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
 
-        // Handle fenced code blocks ```lang
         if (/^```/.test(line)) {
           if (!inCodeBlock) {
             inCodeBlock = true;
@@ -374,12 +352,10 @@
           continue;
         }
         if (inCodeBlock) {
-          // Escape HTML inside code block
           html += escapeHtml(line) + "\n";
           continue;
         }
 
-        // Handle headers # to ######
         let headerMatch = line.match(/^(#{1,6})\s+(.*)$/);
         if (headerMatch) {
           flushList();
@@ -390,13 +366,11 @@
           continue;
         }
 
-        // Handle blockquote lines starting with >
         if (/^\s*>/.test(line)) {
           flushList();
           const content = line.replace(/^\s*> ?/, "");
           inBlockquote = true;
           blockquoteBuffer.push(inlineReplacements(content));
-          // If next line is not blockquote, flush blockquote
           if (i + 1 >= lines.length || !/^\s*>/.test(lines[i + 1])) {
             flushBlockquote();
           }
@@ -405,7 +379,6 @@
           flushBlockquote();
         }
 
-        // Handle unordered list lines starting with -, *, +
         let ulMatch = line.match(/^\s*([-*+])\s+(.*)$/);
         if (ulMatch) {
           const content = inlineReplacements(ulMatch[2].trim());
@@ -421,14 +394,12 @@
             listType = "ul";
             listBuffer.push(content);
           }
-          // If next line is not list item, flush list
           if (i + 1 >= lines.length || !/^\s*([-*+])\s+/.test(lines[i + 1])) {
             flushList();
           }
           continue;
         }
 
-        // Handle ordered list lines starting with 1., 2., etc.
         let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
         if (olMatch) {
           const content = inlineReplacements(olMatch[2].trim());
@@ -444,7 +415,6 @@
             listType = "ol";
             listBuffer.push(content);
           }
-          // If next line is not list item, flush list
           if (i + 1 >= lines.length || !/^\s*\d+\.\s+/.test(lines[i + 1])) {
             flushList();
           }
@@ -453,23 +423,19 @@
 
         flushList();
 
-        // Handle horizontal rule ---
         if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
           html += `<hr class="my-6 border-gray-300">`;
           continue;
         }
 
-        // Handle math blocks $$ ... $$
         if (/^\$\$/.test(line)) {
           flushList();
           let mathBlock = [];
           if (/^\$\$(.*)\$\$$/.test(line)) {
-            // Single line math block
             const content = line.replace(/^\$\$(.*)\$\$$/, "$1");
             html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
             continue;
           }
-          // Multi-line math block
           i++;
           while (i < lines.length && !/^\$\$/.test(lines[i])) {
             mathBlock.push(lines[i]);
@@ -480,13 +446,11 @@
           continue;
         }
 
-        // Empty line -> paragraph break
         if (/^\s*$/.test(line)) {
           html += `<br>`;
           continue;
         }
 
-        // Normal paragraph line
         const inline = inlineReplacements(line.trim());
         html += `<p class="mb-2 leading-relaxed text-gray-800">${inline}</p>`;
       }
@@ -495,7 +459,7 @@
     }
 
     function renderMarkdown(md) {
-      fileRenderedContent.innerHTML = customMarkdownRender(md);
+      if(fileRenderedContent) fileRenderedContent.innerHTML = customMarkdownRender(md);
     }
 
     // Open folder (push current folder to history)
@@ -504,29 +468,31 @@
         historyStack.push(currentFolder);
       }
       renderFiles(folder);
-      fileViewSection.classList.add("hidden");
+      if(fileViewSection) fileViewSection.classList.add("hidden");
       currentFile = null;
-      fileContent.value = "";
-      btnSave.disabled = true;
+      if(fileContent) fileContent.value = "";
+      if(btnSave) btnSave.disabled = true;
       isEditing = false;
       updateHash("", "");
-      btnCreateFile.disabled = false;
+      if(btnCreateFile) btnCreateFile.disabled = false;
     }
 
     // Back folder
-    btnBackFolder.addEventListener("click", () => {
-      if (historyStack.length > 0) {
-        const previousFolder = historyStack.pop();
-        renderFiles(previousFolder);
-        fileViewSection.classList.add("hidden");
-        currentFile = null;
-        fileContent.value = "";
-        btnSave.disabled = true;
-        isEditing = false;
-        updateHash("", "");
-        btnCreateFile.disabled = false;
-      }
-    });
+    if(btnBackFolder) {
+      btnBackFolder.addEventListener("click", () => {
+        if (historyStack.length > 0) {
+          const previousFolder = historyStack.pop();
+          renderFiles(previousFolder);
+          if(fileViewSection) fileViewSection.classList.add("hidden");
+          currentFile = null;
+          if(fileContent) fileContent.value = "";
+          if(btnSave) btnSave.disabled = true;
+          isEditing = false;
+          updateHash("", "");
+          if(btnCreateFile) btnCreateFile.disabled = false;
+        }
+      });
+    }
 
     // Open file: fetch content via GitHub API and show viewer (rendered)
     async function openFile(folder, file) {
@@ -546,14 +512,14 @@
         if (!json.content) throw new Error("Contenu du fichier introuvable");
         const decodedContent = atob(json.content.replace(/\n/g, ''));
         currentFile = { folder, file };
-        fileViewTitle.textContent = file.name;
-        fileContent.value = decodedContent;
+        if(fileViewTitle) fileViewTitle.textContent = file.name;
+        if(fileContent) fileContent.value = decodedContent;
         renderMarkdown(decodedContent);
-        btnSave.disabled = true;
+        if(btnSave) btnSave.disabled = true;
         isEditing = false;
         toggleViewMode(false);
-        fileViewSection.classList.remove("hidden");
-        fileRenderedContent.focus();
+        if(fileViewSection) fileViewSection.classList.remove("hidden");
+        if(fileRenderedContent) fileRenderedContent.focus();
         updateHash(folder, file.name);
       } catch (e) {
         alert("Erreur lors de l'ouverture du fichier : " + e.message);
@@ -590,6 +556,7 @@
     // Toggle between viewer and editor mode
     function toggleViewMode(editMode) {
       isEditing = editMode;
+      if (!fileContent || !fileRenderedContent || !btnSave || !btnToggleView) return;
       if (editMode) {
         fileContent.classList.remove("hidden");
         fileRenderedContent.classList.add("hidden");
@@ -605,75 +572,81 @@
       }
     }
 
-    btnToggleView.addEventListener("click", () => {
-      if (!currentFile) return;
-      if (isEditing) {
-        renderMarkdown(fileContent.value);
-        toggleViewMode(false);
-        btnSave.disabled = true;
-      } else {
-        toggleViewMode(true);
-      }
-    });
-
-    fileContent.addEventListener("input", () => {
-      if (!currentFile) return;
-      btnSave.disabled = false;
-    });
-
-    btnSave.addEventListener("click", async () => {
-      if (!currentFile) return;
-      btnSave.disabled = true;
-      const { folder, file } = currentFile;
-      try {
-        const basePath = getBasePath();
-        const path = folder === "Non trier" ? `${basePath}/${file.name}` : `${basePath}/${folder}/${file.name}`;
-        const metaRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
-          {
-            headers: {
-              Authorization: `token ${TOKEN}`,
-              Accept: "application/vnd.github.v3+json",
-            },
-          }
-        );
-        if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
-        const meta = await metaRes.json();
-
-        const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
-        const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
-
-        const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `token ${TOKEN}`,
-              Accept: "application/vnd.github.v3+json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: commitMessage,
-              content: contentEncoded,
-              sha: meta.sha,
-              branch: BRANCH,
-            }),
-          }
-        );
-        if (!putRes.ok) {
-          const err = await putRes.json();
-          throw new Error(err.message || "Erreur lors de la sauvegarde");
+    if(btnToggleView) {
+      btnToggleView.addEventListener("click", () => {
+        if (!currentFile) return;
+        if (isEditing) {
+          if(fileContent) renderMarkdown(fileContent.value);
+          toggleViewMode(false);
+          if(btnSave) btnSave.disabled = true;
+        } else {
+          toggleViewMode(true);
         }
-        alert("Fichier sauvegardé avec succès !");
+      });
+    }
+
+    if(fileContent) {
+      fileContent.addEventListener("input", () => {
+        if (!currentFile) return;
+        if(btnSave) btnSave.disabled = false;
+      });
+    }
+
+    if(btnSave) {
+      btnSave.addEventListener("click", async () => {
+        if (!currentFile) return;
         btnSave.disabled = true;
-        await refreshFolderFiles(folder);
-        renderMarkdown(fileContent.value);
-        toggleViewMode(false);
-      } catch (e) {
-        alert("Erreur lors de la sauvegarde : " + e.message);
-        btnSave.disabled = false;
-      }
-    });
+        const { folder, file } = currentFile;
+        try {
+          const basePath = getBasePath();
+          const path = folder === "Non trier" ? `${basePath}/${file.name}` : `${basePath}/${folder}/${file.name}`;
+          const metaRes = await fetch(
+            `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
+            {
+              headers: {
+                Authorization: `token ${TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+              },
+            }
+          );
+          if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
+          const meta = await metaRes.json();
+
+          const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
+          const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
+
+          const putRes = await fetch(
+            `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `token ${TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message: commitMessage,
+                content: contentEncoded,
+                sha: meta.sha,
+                branch: BRANCH,
+              }),
+            }
+          );
+          if (!putRes.ok) {
+            const err = await putRes.json();
+            throw new Error(err.message || "Erreur lors de la sauvegarde");
+          }
+          alert("Fichier sauvegardé avec succès !");
+          btnSave.disabled = true;
+          await refreshFolderFiles(folder);
+          renderMarkdown(fileContent.value);
+          toggleViewMode(false);
+        } catch (e) {
+          alert("Erreur lors de la sauvegarde : " + e.message);
+          btnSave.disabled = false;
+        }
+      });
+    }
 
     async function refreshFolderFiles(folder) {
       try {
@@ -695,55 +668,61 @@
       }
     }
 
-    btnCloseView.addEventListener("click", () => {
-      fileViewSection.classList.add("hidden");
-      currentFile = null;
-      fileContent.value = "";
-      btnSave.disabled = true;
-      isEditing = false;
-      updateHash("", "");
-    });
+    if(btnCloseView) {
+      btnCloseView.addEventListener("click", () => {
+        if(fileViewSection) fileViewSection.classList.add("hidden");
+        currentFile = null;
+        if(fileContent) fileContent.value = "";
+        if(btnSave) btnSave.disabled = true;
+        isEditing = false;
+        updateHash("", "");
+      });
+    }
 
-    btnShare.addEventListener("click", () => {
-      if (!currentFile) return;
-      const url = location.href;
-      navigator.clipboard
-        .writeText(url)
-        .then(() => {
-          alert("URL de partage copiée dans le presse-papiers !");
-        })
-        .catch(() => {
-          alert("Impossible de copier l'URL dans le presse-papiers.");
-        });
-    });
+    if(btnShare) {
+      btnShare.addEventListener("click", () => {
+        if (!currentFile) return;
+        const url = location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            alert("URL de partage copiée dans le presse-papiers !");
+          })
+          .catch(() => {
+            alert("Impossible de copier l'URL dans le presse-papiers.");
+          });
+      });
+    }
 
-    btnImport.addEventListener("click", () => {
-      fileInput.value = "";
-      fileInput.click();
-    });
+    if(btnImport && fileInput) {
+      btnImport.addEventListener("click", () => {
+        fileInput.value = "";
+        fileInput.click();
+      });
 
-    fileInput.addEventListener("change", async (e) => {
-      const files = Array.from(e.target.files);
-      if (files.length === 0) return;
+      fileInput.addEventListener("change", async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
 
-      const mdFiles = files.filter((f) => f.name.toLowerCase().endsWith(".md"));
-      if (mdFiles.length === 0) {
-        alert("Veuillez sélectionner uniquement des fichiers Markdown (.md).");
-        return;
-      }
-
-      for (const file of mdFiles) {
-        try {
-          const content = await file.text();
-          await createFile(currentFolder || "Non trier", file.name);
-          await saveFileContent(currentFolder || "Non trier", file.name, content);
-        } catch (err) {
-          alert(`Erreur lors de l'import du fichier ${file.name} : ${err.message}`);
+        const mdFiles = files.filter((f) => f.name.toLowerCase().endsWith(".md"));
+        if (mdFiles.length === 0) {
+          alert("Veuillez sélectionner uniquement des fichiers Markdown (.md).");
+          return;
         }
-      }
-      alert("Import terminé !");
-      await loadRoot();
-    });
+
+        for (const file of mdFiles) {
+          try {
+            const content = await file.text();
+            await createFile(currentFolder || "Non trier", file.name);
+            await saveFileContent(currentFolder || "Non trier", file.name, content);
+          } catch (err) {
+            alert(`Erreur lors de l'import du fichier ${file.name} : ${err.message}`);
+          }
+        }
+        alert("Import terminé !");
+        await loadRoot();
+      });
+    }
 
     async function saveFileContent(folder, filename, content) {
       try {
@@ -790,29 +769,33 @@
       }
     }
 
-    btnCreateFolder.addEventListener("click", async () => {
-      const folderName = prompt("Nom du nouveau dossier (sans espaces ni caractères spéciaux) :");
-      if (!folderName) return;
-      if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
-        alert("Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores.");
-        return;
-      }
-      await createFolder(folderName);
-    });
+    if(btnCreateFolder) {
+      btnCreateFolder.addEventListener("click", async () => {
+        const folderName = prompt("Nom du nouveau dossier (sans espaces ni caractères spéciaux) :");
+        if (!folderName) return;
+        if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
+          alert("Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores.");
+          return;
+        }
+        await createFolder(folderName);
+      });
+    }
 
-    btnCreateFile.addEventListener("click", async () => {
-      if (!currentFolder) {
-        alert("Veuillez sélectionner un dossier pour créer un fichier.");
-        return;
-      }
-      const filename = prompt("Nom du nouveau fichier Markdown (avec extension .md) :");
-      if (!filename) return;
-      if (!filename.toLowerCase().endsWith(".md")) {
-        alert("Le fichier doit avoir une extension .md");
-        return;
-      }
-      await createFile(currentFolder, filename);
-    });
+    if(btnCreateFile) {
+      btnCreateFile.addEventListener("click", async () => {
+        if (!currentFolder) {
+          alert("Veuillez sélectionner un dossier pour créer un fichier.");
+          return;
+        }
+        const filename = prompt("Nom du nouveau fichier Markdown (avec extension .md) :");
+        if (!filename) return;
+        if (!filename.toLowerCase().endsWith(".md")) {
+          alert("Le fichier doit avoir une extension .md");
+          return;
+        }
+        await createFile(currentFolder, filename);
+      });
+    }
 
     // On load
     window.addEventListener("load", async () => {
@@ -826,4 +809,3 @@
     window.addEventListener("hashchange", () => {
       openFileFromHash();
     });
- 
