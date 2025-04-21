@@ -2,7 +2,8 @@
     const OWNER = "PKYT-Service";
     const REPO = "database_dev";
     const BRANCH = "main";
-    const BASE_PATH = "NEW*DRIVE";
+    let BASE_PATH = "NEW*DRIVE"; // will be updated dynamically
+
     let TOKEN = null;
 
     // DOM Elements
@@ -18,7 +19,6 @@
     const btnSave = document.getElementById("btn-save");
     const btnCloseView = document.getElementById("btn-close-view");
     const btnShare = document.getElementById("btn-share");
-    // Removed btnImport, fileInput, btnToggleView, btnCreateFolder, btnCreateFile references
 
     // State
     let folders = [];
@@ -28,6 +28,25 @@
     let currentFile = null;
     let historyStack = [];
     let isEditing = false;
+
+    // Function to update BASE_PATH from div id starting with "repo/"
+    function updateBasePathFromDiv() {
+      // Find any div with id starting with "repo/"
+      const repoDiv = Array.from(document.querySelectorAll('div[id^="repo/"]')).find(div => div.id.startsWith("repo/"));
+      if (repoDiv) {
+        // Extract path after "repo/"
+        let path = repoDiv.id.substring(5); // remove "repo/"
+        // Normalize path: remove leading/trailing slashes
+        path = path.replace(/^\/+|\/+$/g, "");
+        // Compose new BASE_PATH
+        BASE_PATH = path ? `NEW*DRIVE/${path}` : "NEW*DRIVE";
+      } else {
+        BASE_PATH = "NEW*DRIVE";
+      }
+    }
+
+    // Call once on load
+    updateBasePathFromDiv();
 
     // Load token from external JSON
     async function loadToken() {
@@ -630,6 +649,7 @@
 
     // On load
     window.addEventListener("load", async () => {
+      updateBasePathFromDiv();
       await loadToken();
       if (!TOKEN) return;
       await loadRoot();
