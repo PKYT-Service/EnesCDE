@@ -14,11 +14,10 @@ export function ADM_RPE() {
 function cleanString(input) {
   return input
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^A-Za-z0-9@\-_/\. \n:]/g, '')
-    .replace(/[ ]{2,}/g, ' ');
+    .replace(/[\u0300-\u036f]/g, '') // Enleve les accents
+    .replace(/[^A-Za-z0-9@\-_/\. \n:(){}*_\`]/g, '') // Garde (){}[]**__` aussi
+    .replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
 }
-
 // Applique le nettoyage en temps reel sur les inputs et textareas
 document.querySelectorAll('input, textarea').forEach(el => {
   el.addEventListener('input', function(event) {
