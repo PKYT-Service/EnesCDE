@@ -9,19 +9,20 @@ export function ADM_RPE() {
     }
 }
 
-// Fonction de nettoyage des caractères spéciaux
+
+// Fonction de nettoyage des caracteres speciaux
 function cleanString(input) {
   return input
-    .normalize('NFD')                            // Décompose les caractères accentués
-    .replace(/[\u0300-\u036f]/g, '')             // Supprime les accents
-    .replace(/[^A-Za-z0-9@\-_/\. \n:]/g, '')     // Supprime les caractères non autorisés sauf :, @, -, _, /, ., espace et retour à la ligne
-    .replace(/[ ]{2,}/g, ' ');                   // Remplace les espaces multiples par un seul
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Za-z0-9@\-_/\. \n:]/g, '')
+    .replace(/[ ]{2,}/g, ' ');
 }
- 
-// Applique le nettoyage en temps réel sur tous les inputs
-document.querySelectorAll('input').forEach(inputElement => {
-  inputElement.addEventListener('input', function(event) {
+
+// Applique le nettoyage en temps reel sur les inputs et textareas
+document.querySelectorAll('input, textarea').forEach(el => {
+  el.addEventListener('input', function(event) {
     const cleanedValue = cleanString(event.target.value);
-    event.target.value = cleanedValue; // Remplace la valeur de l'input par la version nettoyée
+    event.target.value = cleanedValue;
   });
 });
