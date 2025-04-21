@@ -1,4 +1,3 @@
-
   // Configuration GitHub API
   const OWNER = "PKYT-Service";
   const REPO = "database_dev";
@@ -8,6 +7,7 @@
 
   // DOM Elements
   const foldersUl = document.getElementById("folders-ul");
+  const foldersInsideUl = document.getElementById("folders-ul-inside");
   const filesUl = document.getElementById("files-ul");
   const currentFolderName = document.getElementById("current-folder-name");
   const btnBackFolder = document.getElementById("btn-back-folder");
@@ -27,7 +27,8 @@
   // State
   let folders = [];
   let filesByFolder = {};
-  let currentFolder = null;
+  let foldersByFolder = {};
+  let currentFolder = null; // null means root
   let currentFile = null;
   let historyStack = [];
   let isEditing = false;
@@ -64,7 +65,7 @@
   // Create folder (GitHub API: create empty .gitkeep file inside new folder)
   async function createFolder(folderName) {
     if (!folderName) return;
-    const path = `${BASE_PATH}/${folderName}/.gitkeep`;
+    const path = currentFolder === null ? `${BASE_PATH}/${folderName}/.gitkeep` : `${BASE_PATH}/${currentFolder}/${folderName}/.gitkeep`;
     try {
       const contentEncoded = btoa("");
       const commitMessage = `Création du dossier ${folderName} via Explorateur MD`;
@@ -89,7 +90,7 @@
         throw new Error(err.message || "Erreur lors de la création du dossier");
       }
       alert(`Dossier "${folderName}" créé avec succès.`);
-      await loadRoot();
+      await reloadCurrentFolder();
       openFolder(folderName);
     } catch (e) {
       alert("Erreur lors de la création du dossier : " + e.message);
@@ -103,12 +104,17 @@
       alert("Le fichier doit avoir une extension .md");
       return;
     }
-    const path = folder === "Non trier" ? `${BASE_PATH}/${filename}` : `${BASE_PATH}/${folder}/${filename}`;
+    let path;
+    if (folder === null) {
+      path = `${BASE_PATH}/${filename}`;
+    } else {
+      path = `${BASE_PATH}/${folder}/${filename}`;
+    }
     try {
       const dateStr = new Date().toISOString().split('T')[0];
       const defaultContent = `\` :: Votre Texte ICI :: \`  \n\n\n\` **Date :** ${dateStr} \`  \n\` **RAPPEL :** \n :: Ne pas supprimer cette ligne ! :: \``;
       const contentEncoded = btoa(unescape(encodeURIComponent(defaultContent)));
-      const commitMessage = `Création du fichier ${filename} dans ${folder} via Explorateur MD`;
+      const commitMessage = `Création du fichier ${filename} dans ${folder === null ? "racine" : folder} via Explorateur MD`;
       const putRes = await fetch(
         `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
         {
@@ -129,7 +135,7 @@
         const err = await putRes.json();
         throw new Error(err.message || "Erreur lors de la création du fichier");
       }
-      alert(`Fichier "${filename}" créé avec succès dans "${folder === "Non trier" ? "racine" : folder}".`);
+      alert(`Fichier "${filename}" créé avec succès dans "${folder === null ? "racine" : folder}".`);
       await refreshFolderFiles(folder);
       openFile(folder, { name: filename });
     } catch (e) {
@@ -146,8 +152,10 @@
     btnCreateFile.disabled = true;
     filesUl.innerHTML = "";
     foldersUl.innerHTML = "";
+    foldersInsideUl.innerHTML = "";
     folders = [];
     filesByFolder = {};
+    foldersByFolder = {};
 
     try {
       const rootContent = await githubApi(BASE_PATH);
@@ -166,22 +174,74 @@
         f.name.toLowerCase().endsWith(".md")
       );
 
-      // For each folder, load its files (only md)
+      // For each folder, load its files and subfolders
       for (const folderName of rootFolders.map((f) => f.name)) {
         const folderContent = await githubApi(`${BASE_PATH}/${folderName}`);
         filesByFolder[folderName] = folderContent.filter(
           (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
         );
+        foldersByFolder[folderName] = folderContent.filter(
+          (item) => item.type === "dir"
+        ).map(d => d.name);
       }
 
       renderFolders();
+      renderFoldersInside(null);
       renderFiles("Non trier");
     } catch (e) {
       alert("Erreur lors du chargement des fichiers : " + e.message);
     }
   }
 
-  // Render folders list
+  // Reload current folder content (files and folders)
+  async function reloadCurrentFolder() {
+    if (currentFolder === null) {
+      // Root
+      try {
+        const rootContent = await githubApi(BASE_PATH);
+        const rootFolders = rootContent.filter((item) => item.type === "dir");
+        const rootFiles = rootContent.filter((item) => item.type === "file");
+
+        folders = rootFolders.map((f) => f.name);
+        folders.unshift("Non trier");
+        filesByFolder["Non trier"] = rootFiles.filter((f) =>
+          f.name.toLowerCase().endsWith(".md")
+        );
+
+        for (const folderName of rootFolders.map((f) => f.name)) {
+          const folderContent = await githubApi(`${BASE_PATH}/${folderName}`);
+          filesByFolder[folderName] = folderContent.filter(
+            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+          );
+          foldersByFolder[folderName] = folderContent.filter(
+            (item) => item.type === "dir"
+          ).map(d => d.name);
+        }
+        renderFolders();
+        renderFoldersInside(null);
+        renderFiles("Non trier");
+      } catch (e) {
+        alert("Erreur lors du rechargement des fichiers : " + e.message);
+      }
+    } else {
+      // Inside folder
+      try {
+        const folderContent = await githubApi(`${BASE_PATH}/${currentFolder}`);
+        filesByFolder[currentFolder] = folderContent.filter(
+          (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+        );
+        foldersByFolder[currentFolder] = folderContent.filter(
+          (item) => item.type === "dir"
+        ).map(d => d.name);
+        renderFoldersInside(currentFolder);
+        renderFiles(currentFolder);
+      } catch (e) {
+        alert("Erreur lors du rechargement des fichiers : " + e.message);
+      }
+    }
+  }
+
+  // Render folders list (root folders)
   function renderFolders() {
     foldersUl.innerHTML = "";
     folders.forEach((folder) => {
@@ -193,27 +253,79 @@
       li.setAttribute("aria-pressed", "false");
       li.textContent = folder;
       li.addEventListener("click", () => {
-        openFolder(folder);
+        openFolder(folder === "Non trier" ? null : folder);
       });
       li.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          openFolder(folder);
+          openFolder(folder === "Non trier" ? null : folder);
         }
       });
       foldersUl.appendChild(li);
     });
   }
 
+  // Render folders inside current folder (subfolders)
+  function renderFoldersInside(folder) {
+    foldersInsideUl.innerHTML = "";
+    let subfolders = [];
+    if (folder === null) {
+      // Root folders except "Non trier"
+      subfolders = folders.filter(f => f !== "Non trier");
+    } else {
+      subfolders = foldersByFolder[folder] || [];
+    }
+    if (subfolders.length === 0) {
+      const li = document.createElement("li");
+      li.className = "text-gray-500 italic p-4";
+      li.textContent = "Aucun dossier dans ce dossier.";
+      foldersInsideUl.appendChild(li);
+      return;
+    }
+    subfolders.forEach((subfolder) => {
+      const li = document.createElement("li");
+      li.className =
+        "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
+      li.setAttribute("tabindex", "0");
+      li.setAttribute("role", "button");
+      li.setAttribute("aria-pressed", "false");
+
+      const icon = document.createElement("i");
+      icon.className = "fas fa-folder text-yellow-500";
+      li.appendChild(icon);
+
+      const span = document.createElement("span");
+      span.textContent = subfolder;
+      li.appendChild(span);
+
+      li.addEventListener("click", () => {
+        openFolder(subfolder);
+      });
+      li.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openFolder(subfolder);
+        }
+      });
+
+      foldersInsideUl.appendChild(li);
+    });
+  }
+
   // Render files list for a folder
   function renderFiles(folder) {
     currentFolder = folder;
-    currentFolderName.textContent = folder === "Non trier" ? "Non trié" : folder;
+    currentFolderName.textContent = folder === null ? "Non trié" : folder;
     filesUl.innerHTML = "";
     btnBackFolder.disabled = historyStack.length === 0;
     btnCreateFile.disabled = false;
 
-    const files = filesByFolder[folder] || [];
+    let files;
+    if (folder === null) {
+      files = filesByFolder["Non trier"] || [];
+    } else {
+      files = filesByFolder[folder] || [];
+    }
     if (files.length === 0) {
       const li = document.createElement("li");
       li.className = "text-gray-500 italic p-4";
@@ -474,39 +586,60 @@
   }
 
   // Open folder (push current folder to history)
-  function openFolder(folder) {
+  async function openFolder(folder) {
     if (currentFolder !== null) {
       historyStack.push(currentFolder);
     }
-    renderFiles(folder);
+    currentFolder = folder;
+    currentFolderName.textContent = folder === null ? "Non trié" : folder;
+    btnBackFolder.disabled = historyStack.length === 0;
+    btnCreateFile.disabled = false;
     fileViewSection.classList.add("hidden");
     currentFile = null;
     fileContent.value = "";
     btnSave.disabled = true;
     isEditing = false;
+
+    // Load folder content if not loaded
+    if (folder === null) {
+      // Root
+      await loadRoot();
+    } else {
+      try {
+        const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
+        filesByFolder[folder] = folderContent.filter(
+          (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+        );
+        foldersByFolder[folder] = folderContent.filter(
+          (item) => item.type === "dir"
+        ).map(d => d.name);
+      } catch (e) {
+        alert("Erreur lors du chargement du dossier : " + e.message);
+        return;
+      }
+    }
+    renderFoldersInside(folder);
+    renderFiles(folder);
     updateHash("", "");
-    btnCreateFile.disabled = false;
   }
 
   // Back folder
   btnBackFolder.addEventListener("click", () => {
     if (historyStack.length > 0) {
       const previousFolder = historyStack.pop();
-      renderFiles(previousFolder);
-      fileViewSection.classList.add("hidden");
-      currentFile = null;
-      fileContent.value = "";
-      btnSave.disabled = true;
-      isEditing = false;
-      updateHash("", "");
-      btnCreateFile.disabled = false;
+      openFolder(previousFolder);
     }
   });
 
   // Open file: fetch content via GitHub API and show viewer (rendered)
   async function openFile(folder, file) {
     try {
-      const path = folder === "Non trier" ? `${BASE_PATH}/${file.name}` : `${BASE_PATH}/${folder}/${file.name}`;
+      let path;
+      if (folder === null) {
+        path = `${BASE_PATH}/${file.name}`;
+      } else {
+        path = `${BASE_PATH}/${folder}/${file.name}`;
+      }
       if (!TOKEN) throw new Error("Token GitHub non chargé");
       const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
       const res = await fetch(url, {
@@ -528,7 +661,7 @@
       toggleViewMode(false);
       fileViewSection.classList.remove("hidden");
       fileRenderedContent.focus();
-      updateHash(folder, file.name);
+      updateHash(folder === null ? "Non trier" : folder, file.name);
     } catch (e) {
       alert("Erreur lors de l'ouverture du fichier : " + e.message);
     }
@@ -553,12 +686,13 @@
     if (sepIndex === -1) return;
     const folder = decodeURIComponent(hash.substring(0, sepIndex));
     const filename = decodeURIComponent(hash.substring(sepIndex + 1));
-    if (!folders.includes(folder)) return;
-    const files = filesByFolder[folder] || [];
+    let folderKey = folder === "Non trier" ? null : folder;
+    if (folderKey !== null && !folders.includes(folderKey)) return;
+    const files = filesByFolder[folderKey === null ? "Non trier" : folderKey] || [];
     const file = files.find((f) => f.name === filename);
     if (!file) return;
-    openFolder(folder);
-    openFile(folder, file);
+    await openFolder(folderKey);
+    openFile(folderKey, file);
   }
 
   // Toggle between viewer and editor mode
@@ -600,7 +734,12 @@
     btnSave.disabled = true;
     const { folder, file } = currentFile;
     try {
-      const path = folder === "Non trier" ? `${BASE_PATH}/${file.name}` : `${BASE_PATH}/${folder}/${file.name}`;
+      let path;
+      if (folder === null) {
+        path = `${BASE_PATH}/${file.name}`;
+      } else {
+        path = `${BASE_PATH}/${folder}/${file.name}`;
+      }
       const metaRes = await fetch(
         `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
         {
@@ -650,7 +789,7 @@
 
   async function refreshFolderFiles(folder) {
     try {
-      if (folder === "Non trier") {
+      if (folder === null) {
         const rootContent = await githubApi(BASE_PATH);
         filesByFolder["Non trier"] = rootContent.filter(
           (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
@@ -707,19 +846,24 @@
     for (const file of mdFiles) {
       try {
         const content = await file.text();
-        await createFile(currentFolder || "Non trier", file.name);
-        await saveFileContent(currentFolder || "Non trier", file.name, content);
+        await createFile(currentFolder, file.name);
+        await saveFileContent(currentFolder, file.name, content);
       } catch (err) {
         alert(`Erreur lors de l'import du fichier ${file.name} : ${err.message}`);
       }
     }
     alert("Import terminé !");
-    await loadRoot();
+    await reloadCurrentFolder();
   });
 
   async function saveFileContent(folder, filename, content) {
     try {
-      const path = folder === "Non trier" ? `${BASE_PATH}/${filename}` : `${BASE_PATH}/${folder}/${filename}`;
+      let path;
+      if (folder === null) {
+        path = `${BASE_PATH}/${filename}`;
+      } else {
+        path = `${BASE_PATH}/${folder}/${filename}`;
+      }
       const metaRes = await fetch(
         `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
         {
@@ -772,7 +916,7 @@
   });
 
   btnCreateFile.addEventListener("click", async () => {
-    if (!currentFolder) {
+    if (currentFolder === null) {
       alert("Veuillez sélectionner un dossier pour créer un fichier.");
       return;
     }
