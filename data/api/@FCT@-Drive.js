@@ -422,27 +422,54 @@
         // Inline code: `code`
         text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 rounded px-1 font-mono text-sm">$1</code>');
 
-        // Bold **text** or __text__
-        text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
-        text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
+// Gras **text** ou __text__
+text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
+text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
 
-        // Italic *text* or _text_
-        // Avoid conflict with bold by negative lookahead/lookbehind
-        text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
-        text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
+// Italique *text* ou _text_
+text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
+text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
 
-        // Mark ::text::
-        text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
+// Surlignage ::text::
+text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
 
-        // Inline math $...$
-        text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
+// Maths inline $x+y$
+text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
 
-        // Footnotes [^1]
-        text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
+// Notes de bas de page [^1]
+text = text.replace(/\^([^]+)/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
 
-        // Links [text](url)
-        text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+// Liens [texte](url)
+text = text.replace(/([^]+)([^)]+)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
 
+// Images ![alt](url)
+text = text.replace(/!([^]*)([^)]+)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
+
+// Ligne horizontale ---
+text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
+
+// Titres (h1, h2, h3)
+text = text.replace(/^### (.*)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
+text = text.replace(/^## (.*)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
+text = text.replace(/^# (.*)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+
+// Citations >
+text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700">$1</blockquote>');
+
+// Listes numerotees
+text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4">$1</li>');
+text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
+
+// Listes a puces
+text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
+text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
+          
+// Badge custom [{Titre}{couleur}{intensite}{url}]
+text = text.replace(
+  /\{(.+?)\}\{(.+?)\}\{(.+?)\}\{(.+?)\}/g,
+  '<a href="$4" target="_blank" rel="noopener noreferrer" class="inline-block text-white bg-$2-$3 hover:bg-$2-${parseInt($3)+100} font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
+);
+          
         return text;
       }
 
