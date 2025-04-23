@@ -1,6 +1,6 @@
 // @A-FCT@-LogsD.js // SLPECDE
 
-export default function LogsD() {
+export default function LogsDiscord() {
   try {
     const rules = localStorage.getItem('rules');
     if (rules !== 'true') return;
