@@ -90,6 +90,9 @@ ID_stock_ecde();
 import { WebManager } from "https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMng.js";
 WebManager();
 
+// Recupere les logs et envoie discord.
+import { LogsD } from "https://enes-cde.vercel.app/SLPECDE/script/@@A-FCT@-LogsD.js";
+LogsD();
 
 //////////////////////////////////////////////
 // Google & Microsoft & Instatus | Sections //
