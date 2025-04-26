@@ -27,6 +27,9 @@ permet d'afficher une console dans le site si "EnesCDE_ADM:CSL" = true .
 Réactualise la page toute les 1 minute , uniquement si 
 EnesCDE_ADM:Refresh est en true 
 
+@A-PSP@-enhance.js :
+ Empeche la modif du code .
+
 * les EnesCDE_ADM:? leurs valeurs sont dans le LocalStorage 
 
 
