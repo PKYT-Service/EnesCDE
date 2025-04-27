@@ -94,6 +94,16 @@ WebManager();
 import { LogsDiscord } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-LogsD.js";
 LogsDiscord();
 
+
+////////////////////////////////////////////////////
+// E-CDE // DB - SC // Enhance // Scripted | DEV //
+//////////////////////////////////////////////////
+
+// Recupere les logs et envoie discord.
+import { secure_psa } from "https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js";
+secure_psa();
+
+
 //////////////////////////////////////////////
 // Google & Microsoft & Instatus | Sections //
 //////////////////////////////////////////////
