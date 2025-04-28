@@ -13,10 +13,10 @@ export function ADM_RPE() {
 // Fonction de nettoyage des caracteres speciaux
 function cleanString(input) {
   return input
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Enleve les accents
-    .replace(/[^A-Za-z0-9@\-_/\. \n:()\[\]{}*_\`]/g, '') // Garde (){}[]**__` aussi
-    .replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '') // Enleve les accents
+  .replace(/[^A-Za-z0-9@\-_/\. \n:(){}\[\]!\?\.;*_\`]/g, '') // Garde la ponctuation aussi
+  .replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
 }
 // Applique le nettoyage en temps reel sur les inputs et textareas
 document.querySelectorAll('input, textarea').forEach(el => {
