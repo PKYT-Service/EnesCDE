@@ -437,13 +437,14 @@ text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
 text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
 
 // Notes de bas de page [^1]
-text = text.replace(/\^([^]+)/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
+text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
 
 // Liens [texte](url)
-text = text.replace(/([^]+)([^)]+)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
 
 // Images ![alt](url)
-text = text.replace(/!([^]*)([^)]+)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
+text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
+
 
 // Ligne horizontale ---
 text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
