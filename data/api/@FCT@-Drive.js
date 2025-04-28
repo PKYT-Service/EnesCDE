@@ -465,9 +465,9 @@ text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-
 text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
 text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
           
-// Badge custom [{Titre}{couleur}{intensite}{url}]
+// Badge custom "{Titre}{couleur}{intensite}{url}"
 text = text.replace(
-  /\[\{(.+?)\}\{(.+?)\}\{(.+?)\}\{(.+?)\}\]/g,
+  /\"\{(.+?)\}\{(.+?)\}\{(.+?)\}\{(.+?)\}\"/g,
   '<a href="$4" target="_blank" rel="noopener noreferrer" class="inline-block text-white bg-$2-$3 hover:bg-$2-${parseInt($3)+100} font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
 );
           
