@@ -467,7 +467,7 @@ text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">
           
 // Badge custom "{Titre}{couleur}{intensite}{url}"
 text = text.replace(
-  /\"\{(.+?)\}\"/g,
+  /\[\{(.+?)\}\]/g,
   '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
 );
           
