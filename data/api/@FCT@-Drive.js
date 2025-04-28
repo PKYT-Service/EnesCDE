@@ -465,7 +465,7 @@ text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-
 text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
 text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
           
-// Badge custom "{Titre}{couleur}{intensite}{url}"
+// Badge custom [{Titre}]
 text = text.replace(
   /\[\{(.+?)\}\]/g,
   '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
