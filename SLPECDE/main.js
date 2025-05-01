@@ -62,6 +62,10 @@ Rules();
 import { ADM_RPE } from "https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js";
 ADM_RPE();
 
+// Corrige les valeurs incorrectes dans cookies / localStorage / session (version ADM).
+import { patch } from "https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js";
+patch();
+
 // Affiche un popup signalant que le site est protégé par EnesCDE Sys.
 import { pu_ucd_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-E.CDE-Sys.js";
 pu_ucd_ecde();
