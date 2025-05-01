@@ -9,19 +9,38 @@ export function ADM_RPE() {
     }
 }
 
+export function patch() {
+  // Fonction de nettoyage des caracteres speciaux
+  function cleanString(input) {
+    return input
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Enleve les accents
+      .replace(/[^A-Za-z0-9@\-_/\. \n:(){}!\?\.;*_\`+#]/g, '') // Garde la ponctuation + ajoute + et #
+      .replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
+  }
 
-// Fonction de nettoyage des caracteres speciaux
-function cleanString(input) {
-  return input
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g, '') // Enleve les accents
-.replace(/[^A-Za-z0-9@\-_/\. \n:(){}\[\]!\?\.;*_\`+#]/g, '') // Garde la ponctuation aussi + ajoute + et #
-.replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
-}
-// Applique le nettoyage en temps reel sur les inputs et textareas
-document.querySelectorAll('input, textarea').forEach(el => {
-  el.addEventListener('input', function(event) {
-    const cleanedValue = cleanString(event.target.value);
-    event.target.value = cleanedValue;
+  // Applique le nettoyage en temps reel sur les inputs et textareas
+  document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('input', function(event) {
+      const cleanedValue = cleanString(event.target.value);
+      event.target.value = cleanedValue;
+    });
   });
-});
+
+  // Ajout du meta si pas deja present
+  if (!document.querySelector('meta[name="viewport"]')) {
+    const meta = document.createElement('meta')
+    meta.name = 'viewport'
+    meta.content = 'width=device-width, initial-scale=1.0'
+    document.head.appendChild(meta)
+  }
+
+  // Ajout du favicon si pas deja present
+  if (!document.querySelector('link[rel="icon"]')) {
+    const favicon = document.createElement('link')
+    favicon.rel = 'icon'
+    favicon.type = 'image/png'
+    favicon.href = 'https://enes-cde.vercel.app/data/img/web/favicon.png'
+    document.head.appendChild(favicon)
+  }
+}
