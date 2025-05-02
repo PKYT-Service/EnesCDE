@@ -1,1 +1,65 @@
-function _0x2a38(){const _0x4d749b=['div','translateX(-150%)','setItem','appendChild','#accept-btn','821540IIhltG','opacity','style','734130Dwfjwz','display','createElement','855828YSddhZ','7574csjfoE','true','60970kfRQPy','innerHTML','UCD_EnesCDE','block','126600adFZrB','transform','querySelector','fixed\x20bottom-6\x20left-6\x20z-50\x20hidden\x20bg-black\x20dark:bg-gray-600\x20text-white\x20p-3\x20rounded-full\x20transition-opacity\x20duration-500','classList','add','36YUEBrx','button','none','remove','1464088ssuGYU','hidden','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20items-center\x20justify-between\x20gap-6\x20text-sm\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22content-left\x20pl-4\x20dark:text-white\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Ce\x20site\x20utilise\x20le\x20système\x20Enes<mark>CDE</mark>.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Pour\x20en\x20savoir\x20plus,\x20consultez\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22https://enes-cde.vercel.app/redirect.html?LB=ECDE_UCDPS\x22\x20class=\x22text-blue-500\x22\x20underline\x22>cette\x20page</a>.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22content-right\x20text-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20id=\x22accept-btn\x22\x20class=\x22cursor-pointer\x20rounded-full\x20bg-black\x20dark:bg-indigo-700\x20px-4\x20py-2\x20text-white\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Compris\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20','className','addEventListener','37FYrybx','translateX(0)','12ZkQKve','click'];_0x2a38=function(){return _0x4d749b;};return _0x2a38();}(function(_0x299fc0,_0x29250d){const _0x23a1ad=_0x583f,_0x155370=_0x299fc0();while(!![]){try{const _0x19c72e=parseInt(_0x23a1ad(0x1d9))/0x1*(-parseInt(_0x23a1ad(0x1e9))/0x2)+-parseInt(_0x23a1ad(0x1ef))/0x3*(parseInt(_0x23a1ad(0x1db))/0x4)+parseInt(_0x23a1ad(0x1e5))/0x5+-parseInt(_0x23a1ad(0x1f5))/0x6*(-parseInt(_0x23a1ad(0x1eb))/0x7)+parseInt(_0x23a1ad(0x1d4))/0x8+-parseInt(_0x23a1ad(0x1e8))/0x9+parseInt(_0x23a1ad(0x1e2))/0xa;if(_0x19c72e===_0x29250d)break;else _0x155370['push'](_0x155370['shift']());}catch(_0x1a29ab){_0x155370['push'](_0x155370['shift']());}}}(_0x2a38,0x19028));function _0x583f(_0x3a0038,_0x51f92d){const _0x2a38cb=_0x2a38();return _0x583f=function(_0x583fee,_0x969632){_0x583fee=_0x583fee-0x1d2;let _0x1949e0=_0x2a38cb[_0x583fee];return _0x1949e0;},_0x583f(_0x3a0038,_0x51f92d);}export function pu_ucd_ecde(){const _0x1639c8=_0x583f,_0x204df1=localStorage['getItem']('UCD_EnesCDE')==='true',_0x5063e3=document[_0x1639c8(0x1e7)](_0x1639c8(0x1dd));_0x5063e3['className']='fixed\x20bottom-12\x20left-1/2\x20z-50\x20-translate-x-1/2\x20rounded-full\x20bg-white\x20dark:bg-slate-950\x20p-2\x20drop-shadow-2xl\x20max-sm:w-11/12\x20transition-transform\x20duration-500',_0x5063e3['id']='gdpr',_0x5063e3[_0x1639c8(0x1ec)]=_0x1639c8(0x1d6);const _0x2b033f=document['createElement'](_0x1639c8(0x1f6));_0x2b033f[_0x1639c8(0x1d7)]=_0x1639c8(0x1f2),_0x2b033f[_0x1639c8(0x1ec)]='<svg\x20width=\x2210px\x22\x20height=\x2210px\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20fill=\x22none\x22\x20xmlns=\x22http://www.w3.org/2000/svg\x22><g\x20id=\x22SVGRepo_bgCarrier\x22\x20stroke-width=\x220\x22></g><g\x20id=\x22SVGRepo_tracerCarrier\x22\x20stroke-linecap=\x22round\x22\x20stroke-linejoin=\x22round\x22></g><g\x20id=\x22SVGRepo_iconCarrier\x22>\x20<path\x20d=\x22M21\x200C20.4477\x200\x2020\x200.447715\x2020\x201V2H19C18.4477\x202\x2018\x202.44772\x2018\x203C18\x203.55228\x2018.4477\x204\x2019\x204H20V5C20\x205.55228\x2020.4477\x206\x2021\x206C21.5523\x206\x2022\x205.55228\x2022\x205V4H23C23.5523\x204\x2024\x203.55228\x2024\x203C24\x202.44772\x2023.5523\x202\x2023\x202H22V1C22\x200.447715\x2021.5523\x200\x2021\x200Z\x22\x20fill=\x22#0F0F0F\x22></path>\x20<path\x20d=\x22M22.4668\x208.6169C22.297\x208.09138\x2021.7016\x207.85776\x2021.1936\x208.07463C20.6857\x208.29149\x2020.4525\x208.87941\x2020.6116\x209.40826C21.113\x2011.074\x2021.1224\x2012.8572\x2020.6271\x2014.5397C20.0373\x2016.5433\x2018.7684\x2018.2792\x2017.0383\x2019.4493C15.3082\x2020.6195\x2013.2247\x2021.1509\x2011.1455\x2020.9525C9.06631\x2020.754\x207.121\x2019.8381\x205.64348\x2018.3618C4.16596\x2016.8855\x203.24838\x2014.9409\x203.04821\x2012.8619C2.84804\x2010.7828\x203.37778\x208.69891\x204.5465\x206.96784C5.71522\x205.23677\x207.45003\x203.96647\x209.4532\x203.37498C11.1353\x202.8783\x2012.9184\x202.88626\x2014.5846\x203.38623C15.1136\x203.54496\x2015.7013\x203.31122\x2015.9178\x202.80311C16.1342\x202.29501\x2015.9001\x201.69979\x2015.3744\x201.53036C13.2759\x200.853957\x2011.0142\x200.821568\x208.88488\x201.4503C6.43471\x202.17379\x204.31277\x203.72755\x202.88325\x205.84491C1.45373\x207.96227\x200.805783\x2010.5112\x201.05062\x2013.0542C1.29545\x2015.5972\x202.4178\x2017.9757\x204.22503\x2019.7814C6.03225\x2021.5871\x208.41165\x2022.7075\x2010.9548\x2022.9502C13.498\x2023.193\x2016.0464\x2022.5429\x2018.1626\x2021.1117C20.2788\x2019.6804\x2021.8308\x2017.5572\x2022.5523\x2015.1064C23.1792\x2012.9766\x2023.145\x2010.7148\x2022.4668\x208.6169Z\x22\x20fill=\x22#0F0F0F\x22></path>\x20<path\x20fill-rule=\x22evenodd\x22\x20clip-rule=\x22evenodd\x22\x20d=\x22M13\x207C14.1046\x207\x2015\x207.89543\x2015\x209V15C15\x2016.1046\x2014.1046\x2017\x2013\x2017H11C9.89542\x2017\x208.99999\x2016.1046\x208.99999\x2015V9C8.99999\x207.89543\x209.89542\x207\x2011\x207H13ZM12\x209C12.5523\x209\x2013\x209.44772\x2013\x2010V14C13\x2014.5523\x2012.5523\x2015\x2012\x2015C11.4477\x2015\x2011\x2014.5523\x2011\x2014V10C11\x209.44772\x2011.4477\x209\x2012\x209Z\x22\x20fill=\x22#0F0F0F\x22></path>\x20</g></svg>';function _0x73dea6(){const _0x36ede0=_0x1639c8;_0x5063e3[_0x36ede0(0x1e4)]['transform']=_0x36ede0(0x1de),setTimeout(()=>{const _0x3a237f=_0x36ede0;_0x5063e3[_0x3a237f(0x1e4)]['display']='none',_0x2b033f[_0x3a237f(0x1f3)][_0x3a237f(0x1d3)](_0x3a237f(0x1d5)),_0x2b033f[_0x3a237f(0x1e4)]['opacity']='1',localStorage[_0x3a237f(0x1df)](_0x3a237f(0x1ed),_0x3a237f(0x1ea));},0x1f4);}function _0x336e33(){const _0x426c58=_0x1639c8;_0x5063e3['style'][_0x426c58(0x1e6)]=_0x426c58(0x1ee),setTimeout(()=>{const _0x11db60=_0x426c58;_0x5063e3['style'][_0x11db60(0x1f0)]=_0x11db60(0x1da);},0x32),_0x2b033f[_0x426c58(0x1e4)][_0x426c58(0x1e3)]='0',setTimeout(()=>_0x2b033f['classList'][_0x426c58(0x1f4)](_0x426c58(0x1d5)),0x1f4);}_0x5063e3[_0x1639c8(0x1f1)](_0x1639c8(0x1e1))['addEventListener'](_0x1639c8(0x1dc),_0x73dea6),_0x2b033f[_0x1639c8(0x1d8)](_0x1639c8(0x1dc),_0x336e33),document['body']['appendChild'](_0x5063e3),document['body'][_0x1639c8(0x1e0)](_0x2b033f),_0x204df1&&(_0x5063e3[_0x1639c8(0x1e4)][_0x1639c8(0x1e6)]=_0x1639c8(0x1d2),_0x2b033f[_0x1639c8(0x1f3)][_0x1639c8(0x1d3)](_0x1639c8(0x1d5)));}
+export function pu_ucd_ecde() {
+    // Vérifie si "compris" est déjà validé
+    const isAccepted = localStorage.getItem("UCD_EnesCDE") === "true";
+
+    // Création du popup
+    const popup = document.createElement("div");
+    popup.className =
+        "fixed bottom-12 left-1/2 z-50 -translate-x-1/2 rounded-full bg-white dark:bg-slate-950 p-2 drop-shadow-2xl max-sm:w-11/12 transition-transform duration-500";
+    popup.id = "gdpr";
+    popup.innerHTML = `
+        <div class="flex items-center justify-between gap-6 text-sm">
+            <div class="content-left pl-4 dark:text-white">
+                Ce site utilise le système Enes<mark>CDE</mark>.
+                Pour en savoir plus, consultez
+                <a href="https://enes-cde.vercel.app/redirect.html?LB=ECDE_UCDPS" class="text-blue-500" underline">cette page</a>.
+            </div>
+            <div class="content-right text-end">
+                <button id="accept-btn" class="cursor-pointer rounded-full bg-black dark:bg-indigo-700 px-4 py-2 text-white">
+                    Compris
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Création du bouton flottant (œil) pour rouvrir
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className =
+        "fixed bottom-6 left-6 z-50 hidden bg-black dark:bg-gray-600 text-white p-3 rounded-full transition-opacity duration-500";
+    toggleBtn.innerHTML = `<svg width="10px" height="10px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21 0C20.4477 0 20 0.447715 20 1V2H19C18.4477 2 18 2.44772 18 3C18 3.55228 18.4477 4 19 4H20V5C20 5.55228 20.4477 6 21 6C21.5523 6 22 5.55228 22 5V4H23C23.5523 4 24 3.55228 24 3C24 2.44772 23.5523 2 23 2H22V1C22 0.447715 21.5523 0 21 0Z" fill="#0F0F0F"></path> <path d="M22.4668 8.6169C22.297 8.09138 21.7016 7.85776 21.1936 8.07463C20.6857 8.29149 20.4525 8.87941 20.6116 9.40826C21.113 11.074 21.1224 12.8572 20.6271 14.5397C20.0373 16.5433 18.7684 18.2792 17.0383 19.4493C15.3082 20.6195 13.2247 21.1509 11.1455 20.9525C9.06631 20.754 7.121 19.8381 5.64348 18.3618C4.16596 16.8855 3.24838 14.9409 3.04821 12.8619C2.84804 10.7828 3.37778 8.69891 4.5465 6.96784C5.71522 5.23677 7.45003 3.96647 9.4532 3.37498C11.1353 2.8783 12.9184 2.88626 14.5846 3.38623C15.1136 3.54496 15.7013 3.31122 15.9178 2.80311C16.1342 2.29501 15.9001 1.69979 15.3744 1.53036C13.2759 0.853957 11.0142 0.821568 8.88488 1.4503C6.43471 2.17379 4.31277 3.72755 2.88325 5.84491C1.45373 7.96227 0.805783 10.5112 1.05062 13.0542C1.29545 15.5972 2.4178 17.9757 4.22503 19.7814C6.03225 21.5871 8.41165 22.7075 10.9548 22.9502C13.498 23.193 16.0464 22.5429 18.1626 21.1117C20.2788 19.6804 21.8308 17.5572 22.5523 15.1064C23.1792 12.9766 23.145 10.7148 22.4668 8.6169Z" fill="#0F0F0F"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M13 7C14.1046 7 15 7.89543 15 9V15C15 16.1046 14.1046 17 13 17H11C9.89542 17 8.99999 16.1046 8.99999 15V9C8.99999 7.89543 9.89542 7 11 7H13ZM12 9C12.5523 9 13 9.44772 13 10V14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14V10C11 9.44772 11.4477 9 12 9Z" fill="#0F0F0F"></path> </g></svg>`;
+
+    // Fonction pour fermer le popup
+    function closePopup() {
+        popup.style.transform = "translateX(-150%)"; // Glissement à gauche
+        setTimeout(() => {
+            popup.style.display = "none";
+            toggleBtn.classList.remove("hidden");
+            toggleBtn.style.opacity = "1";
+            localStorage.setItem("UCD_EnesCDE", "true");
+        }, 500);
+    }
+
+    // Fonction pour ouvrir le popup
+    function openPopup() {
+        popup.style.display = "block";
+        setTimeout(() => {
+            popup.style.transform = "translateX(0)"; // Réaffichage
+        }, 50);
+        toggleBtn.style.opacity = "0";
+        setTimeout(() => toggleBtn.classList.add("hidden"), 500);
+    }
+
+    // Ajout des événements
+    popup.querySelector("#accept-btn").addEventListener("click", closePopup);
+    toggleBtn.addEventListener("click", openPopup);
+
+    // Ajout au DOM
+    document.body.appendChild(popup);
+    document.body.appendChild(toggleBtn);
+
+    // Si déjà accepté, masquer le popup et afficher le bouton flottant
+    if (isAccepted) {
+        popup.style.display = "none";
+        toggleBtn.classList.remove("hidden");
+    }
+}

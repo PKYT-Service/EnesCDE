@@ -1,1 +1,84 @@
-(function(_0x3270ef,_0x5389fb){const _0x5d5ef8=_0x2d4a,_0x56c319=_0x3270ef();while(!![]){try{const _0x4ae917=-parseInt(_0x5d5ef8(0xb0))/0x1+-parseInt(_0x5d5ef8(0xb7))/0x2*(parseInt(_0x5d5ef8(0xc7))/0x3)+parseInt(_0x5d5ef8(0xae))/0x4*(-parseInt(_0x5d5ef8(0xa4))/0x5)+parseInt(_0x5d5ef8(0xc4))/0x6*(-parseInt(_0x5d5ef8(0xb9))/0x7)+-parseInt(_0x5d5ef8(0xb4))/0x8+parseInt(_0x5d5ef8(0xbd))/0x9+parseInt(_0x5d5ef8(0xa1))/0xa;if(_0x4ae917===_0x5389fb)break;else _0x56c319['push'](_0x56c319['shift']());}catch(_0x396463){_0x56c319['push'](_0x56c319['shift']());}}}(_0x57c0,0x7e131));function _0x2d4a(_0x561e7d,_0x18ba6d){const _0x57c07e=_0x57c0();return _0x2d4a=function(_0x2d4aec,_0xfcdb4a){_0x2d4aec=_0x2d4aec-0x9f;let _0x95bb5d=_0x57c07e[_0x2d4aec];return _0x95bb5d;},_0x2d4a(_0x561e7d,_0x18ba6d);}export async function ecde_client(){const _0x2d635d=_0x2d4a,_0x1d4c47=_0x267560=>console[_0x2d635d(0xc1)](_0x2d635d(0xbb)+_0x267560+'\x20]'),_0x2700e4=[{'type':'ECDE:ID','value':localStorage[_0x2d635d(0xaa)](_0x2d635d(0xab))},{'type':'ECDE:ID_IP','value':localStorage[_0x2d635d(0xaa)](_0x2d635d(0xc9))},{'type':_0x2d635d(0xb3),'value':localStorage[_0x2d635d(0xaa)](_0x2d635d(0xb3))},{'type':_0x2d635d(0xc8),'value':localStorage[_0x2d635d(0xaa)](_0x2d635d(0xc8))}],_0x258a2b=_0x2700e4[_0x2d635d(0xb6)](_0x1c49b9=>_0x1c49b9[_0x2d635d(0xac)]!==null);if(_0x258a2b[_0x2d635d(0xa8)]===0x0){_0x1d4c47(_0x2d635d(0xc2));return;}let _0x2961d6;try{const _0x3c5a62=await fetch('https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js'),_0x5872ef=await _0x3c5a62['json']();_0x2961d6=_0x5872ef[_0x2d635d(0xbc)];}catch(_0x57454f){_0x1d4c47(_0x2d635d(0x9f));return;}let _0x4fcf07;try{const _0x13abd8=await fetch(_0x2d635d(0xb8),{'headers':{'Authorization':_0x2d635d(0xa3)+_0x2961d6,'Accept':_0x2d635d(0xa5)}});_0x4fcf07=await _0x13abd8[_0x2d635d(0xc0)]();}catch(_0x5b5e36){_0x1d4c47(_0x2d635d(0xb5));return;}const _0x635231=window[_0x2d635d(0xc6)]['href'],_0x102f47=_0x4fcf07[_0x2d635d(0xb1)](_0x138b5e=>_0x258a2b['some'](_0x56c9fe=>_0x138b5e[_0x2d635d(0xa2)]===_0x56c9fe[_0x2d635d(0xb2)]&&_0x138b5e[_0x2d635d(0xa7)]===_0x56c9fe[_0x2d635d(0xac)]));if(_0x102f47){const {bloque:bloque={},Raison:_0x17f51b}=_0x102f47;if(bloque[_0x2d635d(0xad)]===!![]){_0x1d4c47('CLIENT\x20BLOQUÉ\x20.\x20(Règle:\x20All\x20=\x20true)\x20'),alert(_0x2d635d(0xaf)+_0x17f51b+_0x2d635d(0xa6)),window[_0x2d635d(0xc6)][_0x2d635d(0xba)]=_0x2d635d(0xc3);return;}if(bloque[_0x2d635d(0xa0)]===!![]&&Array[_0x2d635d(0xc5)](bloque[_0x2d635d(0xbf)])&&bloque[_0x2d635d(0xbf)][_0x2d635d(0xbe)](_0x635231)){_0x1d4c47('CLIENT\x20BLOQUÉ\x20.\x20(Règle:\x20web\x20+\x20url\x20match)\x20'),alert('Accès\x20bloqué\x20:\x20'+_0x17f51b+_0x2d635d(0xa6)),window[_0x2d635d(0xc6)][_0x2d635d(0xba)]=_0x2d635d(0xc3);return;}_0x1d4c47(_0x2d635d(0xa9));}else _0x1d4c47('Client\x20safe\x20.');}function _0x57c0(){const _0x5007a1=['web','25407890FsLGJN','Type','Bearer\x20','2980tYymNG','application/vnd.github.v3.raw','\x0aRedirection...','Valeurs','length','Client\x20reconnu,\x20mais\x20non\x20bloqué\x20(règle:\x20All\x20=\x20false,\x20web\x20=\x20false/url\x20non\x20match)\x20.','getItem','ECDE:ID','value','All','3308EyvDky','Accès\x20bloqué\x20:\x20','662418XESpkk','find','type','ECDE:ID_DF','2240736uPNNmv','ERREUR\x20FETCH\x20/\x20LOAD\x20JSON\x20(banECDE)\x20.','filter','2rLJOWC','https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json','3580703vTZjFK','href','🛡️[E-CDE]\x20|\x20🔑\x20clients\x20[\x20','GITHUB_TOKEN','7352397gfMTku','includes','web_url','json','log','ERREUR\x20SCRIPT\x20(Aucun\x20ID\x20trouvé)\x20.','https://enes-cde.vercel.app/pages/401.html','12lQAdiC','isArray','location','1148583lItkpu','ECDE:ID_RP','ECDE:ID_IP','ERREUR\x20FETCH\x20/\x20LOAD\x20JSON\x20(token)\x20.'];_0x57c0=function(){return _0x5007a1;};return _0x57c0();}
+// ecde_client.js
+
+export async function ecde_client() {
+  const status = (msg) =>
+    console.log(`🛡️[E-CDE] | 🔑 clients [ ${msg} ]`);
+
+  // Récupération des IDs depuis le localStorage
+  const idList = [
+    { type: "ECDE:ID", value: localStorage.getItem("ECDE:ID") },
+    { type: "ECDE:ID_IP", value: localStorage.getItem("ECDE:ID_IP") },
+    { type: "ECDE:ID_DF", value: localStorage.getItem("ECDE:ID_DF") },
+    { type: "ECDE:ID_RP", value: localStorage.getItem("ECDE:ID_RP") }
+  ];
+
+  // Vérification s'il y a au moins un ID défini
+  const validIds = idList.filter((id) => id.value !== null);
+  if (validIds.length === 0) {
+    status("ERREUR SCRIPT (Aucun ID trouvé) .");
+    return;
+  }
+
+  // Charger le token depuis tocken.js distant
+  let token;
+  try {
+    const res = await fetch(
+      "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js"
+    );
+    const json = await res.json();
+    token = json.GITHUB_TOKEN;
+  } catch (err) {
+    status("ERREUR FETCH / LOAD JSON (token) .");
+    return;
+  }
+
+  // Télécharger le fichier banECDE
+  let data;
+  try {
+    const res = await fetch(
+      "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/BanECDE:ID.json",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github.v3.raw"
+        }
+      }
+    );
+    data = await res.json();
+  } catch (err) {
+    status("ERREUR FETCH / LOAD JSON (banECDE) .");
+    return;
+  }
+
+  // Vérifier si un ID correspond dans le fichier
+  const currentUrl = window.location.href;
+  const match = data.find((entry) =>
+    validIds.some((id) => entry.Type === id.type && entry.Valeurs === id.value)
+  );
+
+  if (match) {
+    const { bloque = {}, Raison } = match;
+
+    if (bloque.All === true) {
+      status("CLIENT BLOQUÉ . (Règle: All = true) ");
+      alert(`Accès bloqué : ${Raison}\nRedirection...`);
+      window.location.href = `https://enes-cde.vercel.app/pages/401.html`;
+      return;
+    }
+
+    if (
+      bloque.web === true &&
+      Array.isArray(bloque.web_url) &&
+      bloque.web_url.includes(currentUrl)
+    ) {
+      status("CLIENT BLOQUÉ . (Règle: web + url match) ");
+      alert(`Accès bloqué : ${Raison}\nRedirection...`);
+      window.location.href = `https://enes-cde.vercel.app/pages/401.html`;
+      return;
+    }
+
+    status("Client reconnu, mais non bloqué (règle: All = false, web = false/url non match) .");
+  } else {
+    status("Client safe .");
+  }
+}

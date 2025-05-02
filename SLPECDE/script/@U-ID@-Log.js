@@ -1,1 +1,130 @@
-function _0x2396(_0x88bc3a,_0x282313){const _0x53ec01=_0x53ec();return _0x2396=function(_0x23969a,_0x4313e4){_0x23969a=_0x23969a-0x7f;let _0x286f0a=_0x53ec01[_0x23969a];return _0x286f0a;},_0x2396(_0x88bc3a,_0x282313);}(function(_0x59d51e,_0x4c34be){const _0x2758f8=_0x2396,_0x2e70b0=_0x59d51e();while(!![]){try{const _0x274aaa=-parseInt(_0x2758f8(0xab))/0x1+parseInt(_0x2758f8(0xa4))/0x2*(-parseInt(_0x2758f8(0xba))/0x3)+parseInt(_0x2758f8(0x88))/0x4*(-parseInt(_0x2758f8(0x96))/0x5)+-parseInt(_0x2758f8(0x8b))/0x6*(-parseInt(_0x2758f8(0xac))/0x7)+-parseInt(_0x2758f8(0xa5))/0x8+parseInt(_0x2758f8(0x9a))/0x9+-parseInt(_0x2758f8(0x98))/0xa*(-parseInt(_0x2758f8(0x81))/0xb);if(_0x274aaa===_0x4c34be)break;else _0x2e70b0['push'](_0x2e70b0['shift']());}catch(_0x1ce6a6){_0x2e70b0['push'](_0x2e70b0['shift']());}}}(_0x53ec,0xe2227));function _0x53ec(){const _0x145f4b=['###','main','entries','Non\x20trouvé','10130lozOUp','token\x20','10toPlOA','push','1521720BIcsWn','ECDE:ID_IP','replace','log','\x0a---\x0a','.txt','getFullYear','UnknownUser','toLocaleTimeString','stringify','634qjUFiq','13778848rLSJdq','EnesCDE_ADM:Log','ECDE:ID_RP','🛡️[E-CDE]\x20|\x20❌\x20Erreur\x20:\x20','logs','\x0a###\x20UserID\x20:#\x0a\x20\x20\x20\x20ECDE:ID\x20=\x20','391894htPFfQ','1547903lJXqVk','\x0a\x20\x20\x20\x20ECDE:ID_RP\x20=\x20','\x0a\x20\x20\x20\x20ECDE:ID_DF\x20=\x20','message','\x0a###\x0a\x0a###\x20LocalStorage\x20:\x20#\x0a\x20\x20\x20\x20\x20','join','ECDE:ID','sha','Impossible\x20de\x20récupérer\x20le\x20token\x20GitHub.','rules','application/json','\x0a\x20\x20\x20\x20\x20','toLocaleString','🛡️[E-CDE]\x20|\x20❌\x20Erreur\x20lors\x20de\x20l\x27envoi\x20sur\x20GitHub\x20:','1293gvMQJP','parse','location','slice','---\x20Date\x20','error','https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js','href','ECDE:ID_DF','https://api.github.com/repos/','setItem','PUT','\x0a###\x0a\x0a###\x20Log\x20:\x20#\x0a\x20\x20\x20\x20\x20','forEach','37297293pjqlCu','GITHUB_TOKEN','/contents/','json','\x20=\x20','fr-FR','getItem','1192YlQYSj','🛡️[E-CDE]\x20|\x20⚠️\x20Les\x20logs\x20ne\x20sont\x20pas\x20créés\x20pour\x20cet\x20utilisateur.','padStart','6GQIsEC','text','database_EnesCDE','localStorage','PKYT-Service','getDate','getMonth'];_0x53ec=function(){return _0x145f4b;};return _0x53ec();}export async function ID_log_ecde(){const _0xd4d614=_0x2396,_0x34402e=localStorage[_0xd4d614(0x87)](_0xd4d614(0xb5))==='true';if(!_0x34402e){console[_0xd4d614(0x9d)]('🛡️[E-CDE]\x20|\x20❌\x20Les\x20règles\x20ne\x20sont\x20pas\x20acceptées,\x20le\x20code\x20ne\x20s\x27exécute\x20pas.');return;}const _0xfb2ddc=localStorage[_0xd4d614(0x87)](_0xd4d614(0xa6))==='true';if(_0xfb2ddc){console['log'](_0xd4d614(0x89));const _0x34ebed=JSON[_0xd4d614(0xbb)](localStorage[_0xd4d614(0x87)](_0xd4d614(0xa9))||'[]'),_0x204d99=new Date(),_0x4b091c={'page':window['location'][_0xd4d614(0xc1)],'date':_0x204d99[_0xd4d614(0xb8)]()};_0x34ebed[_0xd4d614(0x99)](_0x4b091c),localStorage[_0xd4d614(0xc4)](_0xd4d614(0xa9),JSON[_0xd4d614(0xa3)](_0x34ebed));return;}const _0x33722a=[_0xd4d614(0xb2),_0xd4d614(0xc2),_0xd4d614(0xa7),_0xd4d614(0x9b)],_0x2e887f={};_0x33722a[_0xd4d614(0x80)](_0x287357=>{const _0x16d83d=_0xd4d614,_0x4fa846=localStorage[_0x16d83d(0x87)](_0x287357);_0x2e887f[_0x287357]=_0x4fa846||_0x16d83d(0x95);});const _0x449f56=window[_0xd4d614(0xbc)][_0xd4d614(0xc1)],_0x4631ca={'localStorage':Object[_0xd4d614(0x94)](localStorage)['map'](([_0x2b3599,_0x2a0ef9])=>_0x2b3599+_0xd4d614(0x85)+_0x2a0ef9)[_0xd4d614(0xb1)](_0xd4d614(0xb7)),'sessionStorage':Object[_0xd4d614(0x94)](sessionStorage)['map'](([_0x189d78,_0x126209])=>_0x189d78+_0xd4d614(0x85)+_0x126209)['join'](_0xd4d614(0xb7))},_0x500d17=new Date(),_0x494fe0=_0x500d17[_0xd4d614(0xa0)]()+'-'+String(_0x500d17[_0xd4d614(0x91)]()+0x1)[_0xd4d614(0x8a)](0x2,'0'),_0x46e25f=String(_0x500d17[_0xd4d614(0x90)]())[_0xd4d614(0x8a)](0x2,'0'),_0x214030=_0x500d17[_0xd4d614(0xa2)](_0xd4d614(0x86),{'hour12':![]})[_0xd4d614(0xbd)](0x0,0x5)[_0xd4d614(0x9c)](':','.'),_0x3ba601=_0x2e887f[_0xd4d614(0xb2)]||_0xd4d614(0xa1),_0x4122f0=_0x2e887f[_0xd4d614(0x9b)]||'UnknownIP',_0x2a154a=_0x4122f0+_0xd4d614(0x92)+_0x3ba601+_0xd4d614(0x92)+_0x214030+_0xd4d614(0x9f),_0x5a8bf0='log/users/'+_0x494fe0+'/'+_0x46e25f+'/'+_0x2a154a,_0x18d39e=_0xd4d614(0xbe)+_0x500d17['toLocaleDateString'](_0xd4d614(0x86))+'\x20,\x20Heures\x20:\x20'+_0x214030+_0xd4d614(0xaa)+_0x2e887f['ECDE:ID']+_0xd4d614(0xae)+_0x2e887f[_0xd4d614(0xc2)]+_0xd4d614(0xad)+_0x2e887f[_0xd4d614(0xa7)]+'\x0a\x20\x20\x20\x20ECDE:ID_IP\x20=\x20'+_0x2e887f[_0xd4d614(0x9b)]+_0xd4d614(0xb0)+_0x4631ca[_0xd4d614(0x8e)]+'\x0a###\x0a\x0a###\x20LocalSession\x20:\x20#\x0a\x20\x20\x20\x20\x20'+_0x4631ca['sessionStorage']+_0xd4d614(0x7f)+_0x449f56+_0xd4d614(0x9e),_0x3b289f=_0xd4d614(0xc0);try{const _0x237273=await fetch(_0x3b289f);if(!_0x237273['ok'])throw new Error(_0xd4d614(0xb4));const _0x16694e=await _0x237273[_0xd4d614(0x84)](),_0x1ac83a=_0x16694e[_0xd4d614(0x82)],_0x3ea30a=_0xd4d614(0x8f),_0x3da242=_0xd4d614(0x8d),_0x30bcc7=_0xd4d614(0xc3)+_0x3ea30a+'/'+_0x3da242+_0xd4d614(0x83)+_0x5a8bf0;let _0x347d84=null,_0x523273='';const _0x340a0c=await fetch(_0x30bcc7,{'headers':{'Authorization':'token\x20'+_0x1ac83a}});if(_0x340a0c['ok']){const _0x4444b6=await _0x340a0c[_0xd4d614(0x84)]();_0x347d84=_0x4444b6[_0xd4d614(0xb3)],_0x523273=atob(_0x4444b6['content']);}const _0x45a381=_0x523273+'\x0a'+_0x18d39e,_0x4bc2d4={'message':'Mise\x20à\x20jour\x20du\x20log\x20utilisateur\x20'+_0x2a154a,'content':btoa(unescape(encodeURIComponent(_0x45a381))),'branch':_0xd4d614(0x93)};if(_0x347d84)_0x4bc2d4[_0xd4d614(0xb3)]=_0x347d84;const _0x4d63b4=await fetch(_0x30bcc7,{'method':_0xd4d614(0xc5),'headers':{'Authorization':_0xd4d614(0x97)+_0x1ac83a,'Content-Type':_0xd4d614(0xb6)},'body':JSON['stringify'](_0x4bc2d4)});_0x4d63b4['ok']?console['log']('🛡️[E-CDE]\x20|\x20✅\x20Log\x20mis\x20à\x20jour\x20:\x20'+_0x2a154a):console[_0xd4d614(0xbf)](_0xd4d614(0xb9),await _0x4d63b4[_0xd4d614(0x8c)]());}catch(_0x4a2910){console[_0xd4d614(0xbf)](_0xd4d614(0xa8),_0x4a2910[_0xd4d614(0xaf)]);}}
+export async function ID_log_ecde() {
+    // Vérifier si 'rules' dans le localStorage est true
+    const rulesAccepted = localStorage.getItem('rules') === 'true';
+    if (!rulesAccepted) {
+        console.log("🛡️[E-CDE] | ❌ Les règles ne sont pas acceptées, le code ne s'exécute pas.");
+        return;
+    }
+
+    // Vérifier si 'EnesCDE_ADM:Log' est défini et à true
+    const isAdminLoggingEnabled = localStorage.getItem('EnesCDE_ADM:Log') === 'true';
+    if (isAdminLoggingEnabled) {
+        console.log("🛡️[E-CDE] | ⚠️ Les logs ne sont pas créés pour cet utilisateur.");
+        // Créer un log dans le localStorage
+        const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+        const now = new Date();
+        const pageLog = {
+            page: window.location.href,
+            date: now.toLocaleString()
+        };
+        logs.push(pageLog);
+        localStorage.setItem('logs', JSON.stringify(logs));
+        return; // Ne pas créer de logs GitHub
+    }
+
+    const keys = ["ECDE:ID", "ECDE:ID_DF", "ECDE:ID_RP", "ECDE:ID_IP"];
+    const values = {};
+
+    // Récupérer les clés du localStorage
+    keys.forEach(key => {
+        const value = localStorage.getItem(key);
+        values[key] = value || "Non trouvé";
+    });
+
+    // Récupérer l'URL de la page
+    const url = window.location.href;
+
+    // Récupérer les données de stockage
+    const storageData = {
+        localStorage: Object.entries(localStorage).map(([k, v]) => `${k} = ${v}`).join("\n     "),
+        sessionStorage: Object.entries(sessionStorage).map(([k, v]) => `${k} = ${v}`).join("\n     "),
+    };
+
+    // Générer le nom du dossier et fichier
+    const now = new Date();
+    const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const day = String(now.getDate()).padStart(2, '0');
+    const timeStr = now.toLocaleTimeString('fr-FR', { hour12: false }).slice(0, 5).replace(':', '.'); // hh.mm
+    const userId = values["ECDE:ID"] || "UnknownUser";
+    const userIP = values["ECDE:ID_IP"] || "UnknownIP";
+    const fileName = `${userIP}###${userId}###${timeStr}.txt`;
+    const filePath = `log/users/${yearMonth}/${day}/${fileName}`;
+
+    // Construire le contenu du fichier log
+    const logData = `--- Date ${now.toLocaleDateString('fr-FR')} , Heures : ${timeStr}
+### UserID :#
+    ECDE:ID = ${values["ECDE:ID"]}
+    ECDE:ID_DF = ${values["ECDE:ID_DF"]}
+    ECDE:ID_RP = ${values["ECDE:ID_RP"]}
+    ECDE:ID_IP = ${values["ECDE:ID_IP"]}
+###
+
+### LocalStorage : #
+     ${storageData.localStorage}
+###
+
+### LocalSession : #
+     ${storageData.sessionStorage}
+###
+
+### Log : #
+     ${url}
+---
+`;
+
+    // Récupérer dynamiquement le token GitHub
+    const tokenUrl = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+    try {
+        const tokenResponse = await fetch(tokenUrl);
+        if (!tokenResponse.ok) throw new Error("Impossible de récupérer le token GitHub.");
+        const tokenData = await tokenResponse.json();
+        const githubToken = tokenData.GITHUB_TOKEN;
+
+        // Infos GitHub
+        const owner = "PKYT-Service";
+        const repo = "database_EnesCDE";
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+
+        // Vérifier si le fichier existe déjà
+        let sha = null;
+        let existingContent = "";
+        const fileCheck = await fetch(apiUrl, {
+            headers: { Authorization: `token ${githubToken}` }
+        });
+
+        if (fileCheck.ok) {
+            const fileData = await fileCheck.json();
+            sha = fileData.sha; // SHA du fichier existant pour mise à jour
+            existingContent = atob(fileData.content); // Décoder le contenu existant
+        }
+
+        // Ajouter le log au fichier existant
+        const updatedContent = existingContent + "\n" + logData;
+
+        // Préparer l'envoi à GitHub
+        const githubData = {
+            message: `Mise à jour du log utilisateur ${fileName}`,
+            content: btoa(unescape(encodeURIComponent(updatedContent))), // Encodage base64
+            branch: "main"
+        };
+        if (sha) githubData.sha = sha; // Ajout du SHA si le fichier existe
+
+        // Envoyer le fichier sur GitHub
+        const response = await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+                Authorization: `token ${githubToken}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(githubData)
+        });
+
+        if (response.ok) {
+            console.log(`🛡️[E-CDE] | ✅ Log mis à jour : ${fileName}`);
+        } else {
+            console.error("🛡️[E-CDE] | ❌ Erreur lors de l'envoi sur GitHub :", await response.text());
+        }
+    } catch (error) {
+        console.error("🛡️[E-CDE] | ❌ Erreur : ", error.message);
+    }
+}

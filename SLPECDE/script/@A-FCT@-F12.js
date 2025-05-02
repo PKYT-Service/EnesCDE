@@ -1,1 +1,36 @@
-(function(_0x30cade,_0x438ce7){const _0x1d8474=_0x47cc,_0x5e122c=_0x30cade();while(!![]){try{const _0x239445=-parseInt(_0x1d8474(0xc0))/0x1+parseInt(_0x1d8474(0xb2))/0x2+-parseInt(_0x1d8474(0xc2))/0x3*(-parseInt(_0x1d8474(0xb9))/0x4)+parseInt(_0x1d8474(0xbf))/0x5*(parseInt(_0x1d8474(0xc7))/0x6)+-parseInt(_0x1d8474(0xb3))/0x7*(parseInt(_0x1d8474(0xc4))/0x8)+-parseInt(_0x1d8474(0xb5))/0x9+parseInt(_0x1d8474(0xb0))/0xa;if(_0x239445===_0x438ce7)break;else _0x5e122c['push'](_0x5e122c['shift']());}catch(_0x51005e){_0x5e122c['push'](_0x5e122c['shift']());}}}(_0x2d27,0xa791b));function _0x47cc(_0x2e23c1,_0x18edee){const _0x2d27db=_0x2d27();return _0x47cc=function(_0x47ccd4,_0x4ea9ba){_0x47ccd4=_0x47ccd4-0xaf;let _0x1e643d=_0x2d27db[_0x47ccd4];return _0x1e643d;},_0x47cc(_0x2e23c1,_0x18edee);}export function Secure_F12(){const _0x8caa6c=_0x47cc;function _0x27f527(){const _0x11f04a=_0x47cc,_0x21ecf4=0xa0,_0x257827=window['outerWidth']-window[_0x11f04a(0xb6)]>_0x21ecf4,_0x171c53=window[_0x11f04a(0xb4)]-window[_0x11f04a(0xc3)]>_0x21ecf4,_0x40ed0f=localStorage[_0x11f04a(0xbe)](_0x11f04a(0xbb))===_0x11f04a(0xc6);(_0x257827||_0x171c53)&&!_0x40ed0f&&(window['location'][_0x11f04a(0xb7)]='https://enes-cde.vercel.app/pages/403.html');}setInterval(_0x27f527,0x3e8),document[_0x8caa6c(0xbd)](_0x8caa6c(0xbc),_0x154278=>{const _0x50641d=_0x8caa6c,_0x3faac1=localStorage[_0x50641d(0xbe)](_0x50641d(0xbb))==='ADMIN';(_0x154278[_0x50641d(0xb1)]==='F12'||_0x154278[_0x50641d(0xc5)]&&_0x154278['shiftKey']&&_0x154278[_0x50641d(0xb1)]==='I')&&!_0x3faac1&&(_0x154278[_0x50641d(0xb8)](),window[_0x50641d(0xaf)][_0x50641d(0xb7)]=_0x50641d(0xc1));}),document[_0x8caa6c(0xbd)](_0x8caa6c(0xba),_0x1f3409=>{const _0x57a9a1=_0x8caa6c,_0x547006=localStorage[_0x57a9a1(0xbe)](_0x57a9a1(0xbb))===_0x57a9a1(0xc6);!_0x547006&&_0x1f3409[_0x57a9a1(0xb8)]();});}function _0x2d27(){const _0x5f2d36=['1167fJaFrp','innerHeight','3490048PlsyOE','ctrlKey','ADMIN','6628506hmzOul','location','8411550MXdmUZ','key','131658YDsxml','14HvdkLg','outerHeight','10043217AuHPCc','innerWidth','href','preventDefault','12516uALZmF','contextmenu','EnesCDE_ADM:F12','keydown','addEventListener','getItem','5mwhnBm','554128XQFoHL','https://enes-cde.vercel.app/pages/403.html'];_0x2d27=function(){return _0x5f2d36;};return _0x2d27();}
+// Secure_F12.js
+export function Secure_F12() {
+    function checkDevTools() {
+        const threshold = 160;
+        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+
+        // Vérifie si l'utilisateur est ADMIN avant d'effectuer la redirection
+        const isAdmin = localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
+
+        // Si les outils de développement sont ouverts et l'utilisateur n'est pas ADMIN, on effectue la redirection
+        if ((widthThreshold || heightThreshold) && !isAdmin) {
+            window.location.href = "https://enes-cde.vercel.app/pages/403.html"; // Redirige vers la page 403 si non autorisé
+        }
+    }
+
+    setInterval(checkDevTools, 1000);
+
+    document.addEventListener("keydown", (event) => {
+        // Vérifie si la touche F12 ou Ctrl+Shift+I est pressée et si l'utilisateur n'est pas ADMIN
+        const isAdmin = localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
+
+        if ((event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) && !isAdmin) {
+            event.preventDefault(); // Empêche l'action par défaut
+            window.location.href = "https://enes-cde.vercel.app/pages/403.html"; // Redirige vers la page 403 si non autorisé
+        }
+    });
+
+    document.addEventListener("contextmenu", (event) => {
+        // Empêche le menu contextuel si l'utilisateur n'est pas ADMIN
+        const isAdmin = localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
+        if (!isAdmin) {
+            event.preventDefault(); // Empêche l'ouverture du menu contextuel
+        }
+    });
+}

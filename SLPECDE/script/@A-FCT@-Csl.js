@@ -1,1 +1,109 @@
-(function(_0x938595,_0x27ff33){const _0x2e23f5=_0x1616,_0x2781b2=_0x938595();while(!![]){try{const _0x6c3c4c=-parseInt(_0x2e23f5(0x155))/0x1+-parseInt(_0x2e23f5(0x15c))/0x2*(parseInt(_0x2e23f5(0x15d))/0x3)+parseInt(_0x2e23f5(0x147))/0x4+parseInt(_0x2e23f5(0x137))/0x5*(-parseInt(_0x2e23f5(0x13f))/0x6)+-parseInt(_0x2e23f5(0x14f))/0x7*(parseInt(_0x2e23f5(0x158))/0x8)+parseInt(_0x2e23f5(0x149))/0x9+parseInt(_0x2e23f5(0x131))/0xa;if(_0x6c3c4c===_0x27ff33)break;else _0x2781b2['push'](_0x2781b2['shift']());}catch(_0x567465){_0x2781b2['push'](_0x2781b2['shift']());}}}(_0x4c3d,0x73a60));export function ECDE_Console(){const _0x2f7da5=_0x1616,_0x13b351=localStorage[_0x2f7da5(0x15a)](_0x2f7da5(0x13e))===_0x2f7da5(0x140);if(!_0x13b351)return;const _0x521417=document[_0x2f7da5(0x14d)](_0x2f7da5(0x134));_0x521417[_0x2f7da5(0x163)]=_0x2f7da5(0x148),document[_0x2f7da5(0x132)][_0x2f7da5(0x13b)](_0x521417),setTimeout(()=>{const _0x1a55d0=_0x2f7da5;!document[_0x1a55d0(0x151)](_0x1a55d0(0x14e))&&(console[_0x1a55d0(0x150)](_0x1a55d0(0x13c)),_0x2ec013());},0x3e8),_0x521417[_0x2f7da5(0x141)]=()=>{const _0x5d1ac5=_0x2f7da5;console[_0x5d1ac5(0x162)]('Tailwind\x20chargé\x20!'),_0x2ec013();};function _0x2ec013(){const _0x4b154d=_0x2f7da5,_0x284214=document[_0x4b154d(0x14d)]('style');_0x284214['textContent']=_0x4b154d(0x143),document[_0x4b154d(0x132)][_0x4b154d(0x13b)](_0x284214);const _0xb9d331=document[_0x4b154d(0x14d)](_0x4b154d(0x157));_0xb9d331['id']=_0x4b154d(0x14e),_0xb9d331[_0x4b154d(0x136)]='fixed\x20top-1/2\x20right-0\x20transform\x20-translate-y-1/2\x20rotate-90\x20origin-bottom-right\x20z-50\x20cursor-pointer',_0xb9d331['innerHTML']=_0x4b154d(0x159),document['body'][_0x4b154d(0x13b)](_0xb9d331);const _0x2ea8fd=document['createElement'](_0x4b154d(0x157));_0x2ea8fd['id']=_0x4b154d(0x138),_0x2ea8fd['className']='fixed\x20top-0\x20right-0\x20w-1/2\x20h-full\x20bg-gray-900\x20slide-in\x20flex\x20flex-col\x20z-40\x20shadow-lg',_0x2ea8fd[_0x4b154d(0x13a)]=_0x4b154d(0x133),document[_0x4b154d(0x152)][_0x4b154d(0x13b)](_0x2ea8fd);const _0x3052ca=_0x2ea8fd[_0x4b154d(0x161)]('#logOutput'),_0x47b525=_0x2ea8fd['querySelector']('#commandInput'),_0x5578bc=(_0x3d4762,_0x26e301)=>{const _0x3630b2=_0x4b154d,_0x2fe32d=document[_0x3630b2(0x14d)](_0x3630b2(0x157));_0x2fe32d[_0x3630b2(0x135)]='['+_0x3d4762[_0x3630b2(0x142)]()+']\x20'+_0x26e301,_0x2fe32d[_0x3630b2(0x136)]=_0x3d4762===_0x3630b2(0x153)?'text-red-400':_0x3d4762===_0x3630b2(0x150)?'text-yellow-400':_0x3630b2(0x144),_0x3052ca[_0x3630b2(0x13b)](_0x2fe32d),_0x3052ca['scrollTop']=_0x3052ca[_0x3630b2(0x146)];};[_0x4b154d(0x162),_0x4b154d(0x150),_0x4b154d(0x153)][_0x4b154d(0x14a)](_0xcbdc84=>{const _0x15f446=console[_0xcbdc84];console[_0xcbdc84]=function(..._0x686f15){const _0x4a85a7=_0x1616;_0x5578bc(_0xcbdc84,_0x686f15['join']('\x20')),_0x15f446[_0x4a85a7(0x14b)](console,_0x686f15);};}),_0x47b525[_0x4b154d(0x139)](_0x4b154d(0x15f),_0x371ee4=>{const _0x9d07cd=_0x4b154d;if(_0x371ee4[_0x9d07cd(0x15e)]===_0x9d07cd(0x15b)){const _0x3078a3=_0x47b525[_0x9d07cd(0x160)];try{const _0x3f142f=eval(_0x3078a3);console['log'](_0x3f142f);}catch(_0x3b65ca){console[_0x9d07cd(0x153)](_0x3b65ca);}_0x47b525[_0x9d07cd(0x160)]='';}}),document['getElementById']('openConsole')[_0x4b154d(0x14c)]=()=>_0x2ea8fd[_0x4b154d(0x13d)][_0x4b154d(0x145)]('open'),document[_0x4b154d(0x151)](_0x4b154d(0x154))[_0x4b154d(0x14c)]=()=>_0x2ea8fd['classList'][_0x4b154d(0x164)](_0x4b154d(0x156));}}function _0x1616(_0x2fc0f7,_0x1b6559){const _0x4c3d21=_0x4c3d();return _0x1616=function(_0x16166a,_0x778112){_0x16166a=_0x16166a-0x131;let _0x1e78b7=_0x4c3d21[_0x16166a];return _0x1e78b7;},_0x1616(_0x2fc0f7,_0x1b6559);}function _0x4c3d(){const _0x34b0e3=['querySelector','log','src','remove','20312500nSlZiF','head','\x0a\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20justify-between\x20items-center\x20px-4\x20py-2\x20border-b\x20border-gray-700\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<h2\x20class=\x22text-xl\x20font-bold\x20text-white\x22>Console\x20Output</h2>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<button\x20id=\x22closeConsole\x22\x20class=\x22text-gray-400\x20hover:text-white\x20text-lg\x20font-bold\x22>×</button>\x0a\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20<div\x20id=\x22logOutput\x22\x20class=\x22flex-1\x20overflow-y-auto\x20p-4\x20space-y-1\x20text-sm\x20text-white\x22></div>\x0a\x20\x20\x20\x20\x20\x20<div\x20class=\x22border-t\x20border-gray-700\x20p-2\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<input\x20id=\x22commandInput\x22\x20type=\x22text\x22\x20placeholder=\x22Tape\x20ta\x20commande\x20ici...\x22\x20class=\x22w-full\x20p-2\x20rounded\x20bg-gray-800\x20text-white\x20outline-none\x22\x20/>\x0a\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20','script','textContent','className','133415jRDbcO','consolePanel','addEventListener','innerHTML','appendChild','Fallback\x20:\x20initialisation\x20manuelle\x20de\x20la\x20console.','classList','EnesCDE_ADM:CSL','174SuKVqs','true','onload','toUpperCase','\x0a\x20\x20\x20\x20\x20\x20.slide-in\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20transform:\x20translateX(100%);\x0a\x20\x20\x20\x20\x20\x20\x20\x20transition:\x20transform\x200.3s\x20ease-in-out;\x0a\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20.slide-in.open\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20transform:\x20translateX(0%);\x0a\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20','text-green-400','add','scrollHeight','3082228kSiUTY','https://cdn.tailwindcss.com','4604796COSUja','forEach','apply','onclick','createElement','openConsole','878668RMBkBT','warn','getElementById','body','error','closeConsole','671949zIneWD','open','div','32ZLLQZn','\x0a\x20\x20\x20\x20\x20\x20<span\x20class=\x22bg-black\x20text-white\x20px-4\x20py-2\x20rounded-t-lg\x20shadow-lg\x20text-lg\x20font-semibold\x20tracking-wide\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20Console\x0a\x20\x20\x20\x20\x20\x20</span>\x0a\x20\x20\x20\x20','getItem','Enter','2YeKRZg','2675709wcLizI','key','keydown','value'];_0x4c3d=function(){return _0x34b0e3;};return _0x4c3d();}
+export function ECDE_Console() {
+  const isConsoleEnabled = localStorage.getItem("EnesCDE_ADM:CSL") === "true";
+  if (!isConsoleEnabled) return;
+
+  // Inject Tailwind
+  const tailwind = document.createElement("script");
+  tailwind.src = "https://cdn.tailwindcss.com";
+  document.head.appendChild(tailwind);
+
+  // Fallback au cas où onload ne se déclenche pas
+  setTimeout(() => {
+    if (!document.getElementById("openConsole")) {
+      console.warn("Fallback : initialisation manuelle de la console.");
+      initConsole();
+    }
+  }, 1000);
+
+  // Si le script est bien chargé
+  tailwind.onload = () => {
+    console.log("Tailwind chargé !");
+    initConsole();
+  };
+
+  function initConsole() {
+    // Styles personnalisés
+    const style = document.createElement("style");
+    style.textContent = `
+      .slide-in {
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      .slide-in.open {
+        transform: translateX(0%);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Bouton pour ouvrir la console
+    const btn = document.createElement("div");
+    btn.id = "openConsole";
+    btn.className =
+      "fixed top-1/2 right-0 transform -translate-y-1/2 rotate-90 origin-bottom-right z-50 cursor-pointer";
+    btn.innerHTML = `
+      <span class="bg-black text-white px-4 py-2 rounded-t-lg shadow-lg text-lg font-semibold tracking-wide">
+        Console
+      </span>
+    `;
+    document.body.appendChild(btn);
+
+    // Panneau console
+    const panel = document.createElement("div");
+    panel.id = "consolePanel";
+    panel.className =
+      "fixed top-0 right-0 w-1/2 h-full bg-gray-900 slide-in flex flex-col z-40 shadow-lg";
+    panel.innerHTML = `
+      <div class="flex justify-between items-center px-4 py-2 border-b border-gray-700">
+        <h2 class="text-xl font-bold text-white">Console Output</h2>
+        <button id="closeConsole" class="text-gray-400 hover:text-white text-lg font-bold">×</button>
+      </div>
+      <div id="logOutput" class="flex-1 overflow-y-auto p-4 space-y-1 text-sm text-white"></div>
+      <div class="border-t border-gray-700 p-2">
+        <input id="commandInput" type="text" placeholder="Tape ta commande ici..." class="w-full p-2 rounded bg-gray-800 text-white outline-none" />
+      </div>
+    `;
+    document.body.appendChild(panel);
+
+    const logOutput = panel.querySelector("#logOutput");
+    const input = panel.querySelector("#commandInput");
+
+    const appendLog = (type, message) => {
+      const div = document.createElement("div");
+      div.textContent = `[${type.toUpperCase()}] ${message}`;
+      div.className =
+        type === "error"
+          ? "text-red-400"
+          : type === "warn"
+          ? "text-yellow-400"
+          : "text-green-400";
+      logOutput.appendChild(div);
+      logOutput.scrollTop = logOutput.scrollHeight;
+    };
+
+    ["log", "warn", "error"].forEach((type) => {
+      const original = console[type];
+      console[type] = function (...args) {
+        appendLog(type, args.join(" "));
+        original.apply(console, args);
+      };
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const cmd = input.value;
+        try {
+          const result = eval(cmd);
+          console.log(result);
+        } catch (err) {
+          console.error(err);
+        }
+        input.value = "";
+      }
+    });
+
+    document.getElementById("openConsole").onclick = () =>
+      panel.classList.add("open");
+    document.getElementById("closeConsole").onclick = () =>
+      panel.classList.remove("open");
+  }
+}

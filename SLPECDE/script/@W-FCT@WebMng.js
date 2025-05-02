@@ -1,1 +1,163 @@
-function _0x4b66(){const _0x586e74=['9ctwTVc','Sites','column','\x27Poppins\x27,\x20sans-serif','BlackListe','content','Enes\x20-\x20<span\x20style=\x22color:\x20#145af2;\x22>CDE</span>\x20<br>\x20<mark>B.M.R</mark>','</strong></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22margin-top:20px;\x22>Redirection\x20en\x20cours...</div>\x0a\x20\x20\x20\x20','body','???','https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json','Erreur\x20lors\x20de\x20la\x20mise\x20à\x20jour\x20du\x20fichier\x20JSON\x20:','font-size:18px;\x20margin-bottom:10px;','application/json','style','font-size:20px;\x20margin-bottom:10px;','assign','illimitée','center','getTime','Erreur\x20lors\x20de\x20la\x20récupération\x20du\x20token\x20:','Erreur\x20lors\x20de\x20la\x20récupération\x20du\x20fichier\x20JSON\x20:','1456820eQfIde','rgba(0,\x200,\x200,\x200.8)','createElement','#fff','1519646dGwIYs','Url','</strong>\x20jusqu\x27à\x20<strong>','sha','flex','cssText','Date','GITHUB_TOKEN','map','22hUBTLh','Redirection','898412bsHwAa','stringify','Par','token\x20','font-size:18px;','https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js','8874910tJpCDM','error','split','</strong></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div>Du\x20<strong>','Raison','</strong></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div>Par\x20:\x20<strong>','fixed','innerHTML','10000','appendChild','8828944iiHDgK','push','8549723KRbnsE','1375683Ddrnvw','reverse','origin','Aucun','24aaLoJT','Statut','div','100%','font-size:30px;\x20font-weight:bold;\x20margin-bottom:20px;','json','Le\x20:\x20','21Viwzzr','forEach'];_0x4b66=function(){return _0x586e74;};return _0x4b66();}function _0x16a8(_0x5eabd5,_0x5c3c61){const _0x4b662c=_0x4b66();return _0x16a8=function(_0x16a821,_0x5df559){_0x16a821=_0x16a821-0x99;let _0x33bb2a=_0x4b662c[_0x16a821];return _0x33bb2a;},_0x16a8(_0x5eabd5,_0x5c3c61);}(function(_0x17ac92,_0x1be0a4){const _0x54d0f3=_0x16a8,_0x383ef5=_0x17ac92();while(!![]){try{const _0x29162e=-parseInt(_0x54d0f3(0xb4))/0x1+parseInt(_0x54d0f3(0xdb))/0x2+parseInt(_0x54d0f3(0xbf))/0x3*(-parseInt(_0x54d0f3(0xa1))/0x4)+parseInt(_0x54d0f3(0xd7))/0x5*(parseInt(_0x54d0f3(0xb8))/0x6)+parseInt(_0x54d0f3(0xb3))/0x7+-parseInt(_0x54d0f3(0xb1))/0x8*(parseInt(_0x54d0f3(0xc1))/0x9)+-parseInt(_0x54d0f3(0xa7))/0xa*(-parseInt(_0x54d0f3(0x9f))/0xb);if(_0x29162e===_0x1be0a4)break;else _0x383ef5['push'](_0x383ef5['shift']());}catch(_0x2208eb){_0x383ef5['push'](_0x383ef5['shift']());}}}(_0x4b66,0xd46f0));export async function WebManager(){const _0x49fa1d=_0x16a8,_0x3c5bbd=_0x49fa1d(0xcb),_0x14f390=_0x49fa1d(0xa6);let _0x12dfbf;try{const _0x30b2ce=await fetch(_0x14f390),_0x3fbcf9=await _0x30b2ce[_0x49fa1d(0xbd)]();_0x12dfbf=_0x3fbcf9[_0x49fa1d(0x9d)];}catch(_0x10f576){console['error'](_0x49fa1d(0xd5),_0x10f576);return;}let _0xa5347a,_0xdad6c6;try{const _0x2142b8=await fetch(_0x3c5bbd,{'headers':{'Authorization':_0x49fa1d(0xa4)+_0x12dfbf}}),_0x40b4db=await _0x2142b8[_0x49fa1d(0xbd)]();_0xa5347a=JSON['parse'](atob(_0x40b4db[_0x49fa1d(0xc6)])),_0xdad6c6=_0x40b4db[_0x49fa1d(0x99)];}catch(_0x3b04c6){console[_0x49fa1d(0xa8)](_0x49fa1d(0xd6),_0x3b04c6);return;}const _0x21bfc4=window['location'][_0x49fa1d(0xb6)];let _0x303f2c=_0xa5347a[_0x49fa1d(0xc2)]['some'](_0x10711b=>_0x10711b['URL']===_0x21bfc4);if(!_0x303f2c){_0xa5347a['Sites'][_0x49fa1d(0xb2)]({'URL':_0x21bfc4,'Type':null,'BlackListe':{'Statut':![],'Raison':'','Par':'','Date':'','Fin':''},'Maintenance':{'Statut':![],'Raison':'','Par':'','Date':'','Fin':''},'Rappel':{'Statut':![],'Raison':'','Par':'','Date':'','Fin':''},'Redirection':{'Statut':![],'Raison':'','Url':'','Par':'','Date':'','Fin':''}}),_0xa5347a[_0x49fa1d(0xc2)]=_0xa5347a[_0x49fa1d(0xc2)][_0x49fa1d(0x9e)](_0x510701=>{const _0x3e49ea=_0x49fa1d;return _0x510701['URL']===_0x21bfc4&&!_0x510701['Redirection']&&(_0x510701[_0x3e49ea(0xa0)]={'Statut':![],'Raison':'','Url':'','Par':'','Date':'','Fin':''}),_0x510701;});try{await fetch(_0x3c5bbd,{'method':'PUT','headers':{'Authorization':_0x49fa1d(0xa4)+_0x12dfbf,'Content-Type':_0x49fa1d(0xce)},'body':JSON[_0x49fa1d(0xa2)]({'message':'Ajout\x20automatique\x20de\x20l\x27URL','content':btoa(JSON[_0x49fa1d(0xa2)](_0xa5347a,null,0x2)),'sha':_0xdad6c6})});}catch(_0x433f0a){console['error'](_0x49fa1d(0xcc),_0x433f0a);return;}}_0xa5347a[_0x49fa1d(0xc2)][_0x49fa1d(0xc0)](_0x402227=>{const _0x8e3117=_0x49fa1d;if(_0x402227['URL']===_0x21bfc4){[_0x8e3117(0xc5),'Maintenance','Rappel'][_0x8e3117(0xc0)](_0x5696be=>{const _0xaf576d=_0x8e3117;if(_0x402227[_0x5696be][_0xaf576d(0xb9)]){const _0x5665cd=new Date(),_0x29a5ca=new Date(_0x402227[_0x5696be]['Fin'][_0xaf576d(0xa9)]('/')[_0xaf576d(0xb5)]()['join']('-'));!isNaN(_0x29a5ca[_0xaf576d(0xd4)]())&&_0x29a5ca>=_0x5665cd&&showMaintenancePopup(_0x402227[_0x5696be]);}});const _0x1d998c=_0x402227[_0x8e3117(0xa0)];if(_0x1d998c?.[_0x8e3117(0xb9)]){const _0x13dead=new Date(),_0x4dac1a=_0x1d998c['Fin']?.['trim'](),_0x4212c1=!isNaN(new Date(_0x4dac1a)[_0x8e3117(0xd4)]()),_0x5897e8=_0x4212c1?new Date(_0x4dac1a):null;(!_0x5897e8||_0x5897e8>=_0x13dead)&&showRedirectPopup(_0x1d998c,()=>{const _0x31c088=_0x8e3117;window['location']['href']=_0x1d998c[_0x31c088(0xdc)];});}}});}function showMaintenancePopup(_0x1d886b){const _0x50a424=_0x16a8,_0x3f7838=document['createElement'](_0x50a424(0xba));Object[_0x50a424(0xd1)](_0x3f7838['style'],{'position':_0x50a424(0xad),'top':'0','left':'0','width':_0x50a424(0xbb),'height':'100%','backgroundColor':_0x50a424(0xd8),'color':'white','display':_0x50a424(0x9a),'flexDirection':_0x50a424(0xc3),'justifyContent':'center','alignItems':'center','zIndex':_0x50a424(0xaf),'fontFamily':_0x50a424(0xc4)});const _0x51e401=document['createElement'](_0x50a424(0xba));_0x51e401[_0x50a424(0xae)]=_0x50a424(0xc7),_0x51e401['style'][_0x50a424(0x9b)]=_0x50a424(0xbc);const _0x1fd879=document[_0x50a424(0xd9)](_0x50a424(0xba));_0x1fd879[_0x50a424(0xae)]='Cause\x20:\x20'+_0x1d886b[_0x50a424(0xab)],_0x1fd879['style'][_0x50a424(0x9b)]=_0x50a424(0xd0);const _0x219122=document['createElement']('div');_0x219122[_0x50a424(0xae)]='Par\x20:\x20'+_0x1d886b[_0x50a424(0xa3)],_0x219122['style']['cssText']=_0x50a424(0xcd);const _0x171020=document[_0x50a424(0xd9)](_0x50a424(0xba));_0x171020[_0x50a424(0xae)]=_0x50a424(0xbe)+_0x1d886b[_0x50a424(0x9c)],_0x171020[_0x50a424(0xcf)][_0x50a424(0x9b)]=_0x50a424(0xa5),_0x3f7838['append'](_0x51e401,_0x1fd879,_0x219122,_0x171020),document[_0x50a424(0xc9)][_0x50a424(0xb0)](_0x3f7838);}function showRedirectPopup(_0xbb2ac7,_0x4d8bb2){const _0x5c357a=_0x16a8,_0x38f3aa=document[_0x5c357a(0xd9)](_0x5c357a(0xba));Object['assign'](_0x38f3aa['style'],{'position':'fixed','top':'0','left':'0','width':_0x5c357a(0xbb),'height':'100%','backgroundColor':'rgba(0,0,0,0.9)','color':_0x5c357a(0xda),'display':'flex','flexDirection':_0x5c357a(0xc3),'justifyContent':'center','alignItems':_0x5c357a(0xd3),'zIndex':_0x5c357a(0xaf),'fontFamily':_0x5c357a(0xc4),'textAlign':_0x5c357a(0xd3)});const _0x4e47d8=document['createElement'](_0x5c357a(0xba)),_0x4c9e8e=_0xbb2ac7['Date']||_0x5c357a(0xca),_0x567417=_0xbb2ac7['Fin']||_0x5c357a(0xd2);_0x4e47d8['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:24px;\x20font-weight:bold;\x20margin-bottom:10px;\x22>Redirection\x20active</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div>Motif\x20:\x20<strong>'+(_0xbb2ac7['Raison']||_0x5c357a(0xb7))+_0x5c357a(0xac)+(_0xbb2ac7[_0x5c357a(0xa3)]||_0x5c357a(0xca))+_0x5c357a(0xaa)+_0x4c9e8e+_0x5c357a(0xdd)+_0x567417+_0x5c357a(0xc8),_0x38f3aa['appendChild'](_0x4e47d8),document[_0x5c357a(0xc9)]['appendChild'](_0x38f3aa),setTimeout(_0x4d8bb2,0xfa0);}
+export async function WebManager() {
+    const apiUrl = "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json";
+    const tokenUrl = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+
+    // Récupérer le token GitHub
+    let githubToken;
+    try {
+        const tokenResponse = await fetch(tokenUrl);
+        const tokenData = await tokenResponse.json();
+        githubToken = tokenData.GITHUB_TOKEN;
+    } catch (error) {
+        console.error("Erreur lors de la récupération du token :", error);
+        return;
+    }
+
+    // Récupérer le fichier JSON sur GitHub
+    let jsonData, sha;
+    try {
+        const response = await fetch(apiUrl, {
+            headers: { Authorization: `token ${githubToken}` }
+        });
+        const fileData = await response.json();
+        jsonData = JSON.parse(atob(fileData.content));
+        sha = fileData.sha;
+    } catch (error) {
+        console.error("Erreur lors de la récupération du fichier JSON :", error);
+        return;
+    }
+
+    // Extraire l'URL brute de la page actuelle
+    const currentUrl = window.location.origin;
+
+    // Vérifier si l'URL est déjà présente
+    let siteExists = jsonData.Sites.some(site => site.URL === currentUrl);
+
+    // Ajouter l'URL si elle est absente
+    if (!siteExists) {
+        jsonData.Sites.push({
+            "URL": currentUrl,
+            "Type": null,
+            "BlackListe": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
+            "Maintenance": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
+            "Rappel": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
+            "Redirection": { "Statut": false, "Raison": "", "Url": "", "Par": "", "Date": "", "Fin": "" }
+        });
+         // Si l'URL existe mais ne contient pas encore le champ Redirection, on le rajoute
+        jsonData.Sites = jsonData.Sites.map(site => {
+            if (site.URL === currentUrl && !site.Redirection) {
+                site.Redirection = {
+                    Statut: false, Raison: "", Url: "", Par: "", Date: "", Fin: ""
+                };
+            }
+            return site;
+        });
+        try {
+            await fetch(apiUrl, {
+                method: "PUT",
+                headers: {
+                    Authorization: `token ${githubToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "Ajout automatique de l'URL",
+                    content: btoa(JSON.stringify(jsonData, null, 2)),
+                    sha: sha
+                })
+            });
+
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour du fichier JSON :", error);
+            return;
+        }
+    }
+
+    // Vérifier les statuts pour afficher les popups ou rediriger
+    jsonData.Sites.forEach(site => {
+        if (site.URL === currentUrl) {
+            ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
+                if (site[type].Statut) {
+                    const today = new Date();
+                    const finDate = new Date(site[type].Fin.split("/").reverse().join("-"));
+
+                    if (!isNaN(finDate.getTime()) && finDate >= today) {
+                        showMaintenancePopup(site[type]);
+                    }
+                }
+            });
+
+            // Nouveau : Redirection
+            const redirect = site.Redirection;
+            if (redirect?.Statut) {
+                const today = new Date();
+                const fin = redirect.Fin?.trim();
+                const isDateValid = !isNaN(new Date(fin).getTime());
+                const finDate = isDateValid ? new Date(fin) : null;
+
+                // Vérifier date de fin OU si c'est illimité
+                if (!finDate || finDate >= today) {
+                    showRedirectPopup(redirect, () => {
+                        window.location.href = redirect.Url;
+                    });
+                }
+            }
+        }
+    });
+}
+
+function showMaintenancePopup(data) {
+    const overlay = document.createElement("div");
+    Object.assign(overlay.style, {
+        position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
+        backgroundColor: "rgba(0, 0, 0, 0.8)", color: "white",
+        display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
+        zIndex: "10000", fontFamily: "'Poppins', sans-serif"
+    });
+
+    const mainText = document.createElement("div");
+    mainText.innerHTML = `Enes - <span style="color: #145af2;">CDE</span> <br> <mark>B.M.R</mark>`;
+    mainText.style.cssText = "font-size:30px; font-weight:bold; margin-bottom:20px;";
+
+    const causeText = document.createElement("div");
+    causeText.innerHTML = `Cause : ${data.Raison}`;
+    causeText.style.cssText = "font-size:20px; margin-bottom:10px;";
+
+    const byText = document.createElement("div");
+    byText.innerHTML = `Par : ${data.Par}`;
+    byText.style.cssText = "font-size:18px; margin-bottom:10px;";
+
+    const dateText = document.createElement("div");
+    dateText.innerHTML = `Le : ${data.Date}`;
+    dateText.style.cssText = "font-size:18px;";
+
+    overlay.append(mainText, causeText, byText, dateText);
+    document.body.appendChild(overlay);
+}
+
+function showRedirectPopup(data, callback) {
+    const overlay = document.createElement("div");
+    Object.assign(overlay.style, {
+        position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
+        backgroundColor: "rgba(0,0,0,0.9)", color: "#fff",
+        display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
+        zIndex: "10000", fontFamily: "'Poppins', sans-serif", textAlign: "center"
+    });
+
+    const text = document.createElement("div");
+    const date = data.Date || "???";
+    const fin = data.Fin || "illimitée";
+    text.innerHTML = `
+        <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">Redirection active</div>
+        <div>Motif : <strong>${data.Raison || "Aucun"}</strong></div>
+        <div>Par : <strong>${data.Par || "???"}</strong></div>
+        <div>Du <strong>${date}</strong> jusqu'à <strong>${fin}</strong></div>
+        <div style="margin-top:20px;">Redirection en cours...</div>
+    `;
+
+    overlay.appendChild(text);
+    document.body.appendChild(overlay);
+
+    // Laisser le temps de lire avant de rediriger
+    setTimeout(callback, 4000); // 4 secondes
+}
+// 451 / 

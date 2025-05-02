@@ -1,1 +1,35 @@
-(function(_0x1a2877,_0x8f9fbc){const _0x127723=_0x9fc6,_0x50c665=_0x1a2877();while(!![]){try{const _0x4d343f=parseInt(_0x127723(0x1f6))/0x1+-parseInt(_0x127723(0x1f5))/0x2+parseInt(_0x127723(0x1fa))/0x3*(-parseInt(_0x127723(0x203))/0x4)+-parseInt(_0x127723(0x1fd))/0x5+-parseInt(_0x127723(0x200))/0x6*(parseInt(_0x127723(0x1fe))/0x7)+-parseInt(_0x127723(0x1f9))/0x8*(-parseInt(_0x127723(0x1fb))/0x9)+parseInt(_0x127723(0x1fc))/0xa;if(_0x4d343f===_0x8f9fbc)break;else _0x50c665['push'](_0x50c665['shift']());}catch(_0x2da320){_0x50c665['push'](_0x50c665['shift']());}}}(_0x4b1d,0xcdcb9));function _0x9fc6(_0x4ebdec,_0xe91059){const _0x4b1dae=_0x4b1d();return _0x9fc6=function(_0x9fc6ec,_0x454061){_0x9fc6ec=_0x9fc6ec-0x1f4;let _0x1e9402=_0x4b1dae[_0x9fc6ec];return _0x1e9402;},_0x9fc6(_0x4ebdec,_0xe91059);}export function checkBan_Account3V(){const _0x3683ad=_0x9fc6,_0x4383f8=localStorage[_0x3683ad(0x1f4)](_0x3683ad(0x202));if(!_0x4383f8){console[_0x3683ad(0x1ff)]('❇️\x20|\x20❌\x20CheckBanAccountV3\x20[\x20Aucun\x20compte\x20disponible\x20.]');return;}function _0x4235a0(){const _0x49f1f1=_0x3683ad,_0x2eaf80=_0x49f1f1(0x1f7)+_0x4383f8+_0x49f1f1(0x1f8);fetch(_0x2eaf80,{'method':'HEAD'})[_0x49f1f1(0x201)](_0x31b572=>{const _0x2fd0e7=_0x49f1f1;_0x31b572['ok']?window['location'][_0x2fd0e7(0x204)]=_0x2eaf80:console[_0x2fd0e7(0x1ff)]('❇️\x20|\x20🟢\x20CheckBanAccountV3\x20[\x20Profile\x20Clean\x20!\x20Attention\x20:\x20Compte\x20PKYT-Service\x20V3\x20et\x20non\x20E_CDE\x20V4\x20!\x20\x20.]');})['catch'](_0x2232d9=>{const _0x3db471=_0x49f1f1;console[_0x3db471(0x1ff)]('❇️\x20|\x20🟥\x20CheckBanAccountV3\x20[\x20Erreur\x20lors\x20de\x20la\x20vérification\x20du\x20fichier\x20.]',_0x2232d9);});}_0x4235a0();}function _0x4b1d(){const _0x138510=['14037txEKxN','89442WpTjhd','17640150XvpQzW','504395nHySXn','1355872yEqhYi','log','48mUUNOX','then','account','120oNXLqV','href','getItem','219396GlTBae','462661mCZxol','https://pkyt-database-up.vercel.app/code-source/pkyt-secure/user-secure/ban/','.html','416RPDdnz'];_0x4b1d=function(){return _0x138510;};return _0x4b1d();}
+// E-CDE/ban_verif.js
+
+export function checkBan_Account3V() {
+    // Vérifier si le compte existe dans le localStorage
+    const account = localStorage.getItem('account');
+
+    // Si le compte n'existe pas, on ne fait rien
+    if (!account) {
+        console.log('❇️ | ❌ CheckBanAccountV3 [ Aucun compte disponible .]');
+        return;
+    }
+
+    // Fonction pour vérifier l'existence du fichier de bannissement
+    function checkBanStatus() {
+        // Construire l'URL pour vérifier l'existence du fichier
+        const banUrl = `https://pkyt-database-up.vercel.app/code-source/pkyt-secure/user-secure/ban/${account}.html`;
+
+        // Faire une requête fetch pour vérifier si le fichier existe
+        fetch(banUrl, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    // Si le fichier existe, rediriger l'utilisateur
+                    window.location.href = banUrl;
+                } else {
+                    console.log(`❇️ | 🟢 CheckBanAccountV3 [ Profile Clean ! Attention : Compte PKYT-Service V3 et non E_CDE V4 !  .]`);
+                }
+            })
+            .catch(error => {
+                console.log('❇️ | 🟥 CheckBanAccountV3 [ Erreur lors de la vérification du fichier .]', error);
+            });
+    }
+
+    // Appeler la fonction pour vérifier le statut de bannissement
+    checkBanStatus();
+}

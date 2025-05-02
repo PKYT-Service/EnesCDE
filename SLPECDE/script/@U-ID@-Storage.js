@@ -1,1 +1,48 @@
-function _0x3297(_0x471f0f,_0x2b7ac2){const _0x54522f=_0x5452();return _0x3297=function(_0x329703,_0x32ca5f){_0x329703=_0x329703-0x1c2;let _0x3f7af2=_0x54522f[_0x329703];return _0x3f7af2;},_0x3297(_0x471f0f,_0x2b7ac2);}(function(_0x314b96,_0xc525df){const _0x49e6cf=_0x3297,_0x5c5c22=_0x314b96();while(!![]){try{const _0xe7ddf3=-parseInt(_0x49e6cf(0x1c4))/0x1+-parseInt(_0x49e6cf(0x1d9))/0x2+parseInt(_0x49e6cf(0x1c6))/0x3*(-parseInt(_0x49e6cf(0x1d1))/0x4)+-parseInt(_0x49e6cf(0x1d0))/0x5*(parseInt(_0x49e6cf(0x1df))/0x6)+parseInt(_0x49e6cf(0x1d5))/0x7*(-parseInt(_0x49e6cf(0x1d3))/0x8)+parseInt(_0x49e6cf(0x1cf))/0x9*(parseInt(_0x49e6cf(0x1db))/0xa)+parseInt(_0x49e6cf(0x1d7))/0xb;if(_0xe7ddf3===_0xc525df)break;else _0x5c5c22['push'](_0x5c5c22['shift']());}catch(_0x1e7359){_0x5c5c22['push'](_0x5c5c22['shift']());}}}(_0x5452,0x93a21));export function ID_stock_ecde(){const _0x278786=_0x3297;localStorage[_0x278786(0x1c3)](_0x278786(0x1c5))===_0x278786(0x1da)&&fetch(_0x278786(0x1c7))[_0x278786(0x1cb)](_0x3d2e81=>_0x3d2e81['json']())[_0x278786(0x1cb)](_0x98b372=>{const _0x463b3d=_0x278786,_0x330ba8=_0x98b372['ip'];!localStorage[_0x463b3d(0x1c3)](_0x463b3d(0x1c2))&&localStorage[_0x463b3d(0x1c8)](_0x463b3d(0x1c2),_0x330ba8);const _0x4d4301=_0x330ba8[_0x463b3d(0x1cc)]('.')['reverse']()[_0x463b3d(0x1d6)]('.');!localStorage[_0x463b3d(0x1c3)](_0x463b3d(0x1de))&&localStorage['setItem'](_0x463b3d(0x1de),_0x4d4301);const _0x340065=/Mobi|Android|iPhone|iPad/[_0x463b3d(0x1d8)](navigator[_0x463b3d(0x1dc)])?_0x463b3d(0x1d2):'pc',_0x3664e1=navigator[_0x463b3d(0x1dc)][_0x463b3d(0x1dd)](/\s/g,''),_0x57f284=crypto['randomUUID'](),_0x351880=btoa(_0x340065+'-'+_0x3664e1+'-'+_0x330ba8+'-'+_0x4d4301+'-'+_0x57f284);!localStorage[_0x463b3d(0x1c3)]('ECDE:ID_DF')&&localStorage[_0x463b3d(0x1c8)](_0x463b3d(0x1cd),_0x351880);const _0x46f58e=crypto['randomUUID']();!localStorage['getItem'](_0x463b3d(0x1c9))&&localStorage[_0x463b3d(0x1c8)](_0x463b3d(0x1c9),_0x46f58e);})[_0x278786(0x1d4)](_0x45556b=>console[_0x278786(0x1ca)](_0x278786(0x1ce),_0x45556b));}function _0x5452(){const _0x25aef2=['replace','ECDE:ID_RP','7716LExBOc','ECDE:ID_IP','getItem','237814tcduiV','rules','10314GEAcuz','https://api64.ipify.org?format=json','setItem','ECDE:ID','error','then','split','ECDE:ID_DF','🛡️[E-CDE]\x20|\x20❌\x20ID_Stock\x20[\x20Erreur\x20lors\x20de\x20la\x20récupération\x20de\x20l\x27IP.\x20]','18nGivNm','4275XRbKOv','1048cpVwwY','mobile','171368mqKkry','catch','329VUliVw','join','48276272VlgmhQ','test','2237032NncCKU','true','2896780cPWVbq','userAgent'];_0x5452=function(){return _0x25aef2;};return _0x5452();}
+// ID_storage.js
+// By Enes-cde.vercel.app
+// - - - - - - - - - - - -
+
+export function ID_stock_ecde() {
+    // Vérifier si "rules" est activé dans le localStorage
+    if (localStorage.getItem("rules") === "true") {
+        // Récupérer l'IP de l'utilisateur
+        fetch("https://api64.ipify.org?format=json")
+            .then(response => response.json())
+            .then(data => {
+                const ip = data.ip;
+
+                // Vérifier et définir ECDE:ID_IP
+                if (!localStorage.getItem("ECDE:ID_IP")) {
+                    localStorage.setItem("ECDE:ID_IP", ip);
+                }
+
+                // Inverser l'IP
+                const reversedIP = ip.split(".").reverse().join(".");
+
+                // Vérifier et définir ECDE:ID_RP
+                if (!localStorage.getItem("ECDE:ID_RP")) {
+                    localStorage.setItem("ECDE:ID_RP", reversedIP);
+                }
+
+                // Générer un identifiant unique
+                const deviceType = /Mobi|Android|iPhone|iPad/.test(navigator.userAgent) ? "mobile" : "pc";
+                const userAgent = navigator.userAgent.replace(/\s/g, "");
+                const randomID = crypto.randomUUID();
+                const uniqueID = btoa(`${deviceType}-${userAgent}-${ip}-${reversedIP}-${randomID}`);
+
+                // Vérifier et définir ECDE:ID_DF
+                if (!localStorage.getItem("ECDE:ID_DF")) {
+                    localStorage.setItem("ECDE:ID_DF", uniqueID);
+                }
+
+                // Générer une ID aléatoire
+                const randomECDE_ID = crypto.randomUUID();
+
+                // Vérifier et définir ECDE:ID
+                if (!localStorage.getItem("ECDE:ID")) {
+                    localStorage.setItem("ECDE:ID", randomECDE_ID);
+                }
+            })
+            .catch(error => console.error("🛡️[E-CDE] | ❌ ID_Stock [ Erreur lors de la récupération de l'IP. ]", error));
+    }
+}

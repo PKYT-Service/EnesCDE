@@ -1,1 +1,17 @@
-function _0x30f7(_0x1156bd,_0x3bf36f){const _0x579e83=_0x579e();return _0x30f7=function(_0x30f7a3,_0x13c414){_0x30f7a3=_0x30f7a3-0x16f;let _0x24a06d=_0x579e83[_0x30f7a3];return _0x24a06d;},_0x30f7(_0x1156bd,_0x3bf36f);}(function(_0x66bc00,_0x399a25){const _0x1d77b2=_0x30f7,_0x340451=_0x66bc00();while(!![]){try{const _0x382a7d=parseInt(_0x1d77b2(0x17d))/0x1+-parseInt(_0x1d77b2(0x17e))/0x2+-parseInt(_0x1d77b2(0x173))/0x3*(parseInt(_0x1d77b2(0x175))/0x4)+-parseInt(_0x1d77b2(0x17c))/0x5*(-parseInt(_0x1d77b2(0x172))/0x6)+-parseInt(_0x1d77b2(0x16f))/0x7*(parseInt(_0x1d77b2(0x176))/0x8)+-parseInt(_0x1d77b2(0x181))/0x9+-parseInt(_0x1d77b2(0x179))/0xa*(parseInt(_0x1d77b2(0x17b))/0xb);if(_0x382a7d===_0x399a25)break;else _0x340451['push'](_0x340451['shift']());}catch(_0x3d5e95){_0x340451['push'](_0x340451['shift']());}}}(_0x579e,0x9139f));function _0x579e(){const _0x1b589c=['82434rVPchG','350409NWiFNT','true','16ppbJrU','104PGmQrA','🛡️[E-CDE]\x20|\x20🔄\x20No\x20refresh','reload','6314440tmZSTD','getItem','11toSgWB','405RxnxWp','1100996uzCnbb','261050rKcpjU','🚀\x20Vérification\x20automatique\x20activée\x20!','🛡️[E-CDE]\x20|\x20🔄\x20Refresh','549396WQStrj','177037MOWlSK','EnesCDE_ADM:Refresh','log'];_0x579e=function(){return _0x1b589c;};return _0x579e();}export function Secure_Ref(){const _0x1bd108=_0x30f7;function _0x2f2cc8(){const _0x14668d=_0x30f7;let _0x4c37c9=localStorage[_0x14668d(0x17a)](_0x14668d(0x170))===_0x14668d(0x174);_0x4c37c9?(console[_0x14668d(0x171)](_0x14668d(0x180)),location[_0x14668d(0x178)]()):console[_0x14668d(0x171)](_0x14668d(0x177));}setInterval(_0x2f2cc8,0xea60),console[_0x1bd108(0x171)](_0x1bd108(0x17f));}
+export function Secure_Ref() {
+    function checkRefreshStatus() {
+        let refreshStatus = localStorage.getItem("EnesCDE_ADM:Refresh") === "true";
+
+        if (refreshStatus) {
+            console.log("🛡️[E-CDE] | 🔄 Refresh");
+            location.reload();
+        } else {
+            console.log("🛡️[E-CDE] | 🔄 No refresh");
+        }
+    }
+
+    // Lancer la vérification toutes les 60 secondes
+    setInterval(checkRefreshStatus, 60000);
+
+    console.log("🚀 Vérification automatique activée !");
+}

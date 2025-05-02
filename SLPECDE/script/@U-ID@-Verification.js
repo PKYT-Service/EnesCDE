@@ -1,1 +1,80 @@
-(function(_0x13dbab,_0x18d063){const _0x3ccb2c=_0x2071,_0x4393f8=_0x13dbab();while(!![]){try{const _0x5be912=parseInt(_0x3ccb2c(0x1de))/0x1*(-parseInt(_0x3ccb2c(0x1d9))/0x2)+parseInt(_0x3ccb2c(0x1dc))/0x3+parseInt(_0x3ccb2c(0x1da))/0x4*(parseInt(_0x3ccb2c(0x1f2))/0x5)+parseInt(_0x3ccb2c(0x1d4))/0x6*(-parseInt(_0x3ccb2c(0x1d5))/0x7)+-parseInt(_0x3ccb2c(0x1ee))/0x8+parseInt(_0x3ccb2c(0x1eb))/0x9+-parseInt(_0x3ccb2c(0x1e7))/0xa*(-parseInt(_0x3ccb2c(0x1f3))/0xb);if(_0x5be912===_0x18d063)break;else _0x4393f8['push'](_0x4393f8['shift']());}catch(_0x3d4971){_0x4393f8['push'](_0x4393f8['shift']());}}}(_0x4ba5,0xd6561));function _0x2071(_0x119e8a,_0x37559c){const _0x4ba52e=_0x4ba5();return _0x2071=function(_0x2071c8,_0x4b1af5){_0x2071c8=_0x2071c8-0x1d4;let _0x1b77fa=_0x4ba52e[_0x2071c8];return _0x1b77fa;},_0x2071(_0x119e8a,_0x37559c);}import{GITHUB_TOKEN}from'https://pkyt-database-up.vercel.app/code-source/admin-dashboard/secute_private/tocken.js';function _0x4ba5(){const _0x3de05e=['7556FutSbn','🛡️[E-CDE]\x20|\x20🔧\x20ID_Verif\x20[\x20Problème\x20lors\x20de\x20la\x20récupérations\x20du\x20rapport.\x20]','2794572ueGXJb','find','1609147xqBwvI','ECDE:ID_DF','href','GET','\x22\x20]','#id_verif:stop_ydhattp_ioma','location','ECDE:ID_RP','🛡️[E-CDE]\x20|\x20🔑\x20ID_Verif\x20[\x20La\x20valeur\x20de\x20\x22','10FiVdhc','parse','true','ECDE:ID_IP','8126658NCqufu','🛡️[E-CDE]\x20|\x20⁉️\x20ID_Verif\x20[\x20Erreur\x20dans\x20le\x20processus\x20de\x20vérification.\x20]','\x22\x20correspond\x20au\x20rapport.\x20]','1035336sjDkJk','ECDE:ID','🛡️[E-CDE]\x20|\x20❌\x20Les\x20règles\x20ne\x20sont\x20pas\x20acceptées,\x20le\x20code\x20ne\x20s\x27exécute\x20pas.','error','1005EfwrAM','13689874bJtiPA','log','json','315834gYyBMH','112TlwZUV','getItem','🛡️[E-CDE]\x20|\x20🔑\x20ID_Verif\x20[\x20Succès\x20lors\x20de\x20la\x20récupérations\x20de\x20\x22','🛡️[E-CDE]\x20|\x20🔧\x20ID_Verif\x20[\x20Succès\x20lors\x20de\x20la\x20récupérations\x20du\x20rapport.\x20]','2KkeTXF'];_0x4ba5=function(){return _0x3de05e;};return _0x4ba5();}export const ID_verif_ecde=async()=>{const _0x2e4c67=_0x2071,_0x5710a0=localStorage[_0x2e4c67(0x1d6)]('rules')===_0x2e4c67(0x1e9);if(!_0x5710a0){console[_0x2e4c67(0x1f4)](_0x2e4c67(0x1f0));return;}try{const _0x4fc4d9=[_0x2e4c67(0x1ef),_0x2e4c67(0x1df),_0x2e4c67(0x1e5),_0x2e4c67(0x1ea)];for(let _0x573d1d of _0x4fc4d9){const _0x95563=localStorage[_0x2e4c67(0x1d6)](_0x573d1d);_0x95563?console[_0x2e4c67(0x1f4)](_0x2e4c67(0x1d7)+_0x573d1d+'\x22\x20]'):console[_0x2e4c67(0x1f4)]('🛡️[E-CDE]\x20|\x20🔑\x20ID_Verif\x20[\x20Problème\x20lors\x20de\x20la\x20récupérations\x20de\x20\x22'+_0x573d1d+_0x2e4c67(0x1e2));}const _0x26045e=await fetch('https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ID/bloque_acces.json',{'method':_0x2e4c67(0x1e1),'headers':{'Authorization':'token\x20'+GITHUB_TOKEN}}),_0x1ea5b4=await _0x26045e[_0x2e4c67(0x1f5)]();if(_0x26045e['ok']){const _0x6e2f29=JSON[_0x2e4c67(0x1e8)](atob(_0x1ea5b4['content']));console[_0x2e4c67(0x1f4)](_0x2e4c67(0x1d8));let _0xebb620=![];for(let _0x53e09b of _0x4fc4d9){const _0x389326=localStorage[_0x2e4c67(0x1d6)](_0x53e09b);if(_0x389326){const _0x17e945=_0x6e2f29[_0x2e4c67(0x1dd)](_0x47350b=>_0x47350b['Type']===_0x53e09b&&_0x47350b['Valeurs']===_0x389326);if(_0x17e945){console[_0x2e4c67(0x1f4)](_0x2e4c67(0x1e6)+_0x53e09b+_0x2e4c67(0x1ed)),_0xebb620=!![],window[_0x2e4c67(0x1e4)][_0x2e4c67(0x1e0)]=_0x2e4c67(0x1e3);break;}}}!_0xebb620&&console['log']('🛡️[E-CDE]\x20|\x20🔑\x20ID_Verif\x20[\x20Aucun\x20rapport\x20correspondant\x20trouvé.\x20]');}else console[_0x2e4c67(0x1f4)](_0x2e4c67(0x1db));}catch(_0x1adcd3){console[_0x2e4c67(0x1f1)](_0x2e4c67(0x1ec),_0x1adcd3);}};
+// ID_verif.js
+
+import { GITHUB_TOKEN } from "https://pkyt-database-up.vercel.app/code-source/admin-dashboard/secute_private/tocken.js";  // Assure-toi que ce chemin est correct
+
+export const ID_verif_ecde = async () => {
+  // Vérifier si 'rules' dans le localStorage est true
+  const rulesAccepted = localStorage.getItem('rules') === 'true';
+  if (!rulesAccepted) {
+    console.log("🛡️[E-CDE] | ❌ Les règles ne sont pas acceptées, le code ne s'exécute pas.");
+    return; // Si 'rules' n'est pas true, arrêter l'exécution de la fonction
+  }
+
+  try {
+    // Récupération des 4 clés du localStorage
+    const keys = [
+      "ECDE:ID",
+      "ECDE:ID_DF",
+      "ECDE:ID_RP",
+      "ECDE:ID_IP",
+    ];
+
+    for (let key of keys) {
+      const value = localStorage.getItem(key);
+      if (value) {
+        console.log(`🛡️[E-CDE] | 🔑 ID_Verif [ Succès lors de la récupérations de "${key}" ]`);
+      } else {
+        console.log(`🛡️[E-CDE] | 🔑 ID_Verif [ Problème lors de la récupérations de "${key}" ]`);
+      }
+    }
+
+    // Fetch du fichier JSON contenant les rapports depuis l'API GitHub
+    const response = await fetch(
+      "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ID/bloque_acces.json",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,  // Utilisation du token pour l'authentification
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Décodage du contenu du fichier JSON à partir de la réponse de GitHub (Base64)
+      const reportData = JSON.parse(atob(data.content));
+
+      console.log("🛡️[E-CDE] | 🔧 ID_Verif [ Succès lors de la récupérations du rapport. ]");
+
+      // Comparaison des valeurs du localStorage avec les données du fichier JSON
+      let redirect = false;
+      for (let key of keys) {
+        const localStorageValue = localStorage.getItem(key);
+        if (localStorageValue) {
+          const matchedReport = reportData.find(
+            (report) => report.Type === key && report.Valeurs === localStorageValue
+          );
+
+          if (matchedReport) {
+            console.log(`🛡️[E-CDE] | 🔑 ID_Verif [ La valeur de "${key}" correspond au rapport. ]`);
+            redirect = true;
+
+            // Logique pour la redirection vers une page
+            window.location.href = "#id_verif:stop_ydhattp_ioma"; // Change cette URL selon ta logique
+            break;
+          }
+        }
+      }
+
+      // Si aucune correspondance n'est trouvée, afficher un message
+      if (!redirect) {
+        console.log("🛡️[E-CDE] | 🔑 ID_Verif [ Aucun rapport correspondant trouvé. ]");
+      }
+    } else {
+      console.log("🛡️[E-CDE] | 🔧 ID_Verif [ Problème lors de la récupérations du rapport. ]");
+    }
+  } catch (error) {
+    console.error("🛡️[E-CDE] | ⁉️ ID_Verif [ Erreur dans le processus de vérification. ]", error);
+  }
+};
