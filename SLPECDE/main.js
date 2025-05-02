@@ -104,9 +104,9 @@ LogsDiscord();
 //////////////////////////////////////////////////
 
 // Recupere les logs et envoie discord.
-import { secure_psa } from "https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js";
-secure_psa();
-
+// import { secure_psa } from "https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js";
+// secure_psa();
+// -> mtnc : Le script bug .. 
 
 //////////////////////////////////////////////
 // Google & Microsoft & Instatus | Sections //
