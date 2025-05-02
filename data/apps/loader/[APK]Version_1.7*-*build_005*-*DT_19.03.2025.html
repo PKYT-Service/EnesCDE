@@ -7,14 +7,26 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-            localStorage.setItem('APP:??', 'true');
-            localStorage.setItem('APP:BD', '005');
-            localStorage.setItem('APP:VS', '1.7');
-            localStorage.setItem('APP:DT', '19.03.2025');
-            localStorage.setItem('APP:SE', 'Android 5 - 16');
-            localStorage.setItem('APP:OutDated', 'false');
+// Supprimer tout le localStorage
+localStorage.clear();
 
-            localStorage.setItem('rules', 'true');
+// Donnees a injecter
+const donnees = {
+  'APP:??': 'true',
+  'APP:BD': '005.2',
+  'APP:VS': '1.7',
+  'APP:DT': '19.03.2025',
+  'APP:SE': 'Android 5 - 16',
+  'APP:OutDated': 'false',
+  'rules': 'true'
+};
+
+// Attendre 500ms avant de remettre les cles
+setTimeout(() => {
+  for (const cle in donnees) {
+    localStorage.setItem(cle, donnees[cle]);
+  }
+}, 500);
     </script>
     <style>
         @keyframes slideInLeft {
