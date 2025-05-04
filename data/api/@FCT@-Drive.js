@@ -66,7 +66,6 @@
     // Create folder (GitHub API: create empty .gitkeep file inside new folder)
     async function createFolder(folderName) {
       if (!folderName) return;
-      // Fix: create folder inside current folder, not root
       const path = currentFolder === null ? `${BASE_PATH}/${folderName}/.gitkeep` : `${BASE_PATH}/${currentFolder}/${folderName}/.gitkeep`;
       try {
         const contentEncoded = btoa("");
@@ -145,6 +144,19 @@
       }
     }
 
+    // Load folder content recursively (any depth)
+    async function loadFolderContent(path) {
+      try {
+        const content = await githubApi(path);
+        const folders = content.filter(item => item.type === "dir").map(d => d.name);
+        const files = content.filter(item => item.type === "file" && item.name.toLowerCase().endsWith(".md"));
+        return { folders, files };
+      } catch (e) {
+        alert("Erreur lors du chargement du dossier : " + e.message);
+        return { folders: [], files: [] };
+      }
+    }
+
     // Load root folder content and organize files/folders
     async function loadRoot() {
       currentFolder = null;
@@ -161,30 +173,19 @@
 
       try {
         const rootContent = await githubApi(BASE_PATH);
-        // Separate folders and files
-        const rootFolders = rootContent.filter((item) => item.type === "dir");
-        const rootFiles = rootContent.filter((item) => item.type === "file");
+        const rootFolders = rootContent.filter(item => item.type === "dir").map(d => d.name);
+        const rootFiles = rootContent.filter(item => item.type === "file" && item.name.toLowerCase().endsWith(".md"));
 
-        // Add folders to folders list
-        folders = rootFolders.map((f) => f.name);
-
-        // Add "Non trier" folder for root files
+        folders = rootFolders;
         folders.unshift("Non trier");
 
-        // Files in root go to "Non trier"
-        filesByFolder["Non trier"] = rootFiles.filter((f) =>
-          f.name.toLowerCase().endsWith(".md")
-        );
+        filesByFolder["Non trier"] = rootFiles;
 
-        // For each folder, load its files and subfolders
-        for (const folderName of rootFolders.map((f) => f.name)) {
-          const folderContent = await githubApi(`${BASE_PATH}/${folderName}`);
-          filesByFolder[folderName] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-          );
-          foldersByFolder[folderName] = folderContent.filter(
-            (item) => item.type === "dir"
-          ).map(d => d.name);
+        // Load subfolders and files for each root folder
+        for (const folderName of rootFolders) {
+          const { folders: subfolders, files } = await loadFolderContent(`${BASE_PATH}/${folderName}`);
+          foldersByFolder[folderName] = subfolders;
+          filesByFolder[folderName] = files;
         }
 
         renderFolders();
@@ -198,43 +199,12 @@
     // Reload current folder content (files and folders)
     async function reloadCurrentFolder() {
       if (currentFolder === null) {
-        // Root
-        try {
-          const rootContent = await githubApi(BASE_PATH);
-          const rootFolders = rootContent.filter((item) => item.type === "dir");
-          const rootFiles = rootContent.filter((item) => item.type === "file");
-
-          folders = rootFolders.map((f) => f.name);
-          folders.unshift("Non trier");
-          filesByFolder["Non trier"] = rootFiles.filter((f) =>
-            f.name.toLowerCase().endsWith(".md")
-          );
-
-          for (const folderName of rootFolders.map((f) => f.name)) {
-            const folderContent = await githubApi(`${BASE_PATH}/${folderName}`);
-            filesByFolder[folderName] = folderContent.filter(
-              (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-            );
-            foldersByFolder[folderName] = folderContent.filter(
-              (item) => item.type === "dir"
-            ).map(d => d.name);
-          }
-          renderFolders();
-          renderFoldersInside(null);
-          renderFiles("Non trier");
-        } catch (e) {
-          alert("Erreur lors du rechargement des fichiers : " + e.message);
-        }
+        await loadRoot();
       } else {
-        // Inside folder
         try {
-          const folderContent = await githubApi(`${BASE_PATH}/${currentFolder}`);
-          filesByFolder[currentFolder] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-          );
-          foldersByFolder[currentFolder] = folderContent.filter(
-            (item) => item.type === "dir"
-          ).map(d => d.name);
+          const { folders: subfolders, files } = await loadFolderContent(`${BASE_PATH}/${currentFolder}`);
+          foldersByFolder[currentFolder] = subfolders;
+          filesByFolder[currentFolder] = files;
           renderFoldersInside(currentFolder);
           renderFiles(currentFolder);
         } catch (e) {
@@ -246,10 +216,9 @@
     // Render folders list (root folders)
     function renderFolders() {
       foldersUl.innerHTML = "";
-      folders.forEach((folder) => {
+      folders.forEach(folder => {
         const li = document.createElement("li");
-        li.className =
-          "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
+        li.className = "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
         li.setAttribute("tabindex", "0");
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
@@ -257,7 +226,7 @@
         li.addEventListener("click", () => {
           openFolder(folder === "Non trier" ? null : folder);
         });
-        li.addEventListener("keydown", (e) => {
+        li.addEventListener("keydown", e => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             openFolder(folder === "Non trier" ? null : folder);
@@ -272,7 +241,6 @@
       foldersInsideUl.innerHTML = "";
       let subfolders = [];
       if (folder === null) {
-        // Root folders except "Non trier"
         subfolders = folders.filter(f => f !== "Non trier");
       } else {
         subfolders = foldersByFolder[folder] || [];
@@ -284,10 +252,9 @@
         foldersInsideUl.appendChild(li);
         return;
       }
-      subfolders.forEach((subfolder) => {
+      subfolders.forEach(subfolder => {
         const li = document.createElement("li");
-        li.className =
-          "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
+        li.className = "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
         li.setAttribute("tabindex", "0");
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
@@ -301,21 +268,12 @@
         li.appendChild(span);
 
         li.addEventListener("click", () => {
-          // Open subfolder relative to current folder
-          if (folder === null) {
-            openFolder(subfolder);
-          } else {
-            openFolder(`${folder}/${subfolder}`);
-          }
+          openFolder(folder === null ? subfolder : `${folder}/${subfolder}`);
         });
-        li.addEventListener("keydown", (e) => {
+        li.addEventListener("keydown", e => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            if (folder === null) {
-              openFolder(subfolder);
-            } else {
-              openFolder(`${folder}/${subfolder}`);
-            }
+            openFolder(folder === null ? subfolder : `${folder}/${subfolder}`);
           }
         });
 
@@ -345,10 +303,9 @@
         return;
       }
 
-      files.forEach((file) => {
+      files.forEach(file => {
         const li = document.createElement("li");
-        li.className =
-          "cursor-pointer hover:bg-gray-100 rounded p-2 flex items-center gap-3 select-none";
+        li.className = "cursor-pointer hover:bg-gray-100 rounded p-2 flex items-center gap-3 select-none";
         li.setAttribute("tabindex", "0");
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
@@ -364,7 +321,7 @@
         li.addEventListener("click", () => {
           openFile(folder, file);
         });
-        li.addEventListener("keydown", (e) => {
+        li.addEventListener("keydown", e => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             openFile(folder, file);
@@ -377,30 +334,24 @@
 
     // Custom markdown rendering with specified replacements
     function customMarkdownRender(md) {
-      // Escape HTML special chars
-      const escapeHtml = (text) =>
+      const escapeHtml = text =>
         text.replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
 
-      // We will parse line by line and build HTML respecting markdown syntax
-      // This is a simple parser, not full CommonMark compliant but covers basics
-
-      // Split input into lines
       const lines = md.split(/\r?\n/);
 
       let html = "";
       let inCodeBlock = false;
       let codeBlockLang = "";
       let inList = false;
-      let listType = null; // "ul" or "ol"
+      let listType = null;
       let listBuffer = [];
       let inBlockquote = false;
       let blockquoteBuffer = [];
 
-      // Helper to flush list buffer
       function flushList() {
         if (!inList) return;
         const tag = listType;
@@ -414,7 +365,6 @@
         listType = null;
       }
 
-      // Helper to flush blockquote buffer
       function flushBlockquote() {
         if (!inBlockquote) return;
         html += `<blockquote class="border-l-4 border-gray-400 pl-4 italic mb-4">`;
@@ -424,69 +374,33 @@
         inBlockquote = false;
       }
 
-      // Inline replacements for bold, italic, code, links, inline math, mark, footnotes
       function inlineReplacements(text) {
-        // Escape HTML first
         text = escapeHtml(text);
-
-        // Inline code: `code`
         text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 rounded px-1 font-mono text-sm">$1</code>');
-
-        // Gras **text** ou __text__
         text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
         text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
-
-        // Italique *text* ou _text_
         text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
         text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
-
-        // Surlignage ::text::
         text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
-
-        // Maths inline $x+y$
         text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
-
-        // Notes de bas de page [^1]
         text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
-
-        // Liens [texte](url)
         text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
-
-        // Images ![alt](url)
         text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
-
-        // Ligne horizontale ---
         text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
-
-        // Titres (h1, h2, h3)
         text = text.replace(/^### (.*)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
         text = text.replace(/^## (.*)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
         text = text.replace(/^# (.*)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
-
-        // Citations >
         text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700">$1</blockquote>');
-
-        // Listes numerotees
         text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4">$1</li>');
         text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
-
-        // Listes a puces
         text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
         text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
-          
-        // Badge custom [{Titre}]
-        text = text.replace(
-          /\[\{(.+?)\}\]/g,
-          '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
-        );
-          
+        text = text.replace(/\[\{(.+?)\}\]/g, '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>');
         return text;
       }
 
       for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
-
-        // Handle fenced code blocks ```lang
         if (/^```/.test(line)) {
           if (!inCodeBlock) {
             inCodeBlock = true;
@@ -499,12 +413,9 @@
           continue;
         }
         if (inCodeBlock) {
-          // Escape HTML inside code block
           html += escapeHtml(line) + "\n";
           continue;
         }
-
-        // Handle headers # to ######
         let headerMatch = line.match(/^(#{1,6})\s+(.*)$/);
         if (headerMatch) {
           flushList();
@@ -514,14 +425,11 @@
           html += `<h${level} class="font-semibold mt-6 mb-2 text-gray-900">${content}</h${level}>`;
           continue;
         }
-
-        // Handle blockquote lines starting with >
         if (/^\s*>/.test(line)) {
           flushList();
           const content = line.replace(/^\s*> ?/, "");
           inBlockquote = true;
           blockquoteBuffer.push(inlineReplacements(content));
-          // If next line is not blockquote, flush blockquote
           if (i + 1 >= lines.length || !/^\s*>/.test(lines[i + 1])) {
             flushBlockquote();
           }
@@ -529,8 +437,6 @@
         } else {
           flushBlockquote();
         }
-
-        // Handle unordered list lines starting with -, *, +
         let ulMatch = line.match(/^\s*([-*+])\s+(.*)$/);
         if (ulMatch) {
           const content = inlineReplacements(ulMatch[2].trim());
@@ -546,14 +452,11 @@
             listType = "ul";
             listBuffer.push(content);
           }
-          // If next line is not list item, flush list
           if (i + 1 >= lines.length || !/^\s*([-*+])\s+/.test(lines[i + 1])) {
             flushList();
           }
           continue;
         }
-
-        // Handle ordered list lines starting with 1., 2., etc.
         let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
         if (olMatch) {
           const content = inlineReplacements(olMatch[2].trim());
@@ -569,32 +472,24 @@
             listType = "ol";
             listBuffer.push(content);
           }
-          // If next line is not list item, flush list
           if (i + 1 >= lines.length || !/^\s*\d+\.\s+/.test(lines[i + 1])) {
             flushList();
           }
           continue;
         }
-
         flushList();
-
-        // Handle horizontal rule ---
         if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
           html += `<hr class="my-6 border-gray-300">`;
           continue;
         }
-
-        // Handle math blocks $$ ... $$
         if (/^\$\$/.test(line)) {
           flushList();
           let mathBlock = [];
           if (/^\$\$(.*)\$\$$/.test(line)) {
-            // Single line math block
             const content = line.replace(/^\$\$(.*)\$\$$/, "$1");
             html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
             continue;
           }
-          // Multi-line math block
           i++;
           while (i < lines.length && !/^\$\$/.test(lines[i])) {
             mathBlock.push(lines[i]);
@@ -604,18 +499,13 @@
           html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
           continue;
         }
-
-        // Empty line -> paragraph break
         if (/^\s*$/.test(line)) {
           html += `<br>`;
           continue;
         }
-
-        // Normal paragraph line
         const inline = inlineReplacements(line.trim());
         html += `<p class="mb-2 leading-relaxed text-gray-800">${inline}</p>`;
       }
-
       return html;
     }
 
@@ -638,19 +528,13 @@
       btnSave.disabled = true;
       isEditing = false;
 
-      // Load folder content if not loaded
       if (folder === null) {
-        // Root
         await loadRoot();
       } else {
         try {
-          const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
-          filesByFolder[folder] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-          );
-          foldersByFolder[folder] = folderContent.filter(
-            (item) => item.type === "dir"
-          ).map(d => d.name);
+          const { folders: subfolders, files } = await loadFolderContent(`${BASE_PATH}/${folder}`);
+          foldersByFolder[folder] = subfolders;
+          filesByFolder[folder] = files;
         } catch (e) {
           alert("Erreur lors du chargement du dossier : " + e.message);
           return;
@@ -725,9 +609,9 @@
       const folder = decodeURIComponent(hash.substring(0, sepIndex));
       const filename = decodeURIComponent(hash.substring(sepIndex + 1));
       let folderKey = folder === "Non trier" ? null : folder;
-      if (folderKey !== null && !folders.includes(folderKey)) return;
+      if (folderKey !== null && !folders.includes(folderKey) && !Object.keys(foldersByFolder).some(k => folderKey.startsWith(k))) return;
       const files = filesByFolder[folderKey === null ? "Non trier" : folderKey] || [];
-      const file = files.find((f) => f.name === filename);
+      const file = files.find(f => f.name === filename);
       if (!file) return;
       await openFolder(folderKey);
       openFile(folderKey, file);
@@ -830,12 +714,12 @@
         if (folder === null) {
           const rootContent = await githubApi(BASE_PATH);
           filesByFolder["Non trier"] = rootContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+            item => item.type === "file" && item.name.toLowerCase().endsWith(".md")
           );
         } else {
           const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
           filesByFolder[folder] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+            item => item.type === "file" && item.name.toLowerCase().endsWith(".md")
           );
         }
         renderFiles(folder);
@@ -871,11 +755,11 @@
       fileInput.click();
     });
 
-    fileInput.addEventListener("change", async (e) => {
+    fileInput.addEventListener("change", async e => {
       const files = Array.from(e.target.files);
       if (files.length === 0) return;
 
-      const mdFiles = files.filter((f) => f.name.toLowerCase().endsWith(".md"));
+      const mdFiles = files.filter(f => f.name.toLowerCase().endsWith(".md"));
       if (mdFiles.length === 0) {
         alert("Veuillez sélectionner uniquement des fichiers Markdown (.md).");
         return;
