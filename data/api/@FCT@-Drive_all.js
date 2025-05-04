@@ -7,7 +7,7 @@ let TOKEN = null;
 // Extract FF value from the div id "repo/{FF}"
 const repoDiv = document.querySelector("div[id^='repo/']");
 const FF = repoDiv ? repoDiv.id.split("/")[1] : null;
-const BASE_PATH = FF ? `new*drive/${FF}` : "new*drive/default";
+const BASE_PATH = FF ? `NEW*DRIVE/${FF}` : "NEW*DRIVE/drive/";
 
 // DOM Elements
 const foldersUl = document.getElementById("folders-ul");
