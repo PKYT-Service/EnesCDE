@@ -86,9 +86,9 @@ ID_log_ecde();
 import { ID_stock_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Storage.js";
 ID_stock_ecde();
 
-// Vérifie si l’un des 4 IDs est dans PPDS, et déclenche un bannissement.
-// import { ID_verif_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js";
-// ID_verif_ecde();
+  Vérifie si l’un des 4 IDs est dans PPDS, et déclenche un bannissement.
+  import { ID_verif_ecde } from "https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js";
+  ID_verif_ecde();
 
 // Le WebManager permet d’ajouter un site au système PPDS et de le contrôler via un panel dédié au staff ECDE.
 import { WebManager } from "https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMng.js";
@@ -103,9 +103,9 @@ LogsDiscord();
 // E-CDE // DB - SC // Enhance // Scripted | DEV //
 //////////////////////////////////////////////////
 
-// Recupere les logs et envoie discord.
-// import { secure_psa } from "https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js";
-// secure_psa();
+  Recupere les logs et envoie discord.
+  import { secure_psa } from "https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js";
+  secure_psa();
 // -> mtnc : Le script bug .. 
 
 //////////////////////////////////////////////
