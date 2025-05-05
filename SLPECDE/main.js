@@ -103,7 +103,7 @@ LogsDiscord();
 // E-CDE // DB - SC // Enhance // Scripted | DEV //
 //////////////////////////////////////////////////
 
-  Recupere les logs et envoie discord.
+// PSP
   import { secure_psa } from "https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js";
   secure_psa();
 // -> mtnc : Le script bug .. 
