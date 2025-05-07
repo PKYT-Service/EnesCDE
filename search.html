@@ -76,19 +76,23 @@
     </script>
 
 <center>
-    <div class="p-6 bg-white dark:bg-gray-950 rounded-lg shadow-md w-80">
-        <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Entrez un code :</h2>
-        <input type="text" id="codeInput" class="w-full p-2 border rounded mb-2 dark:bg-gray-700 dark:text-white" placeholder="Votre code ici">
-        <button onclick="checkCode()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Valider</button>
-        <p id="message" class="mt-2 text-sm text-gray-900 dark:text-gray-100"></p>
+<div class="container px-4 mx-auto">
+  <div class="max-w-lg mx-auto">
+    <div class="text-center mb-6">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-300">Code DARPD</h2>
     </div>
+    <form id="search">
+      <div class="mb-6">
+        <label for="text" class="block mb-2 font-extrabold text-gray-800 dark:text-gray-300"></label>
+        <input type="text" id="codeInput" class="inline-block w-full p-4 leading-6 text-lg font-extrabold placeholder-indigo-900 dark:placeholder-gray-300 bg-white dark:bg-gray-800 shadow border-2 border-indigo-900 dark:border-indigo-600 rounded" placeholder="Mot CL">
+      </div>
+      <button onclick="checkCode()" class="inline-block w-full py-4 px-6 mb-6 text-center text-lg leading-6 text-white font-extrabold bg-indigo-800 hover:bg-indigo-900 border-3 border-indigo-900 dark:border-indigo-600 shadow rounded transition duration-200" type="submit">Se connecter</button>
+      <p id="message" class="text-center font-extrabold text-gray-800 dark:text-gray-300"> </p>
+    </form>
+  </div>
+</div>
 </center>
-
-
-
-
-
-
+ 
 
 
 
