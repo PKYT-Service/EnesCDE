@@ -4,9 +4,6 @@ const REPO = "database_dev";
 const BRANCH = "main";
 let TOKEN = null;
 
-// Extract FF value from the div id "repo/{FF}"
-//const repoDiv = document.querySelector("div[id^='repo/']");
-//const FF = repoDiv ? repoDiv.id.split("/")[1] : null;
 const BASE_PATH = "NEW*DRIVE/TheHorrorFBD/";
 
 // DOM Elements
