@@ -3,22 +3,8 @@
     const OWNER = "PKYT-Service";
     const REPO = "database_dev";
     const BRANCH = "main";
-  //  const BASE_PATH = "NEW*DRIVE/TheHorrorFBD";
+    const BASE_PATH = "NEW*DRIVE";
     let TOKEN = null;
-
-// ECDE Custom ADD
-
-// Trouver la div dont l'id commence par "repo/"
-const repoDiv = document.querySelector('[id^="repo/"]');
-
-if (repoDiv) {
-  const drive = repoDiv.id.split("/")[1]; // extrait "PNL" depuis "repo/PNL"
-  const BASE_PATH = `NEW*DRIVE/${drive}`;
-  console.log(BASE_PATH); // pour verifier que ca marche
-} else {
-  console.warn("Aucune div avec un id commencant par 'repo/' n'a ete trouvee");
-}
-
 
     // DOM Elements
     const foldersUl = document.getElementById("folders-ul");
