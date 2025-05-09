@@ -2,12 +2,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EnesCDE  > Depot > The Horror FBD (forebodind)</title>
+  <title>EnesCDE > Depot > Drive > TheHorrorFBD</title>
   <script src="https://cdn.tailwindcss.com"></script>
-         <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
-        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
-        <script src="https://enes-cde.vercel.app/script/A-menu.js" defer></script>
-        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+  <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+  <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+  <script src="https://enes-cde.vercel.app/script/A-menu.js defer></script>
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -74,7 +73,16 @@
       <i class="fas fa-folder-open"></i> - -/ Explorateur MD
     </h1>
     <div class="flex items-center gap-3">
-      <!-- Buttons removed as requested -->
+      <button id="btn-create-folder" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-3 py-1 rounded flex items-center gap-2" aria-label="Créer un dossier">
+        <i class="fas fa-folder-plus"></i> Dossier
+      </button>
+      <button id="btn-create-file" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Créer un fichier Markdown" disabled>
+        <i class="fas fa-file-medical"></i> Fichier
+      </button>
+      <button id="btn-import" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded flex items-center gap-2" aria-label="Importer des fichiers Markdown">
+        <i class="fas fa-file-import"></i> Importer
+      </button>
+      <input type="file" id="file-input" multiple accept=".md" class="hidden" />
     </div>
   </header>
 
@@ -139,7 +147,14 @@
           >
             <i class="fas fa-share-alt"></i>
           </button>
-          <!-- Edit toggle button removed -->
+          <button
+            id="btn-toggle-view"
+            class="text-gray-600 hover:text-gray-900"
+            title="Basculer entre édition et visualisation"
+            aria-label="Basculer entre édition et visualisation"
+          >
+            <i class="fas fa-edit"></i>
+          </button>
           <button
             id="btn-close-view"
             class="text-gray-600 hover:text-gray-900"
@@ -174,9 +189,8 @@
         </button>
       </footer>
     </section>
-  </main> 
-
-
-<script src="https://enes-cde.vercel.app/data/api/@FCT-U@-Drive_TheHorrorFBD.js"></script>
+  </main>
+  
+<script src="https://enes-cde.vercel.app/data/api/@FCT-A@-Drive_TheHorrorFBD.js"></script>
 </body>
 </html>
