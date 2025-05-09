@@ -1,12 +1,4 @@
 
-    // Configuration GitHub API
-    const OWNER = "PKYT-Service";
-    const REPO = "database_dev";
-    const BRANCH = "main";
-    // const BASE_PATH = "NEW*DRIVE";
-    let TOKEN = null;
-
-
 // ECDE Config
       // Trouver la div dont l'id commence par "repo/"
     const repoDiv = document.querySelector('[id^="repo/"]');
@@ -17,17 +9,24 @@
       if (!drive) {
         console.error("Erreur : Aucun drive spécifié. Accès privé.");
         // Redirection vers la page d'erreur 403
-        window.location.href = "https://enes-cde.vercel.app/pages/403";
+        window.location.href = "https://enes-cde.vercel.app/pages/403.html";
       } else {
         const BASE_PATH = `NEW*DRIVE/${drive}`;
         console.log(BASE_PATH); // Affiche le chemin généré
-        repo();
       }
     } else {
       console.warn("Aucune div avec un id commencant par 'repo/' n'a été trouvée.");
     }
 
-function repo() {
+// Configuration GitHub API
+    const OWNER = "PKYT-Service";
+    const REPO = "database_dev";
+    const BRANCH = "main";
+    // const BASE_PATH = "NEW*DRIVE";
+    let TOKEN = null;
+
+
+
     
     // DOM Elements
     const foldersUl = document.getElementById("folders-ul");
@@ -994,6 +993,3 @@ text = text.replace(
       openFileFromHash();
     });
 
-
-
-}
