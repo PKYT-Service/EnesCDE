@@ -1,13 +1,11 @@
 // Configuration GitHub API
 const OWNER = "PKYT-Service";
 const REPO = "database_dev";
+const BASE_PATH = "NEW*DRIVE/Forum/";
 const BRANCH = "main";
 let TOKEN = null;
 
-// Extract FF value from the div id "repo/{FF}"
-//const repoDiv = document.querySelector("div[id^='repo/']");
-//const FF = repoDiv ? repoDiv.id.split("/")[1] : null;
-const BASE_PATH = "NEW*DRIVE/Forum/";
+
 
 // DOM Elements
 const foldersUl = document.getElementById("folders-ul");
@@ -45,7 +43,7 @@ async function loadToken() {
 // Helper: GitHub API call with auth
 async function githubApi(path) {
   if (!TOKEN) throw new Error("Token GitHub non chargé");
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
   const res = await fetch(url, {
     headers: {
       Authorization: `token ${TOKEN}`,
