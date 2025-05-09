@@ -2,7 +2,7 @@
 const OWNER = "PKYT-Service";
 const REPO = "database_dev";
 const BRANCH = "main";
-const BASE_PATH = "NEW*DRIVE/TheHorrorFBD";
+const path = "NEW*DRIVE/TheHorrorFBD";
 let TOKEN = null;
 
 // DOM Elements
@@ -81,7 +81,7 @@ async function loadRoot() {
   foldersByFolder = {};
 
   try {
-    const rootContent = await githubApi(BASE_PATH);
+    const rootContent = await githubApi(path);
     const rootFolders = rootContent.filter(item => item.type === "dir").map(d => d.name);
     const rootFiles = rootContent.filter(item => item.type === "file" && item.name.toLowerCase().endsWith(".md"));
 
@@ -92,7 +92,7 @@ async function loadRoot() {
 
     // Load subfolders and files for each root folder
     for (const folderName of rootFolders) {
-      const { folders: subfolders, files } = await loadFolderContent(`${BASE_PATH}/${folderName}`);
+      const { folders: subfolders, files } = await loadFolderContent(`${path}/${folderName}`);
       foldersByFolder[folderName] = subfolders;
       filesByFolder[folderName] = files;
     }
@@ -111,7 +111,7 @@ async function reloadCurrentFolder() {
     await loadRoot();
   } else {
     try {
-      const { folders: subfolders, files } = await loadFolderContent(`${BASE_PATH}/${currentFolder}`);
+      const { folders: subfolders, files } = await loadFolderContent(`${path}/${currentFolder}`);
       foldersByFolder[currentFolder] = subfolders;
       filesByFolder[currentFolder] = files;
       renderFoldersInside(currentFolder);
@@ -436,7 +436,7 @@ async function openFolder(folder) {
     await loadRoot();
   } else {
     try {
-      const { folders: subfolders, files } = await loadFolderContent(`${BASE_PATH}/${folder}`);
+      const { folders: subfolders, files } = await loadFolderContent(`${path}/${folder}`);
       foldersByFolder[folder] = subfolders;
       filesByFolder[folder] = files;
     } catch (e) {
@@ -462,12 +462,12 @@ async function openFile(folder, file) {
   try {
     let path;
     if (folder === null) {
-      path = `${BASE_PATH}/${file.name}`;
+      path = `${path}/${file.name}`;
     } else {
-      path = `${BASE_PATH}/${folder}/${file.name}`;
+      path = `${path}/${folder}/${file.name}`;
     }
     if (!TOKEN) throw new Error("Token GitHub non chargé");
-    const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
+    const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`;
     const res = await fetch(url, {
       headers: {
         Authorization: `token ${TOKEN}`,
