@@ -50,7 +50,7 @@
     // Helper: GitHub API call with auth
     async function githubApi(path) {
       if (!TOKEN) throw new Error("Token GitHub non chargé");
-      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
       const res = await fetch(url, {
         headers: {
           Authorization: `token ${TOKEN}`,
@@ -71,7 +71,7 @@
         const contentEncoded = btoa("");
         const commitMessage = `Création du dossier ${folderName} via Explorateur MD`;
         const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}`,
           {
             method: "PUT",
             headers: {
@@ -117,7 +117,7 @@
         const contentEncoded = btoa(unescape(encodeURIComponent(defaultContent)));
         const commitMessage = `Création du fichier ${filename} dans ${folder === null ? "racine" : folder} via Explorateur MD`;
         const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}`,
           {
             method: "PUT",
             headers: {
@@ -563,7 +563,7 @@
           path = `${BASE_PATH}/${folder}/${file.name}`;
         }
         if (!TOKEN) throw new Error("Token GitHub non chargé");
-        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
         const res = await fetch(url, {
           headers: {
             Authorization: `token ${TOKEN}`,
@@ -663,7 +663,7 @@
           path = `${BASE_PATH}/${folder}/${file.name}`;
         }
         const metaRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`,
           {
             headers: {
               Authorization: `token ${TOKEN}`,
@@ -678,7 +678,7 @@
         const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
 
         const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}`,
           {
             method: "PUT",
             headers: {
@@ -787,7 +787,7 @@
           path = `${BASE_PATH}/${folder}/${filename}`;
         }
         const metaRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`,
           {
             headers: {
               Authorization: `token ${TOKEN}`,
@@ -802,7 +802,7 @@
         const commitMessage = `Mise à jour du fichier ${filename} via Explorateur MD`;
 
         const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}`,
           {
             method: "PUT",
             headers: {
