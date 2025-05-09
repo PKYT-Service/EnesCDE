@@ -41,7 +41,7 @@ async function loadToken() {
 // Helper: GitHub API call with auth
 async function githubApi(path) {
   if (!TOKEN) throw new Error("Token GitHub non chargé");
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`;
   const res = await fetch(url, {
     headers: {
       Authorization: `token ${TOKEN}`,
