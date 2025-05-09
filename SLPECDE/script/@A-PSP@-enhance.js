@@ -4,21 +4,21 @@ export function secure_psa() {
         const hostname = window.location.hostname;
         const protocol = window.location.protocol;
         if (hostname === 'localhost' || protocol === 'file:') {
-            throw new Error('Unauthorized environment');
+            throw new Error('Unauthorized environment 001');
         }
 
         // 2. Verifier si le code source a ete modifie (anti-tampering basique)
         const integrity_check = 'psa_integrity_marker_v1';
         if (!document.currentScript || !document.currentScript.innerHTML.includes(integrity_check)) {
             // Si le script n'est pas inline ou modifie, on lance une erreur
-            console.warn('Warning: Unable to verify script integrity.');
-            throw new Error('Unauthorized environment');
+            console.warn('🛡️[E-CDE] |⚡SC PSA [Avertissement : impossible de vérifier l’intégrité du script.]');
+            throw new Error('Unauthorized environment 002');
         }
 
         // Tout est ok
         console.log('PSP secure check passed.');
     } catch (e) {
-        console.error('Security violation detected by secure_psa()');
-        throw new Error('Unauthorized environment');
+        console.error('🛡️[E-CDE] | ⚡SC PSA [Violation de sécurité détectée par Enes CDE Security (LosFly Protect)]');
+        throw new Error('Unauthorized environment 003');
     }
 }
