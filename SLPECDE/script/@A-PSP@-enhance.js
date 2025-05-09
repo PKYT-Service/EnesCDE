@@ -1,4 +1,10 @@
 export function secure_psa() {
+    console.warn('🛡️[E-CDE] | ⚡ALERT by PSA [SYS CLOS]');
+}
+
+
+
+    export function secure_psaa() {
     try {
         // 1. Verifier si on est en localhost ou fichier local
         const hostname = window.location.hostname;
