@@ -21,11 +21,14 @@
       } else {
         const BASE_PATH = `NEW*DRIVE/${drive}`;
         console.log(BASE_PATH); // Affiche le chemin généré
+        repo()
       }
     } else {
       console.warn("Aucune div avec un id commencant par 'repo/' n'a été trouvée.");
     }
-  
+
+function repo() {
+    
     // DOM Elements
     const foldersUl = document.getElementById("folders-ul");
     const foldersInsideUl = document.getElementById("folders-ul-inside");
@@ -990,3 +993,7 @@ text = text.replace(
     window.addEventListener("hashchange", () => {
       openFileFromHash();
     });
+
+
+
+}
