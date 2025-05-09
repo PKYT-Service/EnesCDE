@@ -1,11 +1,9 @@
 // Configuration GitHub API
 const OWNER = "PKYT-Service";
 const REPO = "database_dev";
-const BASE_PATH = "NEW*DRIVE/TheHorrorFBD/";
 const BRANCH = "main";
+const BASE_PATH = "NEW*DRIVE/TheHorrorFBD/";
 let TOKEN = null;
-
-
 
 // DOM Elements
 const foldersUl = document.getElementById("folders-ul");
@@ -43,7 +41,7 @@ async function loadToken() {
 // Helper: GitHub API call with auth
 async function githubApi(path) {
   if (!TOKEN) throw new Error("Token GitHub non chargé");
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
   const res = await fetch(url, {
     headers: {
       Authorization: `token ${TOKEN}`,
