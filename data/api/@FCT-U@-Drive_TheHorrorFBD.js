@@ -41,7 +41,7 @@ async function loadToken() {
 // Helper: GitHub API call with auth
 async function githubApi(path) {
   if (!TOKEN) throw new Error("Token GitHub non chargé");
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
   const res = await fetch(url, {
     headers: {
       Authorization: `token ${TOKEN}`,
@@ -467,7 +467,7 @@ async function openFile(folder, file) {
       path = `${BASE_PATH}/${folder}/${file.name}`;
     }
     if (!TOKEN) throw new Error("Token GitHub non chargé");
-    const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+    const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${BASE_PATH}?ref=${BRANCH}`;
     const res = await fetch(url, {
       headers: {
         Authorization: `token ${TOKEN}`,
