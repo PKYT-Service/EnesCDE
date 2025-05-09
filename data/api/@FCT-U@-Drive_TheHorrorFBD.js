@@ -2,7 +2,7 @@
 const OWNER = "PKYT-Service";
 const REPO = "database_dev";
 const BRANCH = "main";
-const BASE_PATH = "NEW*DRIVE/TheHorrorFBD/";
+const BASE_PATH = "NEW*DRIVE/TheHorrorFBD";
 let TOKEN = null;
 
 // DOM Elements
