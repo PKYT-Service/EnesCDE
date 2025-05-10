@@ -1,4 +1,4 @@
-   // UTF-8 compatibility is ensured by <meta charset="UTF-8"> and proper encoding/decoding in JS
+    // UTF-8 compatibility is ensured by <meta charset="UTF-8"> and proper encoding/decoding in JS
 
     let BASE_PATH = null;
 
@@ -330,13 +330,18 @@
     // Render files list for a folder
     function renderFiles(folder) {
       currentFolder = folder;
-      currentFolderName.textContent = folder === null ? "Non trié" : folder;
+      currentFolderName.textContent = folder === null ? "Non trier" : folder;
       filesUl.innerHTML = "";
       btnBackFolder.disabled = historyStack.length === 0;
 
       // Enable create file only if drive/adm div exists and folder is not null
       if (driveAdmDiv && btnCreateFile) {
         btnCreateFile.disabled = folder === null;
+      } else if (btnCreateFile) {
+        btnCreateFile.disabled = true;
+      }
+      if (btnCreateFolder) {
+        btnCreateFolder.disabled = !driveAdmDiv;
       }
 
       let files;
@@ -643,6 +648,11 @@
       // Enable create file only if drive/adm div exists and folder is not null
       if (driveAdmDiv && btnCreateFile) {
         btnCreateFile.disabled = folder === null;
+      } else if (btnCreateFile) {
+        btnCreateFile.disabled = true;
+      }
+      if (btnCreateFolder) {
+        btnCreateFolder.disabled = !driveAdmDiv;
       }
 
       fileViewSection.classList.add("hidden");
@@ -791,6 +801,10 @@
     if (btnSave) {
       btnSave.addEventListener("click", async () => {
         if (!currentFile) return;
+        if (!driveAdmDiv) {
+          alert("Modification non autorisée : accès en lecture seule.");
+          return;
+        }
         btnSave.disabled = true;
         const { folder, file } = currentFile;
         try {
@@ -896,11 +910,19 @@
 
     if (btnImport && fileInput) {
       btnImport.addEventListener("click", () => {
+        if (!driveAdmDiv) {
+          alert("Import non autorisé : accès en lecture seule.");
+          return;
+        }
         fileInput.value = "";
         fileInput.click();
       });
 
       fileInput.addEventListener("change", async (e) => {
+        if (!driveAdmDiv) {
+          alert("Import non autorisé : accès en lecture seule.");
+          return;
+        }
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
 
@@ -926,6 +948,9 @@
     }
 
     async function saveFileContent(folder, filename, content) {
+      if (!driveAdmDiv) {
+        throw new Error("Modification non autorisée : accès en lecture seule.");
+      }
       try {
         let path;
         if (folder === null) {
@@ -977,7 +1002,10 @@
 
     if (btnCreateFolder) {
       btnCreateFolder.addEventListener("click", async () => {
-        if (!driveAdmDiv) return; // Do nothing if drive/adm div not present
+        if (!driveAdmDiv) {
+          alert("Création de dossier non autorisée : accès en lecture seule.");
+          return;
+        }
         const folderName = prompt("Nom du nouveau dossier (sans espaces ni caractères spéciaux) :");
         if (!folderName) return;
         if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
@@ -990,7 +1018,10 @@
 
     if (btnCreateFile) {
       btnCreateFile.addEventListener("click", async () => {
-        if (!driveAdmDiv) return; // Do nothing if drive/adm div not present
+        if (!driveAdmDiv) {
+          alert("Création de fichier non autorisée : accès en lecture seule.");
+          return;
+        }
         if (currentFolder === null) {
           alert("Veuillez sélectionner un dossier pour créer un fichier.");
           return;
