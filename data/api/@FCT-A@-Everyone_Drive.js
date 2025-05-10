@@ -1,35 +1,30 @@
-let BASE_PATH = null;
+   let BASE_PATH = null;
 
-// ECDE Config
-const repoDiv = document.querySelector('[id^="repo/"]');
-if (repoDiv) {
-    const drive = repoDiv.id.split("/")[1];
-    if (!drive) {
+    // ECDE Config
+    const repoDiv = document.querySelector('[id^="repo/"]');
+    if (repoDiv) {
+      const drive = repoDiv.id.split("/")[1];
+      if (!drive) {
         console.error("Erreur : Aucun drive spécifié. Accès privé.");
         window.location.href = "https://enes-cde.vercel.app/pages/403.html";
-    } else {
+      } else {
         BASE_PATH = `NEW*DRIVE/${drive}`;
         console.log(BASE_PATH);
+      }
+    } else {
+      console.warn("Aucune div avec un id commencant par 'repo/' n'a été trouvée.");
     }
-} else {
-    console.warn("Aucune div avec un id commencant par 'repo/' n'a été trouvée.");
-}
 
-if (!BASE_PATH) {
-    console.error("Erreur : BASE_PATH n'a pas été défini.");
-}
+    if (!BASE_PATH) {
+      console.error("Erreur : BASE_PATH n'a pas été défini.");
+    }
 
-
-// Configuration GitHub API
+    // Configuration GitHub API
     const OWNER = "PKYT-Service";
     const REPO = "database_dev";
     const BRANCH = "main";
-    // const BASE_PATH = "NEW*DRIVE";
     let TOKEN = null;
 
-
-
-    
     // DOM Elements
     const foldersUl = document.getElementById("folders-ul");
     const foldersInsideUl = document.getElementById("folders-ul-inside");
@@ -48,6 +43,7 @@ if (!BASE_PATH) {
     const btnToggleView = document.getElementById("btn-toggle-view");
     const btnCreateFolder = document.getElementById("btn-create-folder");
     const btnCreateFile = document.getElementById("btn-create-file");
+    const driveAdmDiv = document.getElementById("drive/adm");
 
     // State
     let folders = [];
@@ -90,7 +86,13 @@ if (!BASE_PATH) {
     // Create folder (GitHub API: create empty .gitkeep file inside new folder)
     async function createFolder(folderName) {
       if (!folderName) return;
-      const path = currentFolder === null ? `${BASE_PATH}/${folderName}/.gitkeep` : `${BASE_PATH}/${currentFolder}/${folderName}/.gitkeep`;
+      // Compose path with currentFolder as base, allowing nested folders
+      let path;
+      if (currentFolder === null) {
+        path = `${BASE_PATH}/${folderName}/.gitkeep`;
+      } else {
+        path = `${BASE_PATH}/${currentFolder}/${folderName}/.gitkeep`;
+      }
       try {
         const contentEncoded = btoa("");
         const commitMessage = `Création du dossier ${folderName} via Explorateur MD`;
@@ -116,7 +118,8 @@ if (!BASE_PATH) {
         }
         alert(`Dossier "${folderName}" créé avec succès.`);
         await reloadCurrentFolder();
-        openFolder(folderName);
+        // Open the newly created folder (nested)
+        openFolder(currentFolder === null ? folderName : currentFolder + "/" + folderName);
       } catch (e) {
         alert("Erreur lors de la création du dossier : " + e.message);
       }
@@ -168,13 +171,43 @@ if (!BASE_PATH) {
       }
     }
 
-    // Load root folder content and organize files/folders
+    // Load folder content recursively and organize files/folders
+    async function loadFolderRecursive(pathKey) {
+      // pathKey is string or null (root)
+      let path = BASE_PATH;
+      if (pathKey !== null) {
+        path += "/" + pathKey;
+      }
+      try {
+        const content = await githubApi(path);
+        const foldersInThis = content.filter(i => i.type === "dir").map(d => d.name);
+        const filesInThis = content.filter(i => i.type === "file" && i.name.toLowerCase().endsWith(".md"));
+
+        filesByFolder[pathKey === null ? "Non trier" : pathKey] = filesInThis;
+        foldersByFolder[pathKey === null ? "root" : pathKey] = foldersInThis;
+
+        // For root, folders list includes "Non trier" + root folders
+        if (pathKey === null) {
+          folders = foldersInThis.slice();
+          folders.unshift("Non trier");
+        }
+
+        // Recursively load subfolders
+        for (const folderName of foldersInThis) {
+          const subPathKey = pathKey === null ? folderName : pathKey + "/" + folderName;
+          await loadFolderRecursive(subPathKey);
+        }
+      } catch (e) {
+        alert("Erreur lors du chargement du dossier " + (pathKey || "racine") + " : " + e.message);
+      }
+    }
+
+    // Load root and all subfolders recursively
     async function loadRoot() {
       currentFolder = null;
       historyStack = [];
       currentFolderName.textContent = "Racine / Non trié";
       btnBackFolder.disabled = true;
-      btnCreateFile.disabled = true;
       filesUl.innerHTML = "";
       foldersUl.innerHTML = "";
       foldersInsideUl.innerHTML = "";
@@ -182,87 +215,28 @@ if (!BASE_PATH) {
       filesByFolder = {};
       foldersByFolder = {};
 
-      try {
-        const rootContent = await githubApi(BASE_PATH);
-        // Separate folders and files
-        const rootFolders = rootContent.filter((item) => item.type === "dir");
-        const rootFiles = rootContent.filter((item) => item.type === "file");
+      await loadFolderRecursive(null);
 
-        // Add folders to folders list
-        folders = rootFolders.map((f) => f.name);
-
-        // Add "Non trier" folder for root files
-        folders.unshift("Non trier");
-
-        // Files in root go to "Non trier"
-        filesByFolder["Non trier"] = rootFiles.filter((f) =>
-          f.name.toLowerCase().endsWith(".md")
-        );
-
-        // For each folder, load its files and subfolders
-        for (const folderName of rootFolders.map((f) => f.name)) {
-          const folderContent = await githubApi(`${BASE_PATH}/${folderName}`);
-          filesByFolder[folderName] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-          );
-          foldersByFolder[folderName] = folderContent.filter(
-            (item) => item.type === "dir"
-          ).map(d => d.name);
-        }
-
-        renderFolders();
-        renderFoldersInside(null);
-        renderFiles("Non trier");
-      } catch (e) {
-        alert("Erreur lors du chargement des fichiers : " + e.message);
-      }
+      renderFolders();
+      renderFoldersInside(null);
+      renderFiles("Non trier");
     }
 
     // Reload current folder content (files and folders)
     async function reloadCurrentFolder() {
       if (currentFolder === null) {
-        // Root
-        try {
-          const rootContent = await githubApi(BASE_PATH);
-          const rootFolders = rootContent.filter((item) => item.type === "dir");
-          const rootFiles = rootContent.filter((item) => item.type === "file");
-
-          folders = rootFolders.map((f) => f.name);
-          folders.unshift("Non trier");
-          filesByFolder["Non trier"] = rootFiles.filter((f) =>
-            f.name.toLowerCase().endsWith(".md")
-          );
-
-          for (const folderName of rootFolders.map((f) => f.name)) {
-            const folderContent = await githubApi(`${BASE_PATH}/${folderName}`);
-            filesByFolder[folderName] = folderContent.filter(
-              (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-            );
-            foldersByFolder[folderName] = folderContent.filter(
-              (item) => item.type === "dir"
-            ).map(d => d.name);
-          }
-          renderFolders();
-          renderFoldersInside(null);
-          renderFiles("Non trier");
-        } catch (e) {
-          alert("Erreur lors du rechargement des fichiers : " + e.message);
-        }
+        await loadRoot();
       } else {
-        // Inside folder
-        try {
-          const folderContent = await githubApi(`${BASE_PATH}/${currentFolder}`);
-          filesByFolder[currentFolder] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-          );
-          foldersByFolder[currentFolder] = folderContent.filter(
-            (item) => item.type === "dir"
-          ).map(d => d.name);
-          renderFoldersInside(currentFolder);
-          renderFiles(currentFolder);
-        } catch (e) {
-          alert("Erreur lors du rechargement des fichiers : " + e.message);
-        }
+        // Reload current folder and its subfolders recursively
+        // Remove cached subfolders under currentFolder to force reload
+        const keysToRemove = Object.keys(filesByFolder).filter(k => k === currentFolder || k.startsWith(currentFolder + "/"));
+        keysToRemove.forEach(k => {
+          delete filesByFolder[k];
+          delete foldersByFolder[k];
+        });
+        await loadFolderRecursive(currentFolder);
+        renderFoldersInside(currentFolder);
+        renderFiles(currentFolder);
       }
     }
 
@@ -324,12 +298,25 @@ if (!BASE_PATH) {
         li.appendChild(span);
 
         li.addEventListener("click", () => {
-          openFolder(subfolder);
+          // Compose new folder path for nested navigation
+          let newFolderPath;
+          if (folder === null) {
+            newFolderPath = subfolder;
+          } else {
+            newFolderPath = folder + "/" + subfolder;
+          }
+          openFolder(newFolderPath);
         });
         li.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            openFolder(subfolder);
+            let newFolderPath;
+            if (folder === null) {
+              newFolderPath = subfolder;
+            } else {
+              newFolderPath = folder + "/" + subfolder;
+            }
+            openFolder(newFolderPath);
           }
         });
 
@@ -343,7 +330,11 @@ if (!BASE_PATH) {
       currentFolderName.textContent = folder === null ? "Non trié" : folder;
       filesUl.innerHTML = "";
       btnBackFolder.disabled = historyStack.length === 0;
-      btnCreateFile.disabled = folder === null; // Disable create file in root
+
+      // Enable create file only if drive/adm div exists and folder is not null
+      if (driveAdmDiv && btnCreateFile) {
+        btnCreateFile.disabled = folder === null;
+      }
 
       let files;
       if (folder === null) {
@@ -446,55 +437,54 @@ if (!BASE_PATH) {
         // Inline code: `code`
         text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 rounded px-1 font-mono text-sm">$1</code>');
 
-// Gras **text** ou __text__
-text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
-text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
+        // Gras **text** ou __text__
+        text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
+        text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
 
-// Italique *text* ou _text_
-text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
-text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
+        // Italique *text* ou _text_
+        text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
+        text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
 
-// Surlignage ::text::
-text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
+        // Surlignage ::text::
+        text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
 
-// Maths inline $x+y$
-text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
+        // Maths inline $x+y$
+        text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
 
-// Notes de bas de page [^1]
-text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
+        // Notes de bas de page [^1]
+        text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
 
-// Liens [texte](url)
-text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+        // Liens [texte](url)
+        text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
 
-// Images ![alt](url)
-text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
+        // Images ![alt](url)
+        text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
 
+        // Ligne horizontale ---
+        text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
 
-// Ligne horizontale ---
-text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
+        // Titres (h1, h2, h3)
+        text = text.replace(/^### (.*)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
+        text = text.replace(/^## (.*)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
+        text = text.replace(/^# (.*)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
 
-// Titres (h1, h2, h3)
-text = text.replace(/^### (.*)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
-text = text.replace(/^## (.*)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
-text = text.replace(/^# (.*)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+        // Citations >
+        text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700">$1</blockquote>');
 
-// Citations >
-text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700">$1</blockquote>');
+        // Listes numerotees
+        text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4">$1</li>');
+        text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
 
-// Listes numerotees
-text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4">$1</li>');
-text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
+        // Listes a puces
+        text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
+        text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
 
-// Listes a puces
-text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
-text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
-          
-// Badge custom [{Titre}]
-text = text.replace(
-  /\[\{(.+?)\}\]/g,
-  '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
-);
-          
+        // Badge custom [{Titre}]
+        text = text.replace(
+          /\[\{(.+?)\}\]/g,
+          '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
+        );
+
         return text;
       }
 
@@ -646,7 +636,12 @@ text = text.replace(
       currentFolder = folder;
       currentFolderName.textContent = folder === null ? "Non trié" : folder;
       btnBackFolder.disabled = historyStack.length === 0;
-      btnCreateFile.disabled = folder === null; // Disable create file in root
+
+      // Enable create file only if drive/adm div exists and folder is not null
+      if (driveAdmDiv && btnCreateFile) {
+        btnCreateFile.disabled = folder === null;
+      }
+
       fileViewSection.classList.add("hidden");
       currentFile = null;
       fileContent.value = "";
@@ -658,17 +653,20 @@ text = text.replace(
         // Root
         await loadRoot();
       } else {
-        try {
-          const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
-          filesByFolder[folder] = folderContent.filter(
-            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
-          );
-          foldersByFolder[folder] = folderContent.filter(
-            (item) => item.type === "dir"
-          ).map(d => d.name);
-        } catch (e) {
-          alert("Erreur lors du chargement du dossier : " + e.message);
-          return;
+        // Check if folder content already loaded
+        if (!filesByFolder[folder] || !foldersByFolder[folder]) {
+          try {
+            const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
+            filesByFolder[folder] = folderContent.filter(
+              (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+            );
+            foldersByFolder[folder] = folderContent.filter(
+              (item) => item.type === "dir"
+            ).map(d => d.name);
+          } catch (e) {
+            alert("Erreur lors du chargement du dossier : " + e.message);
+            return;
+          }
         }
       }
       renderFoldersInside(folder);
@@ -740,7 +738,7 @@ text = text.replace(
       const folder = decodeURIComponent(hash.substring(0, sepIndex));
       const filename = decodeURIComponent(hash.substring(sepIndex + 1));
       let folderKey = folder === "Non trier" ? null : folder;
-      if (folderKey !== null && !folders.includes(folderKey)) return;
+      if (folderKey !== null && !folders.includes(folderKey.split("/")[0])) return;
       const files = filesByFolder[folderKey === null ? "Non trier" : folderKey] || [];
       const file = files.find((f) => f.name === filename);
       if (!file) return;
@@ -766,79 +764,85 @@ text = text.replace(
       }
     }
 
-    btnToggleView.addEventListener("click", () => {
-      if (!currentFile) return;
-      if (isEditing) {
-        renderMarkdown(fileContent.value);
-        toggleViewMode(false);
-        btnSave.disabled = true;
-      } else {
-        toggleViewMode(true);
-      }
-    });
-
-    fileContent.addEventListener("input", () => {
-      if (!currentFile) return;
-      btnSave.disabled = false;
-    });
-
-    btnSave.addEventListener("click", async () => {
-      if (!currentFile) return;
-      btnSave.disabled = true;
-      const { folder, file } = currentFile;
-      try {
-        let path;
-        if (folder === null) {
-          path = `${BASE_PATH}/${file.name}`;
+    if (btnToggleView) {
+      btnToggleView.addEventListener("click", () => {
+        if (!currentFile) return;
+        if (isEditing) {
+          renderMarkdown(fileContent.value);
+          toggleViewMode(false);
+          btnSave.disabled = true;
         } else {
-          path = `${BASE_PATH}/${folder}/${file.name}`;
+          toggleViewMode(true);
         }
-        const metaRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
-          {
-            headers: {
-              Authorization: `token ${TOKEN}`,
-              Accept: "application/vnd.github.v3+json",
-            },
-          }
-        );
-        if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
-        const meta = await metaRes.json();
+      });
+    }
 
-        const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
-        const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
-
-        const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `token ${TOKEN}`,
-              Accept: "application/vnd.github.v3+json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: commitMessage,
-              content: contentEncoded,
-              sha: meta.sha,
-              branch: BRANCH,
-            }),
-          }
-        );
-        if (!putRes.ok) {
-          const err = await putRes.json();
-          throw new Error(err.message || "Erreur lors de la sauvegarde");
-        }
-        alert("Fichier sauvegardé avec succès !");
-        btnSave.disabled = true;
-        await refreshFolderFiles(folder);
-        renderMarkdown(fileContent.value);
-        toggleViewMode(false);
-      } catch (e) {
-        alert("Erreur lors de la sauvegarde : " + e.message);
+    if (fileContent) {
+      fileContent.addEventListener("input", () => {
+        if (!currentFile) return;
         btnSave.disabled = false;
-      }
-    });
+      });
+    }
+
+    if (btnSave) {
+      btnSave.addEventListener("click", async () => {
+        if (!currentFile) return;
+        btnSave.disabled = true;
+        const { folder, file } = currentFile;
+        try {
+          let path;
+          if (folder === null) {
+            path = `${BASE_PATH}/${file.name}`;
+          } else {
+            path = `${BASE_PATH}/${folder}/${file.name}`;
+          }
+          const metaRes = await fetch(
+            `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
+            {
+              headers: {
+                Authorization: `token ${TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+              },
+            }
+          );
+          if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
+          const meta = await metaRes.json();
+
+          const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
+          const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
+
+          const putRes = await fetch(
+            `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `token ${TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message: commitMessage,
+                content: contentEncoded,
+                sha: meta.sha,
+                branch: BRANCH,
+              }),
+            }
+          );
+          if (!putRes.ok) {
+            const err = await putRes.json();
+            throw new Error(err.message || "Erreur lors de la sauvegarde");
+          }
+          alert("Fichier sauvegardé avec succès !");
+          btnSave.disabled = true;
+          await refreshFolderFiles(folder);
+          renderMarkdown(fileContent.value);
+          toggleViewMode(false);
+        } catch (e) {
+          alert("Erreur lors de la sauvegarde : " + e.message);
+          btnSave.disabled = false;
+        }
+      });
+    }
 
     async function refreshFolderFiles(folder) {
       try {
@@ -859,55 +863,61 @@ text = text.replace(
       }
     }
 
-    btnCloseView.addEventListener("click", () => {
-      fileViewSection.classList.add("hidden");
-      currentFile = null;
-      fileContent.value = "";
-      btnSave.disabled = true;
-      isEditing = false;
-      updateHash("", "");
-    });
+    if (btnCloseView) {
+      btnCloseView.addEventListener("click", () => {
+        fileViewSection.classList.add("hidden");
+        currentFile = null;
+        fileContent.value = "";
+        btnSave.disabled = true;
+        isEditing = false;
+        updateHash("", "");
+      });
+    }
 
-    btnShare.addEventListener("click", () => {
-      if (!currentFile) return;
-      const url = location.href;
-      navigator.clipboard
-        .writeText(url)
-        .then(() => {
-          alert("URL de partage copiée dans le presse-papiers !");
-        })
-        .catch(() => {
-          alert("Impossible de copier l'URL dans le presse-papiers.");
-        });
-    });
+    if (btnShare) {
+      btnShare.addEventListener("click", () => {
+        if (!currentFile) return;
+        const url = location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            alert("URL de partage copiée dans le presse-papiers !");
+          })
+          .catch(() => {
+            alert("Impossible de copier l'URL dans le presse-papiers.");
+          });
+      });
+    }
 
-    btnImport.addEventListener("click", () => {
-      fileInput.value = "";
-      fileInput.click();
-    });
+    if (btnImport && fileInput) {
+      btnImport.addEventListener("click", () => {
+        fileInput.value = "";
+        fileInput.click();
+      });
 
-    fileInput.addEventListener("change", async (e) => {
-      const files = Array.from(e.target.files);
-      if (files.length === 0) return;
+      fileInput.addEventListener("change", async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
 
-      const mdFiles = files.filter((f) => f.name.toLowerCase().endsWith(".md"));
-      if (mdFiles.length === 0) {
-        alert("Veuillez sélectionner uniquement des fichiers Markdown (.md).");
-        return;
-      }
-
-      for (const file of mdFiles) {
-        try {
-          const content = await file.text();
-          await createFile(currentFolder, file.name);
-          await saveFileContent(currentFolder, file.name, content);
-        } catch (err) {
-          alert(`Erreur lors de l'import du fichier ${file.name} : ${err.message}`);
+        const mdFiles = files.filter((f) => f.name.toLowerCase().endsWith(".md"));
+        if (mdFiles.length === 0) {
+          alert("Veuillez sélectionner uniquement des fichiers Markdown (.md).");
+          return;
         }
-      }
-      alert("Import terminé !");
-      await reloadCurrentFolder();
-    });
+
+        for (const file of mdFiles) {
+          try {
+            const content = await file.text();
+            await createFile(currentFolder, file.name);
+            await saveFileContent(currentFolder, file.name, content);
+          } catch (err) {
+            alert(`Erreur lors de l'import du fichier ${file.name} : ${err.message}`);
+          }
+        }
+        alert("Import terminé !");
+        await reloadCurrentFolder();
+      });
+    }
 
     async function saveFileContent(folder, filename, content) {
       try {
@@ -958,29 +968,35 @@ text = text.replace(
       }
     }
 
-    btnCreateFolder.addEventListener("click", async () => {
-      const folderName = prompt("Nom du nouveau dossier (sans espaces ni caractères spéciaux) :");
-      if (!folderName) return;
-      if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
-        alert("Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores.");
-        return;
-      }
-      await createFolder(folderName);
-    });
+    if (btnCreateFolder) {
+      btnCreateFolder.addEventListener("click", async () => {
+        if (!driveAdmDiv) return; // Do nothing if drive/adm div not present
+        const folderName = prompt("Nom du nouveau dossier (sans espaces ni caractères spéciaux) :");
+        if (!folderName) return;
+        if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
+          alert("Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores.");
+          return;
+        }
+        await createFolder(folderName);
+      });
+    }
 
-    btnCreateFile.addEventListener("click", async () => {
-      if (currentFolder === null) {
-        alert("Veuillez sélectionner un dossier pour créer un fichier.");
-        return;
-      }
-      const filename = prompt("Nom du nouveau fichier Markdown (avec extension .md) :");
-      if (!filename) return;
-      if (!filename.toLowerCase().endsWith(".md")) {
-        alert("Le fichier doit avoir une extension .md");
-        return;
-      }
-      await createFile(currentFolder, filename);
-    });
+    if (btnCreateFile) {
+      btnCreateFile.addEventListener("click", async () => {
+        if (!driveAdmDiv) return; // Do nothing if drive/adm div not present
+        if (currentFolder === null) {
+          alert("Veuillez sélectionner un dossier pour créer un fichier.");
+          return;
+        }
+        const filename = prompt("Nom du nouveau fichier Markdown (avec extension .md) :");
+        if (!filename) return;
+        if (!filename.toLowerCase().endsWith(".md")) {
+          alert("Le fichier doit avoir une extension .md");
+          return;
+        }
+        await createFile(currentFolder, filename);
+      });
+    }
 
     // On load
     window.addEventListener("load", async () => {
@@ -994,4 +1010,3 @@ text = text.replace(
     window.addEventListener("hashchange", () => {
       openFileFromHash();
     });
-
