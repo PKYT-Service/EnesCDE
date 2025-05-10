@@ -19,7 +19,7 @@ export function patch() {
     return input
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '') // Enleve les accents
-      .replace(/[^A-Za-z0-9@\-_/\. \n:(){}!\?\.;*_\`+#]/g, '') // Garde la ponctuation + ajoute + et #
+      .replace(/[^A-Za-z0-9@\-_/\. \n:(){}!?\.;\*_\`+#]/g, '')
       .replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
   }
 
