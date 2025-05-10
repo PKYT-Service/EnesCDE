@@ -56,13 +56,27 @@
     let historyStack = [];
     let isEditing = false;
 
+    // Helper to check if editing is allowed (buttons present and drive/adm div exists and has "adm" in id)
+    function isEditingAllowed() {
+      return (
+        btnToggleView &&
+        btnSave &&
+        driveAdmDiv &&
+        driveAdmDiv.id.includes("adm")
+      );
+    }
+
     // Load token from external JSON
     async function loadToken() {
       try {
-        const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js", {cache: "no-store"});
+        const res = await fetch(
+          "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js",
+          { cache: "no-store" }
+        );
         if (!res.ok) throw new Error("Impossible de charger le token");
         const json = await res.json();
-        if (!json.GITHUB_TOKEN) throw new Error("Token GitHub manquant dans le fichier");
+        if (!json.GITHUB_TOKEN)
+          throw new Error("Token GitHub manquant dans le fichier");
         TOKEN = json.GITHUB_TOKEN;
       } catch (e) {
         alert("Erreur lors du chargement du token : " + e.message);
@@ -72,7 +86,9 @@
     // Helper: GitHub API call with auth
     async function githubApi(path) {
       if (!TOKEN) throw new Error("Token GitHub non chargé");
-      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(
+        path
+      )}?ref=${BRANCH}`;
       const res = await fetch(url, {
         headers: {
           Authorization: `token ${TOKEN}`,
@@ -88,7 +104,6 @@
     // Create folder (GitHub API: create empty .gitkeep file inside new folder)
     async function createFolder(folderName) {
       if (!folderName) return;
-      // Compose path with currentFolder as base, allowing nested folders
       let path;
       if (currentFolder === null) {
         path = `${BASE_PATH}/${folderName}/.gitkeep`;
@@ -99,7 +114,9 @@
         const contentEncoded = btoa("");
         const commitMessage = `Création du dossier ${folderName} via Explorateur MD`;
         const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(
+            path
+          )}`,
           {
             method: "PUT",
             headers: {
@@ -120,7 +137,6 @@
         }
         alert(`Dossier "${folderName}" créé avec succès.`);
         await reloadCurrentFolder();
-        // Open the newly created folder (nested)
         openFolder(currentFolder === null ? folderName : currentFolder + "/" + folderName);
       } catch (e) {
         alert("Erreur lors de la création du dossier : " + e.message);
@@ -141,13 +157,16 @@
         path = `${BASE_PATH}/${folder}/${filename}`;
       }
       try {
-        const dateStr = new Date().toISOString().split('T')[0];
+        const dateStr = new Date().toISOString().split("T")[0];
         const defaultContent = `\` :: Votre Texte ICI :: \`  \n\n\n\` **Date :** ${dateStr} \`  \n\` **RAPPEL :** \n :: Ne pas supprimer cette ligne ! :: \``;
-        // Encode UTF-8 content properly
         const contentEncoded = btoa(unescape(encodeURIComponent(defaultContent)));
-        const commitMessage = `Création du fichier ${filename} dans ${folder === null ? "racine" : folder} via Explorateur MD`;
+        const commitMessage = `Création du fichier ${filename} dans ${
+          folder === null ? "racine" : folder
+        } via Explorateur MD`;
         const putRes = await fetch(
-          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(
+            path
+          )}`,
           {
             method: "PUT",
             headers: {
@@ -176,26 +195,25 @@
 
     // Load folder content recursively and organize files/folders
     async function loadFolderRecursive(pathKey) {
-      // pathKey is string or null (root)
       let path = BASE_PATH;
       if (pathKey !== null) {
         path += "/" + pathKey;
       }
       try {
         const content = await githubApi(path);
-        const foldersInThis = content.filter(i => i.type === "dir").map(d => d.name);
-        const filesInThis = content.filter(i => i.type === "file" && i.name.toLowerCase().endsWith(".md"));
+        const foldersInThis = content.filter((i) => i.type === "dir").map((d) => d.name);
+        const filesInThis = content.filter(
+          (i) => i.type === "file" && i.name.toLowerCase().endsWith(".md")
+        );
 
         filesByFolder[pathKey === null ? "Non trier" : pathKey] = filesInThis;
         foldersByFolder[pathKey === null ? "root" : pathKey] = foldersInThis;
 
-        // For root, folders list includes "Non trier" + root folders
         if (pathKey === null) {
           folders = foldersInThis.slice();
           folders.unshift("Non trier");
         }
 
-        // Recursively load subfolders
         for (const folderName of foldersInThis) {
           const subPathKey = pathKey === null ? folderName : pathKey + "/" + folderName;
           await loadFolderRecursive(subPathKey);
@@ -209,11 +227,11 @@
     async function loadRoot() {
       currentFolder = null;
       historyStack = [];
-      currentFolderName.textContent = "Racine / Non trié";
-      btnBackFolder.disabled = true;
-      filesUl.innerHTML = "";
-      foldersUl.innerHTML = "";
-      foldersInsideUl.innerHTML = "";
+      if (currentFolderName) currentFolderName.textContent = "Racine / Non trié";
+      if (btnBackFolder) btnBackFolder.disabled = true;
+      if (filesUl) filesUl.innerHTML = "";
+      if (foldersUl) foldersUl.innerHTML = "";
+      if (foldersInsideUl) foldersInsideUl.innerHTML = "";
       folders = [];
       filesByFolder = {};
       foldersByFolder = {};
@@ -230,10 +248,10 @@
       if (currentFolder === null) {
         await loadRoot();
       } else {
-        // Reload current folder and its subfolders recursively
-        // Remove cached subfolders under currentFolder to force reload
-        const keysToRemove = Object.keys(filesByFolder).filter(k => k === currentFolder || k.startsWith(currentFolder + "/"));
-        keysToRemove.forEach(k => {
+        const keysToRemove = Object.keys(filesByFolder).filter(
+          (k) => k === currentFolder || k.startsWith(currentFolder + "/")
+        );
+        keysToRemove.forEach((k) => {
           delete filesByFolder[k];
           delete foldersByFolder[k];
         });
@@ -245,6 +263,7 @@
 
     // Render folders list (root folders)
     function renderFolders() {
+      if (!foldersUl) return;
       foldersUl.innerHTML = "";
       folders.forEach((folder) => {
         const li = document.createElement("li");
@@ -269,11 +288,11 @@
 
     // Render folders inside current folder (subfolders)
     function renderFoldersInside(folder) {
+      if (!foldersInsideUl) return;
       foldersInsideUl.innerHTML = "";
       let subfolders = [];
       if (folder === null) {
-        // Root folders except "Non trier"
-        subfolders = folders.filter(f => f !== "Non trier");
+        subfolders = folders.filter((f) => f !== "Non trier");
       } else {
         subfolders = foldersByFolder[folder] || [];
       }
@@ -301,7 +320,6 @@
         li.appendChild(span);
 
         li.addEventListener("click", () => {
-          // Compose new folder path for nested navigation
           let newFolderPath;
           if (folder === null) {
             newFolderPath = subfolder;
@@ -330,18 +348,19 @@
     // Render files list for a folder
     function renderFiles(folder) {
       currentFolder = folder;
-      currentFolderName.textContent = folder === null ? "Non trier" : folder;
-      filesUl.innerHTML = "";
-      btnBackFolder.disabled = historyStack.length === 0;
+      if (currentFolderName) currentFolderName.textContent = folder === null ? "Non trier" : folder;
+      if (filesUl) filesUl.innerHTML = "";
+      if (btnBackFolder) btnBackFolder.disabled = historyStack.length === 0;
 
-      // Enable create file only if drive/adm div exists and folder is not null
-      if (driveAdmDiv && btnCreateFile) {
-        btnCreateFile.disabled = folder === null;
-      } else if (btnCreateFile) {
-        btnCreateFile.disabled = true;
+      // Enable create file only if editing allowed and folder is not null
+      if (btnCreateFile) {
+        btnCreateFile.disabled = !isEditingAllowed() || folder === null;
       }
       if (btnCreateFolder) {
-        btnCreateFolder.disabled = !driveAdmDiv;
+        btnCreateFolder.disabled = !isEditingAllowed();
+      }
+      if (btnImport) {
+        btnImport.disabled = !isEditingAllowed();
       }
 
       let files;
@@ -390,35 +409,30 @@
 
     // Custom markdown rendering with specified replacements
     function customMarkdownRender(md) {
-      // Escape HTML special chars
       const escapeHtml = (text) =>
-        text.replace(/&/g, "&amp;")
+        text
+          .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
 
-      // We will parse line by line and build HTML respecting markdown syntax
-      // This is a simple parser, not full CommonMark compliant but covers basics
-
-      // Split input into lines
       const lines = md.split(/\r?\n/);
 
       let html = "";
       let inCodeBlock = false;
       let codeBlockLang = "";
       let inList = false;
-      let listType = null; // "ul" or "ol"
+      let listType = null;
       let listBuffer = [];
       let inBlockquote = false;
       let blockquoteBuffer = [];
 
-      // Helper to flush list buffer
       function flushList() {
         if (!inList) return;
         const tag = listType;
         html += `<${tag} class="pl-6 mb-4 list-${tag === "ul" ? "disc" : "decimal"}">`;
-        listBuffer.forEach(item => {
+        listBuffer.forEach((item) => {
           html += `<li>${item}</li>`;
         });
         html += `</${tag}>`;
@@ -427,7 +441,6 @@
         listType = null;
       }
 
-      // Helper to flush blockquote buffer
       function flushBlockquote() {
         if (!inBlockquote) return;
         html += `<blockquote class="border-l-4 border-gray-400 pl-4 italic mb-4">`;
@@ -437,57 +450,41 @@
         inBlockquote = false;
       }
 
-      // Inline replacements for bold, italic, code, links, inline math, mark, footnotes
       function inlineReplacements(text) {
-        // Escape HTML first
         text = escapeHtml(text);
 
-        // Inline code: `code`
         text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 rounded px-1 font-mono text-sm">$1</code>');
 
-        // Gras **text** ou __text__
         text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
         text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
 
-        // Italique *text* ou _text_
         text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
         text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
 
-        // Surlignage ::text::
         text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
 
-        // Maths inline $x+y$
         text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
 
-        // Notes de bas de page [^1]
         text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
 
-        // Liens [texte](url)
         text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
 
-        // Images ![alt](url)
         text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
 
-        // Ligne horizontale ---
         text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
 
-        // Titres (h1, h2, h3)
         text = text.replace(/^### (.*)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
         text = text.replace(/^## (.*)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
         text = text.replace(/^# (.*)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
 
-        // Citations >
         text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700">$1</blockquote>');
 
-        // Listes numerotees
         text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4">$1</li>');
         text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
 
-        // Listes a puces
         text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
         text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
 
-        // Badge custom [{Titre}]
         text = text.replace(
           /\[\{(.+?)\}\]/g,
           '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
@@ -499,7 +496,6 @@
       for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
 
-        // Handle fenced code blocks ```lang
         if (/^```/.test(line)) {
           if (!inCodeBlock) {
             inCodeBlock = true;
@@ -512,12 +508,10 @@
           continue;
         }
         if (inCodeBlock) {
-          // Escape HTML inside code block
           html += escapeHtml(line) + "\n";
           continue;
         }
 
-        // Handle headers # to ######
         let headerMatch = line.match(/^(#{1,6})\s+(.*)$/);
         if (headerMatch) {
           flushList();
@@ -528,13 +522,11 @@
           continue;
         }
 
-        // Handle blockquote lines starting with >
         if (/^\s*>/.test(line)) {
           flushList();
           const content = line.replace(/^\s*> ?/, "");
           inBlockquote = true;
           blockquoteBuffer.push(inlineReplacements(content));
-          // If next line is not blockquote, flush blockquote
           if (i + 1 >= lines.length || !/^\s*>/.test(lines[i + 1])) {
             flushBlockquote();
           }
@@ -543,7 +535,6 @@
           flushBlockquote();
         }
 
-        // Handle unordered list lines starting with -, *, +
         let ulMatch = line.match(/^\s*([-*+])\s+(.*)$/);
         if (ulMatch) {
           const content = inlineReplacements(ulMatch[2].trim());
@@ -559,14 +550,12 @@
             listType = "ul";
             listBuffer.push(content);
           }
-          // If next line is not list item, flush list
           if (i + 1 >= lines.length || !/^\s*([-*+])\s+/.test(lines[i + 1])) {
             flushList();
           }
           continue;
         }
 
-        // Handle ordered list lines starting with 1., 2., etc.
         let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
         if (olMatch) {
           const content = inlineReplacements(olMatch[2].trim());
@@ -582,7 +571,6 @@
             listType = "ol";
             listBuffer.push(content);
           }
-          // If next line is not list item, flush list
           if (i + 1 >= lines.length || !/^\s*\d+\.\s+/.test(lines[i + 1])) {
             flushList();
           }
@@ -591,40 +579,38 @@
 
         flushList();
 
-        // Handle horizontal rule ---
         if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
           html += `<hr class="my-6 border-gray-300">`;
           continue;
         }
 
-        // Handle math blocks $$ ... $$
         if (/^\$\$/.test(line)) {
           flushList();
           let mathBlock = [];
           if (/^\$\$(.*)\$\$$/.test(line)) {
-            // Single line math block
             const content = line.replace(/^\$\$(.*)\$\$$/, "$1");
-            html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
+            html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(
+              content
+            )}</div>`;
             continue;
           }
-          // Multi-line math block
           i++;
           while (i < lines.length && !/^\$\$/.test(lines[i])) {
             mathBlock.push(lines[i]);
             i++;
           }
           const content = mathBlock.join("\n");
-          html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
+          html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(
+            content
+          )}</div>`;
           continue;
         }
 
-        // Empty line -> paragraph break
         if (/^\s*$/.test(line)) {
           html += `<br>`;
           continue;
         }
 
-        // Normal paragraph line
         const inline = inlineReplacements(line.trim());
         html += `<p class="mb-2 leading-relaxed text-gray-800">${inline}</p>`;
       }
@@ -633,7 +619,7 @@
     }
 
     function renderMarkdown(md) {
-      fileRenderedContent.innerHTML = customMarkdownRender(md);
+      if (fileRenderedContent) fileRenderedContent.innerHTML = customMarkdownRender(md);
     }
 
     // Open folder (push current folder to history)
@@ -642,40 +628,35 @@
         historyStack.push(currentFolder);
       }
       currentFolder = folder;
-      currentFolderName.textContent = folder === null ? "Non trier" : folder;
-      btnBackFolder.disabled = historyStack.length === 0;
+      if (currentFolderName) currentFolderName.textContent = folder === null ? "Non trier" : folder;
+      if (btnBackFolder) btnBackFolder.disabled = historyStack.length === 0;
 
-      // Enable create file only if drive/adm div exists and folder is not null
-      if (driveAdmDiv && btnCreateFile) {
-        btnCreateFile.disabled = folder === null;
-      } else if (btnCreateFile) {
-        btnCreateFile.disabled = true;
+      if (btnCreateFile) {
+        btnCreateFile.disabled = !isEditingAllowed() || folder === null;
       }
       if (btnCreateFolder) {
-        btnCreateFolder.disabled = !driveAdmDiv;
+        btnCreateFolder.disabled = !isEditingAllowed();
+      }
+      if (btnImport) {
+        btnImport.disabled = !isEditingAllowed();
       }
 
-      fileViewSection.classList.add("hidden");
+      if (fileViewSection) fileViewSection.classList.add("hidden");
       currentFile = null;
-      fileContent.value = "";
-      btnSave.disabled = true;
+      if (fileContent) fileContent.value = "";
+      if (btnSave) btnSave.disabled = true;
       isEditing = false;
 
-      // Load folder content if not loaded
       if (folder === null) {
-        // Root
         await loadRoot();
       } else {
-        // Check if folder content already loaded
         if (!filesByFolder[folder] || !foldersByFolder[folder]) {
           try {
             const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
             filesByFolder[folder] = folderContent.filter(
               (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
             );
-            foldersByFolder[folder] = folderContent.filter(
-              (item) => item.type === "dir"
-            ).map(d => d.name);
+            foldersByFolder[folder] = folderContent.filter((item) => item.type === "dir").map((d) => d.name);
           } catch (e) {
             alert("Erreur lors du chargement du dossier : " + e.message);
             return;
@@ -688,12 +669,14 @@
     }
 
     // Back folder
-    btnBackFolder.addEventListener("click", () => {
-      if (historyStack.length > 0) {
-        const previousFolder = historyStack.pop();
-        openFolder(previousFolder);
-      }
-    });
+    if (btnBackFolder) {
+      btnBackFolder.addEventListener("click", () => {
+        if (historyStack.length > 0) {
+          const previousFolder = historyStack.pop();
+          openFolder(previousFolder);
+        }
+      });
+    }
 
     // Open file: fetch content via GitHub API and show viewer (rendered)
     async function openFile(folder, file) {
@@ -705,7 +688,9 @@
           path = `${BASE_PATH}/${folder}/${file.name}`;
         }
         if (!TOKEN) throw new Error("Token GitHub non chargé");
-        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
+        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(
+          path
+        )}?ref=${BRANCH}`;
         const res = await fetch(url, {
           headers: {
             Authorization: `token ${TOKEN}`,
@@ -715,17 +700,16 @@
         if (!res.ok) throw new Error("Impossible de charger le fichier");
         const json = await res.json();
         if (!json.content) throw new Error("Contenu du fichier introuvable");
-        // Decode base64 content with UTF-8 support
-        const decodedContent = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+        const decodedContent = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
         currentFile = { folder, file };
-        fileViewTitle.textContent = file.name;
-        fileContent.value = decodedContent;
+        if (fileViewTitle) fileViewTitle.textContent = file.name;
+        if (fileContent) fileContent.value = decodedContent;
         renderMarkdown(decodedContent);
-        btnSave.disabled = true;
+        if (btnSave) btnSave.disabled = true;
         isEditing = false;
         toggleViewMode(false);
-        fileViewSection.classList.remove("hidden");
-        fileRenderedContent.focus();
+        if (fileViewSection) fileViewSection.classList.remove("hidden");
+        if (fileRenderedContent) fileRenderedContent.focus();
         updateHash(folder === null ? "Non trier" : folder, file.name);
       } catch (e) {
         alert("Erreur lors de l'ouverture du fichier : " + e.message);
@@ -762,29 +746,34 @@
 
     // Toggle between viewer and editor mode
     function toggleViewMode(editMode) {
+      if (!isEditingAllowed()) return;
       isEditing = editMode;
       if (editMode) {
-        fileContent.classList.remove("hidden");
-        fileRenderedContent.classList.add("hidden");
-        btnSave.classList.remove("hidden");
-        btnToggleView.innerHTML = '<i class="fas fa-eye"></i>';
-        fileContent.focus();
+        if (fileContent) fileContent.classList.remove("hidden");
+        if (fileRenderedContent) fileRenderedContent.classList.add("hidden");
+        if (btnSave) btnSave.classList.remove("hidden");
+        if (btnToggleView) btnToggleView.innerHTML = '<i class="fas fa-eye"></i>';
+        if (fileContent) fileContent.focus();
       } else {
-        fileContent.classList.add("hidden");
-        fileRenderedContent.classList.remove("hidden");
-        btnSave.classList.add("hidden");
-        btnToggleView.innerHTML = '<i class="fas fa-edit"></i>';
-        fileRenderedContent.focus();
+        if (fileContent) fileContent.classList.add("hidden");
+        if (fileRenderedContent) fileRenderedContent.classList.remove("hidden");
+        if (btnSave) btnSave.classList.add("hidden");
+        if (btnToggleView) btnToggleView.innerHTML = '<i class="fas fa-edit"></i>';
+        if (fileRenderedContent) fileRenderedContent.focus();
       }
     }
 
     if (btnToggleView) {
       btnToggleView.addEventListener("click", () => {
         if (!currentFile) return;
+        if (!isEditingAllowed()) {
+          alert("Modification non autorisée : accès en lecture seule.");
+          return;
+        }
         if (isEditing) {
           renderMarkdown(fileContent.value);
           toggleViewMode(false);
-          btnSave.disabled = true;
+          if (btnSave) btnSave.disabled = true;
         } else {
           toggleViewMode(true);
         }
@@ -794,14 +783,18 @@
     if (fileContent) {
       fileContent.addEventListener("input", () => {
         if (!currentFile) return;
-        btnSave.disabled = false;
+        if (!isEditingAllowed()) {
+          alert("Modification non autorisée : accès en lecture seule.");
+          return;
+        }
+        if (btnSave) btnSave.disabled = false;
       });
     }
 
     if (btnSave) {
       btnSave.addEventListener("click", async () => {
         if (!currentFile) return;
-        if (!driveAdmDiv) {
+        if (!isEditingAllowed()) {
           alert("Modification non autorisée : accès en lecture seule.");
           return;
         }
@@ -826,7 +819,6 @@
           if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
           const meta = await metaRes.json();
 
-          // Encode UTF-8 content properly
           const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
           const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
 
@@ -884,10 +876,10 @@
 
     if (btnCloseView) {
       btnCloseView.addEventListener("click", () => {
-        fileViewSection.classList.add("hidden");
+        if (fileViewSection) fileViewSection.classList.add("hidden");
         currentFile = null;
-        fileContent.value = "";
-        btnSave.disabled = true;
+        if (fileContent) fileContent.value = "";
+        if (btnSave) btnSave.disabled = true;
         isEditing = false;
         updateHash("", "");
       });
@@ -910,7 +902,7 @@
 
     if (btnImport && fileInput) {
       btnImport.addEventListener("click", () => {
-        if (!driveAdmDiv) {
+        if (!isEditingAllowed()) {
           alert("Import non autorisé : accès en lecture seule.");
           return;
         }
@@ -919,7 +911,7 @@
       });
 
       fileInput.addEventListener("change", async (e) => {
-        if (!driveAdmDiv) {
+        if (!isEditingAllowed()) {
           alert("Import non autorisé : accès en lecture seule.");
           return;
         }
@@ -934,7 +926,6 @@
 
         for (const file of mdFiles) {
           try {
-            // Read file content as UTF-8 text
             const content = await file.text();
             await createFile(currentFolder, file.name);
             await saveFileContent(currentFolder, file.name, content);
@@ -948,7 +939,7 @@
     }
 
     async function saveFileContent(folder, filename, content) {
-      if (!driveAdmDiv) {
+      if (!isEditingAllowed()) {
         throw new Error("Modification non autorisée : accès en lecture seule.");
       }
       try {
@@ -970,7 +961,6 @@
         if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
         const meta = await metaRes.json();
 
-        // Encode UTF-8 content properly
         const contentEncoded = btoa(unescape(encodeURIComponent(content)));
         const commitMessage = `Mise à jour du fichier ${filename} via Explorateur MD`;
 
@@ -1002,14 +992,18 @@
 
     if (btnCreateFolder) {
       btnCreateFolder.addEventListener("click", async () => {
-        if (!driveAdmDiv) {
+        if (!isEditingAllowed()) {
           alert("Création de dossier non autorisée : accès en lecture seule.");
           return;
         }
-        const folderName = prompt("Nom du nouveau dossier (sans espaces ni caractères spéciaux) :");
+        const folderName = prompt(
+          "Nom du nouveau dossier (sans espaces ni caractères spéciaux) :"
+        );
         if (!folderName) return;
         if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
-          alert("Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores.");
+          alert(
+            "Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores."
+          );
           return;
         }
         await createFolder(folderName);
@@ -1018,7 +1012,7 @@
 
     if (btnCreateFile) {
       btnCreateFile.addEventListener("click", async () => {
-        if (!driveAdmDiv) {
+        if (!isEditingAllowed()) {
           alert("Création de fichier non autorisée : accès en lecture seule.");
           return;
         }
