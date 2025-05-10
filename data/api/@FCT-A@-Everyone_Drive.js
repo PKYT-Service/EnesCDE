@@ -1,4 +1,6 @@
-   let BASE_PATH = null;
+   // UTF-8 compatibility is ensured by <meta charset="UTF-8"> and proper encoding/decoding in JS
+
+    let BASE_PATH = null;
 
     // ECDE Config
     const repoDiv = document.querySelector('[id^="repo/"]');
@@ -141,6 +143,7 @@
       try {
         const dateStr = new Date().toISOString().split('T')[0];
         const defaultContent = `\` :: Votre Texte ICI :: \`  \n\n\n\` **Date :** ${dateStr} \`  \n\` **RAPPEL :** \n :: Ne pas supprimer cette ligne ! :: \``;
+        // Encode UTF-8 content properly
         const contentEncoded = btoa(unescape(encodeURIComponent(defaultContent)));
         const commitMessage = `Création du fichier ${filename} dans ${folder === null ? "racine" : folder} via Explorateur MD`;
         const putRes = await fetch(
@@ -634,7 +637,7 @@
         historyStack.push(currentFolder);
       }
       currentFolder = folder;
-      currentFolderName.textContent = folder === null ? "Non trié" : folder;
+      currentFolderName.textContent = folder === null ? "Non trier" : folder;
       btnBackFolder.disabled = historyStack.length === 0;
 
       // Enable create file only if drive/adm div exists and folder is not null
@@ -702,7 +705,8 @@
         if (!res.ok) throw new Error("Impossible de charger le fichier");
         const json = await res.json();
         if (!json.content) throw new Error("Contenu du fichier introuvable");
-        const decodedContent = atob(json.content.replace(/\n/g, ''));
+        // Decode base64 content with UTF-8 support
+        const decodedContent = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
         currentFile = { folder, file };
         fileViewTitle.textContent = file.name;
         fileContent.value = decodedContent;
@@ -808,6 +812,7 @@
           if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
           const meta = await metaRes.json();
 
+          // Encode UTF-8 content properly
           const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
           const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
 
@@ -907,6 +912,7 @@
 
         for (const file of mdFiles) {
           try {
+            // Read file content as UTF-8 text
             const content = await file.text();
             await createFile(currentFolder, file.name);
             await saveFileContent(currentFolder, file.name, content);
@@ -939,6 +945,7 @@
         if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
         const meta = await metaRes.json();
 
+        // Encode UTF-8 content properly
         const contentEncoded = btoa(unescape(encodeURIComponent(content)));
         const commitMessage = `Mise à jour du fichier ${filename} via Explorateur MD`;
 
