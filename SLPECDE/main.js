@@ -31,8 +31,8 @@ import { ECDE_Console } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@
 ECDE_Console();
 
 // Bloque les accès devtools (F12) sauf si "EnesCDE_ADM:F12" = ADMIN.
-import { Secure_F12 } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js";
-Secure_F12();
+// import { Secure_F12 } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js";
+// Secure_F12();
 
 // Réactualise la page toutes les minutes si "EnesCDE_ADM:Refresh" est true.
 import { Secure_Ref } from "https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Rfh.js";
