@@ -10,6 +10,10 @@ export function ADM_RPE() {
 }
 
 export function patch() {
+  // Ne rien faire si une div avec id commencant par "repo/" existe
+  const repoDiv = document.querySelector('div[id^="repo/"]');
+  if (repoDiv) return;
+
   // Fonction de nettoyage des caracteres speciaux
   function cleanString(input) {
     return input
@@ -26,6 +30,8 @@ export function patch() {
       event.target.value = cleanedValue;
     });
   });
+
+
 
   // Ajout du meta si pas deja present
   if (!document.querySelector('meta[name="viewport"]')) {
