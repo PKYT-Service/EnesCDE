@@ -1,5 +1,5 @@
 async function submitForm(event) {
-    event.preventDefault();
+    event.preventDefault(); 
 
     // Recup et nettoyage
     const fields = {
