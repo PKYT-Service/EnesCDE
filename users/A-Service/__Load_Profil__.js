@@ -79,10 +79,15 @@ function updateHtmlElements(data) {
         console.log(`! ❇️ | 🧍 account internal loader | Section: ${section}, Field: ${field}`);
         console.log(`! ❇️ | 🧍 account internal loader | Valeur à mettre à jour: ${data[section] && data[section][field]}`);
 
-        if (data[section] && data[section][field] !== undefined) {
-            // Met à jour l'élément avec la valeur correspondante
-            element.innerHTML = data[section][field];
+       if (data[section] && data[section][field] !== undefined) {
+            let value = data[section][field];
+            if (element.tagName.toLowerCase() === "img") {
+                element.src = value;
+            } else {
+                element.innerHTML = value;
+            }
         }
+
     });
 }
 
