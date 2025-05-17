@@ -970,3 +970,118 @@ text = text.replace(
     window.addEventListener("hashchange", () => {
       openFileFromHash();
     });
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const folderList = document.getElementById('folder-list');
+    const fileListSection = document.getElementById('file-list-section');
+    const fileViewSection = document.getElementById('file-view-section');
+    const ecdeMenu = document.getElementById('ecde');
+
+    let isViewingFiles = true; // État pour savoir si on affiche les fichiers ou les dossiers
+
+    function adaptLayoutForMobile() {
+        if (window.innerWidth < 768) {
+            // Styles pour la liste des dossiers au-dessus des fichiers
+            folderList.classList.remove('w-64', 'border-r', 'flex', 'flex-col');
+            folderList.classList.add('fixed', 'top-[4rem]', 'left-0', 'w-full', 'h-auto', 'bg-white', 'border-b', 'z-20', 'overflow-y-auto');
+            folderList.style.maxHeight = 'calc(100vh - 8rem)'; // Ajuster la hauteur pour laisser de la place en bas
+            folderList.style.display = 'none'; // Cacher initialement
+
+            // Styles pour la section des fichiers
+            fileListSection.classList.remove('flex-1');
+            fileListSection.style.marginTop = '0';
+
+            // Créer le conteneur pour les boutons de switch
+            const switchButtonsContainer = document.createElement('div');
+            switchButtonsContainer.classList.add('fixed', 'bottom-0', 'left-0', 'w-full', 'bg-gray-100', 'border-t', 'z-30', 'flex', 'justify-around', 'p-2');
+
+            // Créer le bouton "Dossiers"
+            const showFoldersButton = document.createElement('button');
+            showFoldersButton.innerHTML = '<i class="fas fa-folder-open fa-lg"></i><span class="block text-xs">Dossiers</span>';
+            showFoldersButton.classList.add('focus:outline-none');
+            showFoldersButton.addEventListener('click', () => {
+                isViewingFiles = false;
+                folderList.style.display = 'block';
+                fileListSection.style.display = 'none';
+                switchButtonsContainer.style.display = 'flex'; // S'assurer que les boutons restent visibles
+            });
+
+            // Créer le bouton "Fichiers"
+            const showFilesButton = document.createElement('button');
+            showFilesButton.innerHTML = '<i class="fas fa-file fa-lg"></i><span class="block text-xs">Fichiers</span>';
+            showFilesButton.classList.add('focus:outline-none');
+            showFilesButton.addEventListener('click', () => {
+                isViewingFiles = true;
+                folderList.style.display = 'none';
+                fileListSection.style.display = 'block';
+                switchButtonsContainer.style.display = 'flex'; // S'assurer que les boutons restent visibles
+            });
+
+            switchButtonsContainer.appendChild(showFoldersButton);
+            switchButtonsContainer.appendChild(showFilesButton);
+
+            // Ajouter le conteneur des boutons au body
+            document.body.appendChild(switchButtonsContainer);
+
+            // Cacher le menu ECDE sur mobile
+            if (ecdeMenu) {
+                ecdeMenu.style.display = 'none';
+            }
+
+            // Cacher initialement la section des fichiers si on commence par les dossiers (vous pouvez ajuster)
+            if (!isViewingFiles) {
+                fileListSection.style.display = 'none';
+            } else {
+                fileListSection.style.display = 'block';
+            }
+        } else {
+            // Rétablir la mise en page pour les écrans plus grands
+            folderList.classList.add('w-64', 'border-r', 'flex', 'flex-col');
+            folderList.classList.remove('fixed', 'top-[4rem]', 'left-0', 'w-full', 'h-auto', 'bg-white', 'border-b', 'z-20', 'overflow-y-auto');
+            folderList.style.maxHeight = '';
+            folderList.style.display = 'flex';
+            fileListSection.classList.add('flex-1');
+            fileListSection.style.marginTop = '';
+
+            // Supprimer le conteneur des boutons si on revient à une taille d'écran plus grande
+            const switchButtonsContainer = document.querySelector('.fixed.bottom-0');
+            if (switchButtonsContainer) {
+                switchButtonsContainer.remove();
+            }
+
+            if (ecdeMenu) {
+                ecdeMenu.style.display = 'block';
+            }
+            fileListSection.style.display = 'flex';
+        }
+    }
+
+    // Gérer le retour depuis la prévisualisation
+    const btnCloseView = document.getElementById('btn-close-view');
+    if (btnCloseView) {
+        btnCloseView.addEventListener('click', () => {
+            fileViewSection.classList.add('hidden');
+            // Rétablir l'affichage des fichiers après la fermeture de la prévisualisation
+            if (window.innerWidth < 768 && isViewingFiles) {
+                fileListSection.style.display = 'block';
+            } else if (window.innerWidth >= 768) {
+                fileListSection.style.display = 'flex';
+            }
+        });
+    }
+
+    // Appeler la fonction au chargement et au redimensionnement
+    adaptLayoutForMobile();
+    window.addEventListener('resize', adaptLayoutForMobile);
+});
