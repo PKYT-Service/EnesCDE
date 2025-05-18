@@ -1,13 +1,13 @@
 
 // UTF-8 compatibility is ensured by <meta charset="UTF-8"> and proper encoding/decoding in JS
 
-    let BASE_PATH = null;
+    //let BASE_PATH = null;
 
     
     // ECDE Config
 let drive = localStorage.getItem("repo/"); // exemple: "mon-drive"
 
-// let BASE_PATH = "";
+let BASE_PATH = "";
 
 if (!drive || drive.trim() === "") {
   console.warn("Aucun drive specifie, utilisation du dossier racine.");
