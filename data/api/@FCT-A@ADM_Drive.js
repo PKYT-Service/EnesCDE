@@ -5,7 +5,7 @@
 
     
     // ECDE Config
-let drive = localStorage.getItem("repo_drive"); // exemple: "mon-drive"
+let drive = localStorage.getItem("repo/"); // exemple: "mon-drive"
 
 let BASE_PATH = "";
 
