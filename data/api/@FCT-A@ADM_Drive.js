@@ -13,7 +13,7 @@ if (!drive || drive.trim() === "") {
   console.warn("Aucun drive specifie, utilisation du dossier racine.");
   BASE_PATH = "NEW*DRIVE/"; // dossier racine par defaut
 } else {
-  BASE_PATH = `NEW*DRIVE/${drive}`;
+  BASE_PATH = `NEW*DRIVE/${drive}/`;
 }
 
 console.log(BASE_PATH);
