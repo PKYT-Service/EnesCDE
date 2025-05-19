@@ -553,4 +553,598 @@ console.log(BASE_PATH);
           continue;
         }
 
-     
+        let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
+        if (olMatch) {
+          const content = inlineReplacements(olMatch[2].trim());
+          if (!inList) {
+            inList = true;
+            listType = "ol";
+            listBuffer.push(content);
+          } else if (listType === "ol") {
+            listBuffer.push(content);
+          } else {
+            flushList();
+            inList = true;
+            listType = "ol";
+            listBuffer.push(content);
+          }
+          if (i + 1 >= lines.length || !/^\s*\d+\.\s+/.test(lines[i + 1])) {
+            flushList();
+          }
+          continue;
+        }
+
+        flushList();
+
+        if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
+          html += `<hr class="my-6 border-gray-300">`;
+          continue;
+        }
+
+        if (/^\$\$/.test(line)) {
+          flushList();
+          let mathBlock = [];
+          if (/^\$\$(.*)\$\$$/.test(line)) {
+            const content = line.replace(/^\$\$(.*)\$\$$/, "$1");
+            html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(
+              content
+            )}</div>`;
+            continue;
+          }
+          i++;
+          while (i < lines.length && !/^\$\$/.test(lines[i])) {
+            mathBlock.push(lines[i]);
+            i++;
+          }
+          const content = mathBlock.join("\n");
+          html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(
+            content
+          )}</div>`;
+          continue;
+        }
+
+        if (/^\s*$/.test(line)) {
+          html += `<br>`;
+          continue;
+        }
+
+        const inline = inlineReplacements(line.trim());
+        html += `<p class="mb-2 leading-relaxed text-gray-800">${inline}</p>`;
+      }
+
+      return html;
+    }
+
+    function renderMarkdown(md) {
+      if (fileRenderedContent) fileRenderedContent.innerHTML = customMarkdownRender(md);
+    }
+
+    // Open folder (push current folder to history)
+    async function openFolder(folder) {
+      if (currentFolder !== null && currentFolder !== folder) {
+        historyStack.push(currentFolder);
+      }
+      currentFolder = folder;
+      if (currentFolderName) currentFolderName.textContent = folder === null ? "Non trier" : folder;
+      if (btnBackFolder) btnBackFolder.disabled = historyStack.length === 0;
+
+      if (btnCreateFile) {
+        btnCreateFile.disabled = !isEditingAllowed() || folder === null;
+      }
+      if (btnCreateFolder) {
+        btnCreateFolder.disabled = !isEditingAllowed();
+      }
+      if (btnImport) {
+        btnImport.disabled = !isEditingAllowed();
+      }
+
+      if (fileViewSection) fileViewSection.classList.add("hidden");
+      currentFile = null;
+      if (fileContent) fileContent.value = "";
+      if (btnSave) btnSave.disabled = true;
+      isEditing = false;
+
+      if (folder === null) {
+        await loadRoot();
+      } else {
+        if (!filesByFolder[folder] || !foldersByFolder[folder]) {
+          try {
+            const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
+            filesByFolder[folder] = folderContent.filter(
+              (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+            );
+            foldersByFolder[folder] = folderContent.filter((item) => item.type === "dir").map((d) => d.name);
+          } catch (e) {
+            alert("Erreur lors du chargement du dossier : " + e.message);
+            return;
+          }
+        }
+      }
+      renderFoldersInside(folder);
+      renderFiles(folder);
+      updateHash("", "");
+    }
+
+    // Back folder
+    if (btnBackFolder) {
+      btnBackFolder.addEventListener("click", () => {
+        if (historyStack.length > 0) {
+          const previousFolder = historyStack.pop();
+          openFolder(previousFolder);
+        }
+      });
+    }
+
+    // Open file: fetch content via GitHub API and show viewer (rendered)
+    async function openFile(folder, file) {
+      try {
+        let path;
+        if (folder === null) {
+          path = `${BASE_PATH}/${file.name}`;
+        } else {
+          path = `${BASE_PATH}/${folder}/${file.name}`;
+        }
+        if (!TOKEN) throw new Error("Token GitHub non chargé");
+        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(
+          path
+        )}?ref=${BRANCH}`;
+        const res = await fetch(url, {
+          headers: {
+            Authorization: `token ${TOKEN}`,
+            Accept: "application/vnd.github.v3+json",
+          },
+        });
+        if (!res.ok) throw new Error("Impossible de charger le fichier");
+        const json = await res.json();
+        if (!json.content) throw new Error("Contenu du fichier introuvable");
+        const decodedContent = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
+        currentFile = { folder, file };
+        if (fileViewTitle) fileViewTitle.textContent = file.name;
+        if (fileContent) fileContent.value = decodedContent;
+        renderMarkdown(decodedContent);
+        if (btnSave) btnSave.disabled = true;
+        isEditing = false;
+        toggleViewMode(false);
+        if (fileViewSection) fileViewSection.classList.remove("hidden");
+        if (fileRenderedContent) fileRenderedContent.focus();
+        updateHash(folder === null ? "Non trier" : folder, file.name);
+      } catch (e) {
+        alert("Erreur lors de l'ouverture du fichier : " + e.message);
+      }
+    }
+
+    // Update URL hash for sharing
+    function updateHash(folder, filename) {
+      if (!folder || !filename) {
+        history.replaceState(null, "", location.pathname + location.search);
+        return;
+      }
+      const safeFolder = encodeURIComponent(folder);
+      const safeFile = encodeURIComponent(filename);
+      history.replaceState(null, "", `#${safeFolder}-${safeFile}`);
+    }
+
+    // Parse URL hash to open file if present
+    async function openFileFromHash() {
+      if (!location.hash) return;
+      const hash = location.hash.substring(1);
+      const sepIndex = hash.indexOf("-");
+      if (sepIndex === -1) return;
+      const folder = decodeURIComponent(hash.substring(0, sepIndex));
+      const filename = decodeURIComponent(hash.substring(sepIndex + 1));
+      let folderKey = folder === "Non trier" ? null : folder;
+      if (folderKey !== null && !folders.includes(folderKey.split("/")[0])) return;
+      const files = filesByFolder[folderKey === null ? "Non trier" : folderKey] || [];
+      const file = files.find((f) => f.name === filename);
+      if (!file) return;
+      await openFolder(folderKey);
+      openFile(folderKey, file);
+    }
+
+    // Toggle between viewer and editor mode
+    function toggleViewMode(editMode) {
+      if (!isEditingAllowed()) return;
+      isEditing = editMode;
+      if (editMode) {
+        if (fileContent) fileContent.classList.remove("hidden");
+        if (fileRenderedContent) fileRenderedContent.classList.add("hidden");
+        if (btnSave) btnSave.classList.remove("hidden");
+        if (btnToggleView) btnToggleView.innerHTML = '<i class="fas fa-eye"></i>';
+        if (fileContent) fileContent.focus();
+      } else {
+        if (fileContent) fileContent.classList.add("hidden");
+        if (fileRenderedContent) fileRenderedContent.classList.remove("hidden");
+        if (btnSave) btnSave.classList.add("hidden");
+        if (btnToggleView) btnToggleView.innerHTML = '<i class="fas fa-edit"></i>';
+        if (fileRenderedContent) fileRenderedContent.focus();
+      }
+    }
+
+    if (btnToggleView) {
+      btnToggleView.addEventListener("click", () => {
+        if (!currentFile) return;
+        if (!isEditingAllowed()) {
+          alert("Modification non autorisée : accès en lecture seule.");
+          return;
+        }
+        if (isEditing) {
+          renderMarkdown(fileContent.value);
+          toggleViewMode(false);
+          if (btnSave) btnSave.disabled = true;
+        } else {
+          toggleViewMode(true);
+        }
+      });
+    }
+
+    if (fileContent) {
+      fileContent.addEventListener("input", () => {
+        if (!currentFile) return;
+        if (!isEditingAllowed()) {
+          alert("Modification non autorisée : accès en lecture seule.");
+          return;
+        }
+        if (btnSave) btnSave.disabled = false;
+      });
+    }
+
+    if (btnSave) {
+      btnSave.addEventListener("click", async () => {
+        if (!currentFile) return;
+        if (!isEditingAllowed()) {
+          alert("Modification non autorisée : accès en lecture seule.");
+          return;
+        }
+        btnSave.disabled = true;
+        const { folder, file } = currentFile;
+        try {
+          let path;
+          if (folder === null) {
+            path = `${BASE_PATH}/${file.name}`;
+          } else {
+            path = `${BASE_PATH}/${folder}/${file.name}`;
+          }
+          const metaRes = await fetch(
+            `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
+            {
+              headers: {
+                Authorization: `token ${TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+              },
+            }
+          );
+          if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
+          const meta = await metaRes.json();
+
+          const contentEncoded = btoa(unescape(encodeURIComponent(fileContent.value)));
+          const commitMessage = `Modification du fichier ${file.name} via Explorateur MD`;
+
+          const putRes = await fetch(
+            `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `token ${TOKEN}`,
+                Accept: "application/vnd.github.v3+json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message: commitMessage,
+                content: contentEncoded,
+                sha: meta.sha,
+                branch: BRANCH,
+              }),
+            }
+          );
+          if (!putRes.ok) {
+            const err = await putRes.json();
+            throw new Error(err.message || "Erreur lors de la sauvegarde");
+          }
+          alert("Fichier sauvegardé avec succès !");
+          btnSave.disabled = true;
+          await refreshFolderFiles(folder);
+          renderMarkdown(fileContent.value);
+          toggleViewMode(false);
+        } catch (e) {
+          alert("Erreur lors de la sauvegarde : " + e.message);
+          btnSave.disabled = false;
+        }
+      });
+    }
+
+    async function refreshFolderFiles(folder) {
+      try {
+        if (folder === null) {
+          const rootContent = await githubApi(BASE_PATH);
+          filesByFolder["Non trier"] = rootContent.filter(
+            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+          );
+        } else {
+          const folderContent = await githubApi(`${BASE_PATH}/${folder}`);
+          filesByFolder[folder] = folderContent.filter(
+            (item) => item.type === "file" && item.name.toLowerCase().endsWith(".md")
+          );
+        }
+        renderFiles(folder);
+      } catch (e) {
+        console.warn("Erreur lors de la mise à jour des fichiers du dossier", folder, e);
+      }
+    }
+
+    if (btnCloseView) {
+      btnCloseView.addEventListener("click", () => {
+        if (fileViewSection) fileViewSection.classList.add("hidden");
+        currentFile = null;
+        if (fileContent) fileContent.value = "";
+        if (btnSave) btnSave.disabled = true;
+        isEditing = false;
+        updateHash("", "");
+      });
+    }
+
+    if (btnShare) {
+      btnShare.addEventListener("click", () => {
+        if (!currentFile) return;
+        const url = location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            alert("URL de partage copiée dans le presse-papiers !");
+          })
+          .catch(() => {
+            alert("Impossible de copier l'URL dans le presse-papiers.");
+          });
+      });
+    }
+
+    if (btnImport && fileInput) {
+      btnImport.addEventListener("click", () => {
+        if (!isEditingAllowed()) {
+          alert("Import non autorisé : accès en lecture seule.");
+          return;
+        }
+        fileInput.value = "";
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", async (e) => {
+        if (!isEditingAllowed()) {
+          alert("Import non autorisé : accès en lecture seule.");
+          return;
+        }
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        const mdFiles = files.filter((f) => f.name.toLowerCase().endsWith(".md"));
+        if (mdFiles.length === 0) {
+          alert("Veuillez sélectionner uniquement des fichiers Markdown (.md).");
+          return;
+        }
+
+        for (const file of mdFiles) {
+          try {
+            const content = await file.text();
+            await createFile(currentFolder, file.name);
+            await saveFileContent(currentFolder, file.name, content);
+          } catch (err) {
+            alert(`Erreur lors de l'import du fichier ${file.name} : ${err.message}`);
+          }
+        }
+        alert("Import terminé !");
+        await reloadCurrentFolder();
+      });
+    }
+
+    async function saveFileContent(folder, filename, content) {
+      if (!isEditingAllowed()) {
+        throw new Error("Modification non autorisée : accès en lecture seule.");
+      }
+      try {
+        let path;
+        if (folder === null) {
+          path = `${BASE_PATH}/${filename}`;
+        } else {
+          path = `${BASE_PATH}/${folder}/${filename}`;
+        }
+        const metaRes = await fetch(
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`,
+          {
+            headers: {
+              Authorization: `token ${TOKEN}`,
+              Accept: "application/vnd.github.v3+json",
+            },
+          }
+        );
+        if (!metaRes.ok) throw new Error("Impossible de récupérer les métadonnées du fichier");
+        const meta = await metaRes.json();
+
+        const contentEncoded = btoa(unescape(encodeURIComponent(content)));
+        const commitMessage = `Mise à jour du fichier ${filename} via Explorateur MD`;
+
+        const putRes = await fetch(
+          `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `token ${TOKEN}`,
+              Accept: "application/vnd.github.v3+json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: commitMessage,
+              content: contentEncoded,
+              sha: meta.sha,
+              branch: BRANCH,
+            }),
+          }
+        );
+        if (!putRes.ok) {
+          const err = await putRes.json();
+          throw new Error(err.message || "Erreur lors de la sauvegarde");
+        }
+      } catch (e) {
+        throw e;
+      }
+    }
+
+    if (btnCreateFolder) {
+      btnCreateFolder.addEventListener("click", async () => {
+        if (!isEditingAllowed()) {
+          alert("Création de dossier non autorisée : accès en lecture seule.");
+          return;
+        }
+        const folderName = prompt(
+          "Nom du nouveau dossier (sans espaces ni caractères spéciaux) :"
+        );
+        if (!folderName) return;
+        if (!/^[a-zA-Z0-9-_]+$/.test(folderName)) {
+          alert(
+            "Nom de dossier invalide. Utilisez uniquement lettres, chiffres, tirets et underscores."
+          );
+          return;
+        }
+        await createFolder(folderName);
+      });
+    }
+
+    if (btnCreateFile) {
+      btnCreateFile.addEventListener("click", async () => {
+        if (!isEditingAllowed()) {
+          alert("Création de fichier non autorisée : accès en lecture seule.");
+          return;
+        }
+        if (currentFolder === null) {
+          alert("Veuillez sélectionner un dossier pour créer un fichier.");
+          return;
+        }
+        const filename = prompt("Nom du nouveau fichier Markdown (avec extension .md) :");
+        if (!filename) return;
+        if (!filename.toLowerCase().endsWith(".md")) {
+          alert("Le fichier doit avoir une extension .md");
+          return;
+        }
+        await createFile(currentFolder, filename);
+      });
+    }
+
+    // On load
+    window.addEventListener("load", async () => {
+      await loadToken();
+      if (!TOKEN) return;
+      await loadRoot();
+      await openFileFromHash();
+    });
+
+    // Listen hash change to open file
+    window.addEventListener("hashchange", () => {
+      openFileFromHash();
+    });
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const folderList = document.getElementById('folder-list');
+    const fileListSection = document.getElementById('file-list-section');
+    const fileViewSection = document.getElementById('file-view-section');
+    const ecdeMenu = document.getElementById('ecde');
+
+    let isViewingFiles = true; // État pour savoir si on affiche les fichiers ou les dossiers
+
+    function adaptLayoutForMobile() {
+        if (window.innerWidth < 768) {
+            // Styles pour la liste des dossiers au-dessus des fichiers
+            folderList.classList.remove('w-64', 'border-r', 'flex', 'flex-col');
+            folderList.classList.add('fixed', 'top-[4rem]', 'left-0', 'w-full', 'h-auto', 'bg-white', 'border-b', 'z-20', 'overflow-y-auto');
+            folderList.style.maxHeight = 'calc(100vh - 8rem)'; // Ajuster la hauteur pour laisser de la place en bas
+            folderList.style.display = 'none'; // Cacher initialement
+
+            // Styles pour la section des fichiers
+            fileListSection.classList.remove('flex-1');
+            fileListSection.style.marginTop = '0';
+
+            // Créer le conteneur pour les boutons de switch
+            const switchButtonsContainer = document.createElement('div');
+            switchButtonsContainer.classList.add('fixed', 'bottom-0', 'left-0', 'w-full', 'bg-gray-100', 'border-t', 'z-30', 'flex', 'justify-around', 'p-2');
+
+            // Créer le bouton "Dossiers"
+            const showFoldersButton = document.createElement('button');
+            showFoldersButton.innerHTML = '<i class="fas fa-folder-open fa-lg"></i><span class="block text-xs">Dossiers</span>';
+            showFoldersButton.classList.add('focus:outline-none');
+            showFoldersButton.addEventListener('click', () => {
+                isViewingFiles = false;
+                folderList.style.display = 'block';
+                fileListSection.style.display = 'none';
+                switchButtonsContainer.style.display = 'flex'; // S'assurer que les boutons restent visibles
+            });
+
+            // Créer le bouton "Fichiers"
+            const showFilesButton = document.createElement('button');
+            showFilesButton.innerHTML = '<i class="fas fa-file fa-lg"></i><span class="block text-xs">Fichiers</span>';
+            showFilesButton.classList.add('focus:outline-none');
+            showFilesButton.addEventListener('click', () => {
+                isViewingFiles = true;
+                folderList.style.display = 'none';
+                fileListSection.style.display = 'block';
+                switchButtonsContainer.style.display = 'flex'; // S'assurer que les boutons restent visibles
+            });
+
+            switchButtonsContainer.appendChild(showFoldersButton);
+            switchButtonsContainer.appendChild(showFilesButton);
+
+            // Ajouter le conteneur des boutons au body
+            document.body.appendChild(switchButtonsContainer);
+
+            // Cacher le menu ECDE sur mobile
+            if (ecdeMenu) {
+                ecdeMenu.style.display = 'none';
+            }
+
+            // Cacher initialement la section des fichiers si on commence par les dossiers (vous pouvez ajuster)
+            if (!isViewingFiles) {
+                fileListSection.style.display = 'none';
+            } else {
+                fileListSection.style.display = 'block';
+            }
+        } else {
+            // Rétablir la mise en page pour les écrans plus grands
+            folderList.classList.add('w-64', 'border-r', 'flex', 'flex-col');
+            folderList.classList.remove('fixed', 'top-[4rem]', 'left-0', 'w-full', 'h-auto', 'bg-white', 'border-b', 'z-20', 'overflow-y-auto');
+            folderList.style.maxHeight = '';
+            folderList.style.display = 'flex';
+            fileListSection.classList.add('flex-1');
+            fileListSection.style.marginTop = '';
+
+            // Supprimer le conteneur des boutons si on revient à une taille d'écran plus grande
+            const switchButtonsContainer = document.querySelector('.fixed.bottom-0');
+            if (switchButtonsContainer) {
+                switchButtonsContainer.remove();
+            }
+
+            if (ecdeMenu) {
+                ecdeMenu.style.display = 'block';
+            }
+            fileListSection.style.display = 'flex';
+        }
+    }
+
+    // Gérer le retour depuis la prévisualisation
+    const btnCloseView = document.getElementById('btn-close-view');
+    if (btnCloseView) {
+        btnCloseView.addEventListener('click', () => {
+            fileViewSection.classList.add('hidden');
+            // Rétablir l'affichage des fichiers après la fermeture de la prévisualisation
+            if (window.innerWidth < 768 && isViewingFiles) {
+                fileListSection.style.display = 'block';
+            } else if (window.innerWidth >= 768) {
+                fileListSection.style.display = 'flex';
+            }
+        });
+    }
+
+    // Appeler la fonction au chargement et au redimensionnement
+    adaptLayoutForMobile();
+    window.addEventListener('resize', adaptLayoutForMobile);
+});
+
