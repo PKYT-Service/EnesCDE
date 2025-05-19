@@ -1051,8 +1051,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const folderList = document.getElementById('folder-list');
     const fileListSection = document.getElementById('file-list-section');
     const fileViewSection = document.getElementById('file-view-section');
-    const ecdeMenu = document.getElementById('ecde');
-
+    const ecdeMenu = document.getElementById('ecde_menu');
+    const menu = document.getElementById('menu');
+    const ecde = document.getElementById('ecde');
+    
     let isViewingFiles = true; // État pour savoir si on affiche les fichiers ou les dossiers
 
     function adaptLayoutForMobile() {
