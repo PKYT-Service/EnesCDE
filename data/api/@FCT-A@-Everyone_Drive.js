@@ -1103,6 +1103,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (ecdeMenu) {
                 ecdeMenu.style.display = 'none';
             }
+            if (menu) {
+                menu.style.display = 'none';
+            }
+            if (ecde) {
+                ecde.style.display = 'none';
+            }
 
             // Cacher initialement la section des fichiers si on commence par les dossiers (vous pouvez ajuster)
             if (!isViewingFiles) {
