@@ -30,103 +30,204 @@
 
 
     
-                
-
-
-
+            
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    function confirmRepo() {
-      const input = document.getElementById('repo_input').value.trim();
-      const radios = document.getElementsByName('repo_select');
-      let selectedRepo = input;
 
-      if (!selectedRepo) {
-        for (let radio of radios) {
-          if (radio.ch
-              ecked) {
-            selectedRepo = radio.value;
-            break;
-          }
-        }
-      }
-
-      if (!selectedRepo) {
-        alert("Tu dois entrer ou selectionner un nom de repo.");
-        return;
-      }
-
-      localStorage.setItem("repo", selectedRepo);
-      window.location.href = "@@ADM@@-Drive.html";
-    }
-  </script>
 
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
 
   <div class="w-full max-w-xl text-center">
 <center>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    
-<div class="bg-gray-100 p-4 rounded-lg mb-8 dark:bg-gray-900">
-  <div class="relative bg-inherit dark:bg-inherit">
-    <input type="text" id="repo_input" name="repo_input"
-           class="peer bg-white h-10 w-72 rounded-lg text-gray-900 placeholder-transparent ring-1 px-2 ring-gray-300 focus:ring-sky-600 focus:outline-none dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:focus:ring-sky-500"
-           placeholder="Nom du service ou repo"/>
-    <label for="repo_input"
-           class="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all dark:bg-gray-900 dark:text-gray-400 dark:peer-placeholder-shown:text-gray-400 dark:peer-focus:text-sky-500">
-      Nom du service ou repo
-    </label>
+<script>
+  function confirmRepo() {
+    const input = document.getElementById('repo_input').value.trim();
+    const radios = document.getElementsByName('repo_select');
+    let selectedRepo = input;
+
+    if (!selectedRepo) {
+      for (let radio of radios) {
+        if (radio.checked) {
+          selectedRepo = radio.value;
+          break;
+        }
+      }
+    }
+
+    if (!selectedRepo) {
+      alert("Tu dois entrer ou selectionner un nom de repo.");
+      return;
+    }
+
+    localStorage.setItem("repo", selectedRepo);
+    window.location.href = "@@ADM@@-Drive.html";
+  }
+
+  function applyStyles() {
+    const repoContainer = document.getElementById('repoContainer');
+    const inputWrapper = document.getElementById('inputWrapper');
+    const inputInnerWrapper = document.getElementById('inputInnerWrapper');
+    const repoInput = document.getElementById('repo_input');
+    const inputLabel = document.querySelector('#inputInnerWrapper label');
+    const separatorWrapper = document.getElementById('separatorWrapper');
+    const separatorLine = document.getElementById('separatorLine');
+    const separatorText = document.getElementById('separatorText');
+    const radioGroupWrapper = document.getElementById('radioGroupWrapper');
+    const radioGroupTitle = document.getElementById('radioGroupTitle');
+    const radioButtonsContainer = document.getElementById('radioButtonsContainer');
+    const repoOptions = document.querySelectorAll('.repoOption');
+    const repoRadios = document.querySelectorAll('.repoRadio');
+    const repoLabels = document.querySelectorAll('.repoLabel');
+    const confirmButton = document.getElementById('confirmButton');
+
+    const isDarkMode = localStorage.getItem('darkMode') === 'enabled' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    const baseStyles = {
+      container: ['flex', 'flex-col', 'items-center', 'justify-center', 'p-6'],
+      inputWrapper: ['w-full', 'max-w-md'],
+      inputInnerWrapper: ['relative', 'w-full'],
+      input: ['peer', 'w-full', 'h-12', 'rounded-full', 'focus:outline-none', 'transition-all', 'px-4'],
+      inputLabel: ['absolute', 'cursor-text', 'left-4', '-top-3', 'text-sm', 'transition-all'],
+      separatorWrapper: ['relative', 'my-6', 'w-full', 'max-w-md'],
+      separatorLine: ['border-gray-300', 'opacity-50'],
+      separatorText: ['absolute', 'left-1/2', '-translate-x-1/2', 'text-sm', 'px-3'],
+      radioGroupWrapper: ['w-full', 'max-w-md', 'rounded-lg', 'p-6', 'shadow-md'], // Légèrement moins arrondi
+      radioGroupTitle: ['text-xl', 'font-semibold', 'mb-4', 'text-center', 'text-blue-600'], // Titre coloré
+      radioButtonsContainer: ['space-y-2'],
+      repoOption: ['flex', 'items-center', 'rounded-full', 'px-4', 'py-3', 'cursor-pointer'],
+      repoRadio: ['mr-3', 'focus:ring-blue-500', 'text-blue-500'], // Radio coloré
+      repoLabel: ['w-full', 'text-center', 'text-gray-700'],
+      confirmButton: ['mt-8', 'w-full', 'max-w-md', 'px-6', 'py-3', 'rounded-full', 'font-semibold', 'text-white', 'shadow-md', 'focus:outline-none'],
+    };
+
+    const lightModeStyles = {
+      container: ['bg-blue-50'], // Fond clair avec une touche de bleu
+      input: ['bg-white', 'text-gray-900', 'ring-1', 'ring-blue-200', 'focus:ring-blue-500'], // Bordure bleue claire
+      inputLabel: ['bg-blue-50', 'text-blue-500', 'peer-placeholder-shown:text-base', 'peer-placeholder-shown:text-gray-500', 'peer-placeholder-shown:top-3', 'peer-focus:-top-3', 'peer-focus:text-blue-600'], // Label bleu
+      separatorText: ['bg-blue-50', 'text-gray-500'],
+      radioGroupWrapper: ['bg-white', 'border', 'border-blue-200'], // Bordure bleue claire
+      repoOption: ['bg-white', 'text-gray-700', 'hover:bg-blue-100'], // Survol bleu clair
+      confirmButton: ['bg-blue-500', 'hover:bg-blue-600'], // Bouton bleu
+    };
+
+    const darkModeStyles = {
+      container: ['dark:bg-gray-800'], // Fond sombre
+      input: ['dark:bg-gray-700', 'dark:text-gray-100', 'dark:ring-blue-700', 'dark:focus:ring-blue-500'], // Bordure bleue sombre
+      inputLabel: ['dark:bg-gray-800', 'dark:text-blue-400', 'dark:peer-placeholder-shown:text-gray-400', 'dark:peer-focus:text-blue-500'], // Label bleu en sombre
+      separatorLine: ['dark:border-gray-600'],
+      separatorText: ['dark:bg-gray-800', 'dark:text-gray-400'],
+      radioGroupWrapper: ['dark:bg-gray-700', 'dark:border-blue-600'], // Bordure bleue sombre
+      repoOption: ['dark:bg-gray-600', 'dark:text-gray-300', 'dark:hover:bg-blue-700'], // Survol bleu sombre
+      repoRadio: ['dark:bg-gray-500', 'dark:border-blue-500', 'dark:text-blue-500'], // Radio bleu en sombre
+      repoLabel: ['dark:text-gray-300'],
+      confirmButton: ['dark:bg-blue-600', 'dark:hover:bg-blue-700'], // Bouton bleu en sombre
+    };
+
+    // Apply base styles
+    Object.entries(baseStyles).forEach(([element, classes]) => {
+      const el = document.getElementById(element);
+      if (el) el.classList.add(...classes);
+      if (element === 'inputLabel') inputLabel.classList.add(...classes);
+    });
+
+    repoOptions.forEach(option => option.classList.add(...baseStyles.repoOption));
+    repoRadios.forEach(radio => radio.classList.add(...baseStyles.repoRadio));
+    repoLabels.forEach(label => label.classList.add(...baseStyles.repoLabel));
+
+    // Apply light or dark mode specific styles
+    const themeStyles = isDarkMode ? darkModeStyles : lightModeStyles;
+    Object.entries(themeStyles).forEach(([element, classes]) => {
+      const el = document.getElementById(element);
+      if (el) el.classList.add(...classes);
+      if (element === 'inputLabel') inputLabel.classList.add(...classes);
+    });
+
+    repoOptions.forEach(option => option.classList.add(...themeStyles.repoOption));
+    repoRadios.forEach(radio => radio.classList.add(...themeStyles.repoRadio));
+    repoLabels.forEach(label => {
+      const themeLabelClass = isDarkMode ? darkModeStyles.repoLabel : lightModeStyles.repoLabel;
+      label.classList.add(...themeLabelClass);
+    });
+    confirmButton.classList.add(...themeStyles.confirmButton);
+  }
+
+  // Apply styles when the page loads
+  document.addEventListener('DOMContentLoaded', applyStyles);
+
+  // You might want to add a way to toggle dark mode and re-apply styles
+  // Example:
+  // function toggleDarkMode() {
+  //   localStorage.setItem('darkMode', localStorage.getItem('darkMode') === 'enabled' ? 'disabled' : 'enabled');
+  //   applyStyles();
+  // }
+</script>
+
+<div id="repoContainer" class="p-6">
+  <div id="inputWrapper" class="mb-8">
+    <div id="inputInnerWrapper" class="relative">
+      <input type="text" id="repo_input" name="repo_input"
+             class="peer h-12 w-72 placeholder-transparent focus:outline-none transition-all"
+             placeholder="Nom du service ou repo"/>
+      <label for="repo_input"
+             class="absolute cursor-text left-0 -top-3 text-sm transition-all">
+        Nom du service ou repo
+      </label>
+    </div>
   </div>
+
+  <div id="separatorWrapper" class="my-6">
+    <hr id="separatorLine">
+    <span id="separatorText" class="absolute left-1/2 -translate-x-1/2 text-sm">ou sélectionner</span>
+  </div>
+
+  <div id="radioGroupWrapper" class="p-6">
+    <h4 id="radioGroupTitle" class="text-xl font-semibold mb-4 text-center">Sélectionner un repo</h4>
+    <div id="radioButtonsContainer" class="space-y-2">
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="EnesCDE" class="repoRadio">
+        <span class="repoLabel">Enes CDE</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="Forum" class="repoRadio">
+        <span class="repoLabel">Enes CDE • Forum</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="01122420" class="repoRadio">
+        <span class="repoLabel">od : 01122420</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="TheHorrorFBD" class="repoRadio">
+        <span class="repoLabel">TheHorrorFBD</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="LumberTycoon2" class="repoRadio">
+        <span class="repoLabel">LumberTycoon2</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="Campyskerie" class="repoRadio">
+        <span class="repoLabel">Campyskerie</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="Campyskerie_JST" class="repoRadio">
+        <span class="repoLabel">Campyskerie dedie justice</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="MD_Update" class="repoRadio">
+        <span class="repoLabel">MD Update</span>
+      </label>
+      <label class="repoOption">
+        <input type="radio" name="repo_select" value="drive" class="repoRadio">
+        <span class="repoLabel">Drive</span>
+      </label>
+    </div>
+  </div>
+
+  <button id="confirmButton" onclick="confirmRepo()" class="mt-8 font-semibold text-white rounded-full shadow-md">
+    Confirmer le repo
+  </button>
 </div>
-
-<div class="relative my-6">
-  <hr class="border-gray-300 dark:border-gray-700">
-  <span class="absolute left-1/2 -translate-x-1/2 bg-gray-100 px-3 text-gray-500 text-sm dark:bg-gray-700 dark:text-gray-300">ou selectionner</span>
-</div>
-
-<div class="border border-gray-300 rounded-md p-4 w-full dark:border-gray-500">
-  <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Selectionne un repo</h4>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="EnesCDE" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Enes CDE
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="Forum" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Enes CDE • Forum
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="01122420" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500"> od : 01122420
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="TheHorrorFBD" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">TheHorrorFBD
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="LumberTycoon2" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">LumberTycoon2
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="Campyskerie" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Campyskerie
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="Campyskerie_JST" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Campyskerie dedie justice
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="MD_Update" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">MD Update
-  </label>
-
-  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="drive" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Drive
-  </label>
-</div>
-
-<button onclick="confirmRepo()" class="mt-6 px-6 py-2 bg-sky-500 hover:bg-sky-600 rounded-lg text-white font-semibold dark:bg-sky-600 dark:hover:bg-sky-700">
-  Confirmer le repo
-</button>
+    
     
 </center>
 
