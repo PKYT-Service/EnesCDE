@@ -43,7 +43,8 @@
 
       if (!selectedRepo) {
         for (let radio of radios) {
-          if (radio.checked) {
+          if (radio.ch
+              ecked) {
             selectedRepo = radio.value;
             break;
           }
@@ -64,10 +65,12 @@
 
   <div class="w-full max-w-xl text-center">
 <center>
-<div class="bg-white p-4 rounded-lg mb-8 dark:bg-gray-900">
+
+    
+<div class="bg-gray-100 p-4 rounded-lg mb-8 dark:bg-gray-900">
   <div class="relative bg-inherit dark:bg-inherit">
     <input type="text" id="repo_input" name="repo_input"
-           class="peer bg-transparent h-10 w-72 rounded-lg text-gray-900 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:focus:ring-sky-500"
+           class="peer bg-white h-10 w-72 rounded-lg text-gray-900 placeholder-transparent ring-1 px-2 ring-gray-300 focus:ring-sky-600 focus:outline-none dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:focus:ring-sky-500"
            placeholder="Nom du service ou repo"/>
     <label for="repo_input"
            class="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all dark:bg-gray-900 dark:text-gray-400 dark:peer-placeholder-shown:text-gray-400 dark:peer-focus:text-sky-500">
@@ -77,51 +80,51 @@
 </div>
 
 <div class="relative my-6">
-  <hr class="border-gray-500 dark:border-gray-700">
-  <span class="absolute left-1/2 -translate-x-1/2 bg-gray-900 px-3 text-gray-400 text-sm dark:bg-gray-700 dark:text-gray-300">ou selectionner</span>
+  <hr class="border-gray-300 dark:border-gray-700">
+  <span class="absolute left-1/2 -translate-x-1/2 bg-gray-100 px-3 text-gray-500 text-sm dark:bg-gray-700 dark:text-gray-300">ou selectionner</span>
 </div>
 
-<div class="border border-gray-700 rounded-md p-4 w-full dark:border-gray-500">
-  <h4 class="text-xl font-semibold mb-2 dark:text-gray-100">Selectionne un repo</h4>
+<div class="border border-gray-300 rounded-md p-4 w-full dark:border-gray-500">
+  <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Selectionne un repo</h4>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="EnesCDE" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">Enes CDE
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="EnesCDE" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Enes CDE
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="Forum" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">Enes CDE • Forum
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="Forum" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Enes CDE • Forum
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="01122420" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500"> od : 01122420
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="01122420" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500"> od : 01122420
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="TheHorrorFBD" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">TheHorrorFBD
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="TheHorrorFBD" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">TheHorrorFBD
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="LumberTycoon2" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">LumberTycoon2
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="LumberTycoon2" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">LumberTycoon2
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="Campyskerie" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">Campyskerie
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="Campyskerie" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Campyskerie
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="Campyskerie_JST" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">Campyskerie dedie justice
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="Campyskerie_JST" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Campyskerie dedie justice
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="MD_Update" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">MD Update
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="MD_Update" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">MD Update
   </label>
 
-  <label class="flex bg-gray-800 text-gray-300 rounded-md px-3 py-2 my-2 hover:bg-indigo-500 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
-    <input type="radio" name="repo_select" value="drive" class="mr-2 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500 focus:ring-sky-500">Drive
+  <label class="flex bg-white text-gray-700 rounded-md px-3 py-2 my-2 hover:bg-indigo-100 cursor-pointer dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-600">
+    <input type="radio" name="repo_select" value="drive" class="mr-2 focus:ring-sky-500 dark:bg-gray-600 dark:border-gray-500 dark:text-sky-500">Drive
   </label>
 </div>
 
-<button onclick="confirmRepo()" class="mt-6 px-6 py-2 bg-sky-600 hover:bg-sky-700 rounded-lg text-white font-semibold dark:bg-sky-500 dark:hover:bg-sky-600">
+<button onclick="confirmRepo()" class="mt-6 px-6 py-2 bg-sky-500 hover:bg-sky-600 rounded-lg text-white font-semibold dark:bg-sky-600 dark:hover:bg-sky-700">
   Confirmer le repo
 </button>
     
