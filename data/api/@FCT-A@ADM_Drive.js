@@ -1156,3 +1156,5 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', adaptLayoutForMobile);
 });
 
+import { ECDE_DriveStyle } from "./DriveStyle.js";
+ECDE_DriveStyle();
