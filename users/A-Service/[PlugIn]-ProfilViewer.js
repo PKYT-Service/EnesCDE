@@ -1,71 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const cible = document.querySelector("#ecde_users_profilviewer");
-    if (!cible) return console.error("Element #ecde_users_profilviewer introuvable");
-
-    const compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
-
-    function createAccountButton(label, url, useAccount = false) {
-        const button = document.createElement("button");
-        button.setAttribute("role", "tab");
-        button.setAttribute("type", "button");
-        button.className =
-            "flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400 bg-white dark:bg-gray-700 text-yellow-600 shadow";
-
-        const link = document.createElement("a");
-        link.textContent = label;
-        link.href = "";
-        link.className = "w-full h-full inline-block";
-
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            let finalUrl = url;
-            if (useAccount && compteData) {
-                try {
-                    let compte = JSON.parse(compteData);
-                    let email = encodeURIComponent(compte.email || "inconnu");
-                    let mdp = encodeURIComponent(compte.password || "inconnu");
-                    finalUrl = `${url}?acc=v:4;email:${email};mdp:${mdp};time:true`;
-                } catch (err) {
-                    console.error("Erreur JSON dans la cle 'compte'", err);
-                }
-            } else if (useAccount && !compteData) {
-                return alert("Aucun compte present");
-            }
-
-            window.location.href = finalUrl;
-        });
-
-        button.appendChild(link);
-        return button;
-    }
-
-    // Conteneur principal
-    const container = document.createElement("div");
-    container.className = "flex justify-center mt-4";
-
-    const nav = document.createElement("nav");
-    nav.className =
-        "flex overflow-x-auto items-center p-1 space-x-1 rtl:space-x-reverse text-sm text-gray-600 bg-gray-500/5 rounded-xl dark:bg-gray-500/20";
-
-    // Boutons
-    const consulterBtn = createAccountButton("consulter", "https://enes-cde.vercel.app/users/panel/profil.html", true);
-    consulterBtn.classList.add("dark:bg-yellow-600", "dark:text-white");
-
-    const modifierBtn = createAccountButton("modifier", "https://enes-cde.vercel.app/users/panel/edit_account.html");
-    const supprimerBtn = createAccountButton("supprimer", "https://enes-cde.vercel.app/users/panel/delete_account.html");
-
-    nav.appendChild(consulterBtn);
-    nav.appendChild(modifierBtn);
-    nav.appendChild(supprimerBtn);
-    container.appendChild(nav);
-
-    // Injection dans le bon div
-    cible.appendChild(container);
-});
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ecde_users_profilviewer").innerHTML = `
     <div class="w-full flex items-center justify-center dark:bg-gray-900">
@@ -110,11 +42,76 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 
-
+<br><br>
+<div id="ecde_users_profilbutton"></div>
 
 `;
   });
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
+
+    // Fonction qui crée un bouton (avec un <a> clickable)
+    function createAccountButton(label, url, useAccount = false, isActive = false) {
+        const button = document.createElement("button");
+        button.setAttribute("role", "tab");
+        button.setAttribute("type", "button");
+        button.className =
+            "flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400";
+
+        if (isActive) {
+            button.classList.add("bg-white", "text-yellow-600", "dark:bg-yellow-600", "dark:text-white", "shadow");
+        } else {
+            button.classList.add("bg-white", "dark:bg-gray-700");
+        }
+
+        const link = document.createElement("a");
+        link.textContent = label;
+        link.href = "#";
+        link.className = "w-full h-full inline-block";
+
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            let finalUrl = url;
+            if (useAccount && compteData) {
+                try {
+                    const compte = JSON.parse(compteData);
+                    const email = encodeURIComponent(compte.email || "inconnu");
+                    const mdp = encodeURIComponent(compte.password || "inconnu");
+                    finalUrl = `${url}?acc=v:4;email:${email};mdp:${mdp};time:true`;
+                } catch (err) {
+                    console.error("Erreur JSON dans 'compte'", err);
+                }
+            } else if (useAccount && !compteData) {
+                return alert("Aucun compte present");
+            }
+
+            window.location.href = finalUrl;
+        });
+
+        button.appendChild(link);
+        return button;
+    }
+
+    // On recupere la div cible
+    const targetDiv = document.getElementById("ecde_users_profilbutton");
+    if (!targetDiv) return console.warn("Div 'ecde_users_profilbutton' introuvable");
+
+    // Conteneur nav
+    const nav = document.createElement("nav");
+    nav.className =
+        "flex overflow-x-auto items-center p-1 space-x-1 rtl:space-x-reverse text-sm text-gray-600 bg-gray-500/5 rounded-xl dark:bg-gray-500/20";
+
+    // Ajout des boutons
+    nav.appendChild(createAccountButton("consulter", "https://enes-cde.vercel.app/users/panel/profil.html", true, true));
+    nav.appendChild(createAccountButton("modifier", "https://enes-cde.vercel.app/users/panel/edit_account.html"));
+    nav.appendChild(createAccountButton("supprimer", "https://enes-cde.vercel.app/users/panel/delete_account.html"));
+
+    // Injection dans la div cible
+    targetDiv.appendChild(nav);
+});
 
 
 
