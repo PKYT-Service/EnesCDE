@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.setAttribute("role", "tab");
         button.setAttribute("type", "button");
         button.className =
-            "w-full flex items-center justify-center flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400";
+            "max-w-2xl my-8 w-full flex items-center justify-center flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400";
             
             
         if (isActive) {
