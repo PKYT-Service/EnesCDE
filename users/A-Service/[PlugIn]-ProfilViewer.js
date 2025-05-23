@@ -34,11 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         </path>
                     </svg>
                 </a>
-
+    <div id="ecde_users_profilbutton"></div>
             </div>
         </div>
     </div>
-    <div id="ecde_users_profilbutton"></div>
 </div>
 
 
