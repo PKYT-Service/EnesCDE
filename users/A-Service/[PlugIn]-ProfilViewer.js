@@ -1,4 +1,4 @@
-<script>
+
 // Script a coller une fois le DOM charge (de preference en bas de body ou via DOMContentLoaded)
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('a[id^="url_account:"]').forEach(link => {
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
-</script>
+
 
 
 
