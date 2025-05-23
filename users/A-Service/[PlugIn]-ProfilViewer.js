@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ecde_users_profilviewer").innerHTML = `
-    <div class="w-full flex items-center justify-center dark:bg-gray-900">
+    <div class="w-full flex items-center justify-center">
 
     <!-- Author card -->
     <div
