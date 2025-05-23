@@ -37,8 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             </div>
         </div>
-<div id="ecde_users_profilbutton"></div>
     </div>
+    <div id="ecde_users_profilbutton"></div>
 </div>
 
 
