@@ -1,32 +1,67 @@
-
-// Script a coller une fois le DOM charge (de preference en bas de body ou via DOMContentLoaded)
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('a[id^="url_account:"]').forEach(link => {
-        link.addEventListener("click", function(e) {
-            e.preventDefault(); // empeche la redirection immediate
+    const compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
 
-            let rawUrl = this.id.split("url_account:")[1];
-            let compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
+    // Fonction qui genere un bouton <a> dans un <button> stylé
+    function createAccountButton(label, url, useAccount = false) {
+        const button = document.createElement("button");
+        button.setAttribute("role", "tab");
+        button.setAttribute("type", "button");
+        button.className =
+            "flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400 bg-white dark:bg-gray-700 text-yellow-600 shadow";
 
-            if (compteData) {
+        const link = document.createElement("a");
+        link.textContent = label;
+        link.href = ""; // prevent default jump
+        link.className = "w-full h-full inline-block";
+
+        // Gestion du clic
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            let finalUrl = url;
+            if (useAccount && compteData) {
                 try {
                     let compte = JSON.parse(compteData);
                     let email = encodeURIComponent(compte.email || "inconnu");
                     let mdp = encodeURIComponent(compte.password || "inconnu");
-
-                    let finalUrl = `${rawUrl}?acc=v:4;email:${email};mdp:${mdp};time:true`;
-                    window.location.href = finalUrl;
-
+                    finalUrl = `${url}?acc=v:4;email:${email};mdp:${mdp};time:true`;
                 } catch (err) {
                     console.error("Erreur JSON dans la cle 'compte'", err);
                 }
-            } else {
-                console.warn("Cle 'compte' absente");
+            } else if (useAccount && !compteData) {
+                return alert("Aucun compte present");
             }
-        });
-    });
-});
 
+            window.location.href = finalUrl;
+        });
+
+        button.appendChild(link);
+        return button;
+    }
+
+    // Conteneur principal
+    const container = document.createElement("div");
+    container.className = "flex justify-center mt-4";
+
+    const nav = document.createElement("nav");
+    nav.className =
+        "flex overflow-x-auto items-center p-1 space-x-1 rtl:space-x-reverse text-sm text-gray-600 bg-gray-500/5 rounded-xl dark:bg-gray-500/20";
+
+    // Boutons
+    const consulterBtn = createAccountButton("consulter", "https://enes-cde.vercel.app/users/panel/profil.html", true);
+    consulterBtn.classList.add("dark:bg-yellow-600", "dark:text-white");
+
+    const modifierBtn = createAccountButton("modifier", "https://enes-cde.vercel.app/users/panel/edit_account.html");
+    const supprimerBtn = createAccountButton("supprimer", "https://enes-cde.vercel.app/users/panel/delete_account.html");
+
+    nav.appendChild(consulterBtn);
+    nav.appendChild(modifierBtn);
+    nav.appendChild(supprimerBtn);
+    container.appendChild(nav);
+
+    // Ajout au body
+    document.body.appendChild(container);
+});
 
 
 
@@ -74,27 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 
-<h1 class="text-xl mt-4 text-blue-700 dark:text-blue-300">Profil</h1>
 
-<div class="flex justify-center">
-    <nav
-        class="flex overflow-x-auto items-center p-1 space-x-1 rtl:space-x-reverse text-sm text-gray-600 bg-gray-500/5 rounded-xl dark:bg-gray-500/20">
-        <button role="tab" type="button"
-            class="flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset text-yellow-600 shadow bg-white dark:text-white dark:bg-yellow-600"
-            aria-selected="">
-            <a href="" id="url_account:https://enes-cde.vercel.app/users/panel/profil.html"> consulter </a>
-        </button>
-
-        <button role="tab" type="button"
-            class="flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400">
-            <a href="" id="https://enes-cde.vercel.app/users/panel/edit_account.html"> modifier </a>
-        </button>
-        <button role="tab" type="button"
-            class="flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400">
-            <a href="" id="https://enes-cde.vercel.app/users/panel/delete_account.html"> supprimer </a>
-        </button>
-    </nav>
-</div>
 
 `;
   });
