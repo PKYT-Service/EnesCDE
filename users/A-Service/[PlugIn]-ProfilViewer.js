@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const cible = document.querySelector("#ecde_users_profilviewer");
+    if (!cible) return console.error("Element #ecde_users_profilviewer introuvable");
+
     const compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
 
-    // Fonction qui genere un bouton <a> dans un <button> stylé
     function createAccountButton(label, url, useAccount = false) {
         const button = document.createElement("button");
         button.setAttribute("role", "tab");
@@ -11,10 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const link = document.createElement("a");
         link.textContent = label;
-        link.href = ""; // prevent default jump
+        link.href = "";
         link.className = "w-full h-full inline-block";
 
-        // Gestion du clic
         link.addEventListener("click", (e) => {
             e.preventDefault();
 
@@ -59,8 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
     nav.appendChild(supprimerBtn);
     container.appendChild(nav);
 
-    // Ajout au body
-    document.body.appendChild(container);
+    // Injection dans le bon div
+    cible.appendChild(container);
 });
 
 
