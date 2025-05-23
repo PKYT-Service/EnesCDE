@@ -70,90 +70,93 @@
         </div>
 <script>
 
-    // Fonction pour parser les paramètres de l'URL
-function getQueryParams() {
-    let params = {};
-    location.search.slice(1).split(";").forEach(p => {
-        let [key, val] = p.split("=");
-        params[key] = val;
-    });
-    return params;
-}
+// Fonction principale pour les comptes partagés
+async function fetchComptePartage() {
+    // Etape 1 - Récupération des paramètres de l'URL
+    const params = new URLSearchParams(window.location.search);
+    let brut = params.get("v");
 
-// Fonction principale de chargement du compte partagé
-async function fetchComptePartageData() {
-    const params = getQueryParams();
-    const email = params.email;
-
-    if (!email) {
-        console.log("! ❇️ | 🔗 compte partage | Aucun email fourni dans l'URL.");
+    if (!brut) {
+        console.log("! ❇️ | 📨 partage loader | Paramètre 'v' introuvable dans l'URL.");
         return;
     }
 
-    // Enregistre l'email dans le localStorage
-    localStorage.setItem("compte_partager", email);
+    // Décomposer le format "v=4;t=partage;email=xxx"
+    const splitParams = brut.split(";");
+    let email = null;
 
+    splitParams.forEach(part => {
+        if (part.startsWith("email=")) {
+            email = part.replace("email=", "");
+        }
+    });
+
+    if (!email) {
+        console.log("! ❇️ | 📨 partage loader | Email manquant dans les paramètres.");
+        return;
+    }
+
+    // Etape 2 - Enregistrer dans localStorage
+    localStorage.setItem("compte_partager", JSON.stringify({ email }));
+
+    // Etape 3 - Chercher le fichier GitHub
     try {
-        // Récupération du token GitHub
-        let tokenResponse = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
-        let tokenData = await tokenResponse.json();
-        let githubToken = tokenData.GITHUB_TOKEN;
+        // Récupérer le token GitHub depuis le fichier sécurisé
+        let tokenRes = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+        let tokenJson = await tokenRes.json();
+        let githubToken = tokenJson.GITHUB_TOKEN;
 
         if (!githubToken) {
-            console.log("! ❇️ | 🔗 compte partage | Token GitHub manquant.");
+            console.log("! ❇️ | 📨 partage loader | Token GitHub non disponible.");
             return;
         }
 
-        // Chercher les fichiers dans le dossier v4
-        const repo = "database_EnesCDE";
-        const owner = "PKYT-Service";
-        const folderPath = "compte/v4";
-        const githubApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+        // Préparation GitHub
+        let repo = "database_EnesCDE";
+        let owner = "PKYT-Service";
+        let githubApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/compte/v4`;
 
-        let folderResponse = await fetch(githubApiUrl, {
+        // Liste tous les fichiers du dossier
+        let folderRes = await fetch(githubApiUrl, {
             headers: { Authorization: `token ${githubToken}` }
         });
+        let files = await folderRes.json();
 
-        if (!folderResponse.ok) {
-            console.log(`! ❇️ | 🔗 compte partage | Erreur fetch dossier: ${folderResponse.status}`);
-            return;
-        }
-
-        let files = await folderResponse.json();
-        let targetFile = files.find(file => file.name.startsWith(email + "*-*"));
-
+        // Trouver un fichier qui commence par l'email
+        let targetFile = files.find(file => file.name.startsWith(email));
         if (!targetFile) {
-            console.log("! ❇️ | 🔗 compte partage | Aucun fichier trouvé pour cet email.");
+            console.log("! ❇️ | 📨 partage loader | Aucun fichier ne correspond a l'email.");
             return;
         }
 
         // Fetch du fichier cible
-        let fileResponse = await fetch(targetFile.download_url);
-        if (!fileResponse.ok) {
-            console.log(`! ❇️ | 🔗 compte partage | Erreur fetch fichier: ${fileResponse.status}`);
-            return;
-        }
+        let fileRes = await fetch(targetFile.url, {
+            headers: { Authorization: `token ${githubToken}` }
+        });
+        let fileData = await fileRes.json();
+        let dataDecoded = JSON.parse(atob(fileData.content));
 
-        let data = await fileResponse.json();
+        // Etape 4 - Mise a jour du DOM
+        updateHtmlElements(dataDecoded);
 
-        updateHtmlElements(data);
-
-    } catch (error) {
-        console.log(`! ❇️ | 🔗 compte partage | Erreur générale: ${error}`);
+    } catch (err) {
+        console.log("! ❇️ | 📨 partage loader | Erreur:", err);
     }
 }
 
-// Fonction de mise à jour des éléments HTML (recyclée)
+// Fonction pour afficher les infos dans les elements du DOM
 function updateHtmlElements(data) {
-    console.log("! ❇️ | 🔗 compte partage | Donnees recuperees avec succes.");
+    console.log("! ❇️ | 📨 partage loader | Donnees recuperees avec succes.");
 
     document.querySelectorAll("[id^='COMPTE:']").forEach(element => {
         let idParts = element.id.split(":")[1].split("-");
         let section = idParts[0];
         let field = idParts[1];
 
-        if (data[section] && data[section][field] !== undefined) {
-            let value = data[section][field];
+        let value = data[section] && data[section][field];
+
+        if (value !== undefined) {
+            console.log(`↪️ Mise a jour: ${element.id} = ${value}`);
             if (element.tagName.toLowerCase() === "img") {
                 element.src = value;
             } else {
@@ -163,9 +166,9 @@ function updateHtmlElements(data) {
     });
 }
 
-// Execute au chargement
+// Lancer au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
-    fetchComptePartageData();
+    fetchComptePartage();
 });
 
 </script>
