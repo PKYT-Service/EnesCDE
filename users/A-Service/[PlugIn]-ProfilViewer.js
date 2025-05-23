@@ -41,8 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
 </div>
 
-
-<br><br>
 <div id="ecde_users_profilbutton"></div>
 
 `;
