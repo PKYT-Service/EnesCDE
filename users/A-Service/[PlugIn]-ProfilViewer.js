@@ -71,8 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
     </div>
-
-
+</div>
 <!-- Connected Toggle Buttons -->
 <h1 class="text-xl mt-4 text-blue-700 dark:text-blue-300">Profil</h1>
 <div class="flex flex-row items-center gap-2">
@@ -94,10 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
             <a href="" id="https://enes-cde.vercel.app/users/panel/delete_account.html"> supprimer </a>
         </label>
     </div>
-
-</div>
-
-
 
 </div>
 `;
