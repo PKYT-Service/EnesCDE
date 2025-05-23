@@ -68,8 +68,106 @@
                 <!-- Footer : Fin -->
             </main>
         </div>
-    </body>
-    </html>
+<script>
 
+    // Fonction pour parser les paramètres de l'URL
+function getQueryParams() {
+    let params = {};
+    location.search.slice(1).split(";").forEach(p => {
+        let [key, val] = p.split("=");
+        params[key] = val;
+    });
+    return params;
+}
+
+// Fonction principale de chargement du compte partagé
+async function fetchComptePartageData() {
+    const params = getQueryParams();
+    const email = params.email;
+
+    if (!email) {
+        console.log("! ❇️ | 🔗 compte partage | Aucun email fourni dans l'URL.");
+        return;
+    }
+
+    // Enregistre l'email dans le localStorage
+    localStorage.setItem("compte_partager", email);
+
+    try {
+        // Récupération du token GitHub
+        let tokenResponse = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+        let tokenData = await tokenResponse.json();
+        let githubToken = tokenData.GITHUB_TOKEN;
+
+        if (!githubToken) {
+            console.log("! ❇️ | 🔗 compte partage | Token GitHub manquant.");
+            return;
+        }
+
+        // Chercher les fichiers dans le dossier v4
+        const repo = "database_EnesCDE";
+        const owner = "PKYT-Service";
+        const folderPath = "compte/v4";
+        const githubApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`;
+
+        let folderResponse = await fetch(githubApiUrl, {
+            headers: { Authorization: `token ${githubToken}` }
+        });
+
+        if (!folderResponse.ok) {
+            console.log(`! ❇️ | 🔗 compte partage | Erreur fetch dossier: ${folderResponse.status}`);
+            return;
+        }
+
+        let files = await folderResponse.json();
+        let targetFile = files.find(file => file.name.startsWith(email + "*-*"));
+
+        if (!targetFile) {
+            console.log("! ❇️ | 🔗 compte partage | Aucun fichier trouvé pour cet email.");
+            return;
+        }
+
+        // Fetch du fichier cible
+        let fileResponse = await fetch(targetFile.download_url);
+        if (!fileResponse.ok) {
+            console.log(`! ❇️ | 🔗 compte partage | Erreur fetch fichier: ${fileResponse.status}`);
+            return;
+        }
+
+        let data = await fileResponse.json();
+
+        updateHtmlElements(data);
+
+    } catch (error) {
+        console.log(`! ❇️ | 🔗 compte partage | Erreur générale: ${error}`);
+    }
+}
+
+// Fonction de mise à jour des éléments HTML (recyclée)
+function updateHtmlElements(data) {
+    console.log("! ❇️ | 🔗 compte partage | Donnees recuperees avec succes.");
+
+    document.querySelectorAll("[id^='COMPTE:']").forEach(element => {
+        let idParts = element.id.split(":")[1].split("-");
+        let section = idParts[0];
+        let field = idParts[1];
+
+        if (data[section] && data[section][field] !== undefined) {
+            let value = data[section][field];
+            if (element.tagName.toLowerCase() === "img") {
+                element.src = value;
+            } else {
+                element.innerHTML = value;
+            }
+        }
+    });
+}
+
+// Execute au chargement
+document.addEventListener("DOMContentLoaded", () => {
+    fetchComptePartageData();
+});
+
+</script>
 </body>
 </html>
