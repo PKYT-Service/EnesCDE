@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const link = document.createElement("a");
         link.textContent = label;
         link.href = "#";
-        link.className = "w-full h-full inline-block";
+        link.className = "w-full h-full inline-block rounded-xl";
 
         link.addEventListener("click", (e) => {
             e.preventDefault();
