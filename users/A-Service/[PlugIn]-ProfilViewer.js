@@ -1,6 +1,38 @@
+<script>
+// Script a coller une fois le DOM charge (de preference en bas de body ou via DOMContentLoaded)
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('a[id^="url_account:"]').forEach(link => {
+        link.addEventListener("click", function(e) {
+            e.preventDefault(); // empeche la redirection immediate
+
+            let rawUrl = this.id.split("url_account:")[1];
+            let compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
+
+            if (compteData) {
+                try {
+                    let compte = JSON.parse(compteData);
+                    let email = encodeURIComponent(compte.email || "inconnu");
+                    let mdp = encodeURIComponent(compte.password || "inconnu");
+
+                    let finalUrl = `${rawUrl}?acc=v:4;email:${email};mdp:${mdp};time:true`;
+                    window.location.href = finalUrl;
+
+                } catch (err) {
+                    console.error("Erreur JSON dans la cle 'compte'", err);
+                }
+            } else {
+                console.warn("Cle 'compte' absente");
+            }
+        });
+    });
+});
+</script>
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ecde_users_profilviewer").innerHTML = `
-    <div class="h-screen w-full flex items-center justify-center dark:bg-gray-900">
+    <div class="w-full flex items-center justify-center dark:bg-gray-900">
 
     <!-- Author card -->
     <div
@@ -39,6 +71,33 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
     </div>
+
+
+<!-- Connected Toggle Buttons -->
+<h1 class="text-xl mt-4 text-blue-700 dark:text-blue-300">Profil</h1>
+<div class="flex flex-row items-center gap-2">
+    
+    <div class="flex flex-row">
+        <label class="toggle-button-label text-blue-600 dark:text-blue-400">
+            <input type="radio" name="radio-group-0" checked class="peer toggle-button rounded-l-full bg-blue-100 dark:bg-blue-900" />
+            <span class="toggle-button-indicator material-symbols-outlined text-blue-700 dark:text-blue-300">check</span>
+            <a href="" id="url_account:https://enes-cde.vercel.app/users/panel/profil.html"> consulter </a>
+        </label>
+        <label class="toggle-button-label text-blue-600 dark:text-blue-400">
+            <input type="radio" name="radio-group-0" class="peer toggle-button bg-blue-100 dark:bg-blue-900" />
+            <span class="toggle-button-indicator material-symbols-outlined text-blue-700 dark:text-blue-300">check</span>
+            <a href="" id="https://enes-cde.vercel.app/users/panel/edit_account.html"> modifier </a>
+        </label>
+        <label class="toggle-button-label text-blue-600 dark:text-blue-400">
+            <input type="radio" name="radio-group-0" class="peer toggle-button rounded-r-full bg-blue-100 dark:bg-blue-900" />
+            <span class="toggle-button-indicator material-symbols-outlined text-blue-700 dark:text-blue-300">check</span>
+            <a href="" id="https://enes-cde.vercel.app/users/panel/delete_account.html"> supprimer </a>
+        </label>
+    </div>
+
+</div>
+
+
 
 </div>
 `;
