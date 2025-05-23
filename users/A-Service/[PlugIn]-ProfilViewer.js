@@ -55,9 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.setAttribute("role", "tab");
         button.setAttribute("type", "button");
         button.className = "";
-           // "max-w-2xl my-8 w-full flex items-center justify-center flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400";
-            
-            
+
         if (isActive) {
             button.classList.add("bg-white", "text-yellow-600", "dark:bg-yellow-600", "dark:text-white", "shadow");
         } else {
@@ -93,6 +91,41 @@ document.addEventListener("DOMContentLoaded", () => {
         return button;
     }
 
+    // Nouveau bouton partager
+    function createShareButton() {
+        const button = document.createElement("button");
+        button.setAttribute("type", "button");
+        button.setAttribute("role", "tab");
+        button.className = "bg-white dark:bg-gray-700";
+
+        const link = document.createElement("a");
+        link.textContent = "partager";
+        link.href = "#";
+        link.className = "w-full h-full inline-block rounded-xl";
+
+        link.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            if (!compteData) {
+                return alert("Aucun compte present");
+            }
+
+            try {
+                const compte = JSON.parse(compteData);
+                const email = encodeURIComponent(compte.email || "inconnu");
+                const shareUrl = `https://enes-cde.vercel.app/users/pp.html?v=4%3Bt%3Dpartage%3Bemail%3D${email}`;
+                await navigator.clipboard.writeText(shareUrl);
+                alert("Lien copie !");
+            } catch (err) {
+                console.error("Erreur dans 'partager'", err);
+                alert("Erreur lors de la copie du lien");
+            }
+        });
+
+        button.appendChild(link);
+        return button;
+    }
+
     // On recupere la div cible
     const targetDiv = document.getElementById("ecde_users_profilbutton");
     if (!targetDiv) return console.warn("Div 'ecde_users_profilbutton' introuvable");
@@ -106,10 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
     nav.appendChild(createAccountButton("consulter", "https://enes-cde.vercel.app/users/panel/profil.html", true, true));
     nav.appendChild(createAccountButton("modifier", "https://enes-cde.vercel.app/users/panel/edit_account.html"));
     nav.appendChild(createAccountButton("supprimer", "https://enes-cde.vercel.app/users/panel/delete_account.html"));
+    nav.appendChild(createShareButton()); // <-- bouton partager
 
     // Injection dans la div cible
     targetDiv.appendChild(nav);
 });
-
-
-
