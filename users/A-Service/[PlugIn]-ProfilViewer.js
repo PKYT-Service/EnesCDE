@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </span>
 
         <div class="w-full flex justify-center sm:justify-start sm:w-auto">
-            <img class="object-cover mt-3 mr-3 rounded-full" style="height:20px;  width: 20px;" src="" id="COMPTE:ProfilInfo-Pdp">
+            <img class="object-cover mt-3 mr-3 rounded-full" style="height:100px;  width: 100px;" src="" id="COMPTE:ProfilInfo-Pdp">
         </div>
 
         <div class="w-full sm:w-auto flex flex-col items-center sm:items-start">
