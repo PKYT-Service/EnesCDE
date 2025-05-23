@@ -56,8 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
         button.setAttribute("role", "tab");
         button.setAttribute("type", "button");
         button.className =
-            "flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400";
-
+            //"flex whitespace-nowrap items-center h-8 px-5 font-medium rounded-lg outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-inset hover:text-gray-800 focus:text-yellow-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400";
+            "relative w-full max-w-2xl my-8 md:my-16 flex flex-col items-start space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 px-4 py-8 border-2 border-dashed border-gray-400 dark:border-gray-400 shadow-lg rounded-lg";
+            
         if (isActive) {
             button.classList.add("bg-white", "text-yellow-600", "dark:bg-yellow-600", "dark:text-white", "shadow");
         } else {
