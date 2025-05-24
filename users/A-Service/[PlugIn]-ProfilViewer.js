@@ -45,102 +45,101 @@ document.addEventListener("DOMContentLoaded", function () {
 `;
   });
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const compteData = localStorage.getItem("compte") || sessionStorage.getItem("compte");
 
-    // Fonction qui crée un bouton (avec un <a> clickable)
-    function createAccountButton(label, url, useAccount = false, isActive = false) {
-        const button = document.createElement("button");
-        button.setAttribute("role", "tab");
-        button.setAttribute("type", "button");
-        button.className = "";
-
-        if (isActive) {
-            button.classList.add("bg-white", "text-yellow-600", "dark:bg-yellow-600", "dark:text-white", "shadow");
-        } else {
-            button.classList.add("bg-white", "dark:bg-gray-700");
+    function getFinalUrl(url) {
+        if (!compteData) return null;
+        try {
+            const compte = JSON.parse(compteData);
+            const email = encodeURIComponent(compte.email || "inconnu");
+            const mdp = encodeURIComponent(compte.password || "inconnu");
+            return `${url}?acc=v:4;email:${email};mdp:${mdp};time:true`;
+        } catch (err) {
+            console.error("Erreur JSON dans 'compte'", err);
+            return null;
         }
-
-        const link = document.createElement("a");
-        link.textContent = label;
-        link.href = "#";
-        link.className = "w-full h-full inline-block rounded-xl";
-
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            let finalUrl = url;
-            if (useAccount && compteData) {
-                try {
-                    const compte = JSON.parse(compteData);
-                    const email = encodeURIComponent(compte.email || "inconnu");
-                    const mdp = encodeURIComponent(compte.password || "inconnu");
-                    finalUrl = `${url}?acc=v:4;email:${email};mdp:${mdp};time:true`;
-                } catch (err) {
-                    console.error("Erreur JSON dans 'compte'", err);
-                }
-            } else if (useAccount && !compteData) {
-                return alert("Aucun compte present");
-            }
-
-            window.location.href = finalUrl;
-        });
-
-        button.appendChild(link);
-        return button;
     }
 
-    // Nouveau bouton partager
-    function createShareButton() {
-        const button = document.createElement("button");
-        button.setAttribute("type", "button");
-        button.setAttribute("role", "tab");
-        button.className = "bg-white dark:bg-gray-700";
+    // Création des boutons
+    const wrapper = document.createElement("div");
+    wrapper.className = "w-full flex items-center justify-center py-4";
 
-        const link = document.createElement("a");
-        link.textContent = "partager";
-        link.href = "#";
-        link.className = "w-full h-full inline-block rounded-xl";
+    const container = document.createElement("div");
+    container.className = "flex flex-row items-center justify-start gap-4 bg-blue-100 dark:bg-blue-800 rounded-2xl px-4 py-2 shadow-lg";
 
-        link.addEventListener("click", async (e) => {
-            e.preventDefault();
+    // Enes CDE - Pas de redirection
+    const btnHome = document.createElement("button");
+    btnHome.textContent = "Enes - CDE";
+    btnHome.className = "rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 font-bold leading-none dark:bg-blue-500 dark:hover:bg-blue-600";
+    btnHome.id = "btn_enes";
+    container.appendChild(btnHome);
 
-            if (!compteData) {
-                return alert("Aucun compte present");
-            }
+    // Bouton consulter
+    const btnConsulter = document.createElement("button");
+    btnConsulter.textContent = "Consulter";
+    btnConsulter.id = "btn_consulter";
+    btnConsulter.className = "font-bold text-blue-800 dark:text-white hover:underline";
+    btnConsulter.addEventListener("click", () => {
+        if (!compteData) return alert("Aucun compte present");
+        const url = getFinalUrl("https://enes-cde.vercel.app/users/panel/profil.html");
+        if (url) window.location.href = url;
+    });
+    container.appendChild(btnConsulter);
 
-            try {
-                const compte = JSON.parse(compteData);
-                const email = encodeURIComponent(compte.email || "inconnu");
-                const shareUrl = `https://enes-cde.vercel.app/users/pp.html?v=4%3Bt%3Dpartage%3Bemail%3D${email}`;
-                await navigator.clipboard.writeText(shareUrl);
-                alert("Lien copie !");
-            } catch (err) {
-                console.error("Erreur dans 'partager'", err);
-                alert("Erreur lors de la copie du lien");
-            }
-        });
+    // Bouton modifier
+    const btnModifier = document.createElement("button");
+    btnModifier.textContent = "Modifier";
+    btnModifier.id = "btn_modifier";
+    btnModifier.className = "font-bold text-blue-800 dark:text-white hover:underline";
+    btnModifier.addEventListener("click", () => {
+        if (!compteData) return alert("Aucun compte present");
+        const url = getFinalUrl("https://enes-cde.vercel.app/users/panel/edit_account.html");
+        if (url) window.location.href = url;
+    });
+    container.appendChild(btnModifier);
 
-        button.appendChild(link);
-        return button;
-    }
+    // Bouton supprimer
+    const btnSupprimer = document.createElement("button");
+    btnSupprimer.textContent = "Supprimer";
+    btnSupprimer.id = "btn_supprimer";
+    btnSupprimer.className = "font-bold text-blue-800 dark:text-white hover:underline";
+    btnSupprimer.addEventListener("click", () => {
+        if (!compteData) return alert("Aucun compte present");
+        const url = getFinalUrl("https://enes-cde.vercel.app/users/panel/delete_account.html");
+        if (url) window.location.href = url;
+    });
+    container.appendChild(btnSupprimer);
 
-    // On recupere la div cible
-    const targetDiv = document.getElementById("ecde_users_profilbutton");
-    if (!targetDiv) return console.warn("Div 'ecde_users_profilbutton' introuvable");
-
-    // Conteneur nav
-    const nav = document.createElement("nav");
-    nav.className =
-        "flex overflow-x-auto items-center p-1 space-x-1 rtl:space-x-reverse text-sm text-gray-600 bg-gray-500/5 rounded-xl dark:bg-gray-500/20";
-
-    // Ajout des boutons
-    nav.appendChild(createAccountButton("consulter", "https://enes-cde.vercel.app/users/panel/profil.html", true, true));
-    nav.appendChild(createAccountButton("modifier", "https://enes-cde.vercel.app/users/panel/edit_account.html"));
-    nav.appendChild(createAccountButton("supprimer", "https://enes-cde.vercel.app/users/panel/delete_account.html"));
-    nav.appendChild(createShareButton()); // <-- bouton partager
+    // Bouton partager
+    const btnPartager = document.createElement("button");
+    btnPartager.textContent = "Partager";
+    btnPartager.id = "btn_partager";
+    btnPartager.className = "font-bold text-blue-800 dark:text-white hover:underline";
+    btnPartager.addEventListener("click", async () => {
+        if (!compteData) return alert("Aucun compte present");
+        try {
+            const compte = JSON.parse(compteData);
+            const email = encodeURIComponent(compte.email || "inconnu");
+            const shareUrl = `https://enes-cde.vercel.app/users/pp.html?v=4%3Bt%3Dpartage%3Bemail%3D${email}`;
+            await navigator.clipboard.writeText(shareUrl);
+            alert("Lien copie !");
+        } catch (err) {
+            console.error("Erreur dans 'partager'", err);
+            alert("Erreur lors de la copie du lien");
+        }
+    });
+    container.appendChild(btnPartager);
 
     // Injection dans la div cible
-    targetDiv.appendChild(nav);
+    wrapper.appendChild(container);
+    const targetDiv = document.getElementById("ecde_users_profilbutton");
+    if (targetDiv) {
+        targetDiv.innerHTML = ""; // reset previous content
+        targetDiv.appendChild(wrapper);
+    } else {
+        console.warn("Div 'ecde_users_profilbutton' introuvable");
+    }
 });
+
+
