@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <!-- Author card -->
     <div
-        class="relative w-full max-w-2xl my-8 md:my-16 flex flex-col items-start space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 px-4 py-8 border-2 border-dashed border-gray-400 dark:border-gray-400 shadow-lg rounded-lg">
+        class="relative w-full max-w-2xl my-8 md:my-16 flex flex-col items-start sm:flex-row sm:space-y-0 sm:space-x-6 px-4 py-8 border-2 border-dashed border-gray-400 dark:border-gray-400 shadow-lg rounded-lg">
 
         <span class="absolute text-xs font-medium top-0 left-0 rounded-br-lg rounded-tl-lg px-2 py-1 bg-primary-100 dark:bg-gray-900 dark:text-gray-300 border-gray-400 dark:border-gray-400 border-b-2 border-r-2 border-dashed ">
            <a id="COMPTE:CompteInfo-Email">Email</a> - <a id="COMPTE:CompteInfo-Service">Service</a>
@@ -34,12 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         </path>
                     </svg>
                 </a><br>
-    <div id="ecde_users_profilbutton"></div>
             </div>
         </div>
     </div>
 </div>
-
+    <div id="ecde_users_profilbutton"></div>
 
 
 `;
