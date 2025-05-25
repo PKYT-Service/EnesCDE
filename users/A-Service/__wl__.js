@@ -24,6 +24,6 @@ function checkUserEmail() {
     });
 }
 
-// Appel de la fonction lors du chargement de la page
+// Appel de la fonction lors du chargement de la page 
 window.onload = checkUserEmail;
   
