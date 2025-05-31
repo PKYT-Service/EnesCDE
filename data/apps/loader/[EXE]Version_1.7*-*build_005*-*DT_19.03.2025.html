@@ -8,76 +8,64 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
             localStorage.setItem('APP:??', 'true');
-            localStorage.setItem('APP:BD', '002.03');
-            localStorage.setItem('APP:VS', '1.8');
-            localStorage.setItem('APP:DT', '31.05.2025');
-            localStorage.setItem('APP:SE', 'Android 5+');
+            localStorage.setItem('APP:BD', '005');
+            localStorage.setItem('APP:VS', '1.7');
+            localStorage.setItem('APP:DT', '19.03.2025');
+            localStorage.setItem('APP:SE', 'Windows 10/11');
             localStorage.setItem('APP:OutDated', 'false');
         
             localStorage.setItem('rules', 'true');
     </script>
-    
-</head>
-<body>
+    <style>
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
 
-    <div class="flex flex-col justify-center items-center bg-white h-screen dark:invert text-center">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold"><b>Enes - <a class="text-blue-700 dark:text-blue-400">CDE</a></b></h1>
-    <h6><a id="loader" class="block text-center mt-10 text-lg font-mono text-gray-800 dark:text-white">-_-</a></h6>
-    <p class="text-sm text-gray-600 dark:text-gray-300">Merci de patienter quelques instants</p>
-  </div>
-  
-  <div class="flex space-x-2 mt-10">
-    <span class="sr-only">Loading...</span>
-    <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-    <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-    <div class="h-8 w-8 bg-black rounded-full animate-bounce"></div>
-  </div>
-</div>
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(0); }
+        }
+
+        .slide-left {
+            animation: slideInLeft 1s ease-out forwards;
+        }
+
+        .slide-right {
+            animation: slideInRight 1s ease-out forwards;
+        }
+
+        .dot {
+            opacity: 0;
+            animation: dotAppear 1s forwards;
+        }
+
+        @keyframes dotAppear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .dot:nth-child(1) { animation-delay: 1s; }
+        .dot:nth-child(2) { animation-delay: 1.5s; }
+        .dot:nth-child(3) { animation-delay: 2s; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex justify-center items-center h-screen">
+
+    <div class="text-center space-y-4">
+        <div class="text-4xl font-bold slide-left" id="text1">Enes - CDE</div>
+        <div class="text-xl slide-right" id="text2">Community Developpement Enhance</div>
+        <div class="flex justify-center space-x-2 mt-6">
+            <div class="dot w-4 h-4 bg-white rounded-full"></div>
+            <div class="dot w-4 h-4 bg-white rounded-full"></div>
+            <div class="dot w-4 h-4 bg-white rounded-full"></div>
+        </div>
+    </div>
 
     <script>
         setTimeout(() => {
             window.location.href = "https://enes-cde.vercel.app";
-        }, 4500); 
-  const loader = document.getElementById('loader');
-  const messages = [
-    "Chargement de la page",
-    "Clear des DT",
-    "Ajout des nouveau DT's",
-    "Chargement des scripts",
-    "Redirection ?",
-    "Maintenant : null",
-    "Redirection : affirmer",
-    "Rediriger vers enes-cde.vercel.app",
-    "Err -> reloal all"
-  ];
-
-  let index = 0;
-
-  function updateLoader() {
-    loader.textContent = messages[index];
-    index = (index + 1) % messages.length;
-
-    // Interval dynamique selon la phase
-    let delay;
-    switch(index) {
-      case 1:
-        delay = 250;
-        break;
-      case 2:
-        delay = 500;
-        break;
-      case 3:
-        delay = 1000;
-        break;
-      default:
-        delay = 500;
-    }
-
-    setTimeout(updateLoader, delay);
-  }
-
-  setTimeout(updateLoader, 500);
-</script>
+        }, 3000);
+    </script>
 </body>
 </html>
