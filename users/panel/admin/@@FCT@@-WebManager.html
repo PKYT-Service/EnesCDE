@@ -216,6 +216,7 @@
                     <option value="MTNC">Maintenance</option>
                     <option value="DPCT">Duplication</option>
                     <option value="Disable">Disable</option>
+                    <option value="Section">Section</option>
                 </select>
             </div>
             <div class="flex justify-end">
@@ -418,6 +419,7 @@ function renderTypeTag(type) {
         'indefinie': 'bg-yellow-200 dark:bg-yellow-700 hover:bg-yellow-300 hover:dark:bg-yellow-800',
         'DPCT': 'bg-red-200 dark:bg-red-700 hover:bg-red-300 hover:dark:bg-red-800',
         'Disable': 'bg-red-200 dark:bg-red-700 hover:bg-red-300 hover:dark:bg-red-800',
+        'Section': 'bg-red-900 dark:bg-red-900 hover:bg-red-900 hover:dark:bg-red-900',
         'neutre': 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 hover:dark:bg-gray-800'
     };
 
@@ -443,6 +445,7 @@ function renderTypeTag(type) {
         'indefinie': 'Indéfini',
         'DPCT': 'Duplication',
         'Disable': 'Désactivé',
+        'Section': '- - - - - - - - - - - - - - - - ',
         'neutre': 'Neutre'
     }[type] || 'Neutre';
 
