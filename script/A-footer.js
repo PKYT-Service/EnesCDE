@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ecde_footer").innerHTML = `
      <br><br>
-<footer class="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">Add commentMore actions
+<footer class="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
     <div class="border-t border-slate-900/5 dark:border-gray-700 py-10">
         <div class="flex items-center justify-center">
             <div class="flex items-center space-x-2">
