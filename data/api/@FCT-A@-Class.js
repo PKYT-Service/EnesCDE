@@ -9,7 +9,7 @@ async function fetchToken() {
 async function fetchStyles(githubToken) {
   // API GitHub pour récupérer un fichier JSON raw dans un repo privé
   // Remplace USER/REPO/PATH par les tiens
-  const urlStyles = 'https://api.github.com/repos/EnesCDE/database_EnesCDE/contents/ecde/data/ClassTailwindCss.json'
+  const urlStyles = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ClassTailwindCss.json'
 
   const res = await fetch(urlStyles, {
     headers: {
