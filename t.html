@@ -1,322 +1,60 @@
-<!DOCTYPE html>
-<html lang="fr">
-        <head>
-        <meta charset="UTF-8"> 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="EnesCDE - Plateforme de services et documentation.">
-        <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web , LosFly , LsFly , PikaYutMG , GFLP , LSP , SRDMG , Ebsayder , Howard , Armory , PikaYut , enes , enesgp , egp , ecde ; enes cde , communitydeveloppement , developpement , community PikaYutMG , Projet , MultiGaming, Gaming HTML  ">
-        <meta name="author" content="EnesCDE">
-    <meta name="google-site-verification" content="nN4nrIcnjsg1gLAVkkBA2tnZs7e5CHG_QiW6NPJm1vU">
-        <!-- Open Graph (Facebook & LinkedIn) -->
-        <meta property="og:title" content="EnesCDE - Services , Accueil">
-        <meta property="og:description" content="D&eacute;couvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
-        <meta property="og:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
-        <meta property="og:url" content="https://enes-cde.vercel.app">
-        <meta property="og:type" content="website">
-    
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="EnesCDE - Services &amp; Documentation">
-        <meta name="twitter:description" content="D&eacute;couvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
-        <meta name="twitter:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
-    
-        <title>EnesCDE - Accueil</title>
-        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
-            <style>
-        .hidden { display: none; }
-    </style>
-          <script src="https://enes-cde.vercel.app/data/api/@FCT-A@-Class.js"></script>
-            
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
-            
-        <!-- Script -->
-         <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
-        <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
-        <script src="https://enes-cde.vercel.app/script/A-menu.js"></script>
-        <script src="https://enes-cde.vercel.app/script/A-all.js"></script>
-        </head><div id="ecde_all"></div>
+<script src="https://enes-cde.vercel.app/data/api/@FCT-A@-Class.js"></script>
+
+            <div id="ecde_all"></div>
+
 
     
-    <body id="E-CDE>Class>Body">
-        <div id="E-CDE>Class>Div">
+      
+        <div id="E-CDE&gt;Class&gt;Div">
             <!-- Menu : Deb -->
-            <div id="E-CDE>Class>Div1"></div>
+            <div id="E-CDE&gt;Class&gt;Div2"></div>
             <!-- Menu : Fin -->
     
             <!-- Main Content -->
-            <main id="E-CDE>Class>Main">
-    <h1 id="E-CDE>Class>H1">Dashboard</h1>
-
-    <div id="E-CDE>Class>Div2" role="alert">
-        <div id="E-CDE>Class>Div3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor" id="E-CDE>Class>Svg">
-                <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"></path>
-            </svg>
-            <strong id="E-CDE>Class>Strong"> Version obsol&egrave;te : </strong> 
-        </div>
-
-        <p id="E-CDE>Class>P">
-            Une nouvelle mise &agrave; jour est sortie. Acc&eacute;dez au d&eacute;p&ocirc;t (troisi&egrave;me ic&ocirc;ne du menu vertical) et Enes CDE apps. 
-            <br>
-            Installez la nouvelle app via le navigateur :
-            <a href="http://enes-cde.vercel.app/data/apps/index.html" target="_blank" id="E-CDE>Class>A">Mettre &agrave; niveau</a>
-        </p>
+            <main id="E-CDE&gt;Class&gt;Main">
+    <h1 id="E-CDE&gt;Class&gt;Header">Team E-CDE</h1>
+    <div id="E-CDE&gt;Class&gt;Div3">
+        <p id="E-CDE&gt;Class&gt;Paragraph">Chaque personne inscrite est un membre EnesCDE. Elles sont là pour aider, administrer et contribuer au bon fonctionnement de la communauté</p>
     </div>
 
-<br>
-
-
-                <!-- Enes CDe APP Type -->
-<div id="button-container"></div>
-<div id="popup-container"></div>
-
-<script>
-    // R&eacute;cup&eacute;rer les valeurs du localStorage
-    const appBD = localStorage.getItem('APP:BD');
-    const appQuestionMark = localStorage.getItem('APP:??');
-    const appVS = localStorage.getItem('APP:VS');
-    const appDT = localStorage.getItem('APP:DT');
-    const appSE = localStorage.getItem('APP:SE');
-    const appOutDated = localStorage.getItem('APP:OutDated');
-
-    // V&eacute;rifier si APP:?? est 'true'
-    if (appQuestionMark === 'true') {
-        // Afficher le bouton
-        document.getElementById('button-container').innerHTML = `
-            <center>
-                <button onclick="showPopup()" class="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ms-1 me-1.5 size-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    
-                    <p class="whitespace-nowrap text-sm">Vous utilisez l'application &rarr;
+                <span id="E-CDE&gt;Class&gt;Span">
+                    <span id="E-CDE&gt;Class&gt;Span2"></span>
+                    <span id="E-CDE&gt;Class&gt;Span3"> &lt;- - - - - - -</span>
+                  </span>
                 
+
+                <div id="E-CDE&gt;Class&gt;Div4">
+    <div id="E-CDE&gt;Class&gt;Div5">
+        <div id="E-CDE&gt;Class&gt;Div6">
+            <h2 id="E-CDE&gt;Class&gt;Header2">Membres EnesCDE :</h2>
             
-            <br>
-        `;
-    }
-
-function showPopup() {
-    document.getElementById('popup-container').innerHTML = `
-        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-950 rounded-lg shadow-md overflow-hidden mt-24">
-            <div class="bg-gray-100 dark:bg-gray-700 px-4 py-2">
-                <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">
-                    <b> Enes - <a class="text-blue-700 dark:text-blue-500">CDE 
-                
-            </script></main></div>
-            <div id="E-CDE>Class>Div4">
-                <div id="E-CDE>Class>Div5">
-                    <span id="E-CDE>Class>Span">By</span>
-                    <span id="E-CDE>Class>Span1">EnesGP , ECDE .</span>
-                </div>
-
-                <div id="E-CDE>Class>Div6">
-                    <span id="E-CDE>Class>Span2">Sync</span>
-                    <span id="E-CDE>Class>Span3"> 
-                        <a id="E-CDE>Class>A1">BUG</a> 
-                    </span>
-                </div>
-
-                <div id="E-CDE>Class>Div7">
-                    <span id="E-CDE>Class>Span4">Syst&egrave;me :</span>
-                    <span id="E-CDE>Class>Span5"></span>
-                </div>
-
-                <div id="E-CDE>Class>Div8">
-                    <div id="E-CDE>Class>Div9">
-                        <span id="E-CDE>Class>Span6">Derni&egrave;re mise &agrave; jour</span>
-                        <span id="E-CDE>Class>Span7"></span>
-                    </div>
-                    <div id="E-CDE>Class>Div10">
-                        <span id="E-CDE>Class>Span8">&Eacute;tat :</span>
-                        <span id="E-CDE>Class>Span9"></span>
+            <!--<div class="space-y-4">
+                <div class="flex items-center space-x-4 p-3 bg-indigo-50 dark:bg-gray-700 rounded-lg transition-all duration-300 hover:bg-indigo-100 dark:hover:bg-gray-600">
+                    <img src=" " alt=" " class="w-12 h-12 rounded-full border-2 border-indigo-800 dark:border-blue-900">
+                    <div>
+                        <h3 class="text-lg font-semibold text-indigo-800 dark:text-white"> PikaYut (EnesGP) </h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300"> <b> Fondateur </b> </p>
                     </div>
                 </div>
+            </div><br>-->
+            <div id="enescde_team"></div>
 
-                <div id="E-CDE>Class>Div11">
-                    <div id="E-CDE>Class>Div12">
-                        <span id="E-CDE>Class>Span10">Version</span>
-                        <span id="E-CDE>Class>Span11"></span>
-                    </div>
-                    <div id="E-CDE>Class>Div13">
-                        <span id="E-CDE>Class>Span12">Num&eacute;ro de Build</span>
-                        <span id="E-CDE>Class>Span13"></span>
-                    </div>
-                </div>
-            </div>
-        
-        <br>
-    `;
-
-    // R&eacute;cup&eacute;rer les valeurs de localStorage
-    document.getElementById('app-system').textContent = localStorage.getItem('APP:SE') || 'Non d&eacute;fini';
-    document.getElementById('app-last-update').textContent = localStorage.getItem('APP:DT') || 'Non d&eacute;fini';
-    document.getElementById('app-version').textContent = localStorage.getItem('APP:VS') || 'Non d&eacute;fini';
-    document.getElementById('app-build').textContent = localStorage.getItem('APP:BD') || 'Non d&eacute;fini';
-
-    // V&eacute;rification de l'&eacute;tat de l'application (Obsol&egrave;te ou &agrave; jour)
-    let outdatedStatus = localStorage.getItem('APP:OutDated');
-    let outdatedElement = document.getElementById('app-outdated');
-
-    if (outdatedStatus === "false") {
-        outdatedElement.textContent = "Votre application est &agrave; jour.";
-        outdatedElement.classList.add("text-green-500"); // Texte vert
-    } else {
-        outdatedElement.innerHTML = 'Votre application est obsol&egrave;te, mettez-la &agrave; jour via notre site (<a href="#" id="E-CDE>Class>A2">d&eacute;p&ocirc;t > apps</a>).';
-        outdatedElement.classList.add("text-red-500"); // Texte rouge
-    }
-}
-
-
-<!-- Enes CDe APP Type -->
-
-
-
-    <div id="E-CDE>Class>Div14">
-  <h1 id="E-CDE>Class>H11">
-    Enes<span id="E-CDE>Class>Span14">CDE</span>
-  </h1>
-
-  <h2 id="E-CDE>Class>H2">
-    Bienvenue chez EnesCommunity <span id="E-CDE>Class>Span15">(D&eacute;veloppement &amp; Enrichissement)</span>
-  </h2>
-
-  <p>
-    Ici, vous retrouverez divers sujets li&eacute;s au <strong>d&eacute;veloppement</strong>, &agrave; l'acc&egrave;s aux <strong>sites et projets associ&eacute;s</strong>, aux <strong>annonces</strong>, au <strong>partage de codes</strong> (forum), etc.
-    Le <a href="https://discord.gg/8z82KgZaWm" id="E-CDE>Class>A3">Discord</a> est notre moyen de contact principal.
-  </p>
-
-  <p id="E-CDE>Class>P1">
-    <strong>Service de d&eacute;veloppement</strong> et de <strong>cr&eacute;ation de projets personnalis&eacute;s</strong>.
-  </p>
-
-  <hr id="E-CDE>Class>Hr">
-
-  <div id="E-CDE>Class>Div15">
-    <p>
-      <strong id="E-CDE>Class>Strong1">LosFly</strong> a pos&eacute; les premi&egrave;res bases d&egrave;s <strong>2017</strong>.
-    </p>
-    <p>
-      En <strong>ao&ucirc;t 2022</strong>, plusieurs projets majeurs ont vu le jour :
-    </p>
-    <ul id="E-CDE>Class>Ul">
-      <li><strong>NairWase</strong></li>
-      <li><strong>FayzXase</strong></li>
-      <li><strong>GFLP - LSP</strong> (avec <em>SRDMG</em>)</li>
-      <li><strong>PKYT</strong> <em>(service technique)</em></li>
-      <li><strong>PikaYutMG</strong></li>
-    </ul>
-    <p>
-      Tous ces projets sont g&eacute;r&eacute;s par <strong>E-CDE</strong> (<em>EnesCommunity - D&eacute;veloppement &amp; Enrichissement</em>), communaut&eacute; fond&eacute;e en 2017.
-    </p>
-    <p>
-      Apr&egrave;s une pause, <strong>LosFly</strong> a &eacute;t&eacute; relanc&eacute; en <strong>2024</strong> pour continuer l&rsquo;aventure.
-    </p>
-  </div>
+        </div>
+        <div id="E-CDE&gt;Class&gt;Div7">
+            <span id="E-CDE&gt;Class&gt;Span4"><mark>4</mark> Support's | <mark>6</mark> Staff's</span>
+            <button id="E-CDE&gt;Class&gt;Button">
+                <a href="https://enes-cde.vercel.app/redirect.html?LB=discord">Discord</a>
+            </button>
+        </div>
     </div>
- 
-<br> 
-
-                <div id="E-CDE>Class>Div16">
-  <h3 id="E-CDE>Class>H3">Projets officiels ECDE</h3>
-  <div id="E-CDE>Class>Div17">
-    
-    <div id="E-CDE>Class>Div18">
-      PikaYutMG
-    </div>
-
-    <div id="E-CDE>Class>Div19">
-      PKYT - Service
-    </div>
-
-    <div id="E-CDE>Class>Div20">
-      PKYT - UP <span id="E-CDE>Class>Span16">(ancien)</span>
-    </div>
-
-    <div id="E-CDE>Class>Div21">
-      EbsayderFlyse / E&bull;RP
-    </div>
-
-    <div id="E-CDE>Class>Div22">
-      Nouveaux projets &agrave; venir...
-    </div>
-
-  </div>
 </div>
 
-<br>
-
-<div id="E-CDE>Class>Div23">
-  <h1 id="E-CDE>Class>H12">
-    Info<span id="E-CDE>Class>Span17"><mark><u> IMPORTANT </u></mark></span>
-  </h1>
-
-  <h2 id="E-CDE>Class>H21">
-   Les informations / annonces importants seront indiqu&eacute;e ici : <span id="E-CDE>Class>Span18">(Maintenance &amp; Refonte)</span>
-  </h2>
-
-  <hr id="E-CDE>Class>Hr1">
-
-  <div id="E-CDE>Class>Div24">
-    <p>
-      Le <strong> 24/10/2024 </strong>, Refonte &amp; Maintence :
-    </p>
-    <ul id="E-CDE>Class>Ul1">
-      <li><strong> - EbsayderFlyse</strong> <em>( - )</em></li>
-    </ul>
-
-  </div>
-    <div id="E-CDE>Class>Div25">
-    <p>
-      Le <strong> 15/09/2025 </strong>,Maintence :
-    </p>
-    <ul id="E-CDE>Class>Ul2">
-      <li><strong> EnesCDE - All Systeme</strong> <em>( Maintenance  de s&eacute;curit&eacute; )</em></li>
-    </ul>
-
-    </div>
-    </div>
- 
-
                 
+
+
+<br><br>
                 <!-- Footer : Deb -->
                 <div id="ecde_footer"></div>
                 <!-- Footer : Fin -->
-            
-        
-
-        
-  <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const isOutdated = localStorage.getItem("APP:OutDated") === "true";
-            if (isOutdated) {
-                document.getElementById("outdated-popup").classList.remove("hidden");
-            }
-        });
-    </script>
-        
-</body>
-
-        <script>                window.addEventListener("DOMContentLoaded", () => {
-    if (window.location.hash === "#personal") {
-        window.location.href = "./users/A-Personal/";
-    }
-});</script>
-<script>                window.addEventListener("DOMContentLoaded", () => {
-    if (window.location.hash === "#clg") {
-        window.location.href = "https://enes-cde.vercel.app/redirect.html?LB=depot-clg";
-    }
-});</script>
-</html>ventListener("DOMContentLoaded", () => {
-    if (window.location.hash === "#personal") {
-        window.location.href = "./users/A-Personal/";
-    }
-});</script>
-<script>                window.addEventListener("DOMContentLoaded", () => {
-    if (window.location.hash === "#clg") {
-        window.location.href = "https://enes-cde.vercel.app/redirect.html?LB=depot-clg";
-    }
-});</script>
-</html>
-
-
+            </main>
+        </div>
