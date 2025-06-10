@@ -1,0 +1,153 @@
+<html class="scroll-smooth" lang="fr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   E-CDE
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Inter', sans-serif;
+      background: url('') no-repeat center center fixed;
+      background-size: cover;
+    }
+    /* Glassmorphism effect */
+    .glass {
+      background: rgba(255 255 255 / 0.15);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      border: 1px solid rgba(255 255 255 / 0.3);
+    }
+  </style>
+ </head>
+ <body class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-900 bg-opacity-80 text-gray-100">
+  <main class="max-w-4xl w-full glass rounded-3xl p-8 shadow-lg">
+   <h1 class="text-4xl font-semibold mb-6 text-center">
+    Informations sur le Site
+   </h1>
+   <section class="space-y-6 text-lg leading-relaxed">
+    <p>
+     <span class="font-semibold text-indigo-400">
+      Site maintenant, plusieurs explications :
+     </span>
+    </p>
+    <div class="space-y-4">
+     <div class="glass rounded-xl p-5 shadow-inner border border-indigo-300/40">
+      <h2 class="text-2xl font-semibold mb-2 text-indigo-300 flex items-center">
+       <i class="fas fa-user-circle mr-3">
+       </i>
+       Compte
+      </h2>
+      <p>
+       Elles seront toujours accessibles sur divers API.
+      </p>
+     </div>
+     <div class="glass rounded-xl p-5 shadow-inner border border-indigo-300/40">
+      <h2 class="text-2xl font-semibold mb-2 text-indigo-300 flex items-center">
+       <i class="fas fa-truck mr-3">
+       </i>
+       E-CDE Drive
+      </h2>
+      <p>
+       Maintenue pour un rendu fluide.
+      </p>
+     </div>
+     <div class="glass rounded-xl p-5 shadow-inner border border-indigo-300/40">
+      <h2 class="text-2xl font-semibold mb-2 text-indigo-300 flex items-center">
+       <i class="fas fa-code-branch mr-3">
+       </i>
+       E-CDE &amp; Zfdilizted Web
+      </h2>
+      <p>
+       Amélioration en activité et non maintenue pour certains.
+      </p>
+     </div>
+     <div class="glass rounded-xl p-5 shadow-inner border border-indigo-300/40">
+      <h2 class="text-2xl font-semibold mb-2 text-indigo-300 flex items-center">
+       <i class="fas fa-cogs mr-3">
+       </i>
+       Raison principale
+      </h2>
+      <p>
+       Maintenance dédiée aux améliorations système, fluidité, et revue de certaines fonctionnalités tels que
+       <span class="font-mono bg-indigo-700/40 rounded px-1">
+        GFLP-LSP
+       </span>
+       •
+       <span class="font-mono bg-indigo-700/40 rounded px-1">
+        SRDMG by LsFly
+       </span>
+       .
+      </p>
+     </div>
+    </div>
+   </section>
+   <button aria-controls="infoModal" aria-haspopup="dialog" class="mt-10 w-full md:w-auto bg-indigo-500 hover:bg-indigo-600 transition-colors rounded-lg py-3 px-6 font-semibold text-white flex items-center justify-center gap-2" id="openModalBtn">
+    <i class="fas fa-info-circle">
+    </i>
+    Plus d'informations
+   </button>
+  </main>
+  <!-- Modal -->
+  <div aria-labelledby="modalTitle" aria-modal="true" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300" id="infoModal" role="dialog" tabindex="-1">
+   <div class="glass max-w-3xl w-full rounded-3xl p-8 relative shadow-lg">
+    <button aria-label="Fermer la fenêtre modale" class="absolute top-5 right-5 text-indigo-400 hover:text-indigo-600 text-2xl focus:outline-none" id="closeModalBtn">
+     <i class="fas fa-times">
+     </i>
+    </button>
+    <h3 class="text-3xl font-semibold mb-6 text-indigo-300 flex items-center gap-3" id="modalTitle">
+     <i class="fas fa-info-circle">
+     </i>
+     Détails supplémentaires
+    </h3>
+    <p class="text-lg leading-relaxed text-gray-100">
+     Ce site est conçu pour offrir une expérience fluide et moderne. Les comptes utilisateurs restent accessibles via diverses API, garantissant une intégration facile avec d'autres services. Le module E-CDE Drive est maintenu activement pour assurer un rendu performant et sans accroc. Par ailleurs, les projets E-CDE &amp; affiliated Web & service sont en amélioration continue, bien que certains aspects ne soient plus maintenus, afin de concentrer les efforts sur la maintenance système, l'amélioration de la fluidité et la revue de fonctionnalités clés telles que
+     <span class="font-mono bg-indigo-700/40 rounded px-1">
+      GFLP-LSP
+     </span>
+     et
+     <span class="font-mono bg-indigo-700/40 rounded px-1">
+      SRDMG by LsFly
+     </span>
+     .
+    </p>
+    <img alt="Illustration stylisée représentant la maintenance et l'amélioration d'un système informatique avec des icônes de rouages et graphiques" class="mt-8 rounded-xl shadow-md w-full object-cover" height="300" src="https://storage.googleapis.com/a1aa/image/c3d94cf3-49cc-48cc-1583-df2b758c553a.jpg" width="600"/>
+   </div>
+  </div>
+  <script>
+   const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const infoModal = document.getElementById('infoModal');
+
+    openModalBtn.addEventListener('click', () => {
+      infoModal.classList.remove('opacity-0', 'pointer-events-none');
+      infoModal.focus();
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      infoModal.classList.add('opacity-0', 'pointer-events-none');
+      openModalBtn.focus();
+    });
+
+    // Close modal on outside click
+    infoModal.addEventListener('click', (e) => {
+      if (e.target === infoModal) {
+        infoModal.classList.add('opacity-0', 'pointer-events-none');
+        openModalBtn.focus();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !infoModal.classList.contains('opacity-0')) {
+        infoModal.classList.add('opacity-0', 'pointer-events-none');
+        openModalBtn.focus();
+      }
+    });
+  </script>
+ </body>
+</html>
