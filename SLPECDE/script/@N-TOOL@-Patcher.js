@@ -17,11 +17,12 @@ export function patch() {
   // Fonction de nettoyage des caracteres speciaux
   function cleanString(input) {
     return input
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Enleve les accents
-      .replace(/[^A-Za-z0-9@\-_/\. \n:(){}!?\.;\*_\`+#]/g, '')
-      .replace(/[ ]{2,}/g, ' '); // Evite les doubles espaces
-  }
+      .normalize('NFD') // Étape 1: Décomposer les caractères accentués
+      .replace(/[\u0300-\u036f]/g, '') // Étape 2: Supprimer les diacritiques (accents)
+      .replace(/[^A-Za-z0-9@\-_/\. \n:(){}!?\.;\*_\`+#'#]/g, '') // Étape 3: Filtrer les caractères autorisés
+      .replace(/[ ]{2,}/g, ' '); // Étape 4: Éviter les doubles espaces
+}
+
 
   // Applique le nettoyage en temps reel sur les inputs et textareas
   document.querySelectorAll('input, textarea').forEach(el => {
