@@ -2,6 +2,22 @@ export function Rules() {
     if (localStorage.getItem('rules') === 'false') {
         localStorage.removeItem('rules');
     }
+
+
+
+
+  function ajouterFond() {
+    const div = document.createElement('div');
+    div.className = 'relative h-full w-full bg-slate-950';
+    document.body.insertBefore(div, document.body.lastChild);
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(ajouterFond, 1500);
+  } else {
+    window.addEventListener('DOMContentLoaded', () => setTimeout(ajouterFond, 1500));
+  }
+    
 }
 export function ADM_RPE() {
     if (localStorage.getItem('EnesCDE_ADM:RPE') === 'false') {
