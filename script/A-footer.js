@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("ecde_footere").innerHTML = `
+    document.getElementById("ecde_footer").innerHTML = `
      <br><br>
 <footer class="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
     <div class="border-t border-slate-900/5 dark:border-gray-700 py-10">
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("ecde_footer").innerHTML = `
+    document.getElementById("ecde_footeer").innerHTML = `
 <footer class="footer dark:bg-gray-900 bg-white  flex flex-col items-center gap-4 p-6" style="border-top-left-radius:15px; border-top-right-radius:15px;>
   <div class="flex items-center gap-2 text-xl font-bold text-base-content">
       <img src="https://enes-cde.vercel.app/data/img/web/favicon.png" style="border-radius: 10px; width: 24px; height: 24px;"
