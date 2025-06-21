@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("ecde_footer").innerHTML = `
+    document.getElementById("ecde_footere").innerHTML = `
      <br><br>
 <footer class="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
     <div class="border-t border-slate-900/5 dark:border-gray-700 py-10">
