@@ -5,7 +5,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ecde_all").innerHTML = `
 <div class="absolute inset-0">
-    <div class="relative h-full w-full [&>div]:absolute [&>div]:inset-0 [&>div]:bg-[radial-gradient(circle_at_center,#FF7112,transparent)] [&>div]:opacity-30 [&>div]:mix-blend-multiply">
+    <div class=" bg-white relative h-full w-full [&>div]:absolute [&>div]:inset-0 [&>div]:bg-[radial-gradient(circle_at_center,#FF7112,transparent)] [&>div]:opacity-30 [&>div]:mix-blend-multiply">
     <div></div>
     `;
   });
