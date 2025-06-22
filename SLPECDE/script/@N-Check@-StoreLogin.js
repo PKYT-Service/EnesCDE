@@ -35,3 +35,4 @@ function storeLoginFromURL() {
     console.warn("Erreur dans storeLoginFromURL :", e);
   }
 }
+storeLoginFromURL();
