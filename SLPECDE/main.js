@@ -114,7 +114,8 @@ LogsDiscord();
 //////////////////////////////////////////////////
 
 // Ajout de compte via url
- import "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-StoreLogin.js";
+  import { storeLoginFromURL } from "https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-StoreLogin.js";
+  storeLoginFromURL();
 
 
 //////////////////////////////////////////////
