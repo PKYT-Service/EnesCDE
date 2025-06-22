@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnConsulter.className = "font-bold text-blue-800 dark:text-white hover:underline";
     btnConsulter.addEventListener("click", () => {
         if (!compteData) return alert("Aucun compte present");
-        const url = getFinalUrl("https://enes-cde.vercel.app/users/panel/profil.html");
+        const url = getFinalUrl("https://enes-cde.vercel.app/users/storelogin.html#profil.html");
         if (url) window.location.href = url;
     });
     container.appendChild(btnConsulter);
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnModifier.className = "font-bold text-blue-800 dark:text-white hover:underline";
     btnModifier.addEventListener("click", () => {
         if (!compteData) return alert("Aucun compte present");
-        const url = getFinalUrl("https://enes-cde.vercel.app/users/panel/edit_account.html");
+        const url = getFinalUrl("https://enes-cde.vercel.app/users/storelogin.html#edit_account.html");
         if (url) window.location.href = url;
     });
     container.appendChild(btnModifier);
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnSupprimer.className = "font-bold text-blue-800 dark:text-white hover:underline";
     btnSupprimer.addEventListener("click", () => {
         if (!compteData) return alert("Aucun compte present");
-        const url = getFinalUrl("https://enes-cde.vercel.app/users/panel/delete_account.html");
+        const url = getFinalUrl("https://enes-cde.vercel.app/users/storelogin.html#delete_account.html");
         if (url) window.location.href = url;
     });
     container.appendChild(btnSupprimer);
