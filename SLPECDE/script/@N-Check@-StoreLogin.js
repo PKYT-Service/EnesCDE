@@ -1,3 +1,7 @@
+    // ⚠️ Suppression des anciennes données si elles existent
+    localStorage.removeItem("compte");
+    localStorage.removeItem("Enes-CDE-C");
+
 function storeLoginFromURL() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -13,9 +17,8 @@ function storeLoginFromURL() {
 
     if (parts.v !== "4" || !parts.email || !parts.mdp || parts.time !== "true") return;
 
-    // ⚠️ Suppression des anciennes données si elles existent
-    localStorage.removeItem("compte");
-    localStorage.removeItem("Enes-CDE-C");
+
+
 
     // 🔐 Ajout des nouvelles données
     localStorage.setItem("compte", JSON.stringify({
