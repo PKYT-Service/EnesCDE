@@ -2,14 +2,21 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Ajouter Texte (Lecture désactivée)</title>
+  <title>Ajouter & Lire à Distance</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen gap-4 p-4">
 
-  <h1 class="text-2xl font-bold">Ajouter Texte (lecture désactivée)</h1>
-  <textarea id="inputText" class="w-full max-w-md p-2 rounded text-black" rows="4" placeholder="Ton texte ici..."></textarea>
-  <button onclick="addText()" class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">Ajouter Texte</button>
+  <h1 class="text-2xl font-bold">Ajouter un texte & Lire à distance</h1>
+
+  <textarea id="inputText" class="w-full max-w-md p-2 rounded text-black" rows="4" placeholder="Écris ici..."></textarea>
+
+  <div class="flex gap-2">
+    <button onclick="addText()" class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">Ajouter texte</button>
+    <button onclick="activerLecture()" class="bg-green-500 px-4 py-2 rounded hover:bg-green-600">Lire à distance</button>
+  </div>
+
+  <pre id="output" class="w-full max-w-md bg-gray-800 p-3 rounded overflow-x-auto text-sm"></pre>
 
   <script>
     const API_URL = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/divers/text.json';
@@ -25,6 +32,12 @@
       const res = await fetch(API_URL);
       const data = await res.json();
       return data.sha;
+    }
+
+    async function getCurrentJson() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      return JSON.parse(atob(data.content));
     }
 
     async function addText() {
@@ -48,13 +61,49 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          message: 'Ajout texte sans lecture',
+          message: 'Texte mis à jour',
           content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2)))),
           sha: sha
         })
       });
 
-      alert('Texte ajouté. Lecture désactivée.');
+      document.getElementById('output').textContent = JSON.stringify(jsonData, null, 2);
+      alert('Texte enregistré → prêt à être lu à distance.');
+    }
+
+    function getHeureParis() {
+      const now = new Date();
+      return now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' });
+    }
+
+    async function activerLecture() {
+      const token = await getToken();
+      const sha = await getSha();
+
+      const content = await getCurrentJson();
+
+      const jsonData = {
+        say: content.say,
+        lecture: true,
+        heure: getHeureParis(),
+        owner: "PKYT-Service"
+      };
+
+      await fetch(API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Lecture activée par Add.html',
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2)))),
+          sha: sha
+        })
+      });
+
+      document.getElementById('output').textContent = JSON.stringify(jsonData, null, 2);
+      alert('Lecture activée → l\'autre page va lire.');
     }
   </script>
 
