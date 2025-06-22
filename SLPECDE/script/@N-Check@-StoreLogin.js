@@ -1,13 +1,7 @@
-    // ⚠️ Suppression des anciennes données si elles existent
-    localStorage.removeItem("compte");
-    localStorage.removeItem("Enes-CDE-C");
-
-function storeLoginFromURL() {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const rawAcc = params.get("acc");
-    if (!rawAcc) return;
-
+try {
+  const params = new URLSearchParams(window.location.search);
+  const rawAcc = params.get("acc");
+  if (rawAcc) {
     const decoded = decodeURIComponent(rawAcc);
     const parts = decoded.split(";").reduce((acc, part) => {
       const [key, value] = part.split(":");
@@ -15,27 +9,27 @@ function storeLoginFromURL() {
       return acc;
     }, {});
 
-    if (parts.v !== "4" || !parts.email || !parts.mdp || parts.time !== "true") return;
+    if (parts.v === "4" && parts.email && parts.mdp && parts.time === "true") {
+      // ⚠️ Suppression des anciennes données
+      localStorage.removeItem("compte");
+      localStorage.removeItem("Enes-CDE-C");
 
+      // 🔐 Ajout des nouvelles données
+      localStorage.setItem("compte", JSON.stringify({
+        email: parts.email,
+        password: parts.mdp
+      }));
 
+      const now = new Date();
+      const expiry = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 heures
+      localStorage.setItem("Enes-CDE-C", JSON.stringify({
+        valid: true,
+        expiry: expiry.toISOString()
+      }));
 
-
-    // 🔐 Ajout des nouvelles données
-    localStorage.setItem("compte", JSON.stringify({
-      email: parts.email,
-      password: parts.mdp
-    }));
-
-    const now = new Date();
-    const expiry = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 heures
-    localStorage.setItem("Enes-CDE-C", JSON.stringify({
-      valid: true,
-      expiry: expiry.toISOString()
-    }));
-
-    console.log("✅ Données de connexion mises à jour.");
-  } catch (e) {
-    console.warn("Erreur dans storeLoginFromURL :", e);
+      console.log("✅ Données de connexion mises à jour.");
+    }
   }
+} catch (e) {
+  console.warn("Erreur dans le traitement de l’URL :", e);
 }
-storeLoginFromURL();
