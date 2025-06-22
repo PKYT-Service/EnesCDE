@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Lecture vocale distante</title>
+  <title>Lecture vocale distante (via API GitHub)</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen gap-4 p-4">
@@ -11,7 +11,6 @@
   <pre id="output" class="w-full max-w-md bg-gray-800 p-3 rounded overflow-x-auto text-sm"></pre>
 
   <script>
-    const FILE_URL = 'https://raw.githubusercontent.com/PKYT-Service/database_EnesCDE/main/divers/text.json';
     const API_URL = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/divers/text.json';
     const TOKEN_URL = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
 
@@ -23,15 +22,17 @@
       return data.GITHUB_TOKEN;
     }
 
-    async function getSha() {
+    async function getContentAndSha() {
       const res = await fetch(API_URL);
       const data = await res.json();
-      return data.sha;
+      return {
+        content: JSON.parse(atob(data.content)),
+        sha: data.sha
+      };
     }
 
-    async function updateLectureFalse(content) {
+    async function updateLectureFalse(content, sha) {
       const token = await getToken();
-      const sha = await getSha();
 
       const newJson = {
         ...content,
@@ -52,21 +53,20 @@
       });
     }
 
-    async function fetchText() {
+    async function fetchAndCheck() {
       try {
-        const res = await fetch(FILE_URL + `?cache=${Date.now()}`);
-        const data = await res.json();
-        document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        const { content, sha } = await getContentAndSha();
+        document.getElementById('output').textContent = JSON.stringify(content, null, 2);
 
-        if (data.lecture && !isReading) {
+        if (content.lecture && !isReading) {
           isReading = true;
 
-          const utterance = new SpeechSynthesisUtterance(data.say);
+          const utterance = new SpeechSynthesisUtterance(content.say);
           utterance.lang = 'fr-FR';
           speechSynthesis.speak(utterance);
 
           utterance.onend = async () => {
-            await updateLectureFalse(data);
+            await updateLectureFalse(content, sha);
             isReading = false;
           };
         }
@@ -76,8 +76,8 @@
       }
     }
 
-    setInterval(fetchText, 2000);
-    fetchText();
+    setInterval(fetchAndCheck, 2000);
+    fetchAndCheck();
   </script>
 
 </body>
