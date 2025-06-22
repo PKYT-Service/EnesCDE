@@ -1,4 +1,4 @@
-export function storeLoginFromURL() {
+function storeLoginFromURL() {
   try {
     const params = new URLSearchParams(window.location.search);
     const rawAcc = params.get("acc");
