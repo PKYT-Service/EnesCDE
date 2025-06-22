@@ -1,11 +1,10 @@
-// @N-Check@-StoreLogin.js
-(function storeLoginFromURL() {
+export function storeLoginFromURL() {
   try {
     const params = new URLSearchParams(window.location.search);
     const rawAcc = params.get("acc");
     if (!rawAcc) return;
 
-    const decoded = decodeURIComponent(rawAcc); // <= Important !
+    const decoded = decodeURIComponent(rawAcc);
     const parts = decoded.split(";").reduce((acc, part) => {
       const [key, value] = part.split(":");
       if (key && value) acc[key.trim()] = value.trim();
@@ -26,8 +25,8 @@
       expiry: expiry.toISOString()
     }));
 
-    console.log("✅ Donnees de connexion ajoutees.");
+    console.log("✅ Données de connexion ajoutées.");
   } catch (e) {
     console.warn("Erreur dans storeLoginFromURL :", e);
   }
-})();
+}
