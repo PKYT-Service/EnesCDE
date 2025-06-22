@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Lire Texte → Active Lecture</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen gap-4 p-4">
+
+  <h1 class="text-2xl font-bold">Lire Texte → Active Lecture</h1>
+  <button onclick="activerLecture()" class="bg-green-500 px-4 py-2 rounded hover:bg-green-600">Lire maintenant</button>
+  <pre id="output" class="w-full max-w-md bg-gray-800 p-3 rounded overflow-x-auto text-sm"></pre>
+
+  <script>
+    const API_URL = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/divers/text.json';
+    const TOKEN_URL = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
+
+    async function getToken() {
+      const res = await fetch(TOKEN_URL);
+      const data = await res.json();
+      return data.GITHUB_TOKEN;
+    }
+
+    async function getSha() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      return data.sha;
+    }
+
+    function getHeureParis() {
+      const now = new Date();
+      return now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' });
+    }
+
+    async function activerLecture() {
+      const token = await getToken();
+      const sha = await getSha();
+
+      // Récupérer le contenu existant pour garder le texte intact
+      const data = await fetch(API_URL).then(r => r.json());
+      const content = JSON.parse(atob(data.content));
+
+      const jsonData = {
+        say: content.say,
+        lecture: true,
+        heure: getHeureParis(),
+        owner: "PKYT-Service"
+      };
+
+      await fetch(API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Lecture activée par client',
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2)))),
+          sha: sha
+        })
+      });
+
+      document.getElementById('output').textContent = JSON.stringify(jsonData, null, 2);
+      alert('Lecture activée → distant va lire.');
+    }
+  </script>
+
+</body>
+</html>
