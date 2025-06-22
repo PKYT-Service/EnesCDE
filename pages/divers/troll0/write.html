@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ajouter Texte (Lecture désactivée)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen gap-4 p-4">
+
+  <h1 class="text-2xl font-bold">Ajouter Texte (lecture désactivée)</h1>
+  <textarea id="inputText" class="w-full max-w-md p-2 rounded text-black" rows="4" placeholder="Ton texte ici..."></textarea>
+  <button onclick="addText()" class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">Ajouter Texte</button>
+
+  <script>
+    const API_URL = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/divers/text.json';
+    const TOKEN_URL = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
+
+    async function getToken() {
+      const res = await fetch(TOKEN_URL);
+      const data = await res.json();
+      return data.GITHUB_TOKEN;
+    }
+
+    async function getSha() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      return data.sha;
+    }
+
+    async function addText() {
+      const text = document.getElementById('inputText').value.trim();
+      if (!text) return alert('Le texte est vide.');
+
+      const token = await getToken();
+      const sha = await getSha();
+
+      const jsonData = {
+        say: text,
+        lecture: false,
+        heure: "",
+        owner: "PKYT-Service"
+      };
+
+      await fetch(API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Ajout texte sans lecture',
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonData, null, 2)))),
+          sha: sha
+        })
+      });
+
+      alert('Texte ajouté. Lecture désactivée.');
+    }
+  </script>
+
+</body>
+</html>
