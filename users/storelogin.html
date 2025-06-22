@@ -7,8 +7,38 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-StoreLogin.js"></script>
   <script>
-      
-   </script>
+  (function () {
+    try {
+      const url = window.location.href.replace('#', '?');
+      const params = new URLSearchParams(new URL(url).search);
+      const rawAcc = params.get("acc");
+
+      if (rawAcc) {
+        const decoded = decodeURIComponent(rawAcc);
+        const parts = decoded.split(";").reduce((acc, part) => {
+          const [key, value] = part.split(":");
+          if (key && value) acc[key.trim()] = value.trim();
+          return acc;
+        }, {});
+
+        const email = parts.email || "";
+        const password = parts.mdp || "";
+
+        if (email && password) {
+          // ✅ Remplace automatiquement l'ancien si déjà présent
+          localStorage.setItem("compte", JSON.stringify({ email, password }));
+          console.log("✅ Nouveau compte enregistré :", { email, password });
+        } else {
+          console.warn("❗ Informations incomplètes dans l’URL.");
+        }
+      } else {
+        console.warn("❗ Paramètre 'acc' absent dans l’URL.");
+      }
+    } catch (e) {
+      console.error("❌ Erreur lors du traitement :", e);
+    }
+  })();
+  </script>
 </head>
 <body>
 
