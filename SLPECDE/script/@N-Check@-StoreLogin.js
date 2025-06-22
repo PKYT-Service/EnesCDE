@@ -1,6 +1,7 @@
 try {
   const params = new URLSearchParams(window.location.search);
   const rawAcc = params.get("acc");
+
   if (rawAcc) {
     const decoded = decodeURIComponent(rawAcc);
     const parts = decoded.split(";").reduce((acc, part) => {
@@ -10,18 +11,22 @@ try {
     }, {});
 
     if (parts.v === "4" && parts.email && parts.mdp && parts.time === "true") {
-      // ⚠️ Suppression des anciennes données
+      // Afficher avant suppression
+      console.log("Avant suppression :", localStorage.getItem("compte"), localStorage.getItem("Enes-CDE-C"));
+
+      // Suppression forcée
       localStorage.removeItem("compte");
       localStorage.removeItem("Enes-CDE-C");
 
-      // 🔐 Ajout des nouvelles données
+      console.log("Après suppression :", localStorage.getItem("compte"), localStorage.getItem("Enes-CDE-C"));
+
+      // Ajout des nouvelles données
       localStorage.setItem("compte", JSON.stringify({
         email: parts.email,
         password: parts.mdp
       }));
 
-      const now = new Date();
-      const expiry = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 heures
+      const expiry = new Date(Date.now() + 3 * 60 * 60 * 1000); // 3 heures
       localStorage.setItem("Enes-CDE-C", JSON.stringify({
         valid: true,
         expiry: expiry.toISOString()
