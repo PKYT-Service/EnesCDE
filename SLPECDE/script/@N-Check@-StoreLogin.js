@@ -13,19 +13,24 @@ export function storeLoginFromURL() {
 
     if (parts.v !== "4" || !parts.email || !parts.mdp || parts.time !== "true") return;
 
+    // ⚠️ Suppression des anciennes données si elles existent
+    localStorage.removeItem("compte");
+    localStorage.removeItem("Enes-CDE-C");
+
+    // 🔐 Ajout des nouvelles données
     localStorage.setItem("compte", JSON.stringify({
       email: parts.email,
       password: parts.mdp
     }));
 
     const now = new Date();
-    const expiry = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+    const expiry = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 heures
     localStorage.setItem("Enes-CDE-C", JSON.stringify({
       valid: true,
       expiry: expiry.toISOString()
     }));
 
-    console.log("✅ Données de connexion ajoutées.");
+    console.log("✅ Données de connexion mises à jour.");
   } catch (e) {
     console.warn("Erreur dans storeLoginFromURL :", e);
   }
