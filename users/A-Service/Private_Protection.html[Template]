@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECDE  - Panel > Home</title>
+  <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="icon" type="image/png" href="https://campyskerie.vercel.app//data/img/favicon.png">
+          
+  <!-- Script -->
+  <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+  <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+  <script src="https://campyskerie.vercel.app/A-menu.js"></script>
+  <script src="https://enes-cde.vercel.app/users/A-Service/__Private_Protection__.js"></script>
+  <script src="https://enes-cde.vercel.app/users/A-Service/__Load_Profil__.js"></script>
+  <script src="https://enes-cde.vercel.app/users/A-Service/[PlugIn]-ProfilViewer.js"></script>
+  <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+   <div id="session/D"></div>
+   <div id="perm/100"></div>
+   <div id="ecde_all"></div>
+</head>
+
+  
+      <br><br>
+      <h2><center>Enes - CDE section</center></h2> <br>
+      <div id="ecde_users_profilviewer"></div>
+
+              
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+</body>
+</html>
+
+
+  
