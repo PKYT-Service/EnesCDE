@@ -8,6 +8,8 @@
         <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
         <script src="https://enes-cde.vercel.app/script/A-menu.js" defer></script>
         <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+
+  
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -71,7 +73,7 @@
 <body class="bg-gray-50 min-h-screen flex flex-col">
   <header class="bg-blue-600 text-white p-4 flex items-center justify-between">
     <h1 class="text-xl font-semibold flex items-center gap-2">
-      <i class="fas fa-folder-open"></i> - -/ Explorateur MD
+      <i class="fas fa-folder-open"></i> - -/ Institution nationale des decrets .
     </h1>
     <div class="flex items-center gap-3">
       <!-- Buttons removed as requested -->
@@ -80,7 +82,7 @@
 
   <main class="flex flex-1 overflow-hidden">
     <!-- Menu : Deb -->
-    <div id="ecde_menu" class="w-20"></div>
+    <div id="ecde" class="w-20"></div>
     <!-- Menu : Fin -->
 
     <nav
@@ -124,7 +126,7 @@
     <section
       id="file-view-section"
       class="w-[28rem] bg-white border-l border-gray-300 flex flex-col overflow-hidden hidden"
-      aria-label="Visualisation et édition du fichier"
+      aria-label="Visualisation du fichier"
     >
       <header
         class="p-4 border-b border-gray-300 flex items-center justify-between"
@@ -139,7 +141,6 @@
           >
             <i class="fas fa-share-alt"></i>
           </button>
-          <!-- Edit toggle button removed -->
           <button
             id="btn-close-view"
             class="text-gray-600 hover:text-gray-900"
@@ -162,6 +163,7 @@
         class="flex-1 p-4 font-mono text-sm text-gray-800 resize-none outline-none hidden"
         spellcheck="false"
         aria-label="Contenu du fichier markdown"
+        readonly
       ></textarea>
       <footer class="p-4 border-t border-gray-300 flex justify-end gap-2">
         <button
@@ -176,6 +178,24 @@
     </section>
   </main>
   <div id="repo/Minecraft/"></div>
-<script src="https://enes-cde.vercel.app/data/api/@FCT-U@-Everyone_Drive.js"></script>
+
+  <script src="https://enes-cde.vercel.app/data/api/@FCT-A@-Everyone_Drive.js"></script>
+<script>
+  const fileViewSection = document.getElementById('file-view-section');
+  const btnCloseView = document.getElementById('btn-close-view');
+  const fileUl = document.getElementById('files-ul');
+
+  // Quand un fichier est clique (attente du contenu charge)
+  fileUl.addEventListener('click', (e) => {
+    if (e.target.closest('li')) {
+      fileViewSection.classList.add('open');
+    }
+  });
+
+  // Bouton pour fermer
+  btnCloseView.addEventListener('click', () => {
+    fileViewSection.classList.remove('open');
+  });
+</script>
 </body>
 </html>
