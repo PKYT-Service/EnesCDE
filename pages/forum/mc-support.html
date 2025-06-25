@@ -1,0 +1,181 @@
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EnesCDE  > Forum > Consultation // MC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+         <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-menu.js" defer></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" defer></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Math block styling */
+    .math-block {
+      background-color: #f3f4f6;
+      border-left: 4px solid #3b82f6;
+      padding: 0.5rem 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+    }
+    .math-inline {
+      background-color: #e0f2fe;
+      padding: 0 0.2rem;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 2px;
+    }
+    mark {
+      background-color: #fde68a;
+      padding: 0 0.2rem;
+      border-radius: 2px;
+    }
+    #table-of-contents {
+      border: 1px solid #d1d5db;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      background-color: #f9fafb;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+    sup {
+      font-size: 0.7rem;
+      vertical-align: super;
+      cursor: help;
+      color: #6b7280;
+    }
+    /* Scrollbar for file list and folders */
+    #folders-ul::-webkit-scrollbar,
+    #files-ul::-webkit-scrollbar,
+    #folders-ul-inside::-webkit-scrollbar {
+      width: 8px;
+    }
+    #folders-ul::-webkit-scrollbar-thumb,
+    #files-ul::-webkit-scrollbar-thumb,
+    #folders-ul-inside::-webkit-scrollbar-thumb {
+      background-color: rgba(107, 114, 128, 0.4);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <header class="bg-blue-600 text-white p-4 flex items-center justify-between">
+    <h1 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-folder-open"></i> - -/ Explorateur MD
+    </h1>
+    <div class="flex items-center gap-3">
+      <!-- Buttons removed as requested -->
+    </div>
+  </header>
+
+  <main class="flex flex-1 overflow-hidden">
+    <!-- Menu : Deb -->
+    <div id="ecde_menu" class="w-20"></div>
+    <!-- Menu : Fin -->
+
+    <nav
+      id="folder-list"
+      class="w-64 bg-white border-r border-gray-300 overflow-y-auto flex flex-col"
+      aria-label="Liste des dossiers"
+    >
+      <h2 class="p-4 font-semibold text-gray-700 border-b border-gray-300">Dossiers racine</h2>
+      <ul class="divide-y divide-gray-200 flex-1 overflow-y-auto" id="folders-ul"></ul>
+      <div class="border-t border-gray-300 p-4">
+        <h3 class="font-semibold text-gray-700 mb-2">Sous-dossiers</h3>
+        <ul class="divide-y divide-gray-200 max-h-48 overflow-y-auto" id="folders-ul-inside"></ul>
+      </div>
+    </nav>
+
+    <section
+      id="file-list-section"
+      class="flex-1 flex flex-col overflow-hidden"
+      aria-label="Liste des fichiers"
+    >
+      <header class="bg-white border-b border-gray-300 p-4 flex items-center justify-between">
+        <h2 id="current-folder-name" class="text-lg font-semibold text-gray-700 truncate">
+          Chargement...
+        </h2>
+        <button
+          id="btn-back-folder"
+          class="text-blue-600 hover:underline disabled:text-gray-400"
+          disabled
+          aria-label="Retour au dossier précédent"
+        >
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+      </header>
+      <ul
+        id="files-ul"
+        class="flex-1 overflow-y-auto bg-white divide-y divide-gray-200 p-4"
+        aria-live="polite"
+      ></ul>
+    </section>
+
+    <section
+      id="file-view-section"
+      class="w-[28rem] bg-white border-l border-gray-300 flex flex-col overflow-hidden hidden"
+      aria-label="Visualisation et édition du fichier"
+    >
+      <header
+        class="p-4 border-b border-gray-300 flex items-center justify-between"
+      >
+        <h3 id="file-view-title" class="text-lg font-semibold text-gray-700 truncate max-w-[70%]"></h3>
+        <div class="flex items-center gap-3">
+          <button
+            id="btn-share"
+            class="text-blue-600 hover:text-blue-800"
+            title="Partager ce fichier"
+            aria-label="Partager ce fichier"
+          >
+            <i class="fas fa-share-alt"></i>
+          </button>
+          <!-- Edit toggle button removed -->
+          <button
+            id="btn-close-view"
+            class="text-gray-600 hover:text-gray-900"
+            title="Fermer la visualisation"
+            aria-label="Fermer la visualisation"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </header>
+      <div
+        id="file-rendered-content"
+        class="flex-1 overflow-y-auto p-4 prose max-w-full text-gray-800"
+        style="white-space: pre-wrap;"
+        aria-label="Contenu rendu du fichier markdown"
+        tabindex="0"
+      ></div>
+      <textarea
+        id="file-content"
+        class="flex-1 p-4 font-mono text-sm text-gray-800 resize-none outline-none hidden"
+        spellcheck="false"
+        aria-label="Contenu du fichier markdown"
+      ></textarea>
+      <footer class="p-4 border-t border-gray-300 flex justify-end gap-2">
+        <button
+          id="btn-save"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed hidden"
+          disabled
+          aria-label="Sauvegarder les modifications"
+        >
+          <i class="fas fa-save mr-2"></i> Sauvegarder
+        </button>
+      </footer>
+    </section>
+  </main>
+  <div id="repo/Minecraft/"></div>
+<script src="https://enes-cde.vercel.app/data/api/@FCT-U@-Everyone_Drive.js"></script>
+</body>
+</html>
