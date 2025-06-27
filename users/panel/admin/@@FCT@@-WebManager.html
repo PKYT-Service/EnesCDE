@@ -1,0 +1,777 @@
+<html lang="fr" class="scroll-smooth" >
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EnesCDE - Admin > Panel Administratif > web manager</title>
+<link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+<script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+<script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+<script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js"></script>
+<script src="https://enes-cde.vercel.app/script/A-all.js"></script>
+<script src="./__sessions__.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+<div class="flex h-screen">
+  <!-- Menu : Deb -->
+  <div id="ecde_menu" class="w-20"></div>
+  <!-- Menu : Fin -->
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 overflow-auto flex flex-col">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Gestion TSL :</h1>
+
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+      <div class="bg-indigo-700 rounded-3xl p-8 text-center sm:p-16 md:px-24 md:py-20 lg:px-28">
+        <div class="max-w-2xl mx-auto">
+          <h2 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">Mise a jour</h2>
+          <p class="max-w-lg text-base text-indigo-100 mx-auto mt-4 sm:text-lg">De nouvel fonctionnalitées</p>
+        </div>
+
+        <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-white mt-8">
+          <li class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="h-5 w-5 shrink-0 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M176.49,95.51a12,12,0,0,1,0,17l-56,56a12,12,0,0,1-17,0l-24-24a12,12,0,1,1,17-17L112,143l47.51-47.52A12,12,0,0,1,176.49,95.51ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"></path>
+            </svg>Redirection / Block
+          </li>
+          <li class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="h-5 w-5 shrink-0 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M176.49,95.51a12,12,0,0,1,0,17l-56,56a12,12,0,0,1-17,0l-24-24a12,12,0,1,1,17-17L112,143l47.51-47.52A12,12,0,0,1,176.49,95.51ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"></path>
+            </svg> Warn / Maintenance
+          </li>
+          <li class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="h-5 w-5 shrink-0 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M176.49,95.51a12,12,0,0,1,0,17l-56,56a12,12,0,0,1-17,0l-24-24a12,12,0,1,1,17-17L112,143l47.51-47.52A12,12,0,0,1,176.49,95.51ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"></path>
+            </svg>Tags devs / level
+          </li>
+          <li class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="h-5 w-5 shrink-0 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M176.49,95.51a12,12,0,0,1,0,17l-56,56a12,12,0,0,1-17,0l-24-24a12,12,0,1,1,17-17L112,143l47.51-47.52A12,12,0,0,1,176.49,95.51ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"></path>
+            </svg> Tags Systemes / membership
+          </li>
+          <li class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="h-5 w-5 shrink-0 text-white" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M176.49,95.51a12,12,0,0,1,0,17l-56,56a12,12,0,0,1-17,0l-24-24a12,12,0,1,1,17-17L112,143l47.51-47.52A12,12,0,0,1,176.49,95.51ZM236,128A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Z"></path>
+            </svg>Et autres
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col flex-1 w-full rounded-sm transition-colors duration-300 border-black mb-8">
+      <header class="p-4 flex justify-between items-center border-b border-gray-300 dark:border-gray-700">
+        <b class="text-lg">TSL</b>
+        <button id="addSiteBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded flex items-center gap-2 transition">
+          <i class="fas fa-plus"></i> Ajouter un site
+        </button>
+      </header>
+      <main class="h-full overflow-y-auto">
+        <div class="container px-6 mx-auto grid">
+          <h2 class="text-center text-2xl font-bold my-4 text-gray-900 dark:text-gray-200">Statistique</h2>
+          <div class="flex items-center justify-center p-4 rounded-lg shadow-md text-gray-800 dark:text-gray-200">
+            <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-6 w-full max-w-6xl">
+              <!-- Tile Blacklist -->
+              <div class="flex items-center p-4 rounded-lg shadow-md bg-gray-300 dark:bg-gray-700">
+                <div class="flex flex-shrink-0 items-center justify-center h-16 w-16 rounded-lg bg-gray-400 dark:bg-gray-600">
+                  <i class="bi bi-shield-x text-3xl"></i>
+                </div>
+                <div class="flex-grow flex flex-col ml-4">
+                  <span class="text-gray-700 dark:text-gray-400">Blacklist</span>
+                  <span class="text-xl font-bold" id="blacklist-count">0</span>
+                </div>
+              </div>
+
+              <!-- Tile Maintenance -->
+              <div class="flex items-center p-4 rounded-lg shadow-md bg-gray-300 dark:bg-gray-700">
+                <div class="flex flex-shrink-0 items-center justify-center h-16 w-16 rounded-lg bg-gray-400 dark:bg-gray-600">
+                  <i class="bi bi-tools text-3xl"></i>
+                </div>
+                <div class="flex-grow flex flex-col ml-4">
+                  <span class="text-gray-700 dark:text-gray-400">Maintenance</span>
+                  <span class="text-xl font-bold" id="maintenance-count">0</span>
+                </div>
+              </div>
+
+              <!-- Tile Rappel -->
+              <div class="flex items-center p-4 rounded-lg shadow-md bg-gray-300 dark:bg-gray-700">
+                <div class="flex flex-shrink-0 items-center justify-center h-16 w-16 rounded-lg bg-gray-400 dark:bg-gray-600">
+                  <i class="bi bi-bell text-3xl"></i>
+                </div>
+                <div class="flex-grow flex flex-col ml-4">
+                  <span class="text-gray-700 dark:text-gray-400">Rappel</span>
+                  <span class="text-xl font-bold" id="rappel-count">0</span>
+                </div>
+              </div>
+
+              <!-- Tile Redirections -->
+              <div class="flex items-center p-4 rounded-lg shadow-md bg-gray-300 dark:bg-gray-700">
+                <div class="flex flex-shrink-0 items-center justify-center h-16 w-16 rounded-lg bg-gray-400 dark:bg-gray-600">
+                  <i class="bi bi-arrow-left-right text-3xl"></i>
+                </div>
+                <div class="flex-grow flex flex-col ml-4">
+                  <span class="text-gray-700 dark:text-gray-400">Redirections</span>
+                  <span class="text-xl font-bold" id="redirection-count">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <h2 class="text-center text-2xl font-bold my-4 text-gray-900 dark:text-gray-200">Gestions :</h2>
+
+    <div class="container mx-auto p-4 overflow-x-auto">
+      <table class="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-left">URL</th>
+            <th class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-left">Type</th>
+            <th class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-left">Etat</th>
+            <th class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="sitesTable" class="align-top"></tbody>
+      </table>
+    </div>
+
+    <!-- Popup for managing a site -->
+    <div id="managePopup" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center hidden z-50 p-4">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-semibold mb-4">Gérer le Site</h3>
+        <div class="mb-4 space-y-4">
+          <label for="statut" class="block font-medium">Statut</label>
+          <select id="statut" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="clear">Neutre</option>
+            <option value="blacklist">Blacklist</option>
+            <option value="rappel">Rappel</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="redirection">Redirection</option>
+          </select>
+
+          <div id="extraFields" class="hidden space-y-3">
+            <div>
+              <label class="block font-medium">Raison</label>
+              <input id="reason" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Comportement abusif" />
+            </div>
+
+            <div id="redirectionUrlField" class="hidden">
+              <label class="block font-medium">URL de redirection</label>
+              <input id="redirectionUrl" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: https://nouveau-site.com" />
+            </div>
+
+            <div>
+              <label class="block font-medium">Par</label>
+              <input id="by" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="Ex: Admin" />
+            </div>
+
+            <div>
+              <label class="block font-medium">Date</label>
+              <input id="date" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date" />
+            </div>
+
+            <div>
+              <label class="block font-medium">Fin (facultatif)</label>
+              <input id="end" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="date" />
+            </div>
+          </div>
+
+          <div>
+            <label for="type" class="block font-medium">Type</label>
+            <select id="type" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <option value="indefinie">Indéfini</option>
+              <option value="neutre">Neutre</option>
+              <option value="lie">Lié</option>
+              <option value="aff">AFF</option>
+              <option value="officiel">ECDE - Service</option>
+              <option value="sys">ECDE - Système</option>
+              <option value="sysetser">ECDE - Service & Système</option>
+              <option value="DL">Developpement local</option>
+              <option value="DE">Developpement externe</option>
+              <option value="DO">Developpement officiel</option>
+              <option value="PG">Preview Git</option>
+              <option value="PV">Preview Vercel</option>
+              <option value="PGB">Preview Git [BOT]</option>
+              <option value="PVB">Preview Vercel [BOT]</option>
+              <option value="TEST">Test</option>
+              <option value="BT">Beta</option>
+              <option value="SDG">Standing</option>
+              <option value="PDT">Production</option>
+              <option value="MTNC">Maintenance</option>
+              <option value="DPCT">Duplication</option>
+              <option value="Disable">Disable</option>
+              <option value="Section">Section</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-4 mt-4">
+          <button id="deleteBtn" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded dark:bg-red-700 dark:hover:bg-red-800 flex items-center gap-2">
+            <i class="fas fa-trash-alt"></i> Supprimer
+          </button>
+          <button id="saveBtn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-blue-700 dark:hover:bg-blue-800 flex items-center gap-2">
+            <i class="fas fa-save"></i> Sauvegarder
+          </button>
+          <button id="closeBtn" class="py-2 px-4 rounded bg-gray-400 hover:bg-gray-500 text-gray-900 dark:bg-gray-600 dark:hover:bg-gray-700 dark:text-white">Fermer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup for adding a new site -->
+    <div id="addSitePopup" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center hidden z-50 p-4">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2"><i class="fas fa-plus-circle"></i> Ajouter un nouveau site</h3>
+        <div class="mb-4 space-y-4">
+          <div>
+            <label for="newUrl" class="block font-medium">URL</label>
+            <input id="newUrl" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" type="text" placeholder="https://exemple.com" />
+          </div>
+          <div>
+            <label for="newType" class="block font-medium">Type</label>
+            <select id="newType" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <option value="indefinie">Indéfini</option>
+              <option value="neutre">Neutre</option>
+              <option value="lie">Lié</option>
+              <option value="aff">AFF</option>
+              <option value="officiel">ECDE - Service</option>
+              <option value="sys">ECDE - Système</option>
+              <option value="sysetser">ECDE - Service & Système</option>
+              <option value="DL">Developpement local</option>
+              <option value="DE">Developpement externe</option>
+              <option value="DO">Developpement officiel</option>
+              <option value="PG">Preview Git</option>
+              <option value="PV">Preview Vercel</option>
+              <option value="PGB">Preview Git [BOT]</option>
+              <option value="PVB">Preview Vercel [BOT]</option>
+              <option value="TEST">Test</option>
+              <option value="BT">Beta</option>
+              <option value="SDG">Standing</option>
+              <option value="PDT">Production</option>
+              <option value="MTNC">Maintenance</option>
+              <option value="DPCT">Duplication</option>
+              <option value="Disable">Disable</option>
+              <option value="Section">Section</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-4 mt-4">
+          <button id="addSiteCancelBtn" class="py-2 px-4 rounded bg-gray-400 hover:bg-gray-500 text-gray-900 dark:bg-gray-600 dark:hover:bg-gray-700 dark:text-white">Annuler</button>
+          <button id="addSiteSaveBtn" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded dark:bg-green-700 dark:hover:bg-green-800 flex items-center gap-2">
+            <i class="fas fa-check"></i> Ajouter
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const tokenUrl = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
+const apiUrl = 'https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json';
+const tableBody = document.getElementById('sitesTable');
+const managePopup = document.getElementById('managePopup');
+const closeBtn = document.getElementById('closeBtn');
+const saveBtn = document.getElementById('saveBtn');
+const deleteBtn = document.getElementById('deleteBtn');
+const addSiteBtn = document.getElementById('addSiteBtn');
+const addSitePopup = document.getElementById('addSitePopup');
+const addSiteCancelBtn = document.getElementById('addSiteCancelBtn');
+const addSiteSaveBtn = document.getElementById('addSiteSaveBtn');
+
+let currentSite = null;
+let jsonData = null;
+let sha = null;
+
+async function getGitHubToken() {
+  const response = await fetch(tokenUrl);
+  const data = await response.json();
+  return data.GITHUB_TOKEN;
+}
+
+async function fetchData() {
+  try {
+    const token = await getGitHubToken();
+    const response = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `token ${token}`
+      }
+    });
+
+    if (!response.ok) throw new Error('Erreur réseau');
+
+    const data = await response.json();
+    const fileContent = atob(data.content);
+    jsonData = JSON.parse(fileContent);
+    sha = data.sha;
+
+    // Initialise Redirection pour tous les sites si non existant
+    jsonData.Sites.forEach(site => {
+      if (!site.Redirection) {
+        site.Redirection = {
+          Statut: false,
+          Raison: "",
+          Url: "",
+          Par: "",
+          Date: "",
+          Fin: ""
+        };
+      }
+      if (!site.BlackListe) {
+        site.BlackListe = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+      }
+      if (!site.Maintenance) {
+        site.Maintenance = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+      }
+      if (!site.Rappel) {
+        site.Rappel = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+      }
+    });
+
+    renderTable(jsonData.Sites);
+    updateCounters();
+  } catch (error) {
+    console.error('Erreur fetchData:', error);
+    alert('Erreur lors du chargement des données');
+  }
+}
+
+function updateCounters() {
+  let blacklistCount = 0;
+  let maintenanceCount = 0;
+  let rappelCount = 0;
+  let redirectionCount = 0;
+
+  jsonData.Sites.forEach(site => {
+    if (site.BlackListe.Statut) blacklistCount++;
+    if (site.Maintenance.Statut) maintenanceCount++;
+    if (site.Rappel.Statut) rappelCount++;
+    if (site.Redirection.Statut) redirectionCount++;
+  });
+
+  document.getElementById("blacklist-count").textContent = blacklistCount;
+  document.getElementById("maintenance-count").textContent = maintenanceCount;
+  document.getElementById("rappel-count").textContent = rappelCount;
+  document.getElementById("redirection-count").textContent = redirectionCount;
+}
+
+function renderTable(sites) {
+  tableBody.innerHTML = '';
+
+  sites.forEach(site => {
+    const row = document.createElement('tr');
+    row.className = "hover:bg-gray-100 dark:hover:bg-gray-700";
+
+    // URL
+    const urlCell = document.createElement('td');
+    urlCell.className = 'px-4 py-2 border border-gray-300 dark:border-gray-700 break-words max-w-xs';
+    urlCell.textContent = site.URL || 'Non défini';
+
+    // Type
+    const typeCell = document.createElement('td');
+    typeCell.className = 'px-4 py-2 border border-gray-300 dark:border-gray-700';
+    typeCell.innerHTML = renderTypeTag(site.Type);
+
+    // État
+    const stateCell = document.createElement('td');
+    stateCell.className = 'px-4 py-2 border border-gray-300 dark:border-gray-700';
+    stateCell.innerHTML = renderStateTags(site);
+
+    // Actions
+    const actionCell = document.createElement('td');
+    actionCell.className = 'px-4 py-2 border border-gray-300 dark:border-gray-700 flex flex-wrap gap-2';
+
+    // Manage button
+    const manageButton = document.createElement('button');
+    manageButton.className = 'bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded-lg transition flex items-center gap-1';
+    manageButton.innerHTML = '<i class="fas fa-edit"></i> Gérer';
+    manageButton.onclick = () => openManagePopup(site);
+    actionCell.appendChild(manageButton);
+
+    // Move Up button
+    const moveUpButton = document.createElement('button');
+    moveUpButton.className = 'bg-gray-500 hover:bg-gray-600 text-white py-1 px-2 rounded-lg transition flex items-center gap-1';
+    moveUpButton.title = "Déplacer vers le haut";
+    moveUpButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    moveUpButton.onclick = () => moveSite(site, -1);
+    actionCell.appendChild(moveUpButton);
+
+    // Move Down button
+    const moveDownButton = document.createElement('button');
+    moveDownButton.className = 'bg-gray-500 hover:bg-gray-600 text-white py-1 px-2 rounded-lg transition flex items-center gap-1';
+    moveDownButton.title = "Déplacer vers le bas";
+    moveDownButton.innerHTML = '<i class="fas fa-arrow-down"></i>';
+    moveDownButton.onclick = () => moveSite(site, 1);
+    actionCell.appendChild(moveDownButton);
+
+    // Delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded-lg transition flex items-center gap-1';
+    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteButton.title = "Supprimer le site";
+    deleteButton.onclick = () => confirmDeleteSite(site);
+    actionCell.appendChild(deleteButton);
+
+    row.append(urlCell, typeCell, stateCell, actionCell);
+    tableBody.appendChild(row);
+  });
+}
+
+function renderStateTags(site) {
+  const tags = [];
+
+  if (site.BlackListe.Statut) {
+    tags.push(`<span class="bg-red-200 hover:bg-red-300 dark:bg-red-700 hover:dark:bg-red-800 py-1 px-2 rounded-lg text-sm">Blacklist</span>`);
+  }
+  if (site.Maintenance.Statut) {
+    tags.push(`<span class="bg-yellow-200 hover:bg-yellow-300 dark:bg-yellow-700 hover:dark:bg-yellow-800 py-1 px-2 rounded-lg text-sm">Maintenance</span>`);
+  }
+  if (site.Rappel.Statut) {
+    tags.push(`<span class="bg-blue-200 hover:bg-blue-300 dark:bg-blue-700 hover:dark:bg-blue-800 py-1 px-2 rounded-lg text-sm">Rappel</span>`);
+  }
+  if (site.Redirection.Statut) {
+    tags.push(`<span class="bg-orange-200 hover:bg-orange-300 dark:bg-orange-700 hover:dark:bg-orange-800 py-1 px-2 rounded-lg text-sm">Redirection</span>`);
+  }
+
+  if (tags.length === 0) {
+    return `<span class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-800 py-1 px-2 rounded-lg text-sm">Neutre</span>`;
+  }
+
+  return tags.join(' ');
+}
+
+function renderTypeTag(type) {
+  const typeClasses = {
+    'lie': 'bg-blue-200 dark:bg-blue-700 hover:bg-blue-300 hover:dark:bg-blue-800',
+    'aff': 'bg-indigo-200 dark:bg-indigo-700 hover:bg-indigo-300 hover:dark:bg-indigo-800',
+    'officiel': 'bg-green-200 dark:bg-green-700 hover:bg-green-300 hover:dark:bg-green-800',
+    'sysetser': 'bg-green-200 dark:bg-green-600 hover:bg-green-200 hover:dark:bg-green-600',
+    'sys': 'bg-green-200 dark:bg-green-700 hover:bg-green-100 hover:dark:bg-green-800',
+    'DL': 'bg-indigo-200 dark:bg-indigo-700 hover:bg-indigo-300 hover:dark:bg-indigo-800',
+    'DE': 'bg-indigo-200 dark:bg-indigo-700 hover:bg-indigo-300 hover:dark:bg-indigo-800',
+    'DO': 'bg-indigo-200 dark:bg-indigo-700 hover:bg-indigo-300 hover:dark:bg-indigo-800',
+    'PG': 'bg-cyan-200 dark:bg-cyan-700 hover:bg-cyan-300 hover:dark:bg-cyan-800',
+    'PV': 'bg-cyan-200 dark:bg-cyan-700 hover:bg-cyan-300 hover:dark:bg-cyan-800',
+    'PGB': 'bg-cyan-200 dark:bg-cyan-700 hover:bg-cyan-300 hover:dark:bg-cyan-800',
+    'PVB': 'bg-cyan-200 dark:bg-cyan-700 hover:bg-cyan-300 hover:dark:bg-cyan-800',
+    'TEST': 'bg-violet-200 dark:bg-violet-700 hover:bg-violet-300 hover:dark:bg-violet-800',
+    'BT': 'bg-violet-200 dark:bg-violet-700 hover:bg-violet-300 hover:dark:bg-violet-800',
+    'SDG': 'bg-violet-200 dark:bg-violet-700 hover:bg-violet-300 hover:dark:bg-violet-800',
+    'PDT': 'bg-violet-200 dark:bg-violet-700 hover:bg-violet-300 hover:dark:bg-violet-800',
+    'MTNC': 'bg-yellow-200 dark:bg-yellow-700 hover:bg-yellow-300 hover:dark:bg-yellow-800',
+    'indefinie': 'bg-yellow-200 dark:bg-yellow-700 hover:bg-yellow-300 hover:dark:bg-yellow-800',
+    'DPCT': 'bg-red-200 dark:bg-red-700 hover:bg-red-300 hover:dark:bg-red-800',
+    'Disable': 'bg-red-200 dark:bg-red-700 hover:bg-red-300 hover:dark:bg-red-800',
+    'Section': 'bg-red-900 dark:bg-red-900 hover:bg-red-900 hover:dark:bg-red-900',
+    'neutre': 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 hover:dark:bg-gray-800'
+  };
+
+  const classes = typeClasses[type] || 'bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 hover:dark:bg-stone-800';
+  const label = {
+    'lie': 'Lié',
+    'aff': 'AFF',
+    'officiel': 'ECDE - Service',
+    'sys': 'ECDE - Systeme',
+    'sysetser': 'ECDE - Service et Systeme',
+    'DL': 'Dev Local',
+    'DE': 'Dev - Externe',
+    'DO': 'Dev - Officiel',
+    'PG': 'Preview GITHUB',
+    'PV': 'Preview Vercel',
+    'PGB': 'Preview GITHUB [BOT]',
+    'PVB': 'Preview Vercel [BOT]',
+    'TEST': 'TEST',
+    'BT': 'BETA',
+    'SDG': 'Standing',
+    'PDT': 'Production',
+    'MTNC': 'Maintenance',
+    'indefinie': 'Indéfini',
+    'DPCT': 'Duplication',
+    'Disable': 'Désactivé',
+    'Section': '- - - - - - - - - - - - - - - - ',
+    'neutre': 'Neutre'
+  }[type] || 'Neutre';
+
+  return `<span class="${classes} py-1 px-2 rounded-lg text-sm">${label}</span>`;
+}
+
+function openManagePopup(site) {
+  currentSite = site;
+
+  // Initialisation des propriétés si elles n'existent pas
+  if (!currentSite.BlackListe) currentSite.BlackListe = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+  if (!currentSite.Maintenance) currentSite.Maintenance = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+  if (!currentSite.Rappel) currentSite.Rappel = { Statut: false, Raison: "", Par: "", Date: "", Fin: "" };
+  if (!currentSite.Redirection) currentSite.Redirection = { Statut: false, Raison: "", Url: "", Par: "", Date: "", Fin: "" };
+
+  // Détermine le statut actuel
+  let currentStatus = 'clear';
+  const statusPriority = ['blacklist', 'maintenance', 'rappel', 'redirection'];
+
+  for (const status of statusPriority) {
+    const statusKey = status.charAt(0).toUpperCase() + status.slice(1);
+    if (currentSite[statusKey]?.Statut) {
+      currentStatus = status;
+      break;
+    }
+  }
+
+  // Remplit les champs du formulaire
+  document.getElementById('statut').value = currentStatus;
+  document.getElementById('type').value = site.Type || 'indefinie';
+
+  if (currentStatus !== 'clear') {
+    const extra = document.getElementById('extraFields');
+    extra.classList.remove('hidden');
+
+    const redirectionUrlField = document.getElementById('redirectionUrlField');
+    redirectionUrlField.classList.toggle('hidden', currentStatus !== 'redirection');
+
+    const statusKey = currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1);
+    const activeStatus = currentSite[statusKey] || {};
+
+    document.getElementById('reason').value = activeStatus.Raison || '';
+    document.getElementById('by').value = activeStatus.Par || '';
+    document.getElementById('date').value = activeStatus.Date || '';
+    document.getElementById('end').value = activeStatus.Fin || '';
+
+    if (currentStatus === 'redirection') {
+      document.getElementById('redirectionUrl').value = activeStatus.Url || '';
+    }
+  } else {
+    document.getElementById('extraFields').classList.add('hidden');
+  }
+
+  managePopup.classList.remove('hidden');
+}
+
+document.getElementById('statut').addEventListener('change', function () {
+  const value = this.value;
+  const extra = document.getElementById('extraFields');
+  const redirectionUrlField = document.getElementById('redirectionUrlField');
+
+  if (['blacklist', 'rappel', 'maintenance', 'redirection'].includes(value)) {
+    extra.classList.remove('hidden');
+    redirectionUrlField.classList.toggle('hidden', value !== 'redirection');
+  } else {
+    extra.classList.add('hidden');
+  }
+});
+
+closeBtn.addEventListener('click', () => {
+  managePopup.classList.add('hidden');
+  currentSite = null;
+});
+
+saveBtn.addEventListener('click', async () => {
+  try {
+    if (!currentSite) throw new Error("Aucun site sélectionné");
+
+    const statut = document.getElementById('statut').value;
+    const type = document.getElementById('type').value;
+    const reason = document.getElementById('reason').value.trim();
+    const by = document.getElementById('by').value.trim();
+    const date = document.getElementById('date').value;
+    const end = document.getElementById('end').value;
+    const redirectionUrl = statut === 'redirection' ? document.getElementById('redirectionUrl').value.trim() : '';
+
+    // Validation des données
+    if (['blacklist', 'maintenance', 'rappel', 'redirection'].includes(statut)) {
+      if (!reason || !by || !date) {
+        throw new Error('Tous les champs obligatoires doivent être remplis');
+      }
+      if (statut === 'redirection' && !redirectionUrl) {
+        throw new Error('L\'URL de redirection est obligatoire');
+      }
+    }
+
+    // Initialise Redirection si non existant
+    if (!currentSite.Redirection) {
+      currentSite.Redirection = {
+        Statut: false,
+        Raison: "",
+        Url: "",
+        Par: "",
+        Date: "",
+        Fin: ""
+      };
+    }
+
+    // Réinitialisation des statuts
+    currentSite.BlackListe.Statut = false;
+    currentSite.Maintenance.Statut = false;
+    currentSite.Rappel.Statut = false;
+    currentSite.Redirection.Statut = false;
+
+    // Mise à jour du statut sélectionné
+    switch (statut) {
+      case 'blacklist':
+        currentSite.BlackListe.Statut = true;
+        currentSite.BlackListe.Raison = reason;
+        currentSite.BlackListe.Par = by;
+        currentSite.BlackListe.Date = date;
+        currentSite.BlackListe.Fin = end;
+        break;
+      case 'maintenance':
+        currentSite.Maintenance.Statut = true;
+        currentSite.Maintenance.Raison = reason;
+        currentSite.Maintenance.Par = by;
+        currentSite.Maintenance.Date = date;
+        currentSite.Maintenance.Fin = end;
+        break;
+      case 'rappel':
+        currentSite.Rappel.Statut = true;
+        currentSite.Rappel.Raison = reason;
+        currentSite.Rappel.Par = by;
+        currentSite.Rappel.Date = date;
+        currentSite.Rappel.Fin = end;
+        break;
+      case 'redirection':
+        currentSite.Redirection.Statut = true;
+        currentSite.Redirection.Raison = reason;
+        currentSite.Redirection.Url = redirectionUrl;
+        currentSite.Redirection.Par = by;
+        currentSite.Redirection.Date = date;
+        currentSite.Redirection.Fin = end;
+        break;
+    }
+
+    currentSite.Type = type;
+
+    await saveData();
+    alert('Modifications sauvegardées avec succès!');
+    managePopup.classList.add('hidden');
+    currentSite = null;
+  } catch (error) {
+    console.error('Erreur sauvegarde:', error);
+    alert(`Erreur: ${error.message}`);
+  }
+});
+
+deleteBtn.addEventListener('click', async () => {
+  if (!currentSite) return;
+  if (!confirm(`Voulez-vous vraiment supprimer le site "${currentSite.URL}" ? Cette action est irréversible.`)) return;
+
+  try {
+    // Supprimer le site de la liste
+    jsonData.Sites = jsonData.Sites.filter(site => site !== currentSite);
+    await saveData();
+    alert('Site supprimé avec succès!');
+    managePopup.classList.add('hidden');
+    currentSite = null;
+  } catch (error) {
+    console.error('Erreur suppression:', error);
+    alert(`Erreur: ${error.message}`);
+  }
+});
+
+async function saveData() {
+  const updatedData = JSON.stringify(jsonData, null, 2);
+  const base64Data = btoa(unescape(encodeURIComponent(updatedData)));
+  const token = await getGitHubToken();
+
+  const response = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: 'Mise à jour des données de site',
+      content: base64Data,
+      sha: sha
+    })
+  });
+
+  if (!response.ok) throw new Error('Erreur GitHub');
+
+  const resData = await response.json();
+  sha = resData.content.sha;
+  await fetchData();
+}
+
+function moveSite(site, direction) {
+  const index = jsonData.Sites.indexOf(site);
+  if (index === -1) return;
+
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= jsonData.Sites.length) return;
+
+  // Swap sites
+  [jsonData.Sites[index], jsonData.Sites[newIndex]] = [jsonData.Sites[newIndex], jsonData.Sites[index]];
+
+  // Save and refresh
+  saveData().catch(err => {
+    alert('Erreur lors du déplacement: ' + err.message);
+  });
+}
+
+function confirmDeleteSite(site) {
+  if (confirm(`Voulez-vous vraiment supprimer le site "${site.URL}" ? Cette action est irréversible.`)) {
+    currentSite = site;
+    deleteBtn.click();
+  }
+}
+
+// Add Site popup handlers
+addSiteBtn.addEventListener('click', () => {
+  document.getElementById('newUrl').value = '';
+  document.getElementById('newType').value = 'indefinie';
+  addSitePopup.classList.remove('hidden');
+});
+
+addSiteCancelBtn.addEventListener('click', () => {
+  addSitePopup.classList.add('hidden');
+});
+
+addSiteSaveBtn.addEventListener('click', async () => {
+  const newUrl = document.getElementById('newUrl').value.trim();
+  const newType = document.getElementById('newType').value;
+
+  if (!newUrl) {
+    alert('L\'URL est obligatoire');
+    return;
+  }
+
+  // Check if URL already exists
+  if (jsonData.Sites.some(site => site.URL.toLowerCase() === newUrl.toLowerCase())) {
+    alert('Ce site existe déjà dans la liste.');
+    return;
+  }
+
+  // Create new site object with default statuses
+  const newSite = {
+    URL: newUrl,
+    Type: newType,
+    BlackListe: { Statut: false, Raison: "", Par: "", Date: "", Fin: "" },
+    Maintenance: { Statut: false, Raison: "", Par: "", Date: "", Fin: "" },
+    Rappel: { Statut: false, Raison: "", Par: "", Date: "", Fin: "" },
+    Redirection: { Statut: false, Raison: "", Url: "", Par: "", Date: "", Fin: "" }
+  };
+
+  jsonData.Sites.push(newSite);
+
+  try {
+    await saveData();
+    alert('Nouveau site ajouté avec succès!');
+    addSitePopup.classList.add('hidden');
+  } catch (error) {
+    console.error('Erreur ajout site:', error);
+    alert('Erreur lors de l\'ajout du site: ' + error.message);
+  }
+});
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+  fetchData();
+});
+</script>
+
+<!-- Footer : Deb -->
+<div id="ecde_footer"></div>
+<!-- Footer : Fin -->
+
+</body>
+</html>
