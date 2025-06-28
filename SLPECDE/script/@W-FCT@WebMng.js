@@ -1,117 +1,121 @@
 export async function WebManager() {
-    const apiUrl = "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json";
-    const tokenUrl = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
+  const apiUrl = "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json";
+  const tokenUrl = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
 
-    let githubToken;
-    try {
-        const tokenResponse = await fetch(tokenUrl);
-        const tokenData = await tokenResponse.json();
-        githubToken = tokenData.GITHUB_TOKEN;
-    } catch (error) {
-        console.error("Erreur lors de la récupération du token :", error);
-        return;
-    }
+  // 1. Récupérer le token
+  let githubToken;
+  try {
+    const tokenData = await (await fetch(tokenUrl)).json();
+    githubToken = tokenData.GITHUB_TOKEN;
+  } catch (e) {
+    console.error("Erreur token :", e);
+    return;
+  }
 
-    let jsonData, sha;
-    try {
-        const response = await fetch(apiUrl, {
-            headers: { Authorization: `token ${githubToken}` }
-        });
-        const fileData = await response.json();
-        jsonData = JSON.parse(atob(fileData.content));
-        sha = fileData.sha;
-    } catch (error) {
-        console.error("Erreur lors de la récupération du fichier JSON :", error);
-        return;
-    }
-
-    const currentUrl = window.location.origin.replace(/https?:\/\//, '');
-
-    // --------- Gestion Autoriser ----------------
-    if (Array.isArray(jsonData.Autoriser)) {
-        const isAuthorized = jsonData.Autoriser.some(domain => currentUrl.includes(domain));
-        if (isAuthorized) {
-            // URL autorisée, on ne fait rien et on quitte
-            console.log("[WebManager] URL autorisée, aucune action requise.");
-            return;
-        }
-    }
-
-    // --------- Trouver un site correspondant (exact ou mots-clés) --------------
-    let matchedSite = jsonData.Sites.find(site => site.URL === currentUrl);
-
-    if (!matchedSite) {
-        matchedSite = jsonData.Sites.find(site => {
-            const keywords = site.URL.replace(/https?:\/\//, '').split(/[\/\.\-\_]/).filter(Boolean);
-            return keywords.some(kw => currentUrl.includes(kw));
-        });
-    }
-
-    if (!matchedSite) {
-        const newSite = {
-            URL: currentUrl,
-            Type: null,
-            BlackListe: { Statut: false, Raison: "", Par: "", Date: "", Fin: "" },
-            Maintenance: { Statut: false, Raison: "", Par: "", Date: "", Fin: "" },
-            Rappel: { Statut: false, Raison: "", Par: "", Date: "", Fin: "" },
-            Redirection: { Statut: false, Raison: "", Url: "", Par: "", Date: "", Fin: "" }
-        };
-        jsonData.Sites.push(newSite);
-        matchedSite = newSite;
-        try {
-            await fetch(apiUrl, {
-                method: "PUT",
-                headers: {
-                    Authorization: `token ${githubToken}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: "Ajout automatique de l'URL",
-                    content: btoa(JSON.stringify(jsonData, null, 2)),
-                    sha: sha
-                })
-            });
-        } catch (error) {
-            console.error("Erreur lors de la mise à jour du fichier JSON :", error);
-            return;
-        }
-    }
-
-    const today = new Date();
-
-    // Utilitaire check statut actif et date
-    function checkStatus(data) {
-        if (!data || !data.Statut) return false;
-        const finDate = data.Fin ? new Date(data.Fin.split("/").reverse().join("-")) : null;
-        return (!finDate || finDate >= today);
-    }
-
-    // --------- Check Global "All" ----------------
-    if (jsonData.All) {
-        ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
-            if (checkStatus(jsonData.All[type])) {
-                showMaintenancePopup(jsonData.All[type]);
-            }
-        });
-        if (checkStatus(jsonData.All.Redirection)) {
-            showRedirectPopup(jsonData.All.Redirection, () => {
-                window.location.href = jsonData.All.Redirection.Url;
-            });
-            // Optionnel : return; si tu veux bloquer suite au redirect global
-        }
-    }
-
-    // --------- Check Site Spécifique ----------------
-    ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
-        if (checkStatus(matchedSite[type])) {
-            showMaintenancePopup(matchedSite[type]);
-        }
+  // 2. Récupérer le JSON
+  let data;
+  try {
+    const res = await fetch(apiUrl, {
+      headers: { Authorization: `token ${githubToken}` }
     });
-    if (checkStatus(matchedSite.Redirection)) {
-        showRedirectPopup(matchedSite.Redirection, () => {
-            window.location.href = matchedSite.Redirection.Url;
-        });
-    }
+    const content = await res.json();
+    data = JSON.parse(atob(content.content));
+  } catch (e) {
+    console.error("Erreur JSON GitHub :", e);
+    return;
+  }
+
+  const currentHost = window.location.host;
+
+  // 3. Si autorisé → on sort
+  if (data.Autoriser.includes(currentHost)) {
+    console.log("Autorisé, aucune vérification.");
+    return;
+  }
+
+  // 4. Vérifie s'il est dans Sites[]
+  let matched = data.Sites.find(site => site.URL === currentHost);
+
+  // 5. Sinon → fallback sur "All"
+  const rules = matched || data.All;
+  const isSite = !!matched;
+
+  // 6. Vérifications
+  checkAndAct(rules.BlackListe, "BlackListe", isSite);
+  checkAndAct(rules.Maintenance, "Maintenance", isSite);
+  checkAndAct(rules.Rappel, "Rappel", isSite);
+  checkRedirect(rules.Redirection, isSite);
 }
 
-// ... (fonctions showMaintenancePopup et showRedirectPopup inchangées)
+// ---------------------------------------
+
+function checkAndAct(obj, type, isSite) {
+  if (!obj || !obj.Statut) return;
+
+  const today = new Date();
+  const finDate = new Date(obj.Fin || "9999-12-31");
+
+  if (today <= finDate) {
+    showPopup(type, obj, isSite);
+  }
+}
+
+function checkRedirect(redir, isSite) {
+  if (!redir || !redir.Statut) return;
+
+  const today = new Date();
+  const fin = redir.Fin || "";
+  const finDate = !isNaN(new Date(fin).getTime()) ? new Date(fin) : null;
+
+  if (!finDate || today <= finDate) {
+    showRedirectPopup(redir, () => {
+      window.location.href = redir.Url;
+    }, isSite);
+  }
+}
+
+// -------------------- POPUPS ------------------------
+
+function showPopup(type, data, isSite) {
+  const overlay = document.createElement("div");
+  Object.assign(overlay.style, {
+    position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.85)", color: "#fff",
+    display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
+    zIndex: "9999", fontFamily: "Poppins, sans-serif", textAlign: "center"
+  });
+
+  overlay.innerHTML = `
+    <div style="font-size: 30px; font-weight: bold; margin-bottom: 15px;">
+      ${isSite ? "⚠️ " : "🌐 "} ${type} activé
+    </div>
+    <div style="font-size: 20px;">Raison : <strong>${data.Raison || "Non précisée"}</strong></div>
+    <div style="margin-top: 10px;">Par : ${data.Par || "???"}</div>
+    <div>Date : ${data.Date || "???"} → ${data.Fin || "∞"}</div>
+  `;
+
+  document.body.appendChild(overlay);
+}
+
+function showRedirectPopup(data, callback, isSite) {
+  const overlay = document.createElement("div");
+  Object.assign(overlay.style, {
+    position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
+    backgroundColor: "rgba(0,0,0,0.9)", color: "#fff",
+    display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
+    zIndex: "9999", fontFamily: "Poppins, sans-serif", textAlign: "center"
+  });
+
+  overlay.innerHTML = `
+    <div style="font-size: 26px; font-weight: bold; margin-bottom: 10px;">
+      ${isSite ? "🔀 Redirection site" : "🔁 Redirection globale"}
+    </div>
+    <div>Motif : <strong>${data.Raison || "Aucun"}</strong></div>
+    <div>Par : <strong>${data.Par || "???"}</strong></div>
+    <div>Du <strong>${data.Date || "???"}</strong> jusqu'à <strong>${data.Fin || "illimité"}</strong></div>
+    <div style="margin-top: 20px;">Redirection en cours...</div>
+  `;
+
+  document.body.appendChild(overlay);
+  setTimeout(callback, 3500);
+}
