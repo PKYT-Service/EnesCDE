@@ -2,7 +2,7 @@ export async function WebManager() {
     const apiUrl = "https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/ecde/data/ListeAFF.json";
     const tokenUrl = "https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js";
 
-    // Récupérer le token GitHub
+    // 1. Récupérer le token GitHub
     let githubToken;
     try {
         const tokenResponse = await fetch(tokenUrl);
@@ -13,7 +13,7 @@ export async function WebManager() {
         return;
     }
 
-    // Récupérer le fichier JSON sur GitHub
+    // 2. Récupérer le fichier JSON sur GitHub
     let jsonData, sha;
     try {
         const response = await fetch(apiUrl, {
@@ -27,31 +27,36 @@ export async function WebManager() {
         return;
     }
 
-    // Extraire l'URL brute de la page actuelle
+    // 3. Récupérer l'URL de la page actuelle
     const currentUrl = window.location.origin;
 
-    // Vérifier si l'URL est déjà présente
-    let siteExists = jsonData.Sites.some(site => site.URL === currentUrl);
+    // 4. Trouver un site correspondant (exact ou par mots-clés)
+    let matchedSite = jsonData.Sites.find(site => site.URL === currentUrl);
 
-    // Ajouter l'URL si elle est absente
-    if (!siteExists) {
-        jsonData.Sites.push({
+    if (!matchedSite) {
+        matchedSite = jsonData.Sites.find(site => {
+            const keywords = site.URL
+                .replace(/https?:\/\//, '')
+                .split(/[\/\.\-\_]/)
+                .filter(Boolean);
+            return keywords.some(kw => currentUrl.includes(kw));
+        });
+    }
+
+    // 5. Si le site n'existe pas, on l'ajoute
+    if (!matchedSite) {
+        const newSite = {
             "URL": currentUrl,
             "Type": null,
             "BlackListe": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Maintenance": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Rappel": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Redirection": { "Statut": false, "Raison": "", "Url": "", "Par": "", "Date": "", "Fin": "" }
-        });
-         // Si l'URL existe mais ne contient pas encore le champ Redirection, on le rajoute
-        jsonData.Sites = jsonData.Sites.map(site => {
-            if (site.URL === currentUrl && !site.Redirection) {
-                site.Redirection = {
-                    Statut: false, Raison: "", Url: "", Par: "", Date: "", Fin: ""
-                };
-            }
-            return site;
-        });
+        };
+
+        jsonData.Sites.push(newSite);
+        matchedSite = newSite;
+
         try {
             await fetch(apiUrl, {
                 method: "PUT",
@@ -65,45 +70,40 @@ export async function WebManager() {
                     sha: sha
                 })
             });
-
         } catch (error) {
             console.error("Erreur lors de la mise à jour du fichier JSON :", error);
             return;
         }
     }
 
-    // Vérifier les statuts pour afficher les popups ou rediriger
-    jsonData.Sites.forEach(site => {
-        if (site.URL === currentUrl) {
-            ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
-                if (site[type].Statut) {
-                    const today = new Date();
-                    const finDate = new Date(site[type].Fin.split("/").reverse().join("-"));
+    // 6. Gérer les statuts
+    ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
+        if (matchedSite[type]?.Statut) {
+            const today = new Date();
+            const finDate = new Date(matchedSite[type].Fin.split("/").reverse().join("-"));
 
-                    if (!isNaN(finDate.getTime()) && finDate >= today) {
-                        showMaintenancePopup(site[type]);
-                    }
-                }
-            });
-
-            // Nouveau : Redirection
-            const redirect = site.Redirection;
-            if (redirect?.Statut) {
-                const today = new Date();
-                const fin = redirect.Fin?.trim();
-                const isDateValid = !isNaN(new Date(fin).getTime());
-                const finDate = isDateValid ? new Date(fin) : null;
-
-                // Vérifier date de fin OU si c'est illimité
-                if (!finDate || finDate >= today) {
-                    showRedirectPopup(redirect, () => {
-                        window.location.href = redirect.Url;
-                    });
-                }
+            if (!isNaN(finDate.getTime()) && finDate >= today) {
+                showMaintenancePopup(matchedSite[type]);
             }
         }
     });
+
+    const redirect = matchedSite.Redirection;
+    if (redirect?.Statut) {
+        const today = new Date();
+        const fin = redirect.Fin?.trim();
+        const isDateValid = !isNaN(new Date(fin).getTime());
+        const finDate = isDateValid ? new Date(fin) : null;
+
+        if (!finDate || finDate >= today) {
+            showRedirectPopup(redirect, () => {
+                window.location.href = redirect.Url;
+            });
+        }
+    }
 }
+
+// POPUPS : ----------------------------------------------
 
 function showMaintenancePopup(data) {
     const overlay = document.createElement("div");
@@ -157,7 +157,5 @@ function showRedirectPopup(data, callback) {
     overlay.appendChild(text);
     document.body.appendChild(overlay);
 
-    // Laisser le temps de lire avant de rediriger
-    setTimeout(callback, 4000); // 4 secondes
+    setTimeout(callback, 4000); // délai de 4 secondes avant redirection
 }
-// 451 / 
