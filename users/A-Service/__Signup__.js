@@ -49,7 +49,7 @@ async function submitForm(event) {
         },
         "Others": others,
         "Details": {
-            "Permissions": "None",
+            "Permissions": "000",
             "Admin": "None"
         }
     };
