@@ -612,7 +612,7 @@
         }
 
         const inline = inlineReplacements(line.trim());
-        html += `<p class="mb-2 leading-relaxed text-gray-800">${inline}</p>`;
+        html += `<p class="mb-2 leading-relaxed text-gray-800 dark:text-gray-100">${inline}</p>`;
       }
 
       return html;
