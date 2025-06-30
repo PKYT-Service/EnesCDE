@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="EnesCDE - Plateforme de services et documentation.">
+        <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web , LosFly , LsFly , PikaYutMG , GFLP , LSP , SRDMG , Ebsayder , Howard , Armory , PikaYut , enes , enesgp , egp , ecde ; enes cde , communitydeveloppement , developpement , community PikaYutMG , Projet , MultiGaming, Gaming HTML  ">
+        <meta name="author" content="EnesCDE">
+    
+        <!-- Open Graph (Facebook & LinkedIn) -->
+        <meta property="og:title" content="EnesCDE - Services , Accueil">
+        <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta property="og:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+        <meta property="og:url" content="https://enes-cde.vercel.app">
+        <meta property="og:type" content="website">
+    
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="EnesCDE - Services & Documentation">
+        <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta name="twitter:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+    
+        <title>EnesCDE - Panel > Accueil</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+            
+        <!-- Script -->
+        <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+        <script src="https://enes-cde.vercel.app/script/A-menu.js"></script>
+        <script src="https://enes-cde.vercel.app/users/panel/__menu__.js" ></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" ></script>
+        <script src="https://enes-cde.vercel.app/users/panel/__sessions__.js" ></script>
+        <script src="https://enes-cde.vercel.app/script/A-new_update.js"></script>
+        <script src="https://enes-cde.vercel.app/users/A-Service/__Load_Profil__.js"></script>    
+        <script src="https://enes-cde.vercel.app/users/A-Service/[PlugIn]-ProfilViewer.js"></script>    
+        <div id="ecde_all"></div>
+    </head>
+<!--    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">-->
+            <!-- Menu : Deb -->
+            <!--<div id="ecde_menu"  class="w-20"></div>-->
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <!--<main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">-->
+
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+              <center><div id="ecde_users_menu"></div></center>
+ 
+
+
+
+    <script src="https://enes-cde.vercel.app/data/api/@MSG-A@-mails.js"></script>
+  <div class="max-w-3xl mx-auto p-4 flex flex-col flex-grow">
+    <h1 class="text-2xl font-bold mb-4 text-center">Messagerie ECDE</h1>
+
+    <div id="chatBox" class="flex flex-col flex-grow bg-white rounded-md shadow p-4 overflow-y-auto space-y-3 mb-4 max-h-[60vh]">
+      <p id="loading" class="text-center text-gray-400">Chargement des messages...</p>
+    </div>
+
+    <form id="sendForm" class="flex gap-2">
+      <input
+        id="destInput"
+        type="email"
+        placeholder="Destinataire (email)"
+        class="flex-shrink-0 w-48 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+      <input
+        id="msgInput"
+        type="text"
+        placeholder="Votre message"
+        class="flex-grow px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+      <button
+        type="submit"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+      >
+        Envoyer
+      </button>
+    </form>
+  </div>
+
+
+          <div id="ecde_users_profilviewer"></div>
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>               
+</body>
+</html>
