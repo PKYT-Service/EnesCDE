@@ -1159,3 +1159,29 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', adaptLayoutForMobile);
 });
 
+document.getElementById("maDiv").classList.add("rounded-lg");
+function ajouterClassesSiToutesPrésentes({ classesCibles = [], classesAAjouter = [] }) {
+  document.querySelectorAll("*").forEach(el => {
+    const aTout = classesCibles.every(cl => el.classList.contains(cl));
+    if (aTout) el.classList.add(...classesAAjouter);
+  });
+}
+
+// Appels multiples avec des configurations différentes :
+ajouterClassesSiToutesPrésentes({
+  classesCibles: ["p-4", "font-semibold", "border-b", "border-gray-300"],
+  classesAAjouter: ["dark:bg-gray-950"]
+});
+
+ajouterClassesSiToutesPrésentes({
+  classesCibles: [
+    "bg-white", "dark:bg-gray-900", "text-gray-900", "dark:text-gray-100",
+    "border-b", "border-gray-300", "p-4", "flex", "items-center", "justify-between"
+  ],
+  classesAAjouter: ["dark:bg-gray-950"]
+});
+
+ajouterClassesSiToutesPrésentes({
+  classesCibles: ["p-4", "border-b", "border-gray-300", "flex", "items-center", "justify-between"],
+  classesAAjouter: ["dark:bg-gray-950"]
+});
