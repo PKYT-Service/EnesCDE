@@ -518,7 +518,7 @@
           flushBlockquote();
           const level = headerMatch[1].length;
           const content = inlineReplacements(headerMatch[2].trim());
-          html += `<h${level} class="font-semibold mt-6 mb-2 text-gray-900">${content}</h${level}>`;
+          html += `<h${level} class="font-semibold mt-6 mb-2 text-gray-900 dark:text-gray-100">${content}</h${level}>`;
           continue;
         }
 
@@ -589,7 +589,7 @@
           let mathBlock = [];
           if (/^\$\$(.*)\$\$$/.test(line)) {
             const content = line.replace(/^\$\$(.*)\$\$$/, "$1");
-            html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(
+            html += `<div class="math-block my-4 p-2 bg-gray-100 dark:bg-gray-900 rounded font-mono whitespace-pre-wrap">${escapeHtml(
               content
             )}</div>`;
             continue;
