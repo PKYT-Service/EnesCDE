@@ -380,7 +380,7 @@
       files.forEach((file) => {
         const li = document.createElement("li");
         li.className =
-          "cursor-pointer hover:bg-gray-100 rounded p-2 flex items-center gap-3 select-none";
+          "cursor-pointer hover:bg-gray-500 rounded p-2 flex items-center gap-3 select-none";
         li.setAttribute("tabindex", "0");
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
