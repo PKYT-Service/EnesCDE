@@ -268,7 +268,7 @@
       folders.forEach((folder) => {
         const li = document.createElement("li");
         li.className =
-          "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
+          "cursor-pointer hover:bg-blue-500 px-4 py-3 flex items-center gap-3 select-none";
         li.setAttribute("tabindex", "0");
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
@@ -306,7 +306,7 @@
       subfolders.forEach((subfolder) => {
         const li = document.createElement("li");
         li.className =
-          "cursor-pointer hover:bg-blue-100 px-4 py-3 flex items-center gap-3 select-none";
+          "cursor-pointer hover:bg-blue-500 px-4 py-3 flex items-center gap-3 select-none";
         li.setAttribute("tabindex", "0");
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
