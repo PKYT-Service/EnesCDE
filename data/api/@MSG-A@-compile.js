@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("ecde:mails").innerHTML = ` 
+    document.getElementById("ecde-mails").innerHTML = ` 
     <script src="https://enes-cde.vercel.app/data/api/@MSG-A@-mails.js"></script>
   <div class="max-w-3xl mx-auto p-4 flex flex-col flex-grow">
     <h1 class="text-2xl font-bold mb-4 text-center">Messagerie ECDE</h1>
