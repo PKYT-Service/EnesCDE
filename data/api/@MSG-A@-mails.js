@@ -1,5 +1,5 @@
     // Utilisateur connecté (extrait de localStorage)
-    const compte = JSON.parse(localStorage.getItem("ECDE_CONNEXION") || "{}");
+    const compte = JSON.parse(localStorage.getItem("compte") || "{}");
     if (!compte.email) {
       alert("Pas connecté ou email manquant dans localStorage ECDE_CONNEXION");
     }
