@@ -11,7 +11,8 @@ async function verifierCompte() {
     const { email, password } = JSON.parse(credentials);
     const session = JSON.parse(sessionData);
 
-    if (!session.valid || new Date(session.expiry) < new Date(Date.now() - 3 * 60 * 60 * 1000)) {
+    const sessionExpirée = !session.valid || new Date(session.expiry) < new Date(Date.now() - 3 * 60 * 60 * 1000);
+    if (sessionExpirée) {
         console.warn("Session invalide ou expirée, redirection...");
         window.location.href = "../index.html";
         return;
@@ -39,39 +40,37 @@ async function verifierCompte() {
         const data = await response.json();
         const fileContent = JSON.parse(atob(data.content));
 
-        if (fileContent.CompteInfo.Email === email && fileContent.CompteInfo.MDP === password) {
-            console.log("Compte valide");
+        if (fileContent.CompteInfo.Email !== email || fileContent.CompteInfo.MDP !== password) {
+            console.warn("Identifiants incorrects, redirection...");
+            window.location.href = "../index.html";
+            return;
+        }
 
-            const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1];
-            const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1];
+        const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1];
+        const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1];
 
-            const serviceCompte = fileContent.CompteInfo.Service?.trim();
-            const permissionCompte = fileContent.Details.Permissions?.trim();
-            const adminCompte = fileContent.Details.Admin?.trim();
+        const serviceCompte = fileContent.CompteInfo.Service?.trim();
+        const permissionCompte = fileContent.Details.Permissions?.trim();
+        const adminCompte = fileContent.Details.Admin?.trim();
 
+        // Cas spécial : bypass total si EnesCDE002009
+        if (adminCompte === "EnesCDE002009") {
+            console.log("Admin EnesCDE002009 détecté, bypass total.");
+        } else {
             if (serviceAttendu && serviceCompte !== serviceAttendu) {
                 console.warn("Service non autorisé, redirection...");
                 window.location.href = "../index.html";
                 return;
             }
 
-            if (adminCompte !== "EnesCDE002009") {
-                // Admin normal, vérifie permission
-                if (!permissionCompte || permissionCompte !== permissionAttendue) {
-                    console.warn("Permission insuffisante, redirection...");
-                    window.location.href = "../index.html";
-                    return;
-                }
-            } else {
-                console.log("Admin EnesCDE002009 detecté, bypass permissions.");
+            if (!permissionCompte || permissionCompte !== permissionAttendue) {
+                console.warn("Permission insuffisante, redirection...");
+                window.location.href = "../index.html";
+                return;
             }
-
-            console.log("Accès autorisé");
-        } else {
-            console.warn("Identifiants incorrects, redirection...");
-            window.location.href = "../index.html";
         }
 
+        console.log("Accès autorisé");
     } catch (error) {
         console.error("Erreur lors de la vérification :", error);
         window.location.href = "../index.html";
