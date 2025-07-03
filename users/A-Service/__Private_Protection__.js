@@ -46,8 +46,9 @@ async function verifierCompte() {
             return;
         }
 
-        const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1];
-        const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1];
+        // Vérification des permissions et services
+        const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1] || null;
+        const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1] || null;
 
         const serviceCompte = fileContent.CompteInfo.Service?.trim();
         const permissionCompte = fileContent.Details.Permissions?.trim();
@@ -57,13 +58,15 @@ async function verifierCompte() {
         if (adminCompte === "EnesCDE002009") {
             console.log("Admin EnesCDE002009 détecté, bypass total.");
         } else {
+            // Vérifier le service uniquement si serviceAttendu est défini
             if (serviceAttendu && serviceCompte !== serviceAttendu) {
                 console.warn("Service non autorisé, redirection...");
                 window.location.href = "../index.html";
                 return;
             }
 
-            if (!permissionCompte || permissionCompte !== permissionAttendue) {
+            // Vérifier la permission uniquement si permissionAttendue est définie
+            if (permissionAttendue && (!permissionCompte || permissionCompte !== permissionAttendue)) {
                 console.warn("Permission insuffisante, redirection...");
                 window.location.href = "../index.html";
                 return;
