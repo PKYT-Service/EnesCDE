@@ -80,7 +80,7 @@ document.write(`
     <h2 class="p-4 font-semibold  border-b border-gray-300">Dossiers racine</h2>
     <ul class="divide-y divide-gray-200 bg-white dark:bg-gray-950 flex-1 overflow-y-auto" id="folders-ul"></ul>
     <div class="border-t border-gray-300 bg-white dark:bg-gray-950 p-4">
-        <h3 class="font-semibold mb-2">Sous-dossiers</h3>
+        <h3 class="font-semibold mb-2 text-black dark:text-white">Sous-dossiers</h3>
         <ul class="divide-y divide-gray-200 max-h-48 overflow-y-auto" id="folders-ul-inside"></ul>
     </div>
 </nav>
@@ -90,7 +90,7 @@ document.write(`
     class="flex-1 flex flex-col overflow-hidden"
     aria-label="Liste des fichiers"
 >
-    <header class="bg-white dark:bg-gray-900 text-gray-900   dark:text-gray-100   border-b border-gray-300 p-4 flex items-center justify-between">
+    <header class="bg-white dark:bg-gray-950 text-gray-900   dark:text-gray-100   border-b border-gray-300 p-4 flex items-center justify-between">
         <h2 id="current-folder-name" class="text-lg font-semibold truncate">
             Chargement...
         </h2>
