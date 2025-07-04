@@ -163,4 +163,5 @@ document.write(`
         </button>
     </footer>
 </section>
+          <script src="https://enes-cde.vercel.app/data/api/@FCT-A@-Everyone_Drive.js" defer></script>
 `);
