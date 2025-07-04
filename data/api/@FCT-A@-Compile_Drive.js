@@ -77,7 +77,7 @@ document.write(`
     class="w-64 bg-white border-r border-gray-300 overflow-y-auto flex flex-col"
     aria-label="Liste des dossiers"
 >
-    <h2 class="p-4 font-semibold  border-b border-gray-300">Dossiers racine</h2>
+    <h2 class="p-4 font-semibold  border-b border-gray-300 dark:bg-gray-950 bg-white dark:text-white text-black ">Dossiers racine</h2>
     <ul class="divide-y divide-gray-200 bg-white dark:bg-gray-950 flex-1 overflow-y-auto" id="folders-ul"></ul>
     <div class="border-t border-gray-300 bg-white dark:bg-gray-950 p-4">
         <h3 class="font-semibold mb-2 text-black dark:text-white">Sous-dossiers</h3>
