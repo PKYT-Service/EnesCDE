@@ -1,1 +1,186 @@
-document.write("<style>\r\n    body {\r\n      font-family: 'Inter', sans-serif;\r\n    }\r\n    \/* Math block styling *\/\r\n    .math-block {\r\n      background-color: #f3f4f6;\r\n      border-left: 4px solid #3b82f6;\r\n      padding: 0.5rem 1rem;\r\n      margin: 1rem 0;\r\n      font-family: 'Courier New', Courier, monospace;\r\n      white-space: pre-wrap;\r\n    }\r\n    .dark .math-block {\r\n      background-color: #1e293b;\r\n      color: #cbd5e1;\r\n      border-left-color: #3b82f6;\r\n    }\r\n    .math-inline {\r\n      background-color: #e0f2fe;\r\n      padding: 0 0.2rem;\r\n      font-family: 'Courier New', Courier, monospace;\r\n      border-radius: 2px;\r\n    }\r\n    .dark .math-inline {\r\n      background-color: #0c4a6e;\r\n      color: #bae6fd;\r\n    }\r\n    mark {\r\n      background-color: #fde68a;\r\n      padding: 0 0.2rem;\r\n      border-radius: 2px;\r\n    }\r\n    .dark mark {\r\n      background-color: #facc15;\r\n      color: #1e293b;\r\n    }\r\n    #table-of-contents {\r\n      border: 1px solid #d1d5db;\r\n      padding: 0.5rem 1rem;\r\n      margin-bottom: 1rem;\r\n      background-color: #f9fafb;\r\n      font-size: 0.9rem;\r\n      color: #374151;\r\n    }\r\n    .dark #table-of-contents {\r\n      border-color: #374151;\r\n      background-color: #1f2937;\r\n      color: #d1d5db;\r\n    }\r\n    sup {\r\n      font-size: 0.7rem;\r\n      vertical-align: super;\r\n      cursor: help;\r\n      color: #6b7280;\r\n    }\r\n    .dark sup {\r\n      color: #9ca3af;\r\n    }\r\n    \/* Scrollbar for file list and folders *\/\r\n    #folders-ul::-webkit-scrollbar,\r\n    #files-ul::-webkit-scrollbar,\r\n    #folders-ul-inside::-webkit-scrollbar {\r\n      width: 8px;\r\n    }\r\n    #folders-ul::-webkit-scrollbar-thumb,\r\n    #files-ul::-webkit-scrollbar-thumb,\r\n    #folders-ul-inside::-webkit-scrollbar-thumb {\r\n      background-color: rgba(107, 114, 128, 0.4);\r\n      border-radius: 4px;\r\n    }\r\n  <\/style>\r\n\r\n\r\n    <nav\r\n      id=\"folder-list\"\r\n      class=\"w-64 bg-white border-r border-gray-300 overflow-y-auto flex flex-col\"\r\n      aria-label=\"Liste des dossiers\"\r\n    >\r\n      <h2 class=\"p-4 font-semibold  border-b border-gray-300\">Dossiers racine<\/h2>\r\n      <ul class=\"divide-y divide-gray-200 bg-white dark:bg-gray-950 flex-1 overflow-y-auto\" id=\"folders-ul\"><\/ul>\r\n      <div class=\"border-t border-gray-300 bg-white dark:bg-gray-950 p-4\">\r\n        <h3 class=\"font-semibold mb-2\">Sous-dossiers<\/h3>\r\n        <ul class=\"divide-y divide-gray-200 max-h-48 overflow-y-auto\" id=\"folders-ul-inside\"><\/ul>\r\n      <\/div>\r\n    <\/nav>\r\n\r\n    <section\r\n      id=\"file-list-section\"\r\n      class=\"flex-1 flex flex-col overflow-hidden\"\r\n      aria-label=\"Liste des fichiers\"\r\n    >\r\n      <header class=\"bg-white dark:bg-gray-900 text-gray-900   dark:text-gray-100   border-b border-gray-300 p-4 flex items-center justify-between\">\r\n        <h2 id=\"current-folder-name\" class=\"text-lg font-semibold truncate\">\r\n          Chargement...\r\n        <\/h2>\r\n        <button\r\n          id=\"btn-back-folder\"\r\n          class=\"text-blue-600 hover:underline disabled:text-gray-400\"\r\n          disabled\r\n          aria-label=\"Retour au dossier pr\u00e9c\u00e9dent\"\r\n        >\r\n          <i class=\"fas fa-arrow-left\"><\/i> Retour\r\n        <\/button>\r\n      <\/header>\r\n      <ul\r\n        id=\"files-ul\"\r\n        class=\" bg-white text-gray-950 dark:bg-gray-900  dark:text-gray-100 flex-1 overflow-y-auto bg-white divide-y divide-gray-200 p-4\"\r\n        aria-live=\"polite\"\r\n      ><\/ul>\r\n    <\/section>\r\n\r\n    <section\r\n      id=\"file-view-section\"\r\n      class=\"w-[28rem] bg-white text-gray-900 dark:bg-gray-900  dark:text-gray-100 textborder-l border-gray-300 flex flex-col overflow-hidden hidden\"\r\n      aria-label=\"Visualisation du fichier\"\r\n    >\r\n      <header\r\n        class=\"p-4 border-b border-gray-300 flex items-center justify-between\"\r\n      >\r\n        <h3 id=\"file-view-title\" class=\"text-lg font-semibold truncate max-w-[70%]\"><\/h3>\r\n        <div class=\"flex items-center gap-3\">\r\n          <button\r\n            id=\"btn-share\"\r\n            class=\"text-blue-600 hover:text-blue-800\"\r\n            title=\"Partager ce fichier\"\r\n            aria-label=\"Partager ce fichier\"\r\n          >\r\n            <i class=\"fas fa-share-alt\"><\/i>\r\n          <\/button>\r\n          <button\r\n            id=\"btn-toggle-view\"\r\n            class=\"text-blue-600 hover:text-blue-800\"\r\n            title=\"Basculer entre \u00e9dition et visualisation\"\r\n            aria-label=\"Basculer entre \u00e9dition et visualisation\"\r\n          >\r\n            <i class=\"fas fa-edit\"><\/i>\r\n          <\/button>\r\n          <button\r\n            id=\"btn-close-view\"\r\n            class=\"text-gray-600 hover:text-gray-900\"\r\n            title=\"Fermer la visualisation\"\r\n            aria-label=\"Fermer la visualisation\"\r\n          >\r\n            <i class=\"fas fa-times\"><\/i>\r\n          <\/button>\r\n        <\/div>\r\n      <\/header>\r\n      <div\r\n        id=\"file-rendered-content\"\r\n        class=\"flex-1 overflow-y-auto p-4 prose max-w-full bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-100\"\r\n        style=\"white-space: pre-wrap;\"\r\n        aria-label=\"Contenu rendu du fichier markdown\"\r\n        tabindex=\"0\"\r\n      ><\/div>\r\n      <textarea\r\n        id=\"file-content\"\r\n        class=\"flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 resize-none outline-none hidden\"\r\n        spellcheck=\"false\"\r\n        aria-label=\"Contenu du fichier markdown\"\r\n        readonly\r\n      ><\/textarea>\r\n      <footer class=\"p-4 border-t border-gray-300 flex justify-end gap-2\">\r\n        <button\r\n          id=\"btn-save\"\r\n          class=\"bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed hidden\"\r\n          disabled\r\n          aria-label=\"Sauvegarder les modifications\"\r\n        >\r\n          <i class=\"fas fa-save mr-2\"><\/i> Sauvegarder\r\n        <\/button>\r\n      <\/footer>\r\n    <\/section>");
+document.write(`
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Math block styling */
+    .math-block {
+      background-color: #f3f4f6;
+      border-left: 4px solid #3b82f6;
+      padding: 0.5rem 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+    }
+    .dark .math-block {
+      background-color: #1e293b;
+      color: #cbd5e1;
+      border-left-color: #3b82f6;
+    }
+    .math-inline {
+      background-color: #e0f2fe;
+      padding: 0 0.2rem;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 2px;
+    }
+    .dark .math-inline {
+      background-color: #0c4a6e;
+      color: #bae6fd;
+    }
+    mark {
+      background-color: #fde68a;
+      padding: 0 0.2rem;
+      border-radius: 2px;
+    }
+    .dark mark {
+      background-color: #facc15;
+      color: #1e293b;
+    }
+    #table-of-contents {
+      border: 1px solid #d1d5db;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      background-color: #f9fafb;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+    .dark #table-of-contents {
+      border-color: #374151;
+      background-color: #1f2937;
+      color: #d1d5db;
+    }
+    sup {
+      font-size: 0.7rem;
+      vertical-align: super;
+      cursor: help;
+      color: #6b7280;
+    }
+    .dark sup {
+      color: #9ca3af;
+    }
+    /* Scrollbar for file list and folders */
+    #folders-ul::-webkit-scrollbar,
+    #files-ul::-webkit-scrollbar,
+    #folders-ul-inside::-webkit-scrollbar {
+      width: 8px;
+    }
+    #folders-ul::-webkit-scrollbar-thumb,
+    #files-ul::-webkit-scrollbar-thumb,
+    #folders-ul-inside::-webkit-scrollbar-thumb {
+      background-color: rgba(107, 114, 128, 0.4);
+      border-radius: 4px;
+    }
+</style>
+
+<nav
+    id="folder-list"
+    class="w-64 bg-white border-r border-gray-300 overflow-y-auto flex flex-col"
+    aria-label="Liste des dossiers"
+>
+    <h2 class="p-4 font-semibold  border-b border-gray-300">Dossiers racine</h2>
+    <ul class="divide-y divide-gray-200 bg-white dark:bg-gray-950 flex-1 overflow-y-auto" id="folders-ul"></ul>
+    <div class="border-t border-gray-300 bg-white dark:bg-gray-950 p-4">
+        <h3 class="font-semibold mb-2">Sous-dossiers</h3>
+        <ul class="divide-y divide-gray-200 max-h-48 overflow-y-auto" id="folders-ul-inside"></ul>
+    </div>
+</nav>
+
+<section
+    id="file-list-section"
+    class="flex-1 flex flex-col overflow-hidden"
+    aria-label="Liste des fichiers"
+>
+    <header class="bg-white dark:bg-gray-900 text-gray-900   dark:text-gray-100   border-b border-gray-300 p-4 flex items-center justify-between">
+        <h2 id="current-folder-name" class="text-lg font-semibold truncate">
+            Chargement...
+        </h2>
+        <button
+            id="btn-back-folder"
+            class="text-blue-600 hover:underline disabled:text-gray-400"
+            disabled
+            aria-label="Retour au dossier précédent"
+        >
+            <i class="fas fa-arrow-left"></i> Retour
+        </button>
+        <div class="flex items-center gap-2">
+            <input type="file" id="file-input" class="hidden" multiple accept=".md">
+            <button id="btn-import" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-upload mr-1"></i> Importer
+            </button>
+            <button id="btn-create-file" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-plus mr-1"></i> Fichier
+            </button>
+            <button id="btn-create-folder" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-folder-plus mr-1"></i> Dossier
+            </button>
+        </div>
+    </header>
+    <ul
+        id="files-ul"
+        class=" bg-white text-gray-950 dark:bg-gray-900  dark:text-gray-100 flex-1 overflow-y-auto bg-white divide-y divide-gray-200 p-4"
+        aria-live="polite"
+    ></ul>
+</section>
+
+<section
+    id="file-view-section"
+    class="w-[28rem] bg-white text-gray-900 dark:bg-gray-900  dark:text-gray-100 border-l border-gray-300 flex flex-col overflow-hidden hidden"
+    aria-label="Visualisation du fichier"
+>
+    <header
+        class="p-4 border-b border-gray-300 flex items-center justify-between"
+    >
+        <h3 id="file-view-title" class="text-lg font-semibold truncate max-w-[70%]"></h3>
+        <div class="flex items-center gap-3">
+            <button
+                id="btn-share"
+                class="text-blue-600 hover:text-blue-800"
+                title="Partager ce fichier"
+                aria-label="Partager ce fichier"
+            >
+                <i class="fas fa-share-alt"></i>
+            </button>
+            <button
+                id="btn-toggle-view"
+                class="text-blue-600 hover:text-blue-800"
+                title="Basculer entre édition et visualisation"
+                aria-label="Basculer entre édition et visualisation"
+            >
+                <i class="fas fa-edit"></i>
+            </button>
+            <button
+                id="btn-close-view"
+                class="text-gray-600 hover:text-gray-900"
+                title="Fermer la visualisation"
+                aria-label="Fermer la visualisation"
+            >
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </header>
+    <div
+        id="file-rendered-content"
+        class="flex-1 overflow-y-auto p-4 prose max-w-full bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-100"
+        style="white-space: pre-wrap;"
+        aria-label="Contenu rendu du fichier markdown"
+        tabindex="0"
+    ></div>
+    <textarea
+        id="file-content"
+        class="flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 resize-none outline-none hidden"
+        spellcheck="false"
+        aria-label="Contenu du fichier markdown"
+        readonly
+    ></textarea>
+    <footer class="p-4 border-t border-gray-300 flex justify-end gap-2">
+        <button
+            id="btn-save"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed hidden"
+            disabled
+            aria-label="Sauvegarder les modifications"
+        >
+            <i class="fas fa-save mr-2"></i> Sauvegarder
+        </button>
+    </footer>
+</section>
+`);
