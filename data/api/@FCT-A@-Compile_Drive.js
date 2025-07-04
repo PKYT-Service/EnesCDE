@@ -102,27 +102,6 @@ document.write(`
         >
             <i class="fas fa-arrow-left"></i> Retour
         </button>
-        <!--<div class="flex items-center gap-2">
-            <input type="file" id="file-input" class="hidden" multiple accept=".md">
-            <button id="btn-import" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-upload mr-1"></i> Importer
-            </button>
-            <button id="btn-create-file" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-plus mr-1"></i> Fichier
-            </button>
-            <button id="btn-create-folder" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-folder-plus mr-1"></i> Dossier
-            </button>
-        </div>-->
-            <div class="flex items-center gap-3">
-      <button id="btn-create-folder" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 dark:text-gray-900 px-3 py-1 rounded flex items-center gap-2" aria-label="Créer un dossier">
-        <i class="fas fa-folder-plus"></i> Dossier
-      </button>
-      <button id="btn-create-file" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Créer un fichier Markdown" disabled>
-        <i class="fas fa-file-medical"></i> Fichier
-      </button>
-      <input type="file" id="file-input" multiple accept=".md" class="hidden" />
-    </div>
     </header>
     <ul
         id="files-ul"
@@ -148,14 +127,6 @@ document.write(`
                 aria-label="Partager ce fichier"
             >
                 <i class="fas fa-share-alt"></i>
-            </button>
-            <button
-                id="btn-toggle-view"
-                class="text-blue-600 hover:text-blue-800"
-                title="Basculer entre édition et visualisation"
-                aria-label="Basculer entre édition et visualisation"
-            >
-                <i class="fas fa-edit"></i>
             </button>
             <button
                 id="btn-close-view"
