@@ -102,7 +102,7 @@ document.write(`
         >
             <i class="fas fa-arrow-left"></i> Retour
         </button>
-        <div class="flex items-center gap-2">
+        <!--<div class="flex items-center gap-2">
             <input type="file" id="file-input" class="hidden" multiple accept=".md">
             <button id="btn-import" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                 <i class="fas fa-upload mr-1"></i> Importer
@@ -113,7 +113,7 @@ document.write(`
             <button id="btn-create-folder" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                 <i class="fas fa-folder-plus mr-1"></i> Dossier
             </button>
-        </div>
+        </div>-->
     </header>
     <ul
         id="files-ul"
