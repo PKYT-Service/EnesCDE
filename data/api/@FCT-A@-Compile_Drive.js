@@ -128,7 +128,7 @@ document.write(`
     aria-label="Visualisation du fichier"
 >
     <header
-        class="p-4 border-b border-gray-300 flex items-center justify-between"
+        class="p-4 border-b border-gray-300 flex items-center justify-between dark:bg-gray-950 dark:text-white text-black"
     >
         <h3 id="file-view-title" class="text-lg font-semibold truncate max-w-[70%]"></h3>
         <div class="flex items-center gap-3">
