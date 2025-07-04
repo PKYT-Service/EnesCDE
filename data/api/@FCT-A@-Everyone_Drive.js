@@ -453,7 +453,7 @@
       function inlineReplacements(text) {
         text = escapeHtml(text);
 
-        text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 rounded px-1 font-mono text-sm">$1</code>');
+        text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
 
         text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
         text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
