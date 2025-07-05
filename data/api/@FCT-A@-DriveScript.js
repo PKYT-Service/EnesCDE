@@ -449,50 +449,95 @@
         blockquoteBuffer = [];
         inBlockquote = false;
       }
+ 
+     function inlineReplacements(text) {
+    // La fonction escapeHtml est accessible depuis la portée parente (customMarkdownRender)
+    text = escapeHtml(text);
 
-      function inlineReplacements(text) {
-        text = escapeHtml(text);
+    // Code inline
+    text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
 
-        text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
+    // Gras
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
+    text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
 
-        text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
-        text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
+    // Italique
+    text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
+    text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
 
-        text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
-        text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
+    // Barré (Strikethrough)
+    text = text.replace(/~~(.+?)~~/g, '<s class="line-through text-gray-700 dark:text-gray-300">$1</s>');
 
-        text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200">$1</mark>');
+    // Surligné/Marqué
+    text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200 dark:bg-yellow-500 dark:text-gray-900">$1</mark>');
 
-        text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 px-1 rounded">$1</span>');
+    // Math inline (votre syntaxe personnalisée)
+    text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">$1</span>');
 
-        text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super">$1</sup>');
+    // Notes de bas de page (renvois)
+    text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super text-blue-600 hover:underline cursor-pointer">$1</sup>');
 
-        text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+    // Liens
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
 
-        text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
+    // Images
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
 
-        text = text.replace(/^---$/gm, '<hr class="my-4 border-gray-300"/>');
+    // Boutons personnalisés ([{Texte du Bouton}])
+    text = text.replace(
+      /\[\{(.+?)\}\]/g,
+      '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
+    );
 
-        text = text.replace(/^### (.*)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
-        text = text.replace(/^## (.*)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
-        text = text.replace(/^# (.*)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+    // --- NOUVELLES FONCTIONNALITÉS: Éléments Juridiques et Administratifs ---
 
-        text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700">$1</blockquote>');
+    // Procès / Affaire : [[Procès: Nom de l'affaire]]
+    text = text.replace(/\[\[Procès:\s*(.+?)\]\]/g, '<span class="font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded">$1</span>');
 
-        text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4">$1</li>');
-        text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
+    // Avocat : ((Avocat: Nom de l'avocat))
+    text = text.replace(/\(\(Avocat:\s*(.+?)\)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded">$1</span>');
 
-        text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4">$1</li>');
-        text = text.replace(/(<li class="ml-4">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
+    // Juge : {{Juge: Nom du juge}}
+    text = text.replace(/\{\{Juge:\s*(.+?)\}\}/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded">$1</span>');
 
-        text = text.replace(
-          /\[\{(.+?)\}\]/g,
-          '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
-        );
+    // Décret : [Décret: Référence]
+    text = text.replace(/\[Décret:\s*(.+?)\]/g, '<span class="font-mono text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900 px-1 rounded">$1</span>');
 
-        return text;
-      }
+    // Certificat : [Certificat: Type/Numéro]
+    text = text.replace(/\[Certificat:\s*(.+?)\]/g, '<span class="font-mono text-indigo-800 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-900 px-1 rounded">$1</span>');
 
+    // Document Générique (Autres) : [Document: Type/Référence]
+    text = text.replace(/\[Document:\s*(.+?)\]/g, '<span class="font-mono text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 px-1 rounded">$1</span>');
+
+
+    // --- Fonctions de bloc --- (conservées et ajustées pour le mode sombre)
+
+    // Titres (du plus petit au plus grand pour éviter les correspondances partielles)
+    text = text.replace(/^###### (.*)$/gm, '<h6 class="text-base font-bold mt-1 mb-1 text-gray-900 dark:text-gray-100">$1</h6>');
+    text = text.replace(/^##### (.*)$/gm, '<h5 class="text-lg font-bold mt-2 mb-1 text-gray-900 dark:text-gray-100">$1</h5>');
+    text = text.replace(/^#### (.*)$/gm, '<h4 class="text-xl font-semibold mt-3 mb-1 text-gray-900 dark:text-gray-100">$1</h4>');
+    text = text.replace(/^### (.*)$/gm, '<h3 class="text-2xl font-bold mt-4 mb-2 text-gray-900 dark:text-gray-100">$1</h3>');
+    text = text.replace(/^## (.*)$/gm, '<h2 class="text-3xl font-bold mt-5 mb-2 pb-1 border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100">$1</h2>');
+    text = text.replace(/^# (.*)$/gm, '<h1 class="text-4xl font-extrabold mt-6 mb-3 pb-2 border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">$1</h1>');
+
+    // Règles Horizontales (maintenant avec ---, ***, ou ___, et classes pour le mode sombre)
+    text = text.replace(/^(---|\*\*\*|___)$/gm, '<hr class="my-4 border-gray-300 dark:border-gray-700"/>');
+
+    // Blockquotes (ajout de classes pour le mode sombre)
+    text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700 dark:text-gray-300">$1</blockquote>');
+
+    // Listes ordonnées (ajout de classes pour le mode sombre aux <li>)
+    text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4 text-gray-800 dark:text-gray-100">$1</li>');
+    text = text.replace(/(<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
+
+    // Listes non ordonnées (ajout de classes pour le mode sombre aux <li>)
+    text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4 text-gray-800 dark:text-gray-100">$1</li>');
+    text = text.replace(/(<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
+
+    return text;
+}
+
+        
       for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
 
