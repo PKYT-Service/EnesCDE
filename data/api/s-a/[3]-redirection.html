@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enes - CDE : S-A > ET 3 > ( redirection ) </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Le bloc script dans le head était vide ou contenait une ligne incorrecte pour getItem.
+        // Il est supprimé car non pertinent pour la logique de redirection de cette page,
+        // les valeurs localStorage étant déjà définies par la page précédente.
+    </script>
+</head>
+<body>
+
+<div class="flex flex-col justify-center items-center h-screen bg-white dark:bg-zinc-950 text-center">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-neutral-950 dark:text-neutral-50"><b>Enes - <a class="text-indigo-700 dark:text-700">CDE</a></b></h1>
+    <h6><a id="loader" class="block text-center mt-10 text-lg font-mono text-neutral-950 dark:text-neutral-50">-_-</a></h6>
+    <p class="text-sm text-neutral-950 dark:text-neutral-50">Merci de patienter quelques instants</p>
+  </div>
+  
+  <div class="flex space-x-2 mt-10">
+    <span class="sr-only">Loading...</span>
+    <div class="h-8 w-8 bg-black dark:bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+    <div class="h-8 w-8 bg-black dark:bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+    <div class="h-8 w-8 bg-black dark:bg-white rounded-full animate-bounce"></div>
+  </div>
+</div>
+
+<script>
+    setTimeout(() => {
+        // 1. Récupérer l'URL de base depuis localStorage
+        const baseUrl = localStorage.getItem('url');
+        // URL de fallback si 'url' n'est pas définie dans localStorage (par exemple, la page de connexion)
+        const defaultFallbackUrl = "https://enes-cde.vercel.app/data/api/s-a/[2]-connexion.html";
+        
+        // Choisir l'URL de base : celle du localStorage si elle existe, sinon l'URL de fallback.
+        const targetBaseUrl = baseUrl || defaultFallbackUrl;
+
+        // 2. Récupérer les données 'compte' et 'Enes-CDE-C' depuis localStorage
+        const compteData = localStorage.getItem('compte') || ''; // S'assurer que c'est une chaîne vide si null
+        const sessionData = localStorage.getItem('Enes-CDE-C') || ''; // S'assurer que c'est une chaîne vide si null
+
+        // 3. Encoder/Crypter la valeur du compte (ici, encodage Base64 après encodage URI pour la sécurité)
+        // Note : btoa() fonctionne bien pour les chaînes latines. Pour des caractères UTF-8 complexes,
+        // il est recommandé d'utiliser btoa(encodeURIComponent(string)).
+        const encodedCompte = btoa(encodeURIComponent(compteData));
+
+        // 4. Construire le fragment de l'URL selon le format désiré
+        const fragment = `re#${encodedCompte}@@@${sessionData}`;
+
+        // 5. Construire l'URL de redirection finale
+        window.location.href = `${targetBaseUrl}#${fragment}`;
+
+    }, 510); 
+    
+    const loader = document.getElementById('loader');
+    const messages = [
+        "Recuperation du compte et de la session .",
+        "Cryptage des informations .",
+        "Redirection . ",
+        "Redirection . . ",
+        "Redirection . . . "
+    ];
+
+    let index = 0;
+
+    function updateLoader() {
+        loader.textContent = messages[index];
+        index = (index + 1) % messages.length;
+
+        let delay;
+        switch(index) {
+            case 1:
+                delay = 150;
+                break;
+            case 2:
+                delay = 100;
+                break;
+            case 3:
+                delay = 100;
+                break;
+            default:
+                delay = 150;
+        }
+
+        setTimeout(updateLoader, delay);
+    }
+
+    setTimeout(updateLoader, 500);
+</script>
+</body>
+</html>
