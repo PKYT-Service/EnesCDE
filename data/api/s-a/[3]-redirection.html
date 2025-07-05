@@ -47,8 +47,8 @@
 
         // 4. Construire le fragment de l'URL selon le format désiré :
         // Il DOIT commencer par 're#' pour que re.html le reconnaisse correctement.
-        //const fragment = `re#${encodedCompte}@@@${sessionData}`; // <-- CORRECTION ICI
-        const fragment = `${encodedCompte}@@@${sessionData}`; // <-- CORRECTION ICI
+        const fragment = `re#${encodedCompte}@@@${sessionData}`; // <-- CORRECTION ICI
+        //const fragment = `${encodedCompte}@@@${sessionData}`; // <-- CORRECTION ICI
         
         // 5. Construire l'URL de redirection finale
         // L'URL cible sera toujours le re.html, avec le targetBaseUrl comme domaine principal.
