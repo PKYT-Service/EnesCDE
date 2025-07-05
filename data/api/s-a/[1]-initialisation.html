@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enes - CDE : 1 ( Connexion ) </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Fonction pour extraire le fragment de l'URL (le hash, sans le '#')
+        function getUrlHash() {
+            return window.location.hash ? window.location.hash.substring(1) : '';
+        }
+
+        // --- Début des opérations localStorage ---
+        // Réinitialisation du compte (si nécessaire, selon votre logique)
+        localStorage.setItem('compte', '');
+
+        // Définir 'url' avec le fragment de l'URL (ex: #votre_url_specifique -> votre_url_specifique)
+        // Si aucun hash n'est présent, cela stockera une chaîne vide.
+        localStorage.setItem('url', getUrlHash());
+
+        // Correction : Le règlement doit être défini à 'true'
+        localStorage.setItem('rules', 'true'); 
+        // --- Fin des opérations localStorage ---
+
+    </script>
+</head>
+<body>
+
+<div class="flex flex-col justify-center items-center h-screen bg-white dark:bg-zinc-950 text-center">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-neutral-950 dark:text-neutral-50"><b>Enes - <a class="text-indigo-700 dark:text-700">CDE</a></b></h1>
+    <h6><a id="loader" class="block text-center mt-10 text-lg font-mono text-neutral-950 dark:text-neutral-50">-_-</a></h6>
+    <p class="text-sm text-neutral-950 dark:text-neutral-50">Merci de patienter quelques instants</p>
+  </div>
+  
+  <div class="flex space-x-2 mt-10">
+    <span class="sr-only">Loading...</span>
+    <div class="h-8 w-8 bg-black dark:bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+    <div class="h-8 w-8 bg-black dark:bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+    <div class="h-8 w-8 bg-black dark:bg-white rounded-full animate-bounce"></div>
+  </div>
+</div>
+
+<script>
+    setTimeout(() => {
+        window.location.href = "https://enes-cde.vercel.app/data/api/s-a/[2]-connexion";
+    }, 410); 
+    
+    const loader = document.getElementById('loader');
+    const messages = [
+        "Retrait d'un compte deja existant",
+        "Ajout du service de redirection",
+        "Permissions RL en true", // Ce message sera affiché
+        "Redirection prevue",
+        "Permissions RL en false" // Ce message ne reflètera plus la valeur finale du localStorage
+    ];
+
+    let index = 0;
+
+    function updateLoader() {
+        loader.textContent = messages[index];
+        index = (index + 1) % messages.length;
+
+        let delay;
+        switch(index) {
+            case 1:
+                delay = 150;
+                break;
+            case 2:
+                delay = 100;
+                break;
+            case 3:
+                delay = 100;
+                break;
+            default:
+                delay = 50;
+        }
+
+        setTimeout(updateLoader, delay);
+    }
+
+    setTimeout(updateLoader, 400);
+</script>
+</body>
+</html>
