@@ -1,1 +1,16 @@
-
+[
+    {
+        "url": "https://enes-cde.vercel.app/data/apps/loader/",
+        "title": "Chargement de l'application",
+        "description": "Préparation de l'expérience E-CDE",
+        "icon": "loader_icon",
+        "small_icon": "info_icon",
+        "author": "Enes CDE"
+    },
+    {
+        "url": "https://enes-cde.vercel.app/another-page/",
+        "title": "Sur une autre page",
+        "description": "Exploration du site",
+        "icon": "explore_icon"
+    }
+]
