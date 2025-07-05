@@ -48,10 +48,10 @@
         const encodedCompte = btoa(encodeURIComponent(compteData));
 
         // 4. Construire le fragment de l'URL selon le format désiré
-        const fragment = `/users/re.html#${encodedCompte}@@@${sessionData}`;
+        const fragment = `${encodedCompte}@@@${sessionData}`;
 
         // 5. Construire l'URL de redirection finale
-        window.location.href = `${targetBaseUrl}#${fragment}`;
+        window.location.href = `${targetBaseUrl}/panel/re.html#${fragment}`;
 
     }, 510); 
     
