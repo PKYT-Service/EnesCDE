@@ -43,15 +43,19 @@
         const sessionData = localStorage.getItem('Enes-CDE-C') || ''; // S'assurer que c'est une chaîne vide si null
 
         // 3. Encoder/Crypter la valeur du compte (ici, encodage Base64 après encodage URI pour la sécurité)
-        // Note : btoa() fonctionne bien pour les chaînes latines. Pour des caractères UTF-8 complexes,
-        // il est recommandé d'utiliser btoa(encodeURIComponent(string)).
         const encodedCompte = btoa(encodeURIComponent(compteData));
 
-        // 4. Construire le fragment de l'URL selon le format désiré
-        const fragment = `${encodedCompte}@@@${sessionData}`;
+        // 4. Construire le fragment de l'URL selon le format désiré :
+        // Il DOIT commencer par 're#' pour que re.html le reconnaisse correctement.
+        const fragment = `re#${encodedCompte}@@@${sessionData}`; // <-- CORRECTION ICI
 
         // 5. Construire l'URL de redirection finale
-        window.location.href = `${targetBaseUrl}/users/re.html#${fragment}`;
+        // L'URL cible sera toujours le re.html, avec le targetBaseUrl comme domaine principal.
+        window.location.href = `${targetBaseUrl.split('/')[0]}//${targetBaseUrl.split('/')[2]}/users/re.html#${fragment}`;
+        // La partie `targetBaseUrl.split('/')[0]}//${targetBaseUrl.split('/')[2]}` extrait le protocole et le domaine
+        // de targetBaseUrl, garantissant que re.html est toujours sous le bon domaine.
+        // Si targetBaseUrl est déjà une URL complète comme "https://enes-cde.vercel.app/...",
+        // cela garantira que re.html est appelé sous le même domaine racine.
 
     }, 510); 
     
