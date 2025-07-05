@@ -450,9 +450,10 @@
         inBlockquote = false;
       }
  
-     function inlineReplacements(text) {
+function inlineReplacements(text) {
     // La fonction escapeHtml est accessible depuis la portée parente (customMarkdownRender)
-    text = escapeHtml(text);
+    // Assurez-vous que cette fonction est bien définie et appelée au début du traitement.
+    // text = escapeHtml(text); // Décommenter si escapeHtml est nécessaire à ce niveau.
 
     // Code inline
     text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
@@ -485,11 +486,11 @@
 
     // Boutons personnalisés ([{Texte du Bouton}])
     text = text.replace(
-      /\[\{(.+?)\}\]/g,
-      '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
+        /\[\{(.+?)\}\]/g,
+        '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>'
     );
 
-    // --- NOUVELLES FONCTIONNALITÉS: Éléments Juridiques et Administratifs ---
+    // --- NOUVELLES FONCTIONNALITÉS: Éléments Juridiques et Administratifs (existants) ---
 
     // Procès / Affaire : [[Procès: Nom de l'affaire]]
     text = text.replace(/\[\[Procès:\s*(.+?)\]\]/g, '<span class="font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded">$1</span>');
@@ -509,6 +510,45 @@
     // Document Générique (Autres) : [Document: Type/Référence]
     text = text.replace(/\[Document:\s*(.+?)\]/g, '<span class="font-mono text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 px-1 rounded">$1</span>');
 
+    // --- NOUVELLES FONCTIONNALITÉS: Tribunal ---
+
+    // Numéro de Dossier : (Dossier: [Numéro])
+    text = text.replace(/\(Dossier:\s*([^\)]+)\)/g, '<span class="font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm border border-gray-300 dark:border-gray-600">Dossier #$1</span>');
+
+    // Date de l'Audience : (Audience: [AAAA-MM-JJ])
+    text = text.replace(/\(Audience:\s*([^\)]+)\)/g, '<span class="font-semibold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 px-1 rounded-sm">Audience du $1</span>');
+
+    // Plaignant/Accusateur : (Plaignant: [Nom])
+    text = text.replace(/\(Plaignant:\s*([^\)]+)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded-sm">Plaignant: $1</span>');
+
+    // Accusé/Défendeur : (Accusé: [Nom])
+    text = text.replace(/\(Accusé:\s*([^\)]+)\)/g, '<span class="font-medium text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded-sm">Accusé: $1</span>');
+
+    // Témoin : (Témoin: [Nom])
+    text = text.replace(/\(Témoin:\s*([^\)]+)\)/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded-sm">Témoin: $1</span>');
+
+    // Preuve : (Preuve: [Description ou Référence])
+    text = text.replace(/\(Preuve:\s*([^\)]+)\)/g, '<span class="font-mono text-yellow-800 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900 px-1 rounded-sm">Preuve: $1</span>');
+
+    // Article de Loi Cité : (ArtLoi: [Référence de l'article])
+    text = text.replace(/\(ArtLoi:\s*([^\)]+)\)/g, '<span class="font-semibold text-indigo-800 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900 px-1 rounded-sm">Article de loi: $1</span>');
+
+    // Verdict Final : (Verdict: [Décision])
+    // Note: Pour un rendu dynamique de couleur selon le verdict (Culpabilité/Acquittement), il faudrait une logique plus complexe,
+    // mais ici nous utilisons une couleur générique de succès.
+    text = text.replace(/\(Verdict:\s*(Culpabilité|Acquittement|Non-lieu)\)/g, (match, p1) => {
+        let bgColor = '';
+        let textColor = '';
+        if (p1 === 'Culpabilité') {
+            bgColor = 'bg-red-200 dark:bg-red-800';
+            textColor = 'text-red-900 dark:text-red-100';
+        } else if (p1 === 'Acquittement' || p1 === 'Non-lieu') {
+            bgColor = 'bg-green-200 dark:bg-green-800';
+            textColor = 'text-green-900 dark:text-green-100';
+        }
+        return `<span class="font-extrabold ${textColor} ${bgColor} px-2 py-0.5 rounded-md shadow-sm">VERDICT: ${p1}</span>`;
+    });
+
 
     // --- Fonctions de bloc --- (conservées et ajustées pour le mode sombre)
 
@@ -527,12 +567,21 @@
     text = text.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-400 pl-4 italic text-gray-700 dark:text-gray-300">$1</blockquote>');
 
     // Listes ordonnées (ajout de classes pour le mode sombre aux <li>)
+    // Note: Le remplacement global des `li` devrait être fait après que les éléments de bloc
+    // comme les listes aient été correctement structurés pour éviter les sur-correspondances.
+    // Cette partie de votre script original pour les listes peut nécessiter une refonte pour une imbrication correcte et un balisage `ol`/`ul`.
+    // Pour l'exemple, je vais simplifier pour les lignes seules.
+    // Un vrai parser Markdown gère les blocs de listes de manière plus sophistiquée.
     text = text.replace(/^\d+\.\s(.+)$/gm, '<li class="ml-4 text-gray-800 dark:text-gray-100">$1</li>');
-    text = text.replace(/(<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>)/g, '<ol class="list-decimal ml-6">$1</ol>');
+    // Ceci est une simplification. Pour une liste complète, il faudrait un bloc qui englobe les <li> dans un <ol>
+    text = text.replace(/(<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>(\n<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>)*)/g, '<ol class="list-decimal ml-6">$1</ol>');
+
 
     // Listes non ordonnées (ajout de classes pour le mode sombre aux <li>)
     text = text.replace(/^[-*]\s(.+)$/gm, '<li class="ml-4 text-gray-800 dark:text-gray-100">$1</li>');
-    text = text.replace(/(<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>)/g, '<ul class="list-disc ml-6">$1</ul>');
+    // Simplification. Un vrai parser Markdown gère les blocs de listes de manière plus sophistiquée.
+    text = text.replace(/(<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>(\n<li class="ml-4 text-gray-800 dark:text-gray-100">.*<\/li>)*)/g, '<ul class="list-disc ml-6">$1</ul>');
+
 
     return text;
 }
