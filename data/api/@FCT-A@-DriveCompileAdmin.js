@@ -176,7 +176,7 @@ document.write(`
     ></div>
     <textarea
         id="file-content"
-        class="flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 resize-none outline-none hidden"
+        class="flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-950 resize-none outline-none hidden"
         spellcheck="false"
         aria-label="Contenu du fichier markdown"
         
