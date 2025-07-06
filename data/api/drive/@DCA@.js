@@ -192,5 +192,5 @@ document.write(`
         </button>
     </footer>
 </section>
-<script src="https://enes-cde.vercel.app/data/api/@FCT-A@-DriveScript.js" defer></script>
+<script src="https://enes-cde.vercel.app/data/api/drive/@FCT-A@-DriveScript.js" defer></script>
 `);
