@@ -193,4 +193,5 @@ document.write(`
     </footer>
 </section>
 <script src="https://enes-cde.vercel.app/data/api/drive/@FCT-A@-DriveScript.js" defer></script>
+<script src="https://enes-cde.vercel.app/data/api/drive/@FCT-A@-DMA.js" defer></script>
 `);
