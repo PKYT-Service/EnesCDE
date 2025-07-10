@@ -1,6 +1,6 @@
 console.log("🛡️[E-CDE] | 🔑 VerifierCompte : INIT script chargé.");
 
-function verifierCompte() {
+async function verifierCompte() {
     console.time("🛡️[E-CDE] | 🔑 VerifierCompte | ⏱️ Durée de vérification");
 
     const credentials = localStorage.getItem("compte");
