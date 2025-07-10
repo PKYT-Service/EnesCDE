@@ -4,6 +4,7 @@ console.log("[MD ECDE][LOAD][INIT]");
 // 2020 - 2024 [ NaxeWayz , FayzXase , LosFlyTM by PikaYutMG , GFLP - LSP # SRDMG , SourceDevMG , PikaYutMG , PKYT - service / PKYT - DATABASE + PKYT - DATABASE - UP , nom appartenant a E-CDE ( D.Enes ) ].
 // 2017 - 2022 [ LosFly ] deretour en 2025(../02.2024)
 // Patch : 3 04/02/2025
+// Patch : 4 11/07/2025
 // Sortie officielle : 10/09/2024
 // By EnesGP ( Enes D-GP )
 
