@@ -100,6 +100,3 @@ async function verifierCompte() {
 
 // Lancer la vérification maintenant
 verifierCompte();
-
-// Refaire la vérification toutes les 5 minutes
-setInterval(verifierCompte, 5 * 60 * 1000);
