@@ -1,106 +1,139 @@
 console.log("🛡️[E-CDE] | 🔑 VerifierCompte : INIT script chargé.");
 
-async function verifierCompte() {
-    console.time("🛡️[E-CDE] | 🔑 VerifierCompte | ⏱️ Durée de vérification");
+// === PARAMÈTRES ===
+const ECDE_SETTINGS = {
+    etape1_checkComptePresent: true,
+    etape2_checkGithubCompte: true,
+    etape3_checkHTMLstatus: true,
+    etape4_checkSessionStorage: false
+};
 
+// === ÉTAPE 1 : Vérifier si compte présent ===
+function checkComptePresent() {
     const credentials = localStorage.getItem("compte");
-    const sessionData = localStorage.getItem("Enes-CDE-C");
-
-    if (!credentials || !sessionData) {
-        console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Données manquantes, redirection... ]");
+    if (!credentials) {
+        console.warn("🛡️[E-CDE] | Étape1 [ Aucun compte trouvé, redirection... ]");
         window.location.href = "../index.html";
-        return;
+        return null;
     }
+    return JSON.parse(credentials);
+}
 
-    const { email, password } = JSON.parse(credentials);
-    const session = JSON.parse(sessionData);
-
-    // Correction de la condition d'expiration
-    const sessionExpirée = !session.valid || new Date(session.expiry) < new Date();
-    if (sessionExpirée) {
-        console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Session invalide ou expirée, redirection... ]");
-        window.location.href = "../index.html";
-        return;
-    }
-
+// === ÉTAPE 2 : Vérifier le compte GitHub ===
+async function checkCompteGithub(email, password) {
     try {
-        console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ Récupération du token GitHub... ]");
-        const tokenResponse = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
-        const tokenData = await tokenResponse.json();
+        const tokenRes = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+        const tokenData = await tokenRes.json();
         const GITHUB_TOKEN = tokenData.GITHUB_TOKEN;
 
-        const encodedEmail = encodeURIComponent(email);
-        const encodedPassword = encodeURIComponent(password);
-        const url = `https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/${encodedEmail}*-*${encodedPassword}.json`;
+        const url = `https://api.github.com/repos/PKYT-Service/database_EnesCDE/contents/compte/v4/${encodeURIComponent(email)}*-*${encodeURIComponent(password)}.json`;
+        const res = await fetch(url, { headers: { Authorization: `token ${GITHUB_TOKEN}` } });
 
-        console.log(`🛡️[E-CDE] | 🔑 VerifierCompte [ Vérification du compte pour ${email}... ]`);
-        const response = await fetch(url, {
-            headers: { Authorization: `token ${GITHUB_TOKEN}` }
-        });
+        if (!res.ok) return null;
 
-        if (!response.ok) {
-            console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Compte non valide ou introuvable, redirection... ]");
-            window.location.href = "../index.html";
-            return;
-        }
+        const data = await res.json();
+        const decoded = JSON.parse(atob(data.content));
 
-        const data = await response.json();
-        const fileContent = JSON.parse(atob(data.content));
+        if (decoded.CompteInfo.Email !== email || decoded.CompteInfo.MDP !== password) return null;
 
-        if (fileContent.CompteInfo.Email !== email || fileContent.CompteInfo.MDP !== password) {
-            console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Identifiants incorrects, redirection... ]");
-            window.location.href = "../index.html";
-            return;
-        }
-
-        const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1] || null;
-        const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1] || null;
-
-        const verifierService = serviceAttendu !== null;
-        const verifierPermission = permissionAttendue !== null;
-
-        const serviceCompte = fileContent.CompteInfo.Service?.trim();
-        const permissionCompte = fileContent.Details.Permissions?.trim();
-        const adminCompte = fileContent.Details.Admin?.trim();
-
-        console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ DEBUG données compte/attendus ] =>", {
-            serviceAttendu,
-            permissionAttendue,
-            verifierService,
-            verifierPermission,
-            serviceCompte,
-            permissionCompte,
-            adminCompte
-        });
-
-        // Cas spécial bypass total
-        if (adminCompte === "EnesCDE002009") {
-            console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ ✅ Admin EnesCDE002009 détecté, bypass total. ]");
-        } else {
-            if (verifierService && serviceCompte !== serviceAttendu) {
-                console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Service non autorisé, redirection... ]");
-                window.location.href = "../index.html";
-                return;
-            }
-
-            if (verifierPermission && permissionCompte !== permissionAttendue) {
-                console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Permission insuffisante, redirection... ]");
-                window.location.href = "../index.html";
-                return;
-            }
-        }
-
-        console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ ✅ Accès autorisé ]");
-    } catch (error) {
-        console.error("🛡️[E-CDE] | 🔑 VerifierCompte [ ❌ Erreur lors de la vérification :", error, "]");
-        window.location.href = "../index.html";
-    } finally {
-        console.timeEnd("🛡️[E-CDE] | 🔑 VerifierCompte | ⏱️ Durée de vérification");
+        return decoded;
+    } catch (err) {
+        console.error("🛡️[E-CDE] | Étape2 [ Erreur de récupération GitHub ] :", err);
+        return null;
     }
 }
 
-// Lancer la vérification maintenant
-verifierCompte();
+// === ÉTAPE 3 : Vérifie les permissions HTML ===
+function checkHTMLStatus(fileContent) {
+    const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1] || null;
+    const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1] || null;
 
-// Relancer toutes les 5 minutes
-setInterval(verifierCompte, 300000);
+    const serviceCompte = fileContent.CompteInfo.Service?.trim();
+    const permissionCompte = fileContent.Details.Permissions?.trim();
+    const adminCompte = fileContent.Details.Admin?.trim();
+
+    if (adminCompte === "EnesCDE002009") {
+        console.log("🛡️[E-CDE] | Étape3 [ ✅ Admin détecté : bypass ]");
+        return true;
+    }
+
+    if (serviceAttendu && serviceCompte !== serviceAttendu) {
+        console.warn("🛡️[E-CDE] | Étape3 [ Service non autorisé, redirection... ]");
+        return false;
+    }
+
+    if (permissionAttendue && permissionCompte !== permissionAttendue) {
+        console.warn("🛡️[E-CDE] | Étape3 [ Permission refusée, redirection... ]");
+        return false;
+    }
+
+    console.log("🛡️[E-CDE] | Étape3 [ ✅ Permissions validées ]");
+    return true;
+}
+
+// === ÉTAPE 4 : Vérifie sessionStorage "Enes-CDE-C" ===
+function checkSessionStorage() {
+    const sessionRaw = localStorage.getItem("Enes-CDE-C");
+    if (!sessionRaw) return false;
+
+    const session = JSON.parse(sessionRaw);
+    const expired = !session.valid || new Date(session.expiry) < new Date();
+
+    if (expired) {
+        console.warn("🛡️[E-CDE] | Étape4 [ Session expirée, redirection... ]");
+        return false;
+    }
+
+    return true;
+}
+
+// === FONCTION PRINCIPALE ===
+async function verifierCompte() {
+    console.time("🛡️[E-CDE] | 🔑 VerifierCompte | ⏱️ Durée totale");
+
+    try {
+        if (ECDE_SETTINGS.etape1_checkComptePresent) {
+            const credentials = checkComptePresent();
+            if (!credentials) return;
+
+            const { email, password } = credentials;
+
+            let fileContent = null;
+            if (ECDE_SETTINGS.etape2_checkGithubCompte) {
+                fileContent = await checkCompteGithub(email, password);
+                if (!fileContent) {
+                    console.warn("🛡️[E-CDE] | Étape2 [ ❌ Compte GitHub invalide, redirection... ]");
+                    window.location.href = "../index.html";
+                    return;
+                }
+            }
+
+            if (ECDE_SETTINGS.etape3_checkHTMLstatus && fileContent) {
+                const htmlOK = checkHTMLStatus(fileContent);
+                if (!htmlOK) {
+                    window.location.href = "../index.html";
+                    return;
+                }
+            }
+
+            if (ECDE_SETTINGS.etape4_checkSessionStorage) {
+                const sessionOK = checkSessionStorage();
+                if (!sessionOK) {
+                    window.location.href = "../index.html";
+                    return;
+                }
+            }
+
+            console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ ✅ Accès autorisé à l’utilisateur ]");
+        }
+    } catch (err) {
+        console.error("🛡️[E-CDE] | 🔑 VerifierCompte [ ❌ Erreur inattendue ] :", err);
+        window.location.href = "../index.html";
+    } finally {
+        console.timeEnd("🛡️[E-CDE] | 🔑 VerifierCompte | ⏱️ Durée totale");
+    }
+}
+
+// === Lancer maintenant + chaque 5min ===
+verifierCompte();
+setInterval(verifierCompte, 5 * 60 * 1000);
