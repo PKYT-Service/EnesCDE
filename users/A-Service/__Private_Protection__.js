@@ -15,7 +15,8 @@ async function verifierCompte() {
     const { email, password } = JSON.parse(credentials);
     const session = JSON.parse(sessionData);
 
-    const sessionExpirée = !session.valid || new Date(session.expiry) < new Date(Date.now() - 3 * 60 * 60 * 1000);
+    // Correction de la condition d'expiration
+    const sessionExpirée = !session.valid || new Date(session.expiry) < new Date();
     if (sessionExpirée) {
         console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Session invalide ou expirée, redirection... ]");
         window.location.href = "../index.html";
@@ -100,3 +101,6 @@ async function verifierCompte() {
 
 // Lancer la vérification maintenant
 verifierCompte();
+
+// Relancer toutes les 5 minutes
+setInterval(verifierCompte, 300000);
