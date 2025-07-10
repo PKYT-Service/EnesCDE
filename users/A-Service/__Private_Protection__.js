@@ -50,32 +50,37 @@ async function verifierCompte() {
             return;
         }
 
-        const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1];
-        const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1];
+        const serviceAttendu = document.querySelector('[id^="session/"]')?.id.split("/")[1] || null;
+        const permissionAttendue = document.querySelector('[id^="perm/"]')?.id.split("/")[1] || null;
+
+        const verifierService = serviceAttendu !== null;
+        const verifierPermission = permissionAttendue !== null;
 
         const serviceCompte = fileContent.CompteInfo.Service?.trim();
         const permissionCompte = fileContent.Details.Permissions?.trim();
         const adminCompte = fileContent.Details.Admin?.trim();
 
-        // 🔍 Debug complet
-        console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ DEBUG ] =>", {
+        console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ DEBUG données compte/attendus ] =>", {
             serviceAttendu,
             permissionAttendue,
+            verifierService,
+            verifierPermission,
             serviceCompte,
             permissionCompte,
             adminCompte
         });
 
+        // Cas spécial bypass total
         if (adminCompte === "EnesCDE002009") {
-            console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ Admin EnesCDE002009 détecté, bypass total. ]");
+            console.log("🛡️[E-CDE] | 🔑 VerifierCompte [ ✅ Admin EnesCDE002009 détecté, bypass total. ]");
         } else {
-            if (serviceAttendu && serviceCompte !== serviceAttendu) {
+            if (verifierService && serviceCompte !== serviceAttendu) {
                 console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Service non autorisé, redirection... ]");
                 window.location.href = "../index.html";
                 return;
             }
 
-            if (!permissionCompte || permissionCompte !== permissionAttendue) {
+            if (verifierPermission && permissionCompte !== permissionAttendue) {
                 console.warn("🛡️[E-CDE] | 🔑 VerifierCompte [ Permission insuffisante, redirection... ]");
                 window.location.href = "../index.html";
                 return;
@@ -91,5 +96,8 @@ async function verifierCompte() {
     }
 }
 
+// Lancer la vérification maintenant
 verifierCompte();
+
+// Refaire la vérification toutes les 5 minutes
 setInterval(verifierCompte, 5 * 60 * 1000);
