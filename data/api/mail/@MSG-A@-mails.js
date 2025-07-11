@@ -86,8 +86,8 @@
         div.className = "self-start bg-gray-200 p-2 rounded-lg max-w-xs";
 
         div.innerHTML = `
-          <strong>De: ${m.de}</strong><br>
-          ${m.contenu}<br>
+          <strong class="dark:text-white text-dark">De: ${m.de}</strong><br>
+          <a class="dark:text-white text-dark">${m.contenu}</a><br>
           <small class="text-gray-500">${new Date(m.date).toLocaleString()}</small>
         `;
         chatBox.appendChild(div);
