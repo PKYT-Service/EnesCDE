@@ -75,7 +75,7 @@
       chatBox.innerHTML = "";
 
       if (msgs.length === 0) {
-        chatBox.innerHTML = "<p class='text-center text-gray-400'>Aucun message reçu.</p>";
+        chatBox.innerHTML = "<p class='text-center text-gray-400 bg-white dark:bg-dark dark:text-white text-dark  '>Aucun message reçu.</p>";
         return;
       }
 
