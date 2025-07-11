@@ -2,8 +2,8 @@ document.write(`
   <div class="max-w-3xl mx-auto p-4 flex flex-col flex-grow">
     <h1 class="text-2xl font-bold mb-4 text-center">Messagerie ECDE</h1>
 
-    <div id="chatBox" class="flex flex-col flex-grow bg-white rounded-md shadow p-4 overflow-y-auto space-y-3 mb-4 max-h-[60vh]">
-      <p id="loading" class="text-center text-gray-400">Chargement des messages...</p>
+    <div id="chatBox" class="bg-white dark:bg-dark dark:text-white text-dark  flex flex-col flex-grow bg-white rounded-md shadow p-4 overflow-y-auto space-y-3 mb-4 max-h-[60vh]">
+      <p id="loading" class="bg-white dark:bg-dark dark:text-white text-dark  text-center text-gray-400">Chargement des messages...</p>
     </div>
 
     <form id="sendForm" class="flex gap-2">
