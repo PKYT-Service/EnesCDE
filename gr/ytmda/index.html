@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Télécommande YTM - Enes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans p-4">
+  <div class="max-w-md mx-auto space-y-4">
+    <h1 class="text-2xl font-bold text-center">🎵 Télécommande YTM</h1>
+
+    <input type="text" id="tokenInput" placeholder="Colle ton token JWT ici"
+           class="w-full px-3 py-2 text-black rounded" onchange="saveToken()">
+
+    <div id="track-info" class="bg-gray-800 rounded-xl p-4">
+      <p class="text-sm text-gray-400">En cours :</p>
+      <h2 id="track-title" class="text-lg font-semibold">--</h2>
+      <p id="track-artist" class="text-sm">--</p>
+    </div>
+
+    <div class="flex justify-around">
+      <button onclick="prevTrack()" class="bg-gray-700 px-4 py-2 rounded-full">⏮</button>
+      <button onclick="togglePlay()" class="bg-green-600 px-6 py-2 rounded-full">⏯</button>
+      <button onclick="nextTrack()" class="bg-gray-700 px-4 py-2 rounded-full">⏭</button>
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mt-4 mb-1">🔊 Volume</label>
+      <input type="range" min="0" max="100" id="volume" class="w-full" onchange="setVolume(this.value)">
+    </div>
+
+    <h3 class="text-xl font-bold mt-6">🎶 File d'attente</h3>
+    <ul id="queue-list" class="bg-gray-800 rounded-xl p-3 space-y-1 text-sm max-h-64 overflow-y-auto">
+      <li class="text-gray-400">Chargement...</li>
+    </ul>
+  </div>
+
+  <script>
+    const ip = "192.168.1.42"; // <- change par l'IP de ton PC
+    const port = 9863;
+    const baseURL = `http://${ip}:${port}/api/v1`;
+
+    let token = localStorage.getItem('ytm_token') || "";
+
+    function saveToken() {
+      token = document.getElementById('tokenInput').value;
+      localStorage.setItem('ytm_token', token);
+      loadPlayer();
+      loadQueue();
+    }
+
+    function fetchAPI(endpoint, method = 'GET', body = null) {
+      return fetch(`${baseURL}/${endpoint}`, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: body ? JSON.stringify(body) : null
+      }).then(r => r.json());
+    }
+
+    function loadPlayer() {
+      fetchAPI('player').then(data => {
+        document.getElementById('track-title').innerText = data?.track?.title || "--";
+        document.getElementById('track-artist').innerText = data?.track?.author || "--";
+        document.getElementById('volume').value = data.volume || 50;
+      });
+    }
+
+    function loadQueue() {
+      fetchAPI('queue').then(data => {
+        const queue = data?.tracks || [];
+        const list = document.getElementById('queue-list');
+        list.innerHTML = '';
+        queue.forEach(track => {
+          const li = document.createElement('li');
+          li.textContent = `${track.title} – ${track.author}`;
+          list.appendChild(li);
+        });
+      });
+    }
+
+    function togglePlay() {
+      fetchAPI('player/play-pause', 'POST').then(loadPlayer);
+    }
+
+    function nextTrack() {
+      fetchAPI('player/next', 'POST').then(loadPlayer);
+    }
+
+    function prevTrack() {
+      fetchAPI('player/previous', 'POST').then(loadPlayer);
+    }
+
+    function setVolume(vol) {
+      fetchAPI('player/volume', 'POST', { volume: parseInt(vol) });
+    }
+
+    // Initial auto-load if token present
+    if (token) {
+      document.getElementById('tokenInput').value = token;
+      loadPlayer();
+      loadQueue();
+    }
+  </script>
+</body>
+</html>
