@@ -5,9 +5,20 @@ export function Secure_F12() {
         return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    if (isMobile()) {
-        console.log("[E-CDE] Mobile détecté, désactivation de la détection DevTools.");
-        return; // Pas de blocage sur mobile
+    function isInApp() {
+        return window.navigator.standalone === true
+            || window.matchMedia('(display-mode: standalone)').matches
+            || /wv|webview|electron/i.test(navigator.userAgent);
+    }
+
+    console.log('UserAgent:', navigator.userAgent);
+    console.log('Is Mobile:', isMobile());
+    console.log('Is Admin:', isAdmin());
+    console.log('Is App:', isInApp());
+
+    if (isMobile() || isInApp()) {
+        console.log('Mobile ou App détecté, désactivation de la détection DevTools.');
+        return;
     }
 
     const detectDevTools = () => {
