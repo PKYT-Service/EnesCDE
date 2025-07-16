@@ -1,3 +1,5 @@
+// psa_integrity_marker_v1
+
 export function secure_psa() {
     console.warn('🛡️[E-CDE] | ⚡ALERT by PSA [SYS CLOS]');
     secure_psaa();
