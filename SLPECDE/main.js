@@ -33,6 +33,7 @@ async function chargerModule(url, nomFonction) {
 
 (async () => {
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Csl.js", "ECDE_Console");
+  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js", "Secure_F12");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Rfh.js", "Secure_Ref");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js", "CheckRulesToAcces");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-TabsLimites.js", "CheckTabs_OpenLimit");
