@@ -1,7 +1,7 @@
 // psa_integrity_marker_v1
 
 export function secure_psa() {
-    console.warn('🛡️[E-CDE] | ⚡ALERT by PSA [SYS CLOS]');
+    console.warn('🛡️[E-CDE] | ⚡ALERT by PSA [DEV]');
     secure_psaa();
 }
 
@@ -48,12 +48,12 @@ export function secure_psaa() {
             blockAccess(`Protocole non sécurisé détecté : ${protocol}`);
         }
 
-        // 5. 🔐 Anti-tampering basique
-        const integrity_check = 'psa_integrity_marker_v1';
-        const scriptContent = document.currentScript?.textContent || '';
-        if (!scriptContent.includes(integrity_check)) {
-            blockAccess('Intégrité du code compromise');
-        }
+////        // 5. 🔐 Anti-tampering basique
+////        const integrity_check = 'psa_integrity_marker_v1';
+////        const scriptContent = document.currentScript?.textContent || '';
+////        if (!scriptContent.includes(integrity_check)) {
+////            blockAccess('Intégrité du code compromise');
+////        }
 
         console.log('[E-CDE] ✅ Sécurité PSAA validée.');
     } catch (err) {
