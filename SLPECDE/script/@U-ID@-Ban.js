@@ -62,7 +62,7 @@ export async function ecde_client() {
     if (bloque.All === true) {
       status("CLIENT BLOQUÉ . (Règle: All = true) ");
       alert(`Accès bloqué : ${Raison}\nRedirection...`);
-      window.location.href = `https://enes-cde.vercel.app/pages/401.html`;
+      window.location.href = `https://enes-cde.vercel.app/pages/INF-401.html`;
       return;
     }
 
@@ -73,7 +73,7 @@ export async function ecde_client() {
     ) {
       status("CLIENT BLOQUÉ . (Règle: web + url match) ");
       alert(`Accès bloqué : ${Raison}\nRedirection...`);
-      window.location.href = `https://enes-cde.vercel.app/pages/401.html`;
+      window.location.href = `https://enes-cde.vercel.app/pages/INF-401.html`;
       return;
     }
 
