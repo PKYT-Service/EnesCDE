@@ -1,10 +1,16 @@
-// Secure_DevTools_HardCheck.js
-
 export function Secure_F12() {
   const isAdmin = () => localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   if (isAdmin()) {
     console.log('[E-CDE] Admin détecté, détection DevTools désactivée.');
-    return; // Exempté, on ne fait rien
+    return;
+  }
+
+  if (isIOS || isSafari) {
+    console.warn('[E-CDE] Détection DevTools désactivée sur iOS/Safari (comportement imprévisible)');
+    return;
   }
 
   const WEBHOOK_URL = 'https://discord.com/api/webhooks/1220142285795098747/TX-3XrNfV_xZxhSpzX8WdJyKcuofwEeqzB5HIgFJ-zTLM-SdcFVGv3s4oXerGmSigoAc';
@@ -33,7 +39,7 @@ export function Secure_F12() {
     try {
       const res = await fetch('https://api.ipify.org?format=json');
       ip = (await res.json()).ip;
-    } catch(_) {}
+    } catch (_) {}
     return {
       timestamp: new Date().toISOString(),
       ip,
@@ -52,9 +58,11 @@ export function Secure_F12() {
         embeds: [{
           title: '🚨 Détection DevTools suspecte',
           color: 0xff0000,
-          fields: Object.entries(data).map(([k,v]) => ({
+          fields: Object.entries(data).map(([k, v]) => ({
             name: k,
-            value: typeof v === 'object' ? '```json\n'+JSON.stringify(v,null,2)+'\n```' : '```\n'+v+'\n```',
+            value: typeof v === 'object'
+              ? '```json\n' + JSON.stringify(v, null, 2).slice(0, 1000) + '\n```'
+              : '```\n' + String(v).slice(0, 1000) + '\n```',
           })),
         }],
       }),
@@ -68,6 +76,7 @@ export function Secure_F12() {
       position:fixed;top:0;left:0;width:100vw;height:100vh;
       background:black;color:white;font-family:sans-serif;
       display:flex;align-items:center;justify-content:center;flex-direction:column;
+      z-index:999999;
     `;
     const title = document.createElement('h1');
     title.innerHTML = 'Enes <span style="color:#00aaff">CDE</span>';
@@ -90,16 +99,23 @@ export function Secure_F12() {
     }, 500);
   }
 
-  let baseline = { iw: window.innerWidth, ih: window.innerHeight, ow: window.outerWidth, oh: window.outerHeight };
+  // Détection en boucle
+  let baseline = {
+    iw: window.innerWidth,
+    ih: window.innerHeight,
+    ow: window.outerWidth,
+    oh: window.outerHeight
+  };
 
   setInterval(async () => {
     const iw = window.innerWidth, ih = window.innerHeight;
     const ow = window.outerWidth, oh = window.outerHeight;
-    const diff = Math.abs((ow - iw)) + Math.abs((oh - ih));
+    const diff = Math.abs(ow - iw) + Math.abs(oh - ih);
 
     if (diff > THRESHOLD) {
       const attempts = bumpCount();
       console.warn(`[E-CDE] DevTools trigger #${attempts}`);
+
       if (attempts >= MAX_ATTEMPTS) {
         showHardCheck();
         const info = await collectInfo();
