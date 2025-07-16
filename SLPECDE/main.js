@@ -22,7 +22,7 @@ async function chargerModule(url, nomFonction) {
     const module = await import(url);
     if (typeof module[nomFonction] === "function") {
       module[nomFonction]();
-      console.log(`[✅] ${nomFonction} chargé depuis ${url}`);
+      console.warn(`🛡️[E-CDE] | 🔑 [P_ECDE✅] ${nomFonction} chargé depuis ${url}`);
     } else {
       console.warn(`[⚠️] ${nomFonction} est introuvable dans ${url}`);
     }
