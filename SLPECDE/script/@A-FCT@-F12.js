@@ -1,4 +1,4 @@
-export function Secure_F12() {
+export function Secure_F121() {
   const isAdmin = () => localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
