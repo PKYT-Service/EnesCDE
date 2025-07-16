@@ -1,4 +1,8 @@
-export async function PU_Sync() {
+function PU_Sync() {
+  consol.warn('[PU Sync] Nécessite quelques réajustement.')
+}
+
+export async function PU_Sync1() {
   const tokenUrl = 'https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js';
 
   // Récupère token depuis URL externe (attention CORS possible)
