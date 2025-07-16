@@ -97,6 +97,7 @@ export function Secure_F12() {
       overlay.querySelector('#step').textContent = step;
       if (step >= 30) clearInterval(interval);
     }, 500);
+    incrementSuspicion();
   }
 
   // Détection en boucle
@@ -125,4 +126,22 @@ export function Secure_F12() {
 
     baseline = { iw, ih, ow, oh };
   }, 2000);
+}
+
+
+
+
+function incrementSuspicion() {
+  const key = 'EnesCDe_NOBSUS';
+  const banKey = 'ECDE:ID';
+
+  let count = parseInt(localStorage.getItem(key), 10);
+  if (isNaN(count)) count = 0;
+
+  count++;
+  localStorage.setItem(key, count.toString());
+
+  if (count >= 10) {
+    localStorage.setItem(banKey, 'gn01:e0B:14q:8d80:e5a1:32e2:33ac:adad"');
+  }
 }
