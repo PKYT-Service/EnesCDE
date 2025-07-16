@@ -1,41 +1,48 @@
 export function Secure_F12() {
     const isAdmin = () => localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
+    if (isAdmin()) return; // Admin exempté, pas de détection
 
     function isMobile() {
         return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
-
     function isInApp() {
         return window.navigator.standalone === true
             || window.matchMedia('(display-mode: standalone)').matches
             || /wv|webview|electron/i.test(navigator.userAgent);
     }
 
-    console.log('UserAgent:', navigator.userAgent);
-    console.log('Is Mobile:', isMobile());
-    console.log('Is Admin:', isAdmin());
-    console.log('Is App:', isInApp());
-
     if (isMobile() || isInApp()) {
-        console.log('Mobile ou App détecté, désactivation de la détection DevTools.');
+        console.log("[E-CDE] Mobile ou App détecté, détection désactivée.");
         return;
     }
 
+    let devToolsOpen = false;
+    let checkStartedAt = Date.now();
+
     const detectDevTools = () => {
+        if (Date.now() - checkStartedAt < 5000) return; // délai de grâce 5s
+
         const devtools = new Function();
         devtools.toString = function () {
-            if (!isAdmin()) {
-                window.location.href = "https://enes-cde.vercel.app/pages/403.html";
-            }
+            devToolsOpen = true;
             return 'function () {}';
         };
         console.log('%c', devtools);
+
+        if (devToolsOpen) {
+            console.warn('[E-CDE] DevTools détecté, redirection dans 1s');
+            setTimeout(() => {
+                if (!isAdmin()) {
+                    window.location.href = "https://enes-cde.vercel.app/pages/403.html";
+                }
+            }, 1000);
+        }
     };
 
     document.addEventListener("keydown", (event) => {
         if (!isAdmin() && (
             event.key === "F12" ||
-            (event.ctrlKey && event.shiftKey && ["I","J"].includes(event.key.toUpperCase()))
+            (event.ctrlKey && event.shiftKey && ["I", "J"].includes(event.key.toUpperCase()))
         )) {
             event.preventDefault();
             window.location.href = "https://enes-cde.vercel.app/pages/403.html";
@@ -46,5 +53,5 @@ export function Secure_F12() {
         if (!isAdmin()) event.preventDefault();
     });
 
-    setInterval(detectDevTools, 1500);
+    setInterval(detectDevTools, 5000);
 }
