@@ -1,15 +1,7 @@
 export function Secure_F121() {
   const isAdmin = () => localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
   if (isAdmin()) {
     console.log('[E-CDE] Admin détecté, détection DevTools désactivée.');
-    return;
-  }
-
-  if (isIOS || isSafari) {
-    console.warn('[E-CDE] Détection DevTools désactivée sur iOS/Safari (comportement imprévisible)');
     return;
   }
 
@@ -17,6 +9,7 @@ export function Secure_F121() {
   const THRESHOLD = 160;
   const MAX_ATTEMPTS = 3;
   const STORAGE_KEY = 'E_CDE_DEVTOOL_DETECT';
+  const REPORTED_KEY = 'E_CDE_REPORTED';
 
   const encode = s => btoa(unescape(encodeURIComponent(s)));
   const decode = s => decodeURIComponent(escape(atob(s)));
@@ -51,6 +44,8 @@ export function Secure_F121() {
   }
 
   async function reportToDiscord(data) {
+    if (localStorage.getItem(REPORTED_KEY) === '1') return;
+
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -67,6 +62,8 @@ export function Secure_F121() {
         }],
       }),
     });
+
+    localStorage.setItem(REPORTED_KEY, '1');
   }
 
   function showHardCheck() {
@@ -100,14 +97,19 @@ export function Secure_F121() {
     incrementSuspicion();
   }
 
-  // Détection en boucle
-  let baseline = {
-    iw: window.innerWidth,
-    ih: window.innerHeight,
-    ow: window.outerWidth,
-    oh: window.outerHeight
-  };
+  function incrementSuspicion() {
+    const key = 'EnesCDe_NOBSUS';
+    const banKey = 'ECDE:ID';
+    let count = parseInt(localStorage.getItem(key), 10);
+    if (isNaN(count)) count = 0;
+    count++;
+    localStorage.setItem(key, count.toString());
+    if (count >= 10) {
+      localStorage.setItem(banKey, '00BAN');
+    }
+  }
 
+  // Boucle de détection DevTools
   setInterval(async () => {
     const iw = window.innerWidth, ih = window.innerHeight;
     const ow = window.outerWidth, oh = window.outerHeight;
@@ -123,25 +125,5 @@ export function Secure_F121() {
         await reportToDiscord(info);
       }
     }
-
-    baseline = { iw, ih, ow, oh };
   }, 2000);
-}
-
-
-
-
-function incrementSuspicion() {
-  const key = 'EnesCDe_NOBSUS';
-  const banKey = 'ECDE:ID';
-
-  let count = parseInt(localStorage.getItem(key), 10);
-  if (isNaN(count)) count = 0;
-
-  count++;
-  localStorage.setItem(key, count.toString());
-
-  if (count >= 10) {
-    localStorage.setItem(banKey, 'gn01:e0B:14q:8d80:e5a1:32e2:33ac:adad');
-  }
 }
