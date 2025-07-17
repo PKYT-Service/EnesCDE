@@ -1,4 +1,4 @@
-export function Secure_F121() {
+export function Secure_F12() {
   const isAdmin = () => localStorage.getItem('EnesCDE_ADM:F12') === 'ADMIN';
   if (isAdmin()) {
     console.log('[E-CDE] Admin détecté, détection DevTools désactivée.');
