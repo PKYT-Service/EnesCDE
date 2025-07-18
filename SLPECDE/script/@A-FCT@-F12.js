@@ -105,7 +105,7 @@ export function Secure_F12() {
     count++;
     localStorage.setItem(key, count.toString());
     if (count >= 10) {
-      localStorage.setItem(banKey, '00BAN');
+      localStorage.setItem(banKey, 'gn01:e0B:14q:8d80:e5a1:32e2:33ac:adad');
     }
   }
 
