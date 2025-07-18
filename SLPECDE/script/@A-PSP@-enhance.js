@@ -3,7 +3,7 @@
 
 export function secure_psa() {
     console.warn('🛡️[E-CDE] | ⚡ALERT by PSA [DEV]');
-    secure_psaa();
+    //secure_psaa();
     //getLocalIPs();
 }
 
