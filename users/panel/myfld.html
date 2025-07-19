@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="EnesCDE - Plateforme de services et documentation.">
+        <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web , LosFly , LsFly , PikaYutMG , GFLP , LSP , SRDMG , Ebsayder , Howard , Armory , PikaYut , enes , enesgp , egp , ecde ; enes cde , communitydeveloppement , developpement , community PikaYutMG , Projet , MultiGaming, Gaming HTML  ">
+        <meta name="author" content="EnesCDE">
+    
+        <!-- Open Graph (Facebook & LinkedIn) -->
+        <meta property="og:title" content="EnesCDE - Services , Accueil">
+        <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta property="og:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+        <meta property="og:url" content="https://enes-cde.vercel.app">
+        <meta property="og:type" content="website">
+    
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="EnesCDE - Services & Documentation">
+        <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+        <meta name="twitter:image" content="https://enes-cde.vercel.app/data/ilg/web/meta.html">
+    
+        <title>EnesCDE - Panel > mon dossier </title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+            
+        <!-- Script -->
+        <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+        <script src="https://enes-cde.vercel.app/script/A-menu.js"></script>
+        <script src="https://enes-cde.vercel.app/users/panel/__menu__.js" ></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js" ></script>
+        <script src="https://enes-cde.vercel.app/users/panel/__sessions__.js" ></script>
+        <script src="https://enes-cde.vercel.app/script/A-new_update.js"></script>
+        <script src="https://enes-cde.vercel.app/users/A-Service/__Load_Profil__.js"></script>    
+        <script src="https://enes-cde.vercel.app/users/A-Service/[PlugIn]-ProfilViewer.js"></script>    
+        <div id="ecde_all"></div>
+    </head>
+<!--    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">-->
+            <!-- Menu : Deb -->
+            <!--<div id="ecde_menu"  class="w-20"></div>-->
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <!--<main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">-->
+
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+              <center><div id="ecde_users_menu"></div></center>
+
+
+
+
+
+
+
+
+              <!DOCTYPE html>
+<html lang="fr" class="scroll-smooth" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mes sanctions ECDE</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Dark mode toggle simple */
+    body {
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
+
+  <header class="container mx-auto p-6 max-w-4xl flex justify-between items-center">
+    <h1 class="text-3xl font-bold">📋 Mes sanctions ECDE</h1>
+    <button id="toggleDark" class="bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-1 rounded transition hover:bg-gray-400 dark:hover:bg-gray-600">
+      Mode Sombre / Clair
+    </button>
+  </header>
+
+  <main class="container mx-auto max-w-4xl p-6 flex-grow">
+    <div id="message" class="mb-6 text-center text-lg"></div>
+    <div id="sanctionsList" class="space-y-6"></div>
+  </main>
+
+  <footer class="text-center p-4 text-sm text-gray-600 dark:text-gray-400">
+    Repo: <code>PKYT-Service/database_EnesCDE</code> / Path: <code>ecde/user_ecde_dossier/</code>
+  </footer>
+
+  <script>
+    // Config GitHub
+    const GITHUB_REPO = "database_EnesCDE";
+    const GITHUB_OWNER = "PKYT-Service";
+    const TARGET_PATH = "ecde/user_ecde_dossier/";
+
+    async function getGithubToken() {
+      const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+      const data = await res.json();
+      return data.GITHUB_TOKEN;
+    }
+
+    function getLocalEmail() {
+      try {
+        const compte = JSON.parse(localStorage.getItem("compte"));
+        return compte?.email?.toLowerCase() || "";
+      } catch {
+        return "";
+      }
+    }
+
+    // Décodage base64 UTF-8 propre
+    function b64DecodeUnicode(str) {
+      // base64 decode then decodeURIComponent for UTF-8 support
+      return decodeURIComponent(
+        atob(str)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+    }
+
+    // Formattage date ISO vers FR lisible
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString('fr-FR', {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    // Crée une carte HTML pour une sanction
+    function createCard(sanction) {
+      return `
+      <article class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold mb-2 text-blue-600 dark:text-blue-400">${sanction.action.type} - ${sanction.action.motif}</h2>
+        <p class="mb-2"><strong>Code :</strong> <code>${sanction.action.code}</code></p>
+        <p class="mb-1"><strong>Serveur :</strong> ${sanction.server.name} (ID: ${sanction.server.id})</p>
+        <p class="mb-1"><strong>Admin :</strong> ${sanction.admin.pseudo} (ID: ${sanction.admin.id}, Ref: ${sanction.admin['EGP-ADM']})</p>
+        <p class="mb-1"><strong>Date :</strong> ${formatDate(sanction.admin.date)}</p>
+        <p class="mb-1"><strong>Utilisateur :</strong> ${sanction.utilisateur.pseudo} (ID: ${sanction.utilisateur.id})</p>
+        <p><strong>Service :</strong> ${sanction.utilisateur.service}</p>
+      </article>`;
+    }
+
+    async function fetchSanctions(email) {
+      if (!email) {
+        document.getElementById("message").textContent = "Aucun email trouvé dans localStorage.";
+        return;
+      }
+
+      const token = await getGithubToken();
+      if (!token) {
+        document.getElementById("message").textContent = "Impossible de récupérer le token GitHub.";
+        return;
+      }
+
+      const fileName = `${email}.json`;
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
+
+      try {
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.status === 404) {
+          document.getElementById("message").textContent = "Aucun dossier de sanction trouvé pour cet email.";
+          return;
+        }
+
+        if (!res.ok) {
+          document.getElementById("message").textContent = `Erreur GitHub: ${res.status}`;
+          return;
+        }
+
+        const data = await res.json();
+
+        if (!data.content) {
+          document.getElementById("message").textContent = "Le fichier ne contient pas de contenu valide.";
+          return;
+        }
+
+        const decoded = b64DecodeUnicode(data.content);
+        const sanctions = JSON.parse(decoded);
+
+        if (!Array.isArray(sanctions) || sanctions.length === 0) {
+          document.getElementById("message").textContent = "Aucune sanction trouvée.";
+          return;
+        }
+
+        // Générer l'affichage
+        const listHTML = sanctions.map(createCard).join('\n');
+        document.getElementById("sanctionsList").innerHTML = listHTML;
+        document.getElementById("message").textContent = `Affichage de ${sanctions.length} sanction(s) pour ${email}`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("message").textContent = "Erreur lors du chargement des sanctions.";
+      }
+    }
+
+    // Dark mode toggle
+    const btnDark = document.getElementById("toggleDark");
+    btnDark.addEventListener("click", () => {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      }
+    });
+
+    // On load, set dark mode if saved
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+
+      const email = getLocalEmail();
+      fetchSanctions(email);
+    });
+  </script>
+</body>
+</html>
+
+              
+<br><hr>
+
+
+          <div id="ecde_users_profilviewer"></div>
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+
+                
+</body>
+</html>
