@@ -34,32 +34,90 @@
 
 
 
-  <div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6">
-    <h1 class="text-2xl font-bold mb-4">👑 Gestion des Admins ECDE</h1>
-    <table class="w-full table-auto border border-gray-300 mb-4">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="px-2 py-1">ID</th>
-          <th class="px-2 py-1">Pseudo</th>
-          <th class="px-2 py-1">Email</th>
-          <th class="px-2 py-1">Ref</th>
-          <th class="px-2 py-1">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="adminTableBody"></tbody>
-    </table>
 
-    <h2 class="text-lg font-semibold mb-2">➕ Ajouter un Admin</h2>
-    <form id="addAdminForm" class="grid grid-cols-4 gap-2 mb-4">
-      <input type="text" placeholder="ID" id="addId" class="border rounded px-2 py-1 col-span-1" required>
-      <input type="text" placeholder="Pseudo" id="addPseudo" class="border rounded px-2 py-1 col-span-1" required>
-      <input type="email" placeholder="Email" id="addEmail" class="border rounded px-2 py-1 col-span-1" required>
-      <input type="text" placeholder="Ref" id="addRef" class="border rounded px-2 py-1 col-span-1" required>
-      <button class="col-span-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded" type="submit">
-        Ajouter
-      </button>
-    </form>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #111111;
+      color: #f9f9f9;
+    }
+    /* Scrollbar for table body */
+    #adminTableBody {
+      max-height: 320px;
+      overflow-y: auto;
+      display: block;
+    }
+    #adminTableBody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    /* Scrollbar styling */
+    #adminTableBody::-webkit-scrollbar {
+      width: 6px;
+    }
+    #adminTableBody::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 3px;
+    }
+  </style>
+
+                  <div class="max-w-4xl w-full mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-2xl rounded-2xl p-8 border border-gray-700">
+   <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-extrabold tracking-wide flex items-center gap-3 text-white drop-shadow-lg">
+     <i class="fas fa-user-shield text-white text-4xl">
+     </i>
+     Gestion des Admins ECDE
+    </h1>
+    <img alt="Logo stylisé ECDE en noir et blanc, style minimaliste" class="w-14 h-14 rounded-full border-2 border-white shadow-lg" height="60" src="https://storage.googleapis.com/a1aa/image/ef0e50de-bd40-4ef9-7f36-89c34db82fe0.jpg" width="60"/>
+   </div>
+   <div class="overflow-x-auto rounded-lg border border-gray-600 shadow-inner">
+    <table aria-label="Tableau de gestion des admins" class="w-full table-fixed border-collapse text-white">
+     <thead class="bg-gray-800 sticky top-0 z-10">
+      <tr>
+       <th class="px-4 py-3 border-r border-gray-700 text-left text-sm font-semibold uppercase tracking-wide">
+        ID
+       </th>
+       <th class="px-4 py-3 border-r border-gray-700 text-left text-sm font-semibold uppercase tracking-wide">
+        Pseudo
+       </th>
+       <th class="px-4 py-3 border-r border-gray-700 text-left text-sm font-semibold uppercase tracking-wide">
+        Email
+       </th>
+       <th class="px-4 py-3 border-r border-gray-700 text-left text-sm font-semibold uppercase tracking-wide">
+        Ref
+       </th>
+       <th class="px-4 py-3 text-center text-sm font-semibold uppercase tracking-wide">
+        Actions
+       </th>
+      </tr>
+     </thead>
+     <tbody class="divide-y divide-gray-700 max-h-80 overflow-y-auto" id="adminTableBody">
+     </tbody>
+    </table>
+   </div>
+   <h2 class="text-xl font-bold mt-10 mb-5 border-b border-gray-700 pb-2 flex items-center gap-3 text-white">
+    <i class="fas fa-user-plus text-white text-2xl">
+    </i>
+    Ajouter un Admin
+   </h2>
+   <form class="grid grid-cols-1 sm:grid-cols-4 gap-4" id="addAdminForm" novalidate="">
+    <input class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800" id="addId" placeholder="ID" required="" type="text"/>
+    <input class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800" id="addPseudo" placeholder="Pseudo" required="" type="text"/>
+    <input class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800" id="addEmail" placeholder="Email" required="" type="email"/>
+    <input class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800" id="addRef" placeholder="Ref" required="" type="text"/>
+    <button class="col-span-1 sm:col-span-4 bg-white text-gray-900 font-bold py-3 rounded-lg hover:bg-gray-300 transition flex items-center justify-center gap-2" type="submit">
+     <i class="fas fa-plus">
+     </i>
+     Ajouter
+    </button>
+   </form>
   </div>
+
+                
 
 <script>
   let admins = [];
