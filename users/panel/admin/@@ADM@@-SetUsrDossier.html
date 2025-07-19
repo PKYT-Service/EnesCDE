@@ -165,44 +165,78 @@ document.addEventListener("DOMContentLoaded", () => {
 </head>
 <body>
   <h2>⚙️ Formulaire Action ECDE</h2>
-  <form id="warnForm">
-    <h3>🔹 Serveur</h3>
-    <input type="text" id="serverName" placeholder="Nom serveur" value="EGP - AFF" required><br>
-    <input type="text" id="serverId" placeholder="ID serveur" required><br>
+<form id="warnForm" class="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg space-y-6">
 
-    <h3>🔹 Action</h3>
-    <select id="actionType" required>
-      <option>Ban</option>
-      <option>Kick</option>
-      <option>Warn</option>
-      <option>Rappel</option>
-      <option>Autre</option>
-    </select><br>
-    <input type="text" id="motif" placeholder="Motif" required><br>
-    <input type="text" id="code" placeholder="Code action" required><br>
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">⚙️ Action administrative</h2>
 
-    <h3>🔹 Administrateur</h3>
-    <label>Choisir l'admin :</label>
-    <select id="adminSelect" required>
-      <option value="">-- Sélectionner --</option>
-      <option value="enes@gmail.com">Moi</option>
-      <option value="selim@ecde-mail.com">Selim</option>
-      <option value="nathan@ecde-mail.com">Nathan</option>
-      <!-- Ajoute d'autres admins ici -->
-    </select>
-    <button type="button" id="emailMe">Utiliser Mon Email</button><br>
-    <input type="text" id="adminId" placeholder="ID admin" readonly><br>
-    <input type="text" id="adminPseudo" placeholder="Pseudo admin" readonly><br>
-    <input type="text" id="adminRef" placeholder="EGP-ADM" readonly><br>
+  <!-- Serveur -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Serveur</h3>
+    <div class="grid grid-cols-2 gap-4 mt-2">
+      <input type="text" id="serverName" placeholder="Nom du serveur" value="EGP - AFF" required
+        class="input-field" />
+      <input type="text" id="serverId" placeholder="ID du serveur" required
+        class="input-field" />
+    </div>
+  </div>
 
-    <h3>🔹 Utilisateur ciblé</h3>
-    <input type="text" id="userId" placeholder="ID utilisateur" required><br>
-    <input type="text" id="userPseudo" placeholder="Pseudo utilisateur" required><br>
-    <input type="email" id="userEmail" placeholder="Email ECDE" required><br>
-    <input type="text" id="userService" placeholder="Service" required><br>
+  <!-- Action -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Type d'action</h3>
+    <div class="space-y-2 mt-2">
+      <select id="actionType" required class="input-field">
+        <option value="Ban">Ban</option>
+        <option value="Kick">Kick</option>
+        <option value="Warn">Warn</option>
+        <option value="Rappel">Rappel</option>
+        <option value="Autre">Autre</option>
+      </select>
+      <input type="text" id="motif" placeholder="Motif de l'action" required class="input-field" />
+      <input type="text" id="code" placeholder="Code de l'action" required class="input-field" />
+    </div>
+  </div>
 
-    <br><button type="submit">📤 Envoyer</button>
-  </form>
+  <!-- Admin -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Administrateur</h3>
+    <div class="space-y-2 mt-2">
+      <div class="flex items-center gap-3">
+        <select id="adminSelect" required class="input-field flex-1">
+          <option value="">-- Sélectionner un admin --</option>
+          <option value="enes@gmail.com">Moi</option>
+          <option value="selim@ecde-mail.com">Selim</option>
+          <option value="nathan@ecde-mail.com">Nathan</option>
+        </select>
+        <button type="button" id="emailMe"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-sm transition">Moi</button>
+      </div>
+      <input type="text" id="adminId" placeholder="ID Admin" class="input-field" readonly />
+      <input type="text" id="adminPseudo" placeholder="Pseudo Admin" class="input-field" readonly />
+      <input type="text" id="adminRef" placeholder="Référence EGP-ADM" class="input-field" readonly />
+    </div>
+  </div>
+
+  <!-- Utilisateur ciblé -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Utilisateur ciblé</h3>
+    <div class="space-y-2 mt-2">
+      <input type="text" id="userId" placeholder="ID utilisateur" required class="input-field" />
+      <input type="text" id="userPseudo" placeholder="Pseudo utilisateur" required class="input-field" />
+      <input type="email" id="userEmail" placeholder="Email ECDE" required class="input-field" />
+      <input type="text" id="userService" placeholder="Service ECDE" required class="input-field" />
+    </div>
+  </div>
+
+  <!-- Bouton Envoi -->
+  <div class="text-center">
+    <button type="submit"
+      class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-xl transition">
+      📤 Envoyer le dossier
+    </button>
+  </div>
+
+</form>
+
 </body>
 </html>
 
