@@ -59,13 +59,21 @@
       }
     }
 
-   async function getAdminInfos(email) {
-  console.log("Recherche admin pour email:", email);
+
+
+
+
+      async function getAdminInfos(email) {
   const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
   const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
 
   try {
-    const res = await fetch(apiURL);
+    const token = await getGithubToken();  // récupère le token
+    const res = await fetch(apiURL, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
     if (!res.ok) {
       console.error("Erreur lors de la récupération du fichier admin.");
       return null;
@@ -78,21 +86,16 @@
     const decoded = atob(json.content);
     const data = JSON.parse(decoded);
 
-    console.log("Liste admins récupérée:", data);
-
-    // Recherche plus tolérante sur l'email
-    const adminFound = data.find(admin => 
-      admin.email.trim().toLowerCase() === email.trim().toLowerCase()
-    );
-
-    if (!adminFound) console.warn("Admin non trouvé pour l'email :", email);
-
-    return adminFound || null;
+    return data.find(admin => admin.email === email) || null;
   } catch (err) {
     console.error("Erreur réseau ou parsing JSON:", err);
     return null;
   }
 }
+
+
+
+      
 
 
 
