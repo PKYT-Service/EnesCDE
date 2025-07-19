@@ -59,32 +59,44 @@
       }
     }
 
-    // 3. Récupération des infos admin depuis GitHub API
-    async function getAdminInfos(email) {
-      const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
-      const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
+   async function getAdminInfos(email) {
+  console.log("Recherche admin pour email:", email);
+  const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
+  const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
 
-      try {
-        const res = await fetch(apiURL);
-        if (!res.ok) {
-          console.error("Erreur lors de la récupération du fichier admin.");
-          return null;
-        }
-        const json = await res.json();
-        if (!json.content) {
-          console.error("Le contenu admin est manquant.");
-          return null;
-        }
-        const decoded = atob(json.content);
-        const data = JSON.parse(decoded);
-
-        return data.find(admin => admin.email === email) || null;
-      } catch (err) {
-        console.error("Erreur réseau ou parsing JSON:", err);
-        return null;
-      }
+  try {
+    const res = await fetch(apiURL);
+    if (!res.ok) {
+      console.error("Erreur lors de la récupération du fichier admin.");
+      return null;
     }
+    const json = await res.json();
+    if (!json.content) {
+      console.error("Le contenu admin est manquant.");
+      return null;
+    }
+    const decoded = atob(json.content);
+    const data = JSON.parse(decoded);
 
+    console.log("Liste admins récupérée:", data);
+
+    // Recherche plus tolérante sur l'email
+    const adminFound = data.find(admin => 
+      admin.email.trim().toLowerCase() === email.trim().toLowerCase()
+    );
+
+    if (!adminFound) console.warn("Admin non trouvé pour l'email :", email);
+
+    return adminFound || null;
+  } catch (err) {
+    console.error("Erreur réseau ou parsing JSON:", err);
+    return null;
+  }
+}
+
+
+
+      
     // 4. Mise à jour des champs admin lors de la sélection
     async function handleAdminSelect() {
       const email = document.getElementById("adminSelect").value;
