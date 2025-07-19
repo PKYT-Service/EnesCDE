@@ -30,215 +30,296 @@
 
 
 
-              <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Formulaire Avertissement ECDE</title>
   <script defer>
-// Configuration générale
-const GITHUB_REPO = "database_EnesCDE";
-const GITHUB_OWNER = "PKYT-Service";
-const TARGET_PATH = "ecde/user_ecde_dossier/";
+    // Configuration générale
+    const GITHUB_REPO = "database_EnesCDE";
+    const GITHUB_OWNER = "PKYT-Service";
+    const TARGET_PATH = "ecde/user_ecde_dossier/";
 
-// ✅ 1. Récupération du token depuis tocken.js
-async function getGithubToken() {
-  const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
-  const data = await res.json();
-  return data.GITHUB_TOKEN;
-}
-
-// ✅ 2. Récupération de l'email depuis le localStorage
-function getLocalEmail() {
-  try {
-    const compte = JSON.parse(localStorage.getItem("EnesCDE_ADM:Compte"));
-    return compte?.email || "";
-  } catch {
-    return "";
-  }
-}
-
-// ✅ 3. Récupération des infos admin depuis le fichier JSON GitHub (en passant par l'API GitHub)
-async function getAdminInfos(email) {
-  const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
-  const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
-
-  const res = await fetch(apiURL);
-  const json = await res.json();
-
-  if (!res.ok || !json.content) {
-    console.error("Erreur lors de la récupération du fichier admin.");
-    return null;
-  }
-
-  const decoded = atob(json.content);
-  const data = JSON.parse(decoded);
-
-  return data.find(admin => admin.email === email);
-}
-
-// ✅ 4. Quand on sélectionne un admin dans la liste
-async function handleAdminSelect() {
-  const email = document.getElementById("adminSelect").value;
-  const infos = await getAdminInfos(email);
-  if (infos) {
-    document.getElementById("adminId").value = infos.id;
-    document.getElementById("adminPseudo").value = infos.pseudo;
-    document.getElementById("adminRef").value = infos.ref;
-  }
-}
-
-// ✅ 5. Envoi du fichier JSON vers le repo GitHub
-async function handleSubmit(event) {
-  event.preventDefault();
-
-  const token = await getGithubToken();
-  const emailTarget = document.getElementById("userEmail").value;
-  const fileName = `${emailTarget}.json`;
-
-  const payload = {
-    server: {
-      name: document.getElementById("serverName").value,
-      id: document.getElementById("serverId").value
-    },
-    action: {
-      type: document.getElementById("actionType").value,
-      motif: document.getElementById("motif").value,
-      code: document.getElementById("code").value
-    },
-    admin: {
-      id: document.getElementById("adminId").value,
-      pseudo: document.getElementById("adminPseudo").value,
-      date: new Date().toISOString(),
-      "EGP-ADM": document.getElementById("adminRef").value
-    },
-    utilisateur: {
-      id: document.getElementById("userId").value,
-      pseudo: document.getElementById("userPseudo").value,
-      email_ecde: emailTarget,
-      service: document.getElementById("userService").value
+    // 1. Récupération du token depuis tocken.js
+    async function getGithubToken() {
+      const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+      const data = await res.json();
+      return data.GITHUB_TOKEN;
     }
-  };
 
-  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
-  const content = btoa(JSON.stringify(payload, null, 2));
+    // 2. Récupération de l'email depuis le localStorage
+    function getLocalEmail() {
+      try {
+        const compte = JSON.parse(localStorage.getItem("EnesCDE_ADM:Compte"));
+        return compte?.email || "";
+      } catch {
+        return "";
+      }
+    }
 
-  // Création du fichier
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: `Création d'un fichier pour ${emailTarget}`,
-      content: content
-    })
-  });
+    // 3. Récupération des infos admin depuis GitHub API
+    async function getAdminInfos(email) {
+      const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
+      const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
 
-  const result = await res.json();
-  if (res.ok) {
-    alert("✅ Fichier JSON posté avec succès !");
-  } else {
-    alert(`❌ Erreur : ${result.message}`);
-    console.error(result);
-  }
-}
+      try {
+        const res = await fetch(apiURL);
+        if (!res.ok) {
+          console.error("Erreur lors de la récupération du fichier admin.");
+          return null;
+        }
+        const json = await res.json();
+        if (!json.content) {
+          console.error("Le contenu admin est manquant.");
+          return null;
+        }
+        const decoded = atob(json.content);
+        const data = JSON.parse(decoded);
 
-// ✅ 6. Initialisation des événements
-document.addEventListener("DOMContentLoaded", () => {
-  // Changement manuel de l'admin
-  document.getElementById("adminSelect").addEventListener("change", handleAdminSelect);
+        return data.find(admin => admin.email === email) || null;
+      } catch (err) {
+        console.error("Erreur réseau ou parsing JSON:", err);
+        return null;
+      }
+    }
 
-  // Bouton "Moi"
-  document.getElementById("emailMe").addEventListener("click", () => {
-    const email = getLocalEmail();
-    document.getElementById("adminSelect").value = email;
-    handleAdminSelect();
-  });
+    // 4. Mise à jour des champs admin lors de la sélection
+    async function handleAdminSelect() {
+      const email = document.getElementById("adminSelect").value;
+      if (!email) {
+        // Clear fields si aucune sélection
+        document.getElementById("adminId").value = "";
+        document.getElementById("adminPseudo").value = "";
+        document.getElementById("adminRef").value = "";
+        return;
+      }
+      const infos = await getAdminInfos(email);
+      if (infos) {
+        document.getElementById("adminId").value = infos.id;
+        document.getElementById("adminPseudo").value = infos.pseudo;
+        document.getElementById("adminRef").value = infos.ref;
+      } else {
+        // Si admin non trouvé
+        document.getElementById("adminId").value = "";
+        document.getElementById("adminPseudo").value = "";
+        document.getElementById("adminRef").value = "";
+        alert("Admin non trouvé dans la liste.");
+      }
+    }
 
-  // Soumission du formulaire
-  document.getElementById("warnForm").addEventListener("submit", handleSubmit);
-});
+    // 5. Envoi du JSON vers GitHub
+    async function handleSubmit(event) {
+      event.preventDefault();
 
+      const token = await getGithubToken();
+      if (!token) {
+        alert("Impossible de récupérer le token GitHub !");
+        return;
+      }
+
+      const emailTarget = document.getElementById("userEmail").value.trim();
+      if (!emailTarget) {
+        alert("L'email de l'utilisateur ciblé est requis !");
+        return;
+      }
+      const fileName = `${emailTarget}.json`;
+
+      const payload = {
+        server: {
+          name: document.getElementById("serverName").value.trim(),
+          id: document.getElementById("serverId").value.trim()
+        },
+        action: {
+          type: document.getElementById("actionType").value,
+          motif: document.getElementById("motif").value.trim(),
+          code: document.getElementById("code").value.trim()
+        },
+        admin: {
+          id: document.getElementById("adminId").value,
+          pseudo: document.getElementById("adminPseudo").value,
+          date: new Date().toISOString(),
+          "EGP-ADM": document.getElementById("adminRef").value
+        },
+        utilisateur: {
+          id: document.getElementById("userId").value.trim(),
+          pseudo: document.getElementById("userPseudo").value.trim(),
+          email_ecde: emailTarget,
+          service: document.getElementById("userService").value.trim()
+        }
+      };
+
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
+      const content = btoa(JSON.stringify(payload, null, 2));
+
+      try {
+        const res = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: `Création d'un fichier pour ${emailTarget}`,
+            content: content
+          })
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          alert("✅ Fichier JSON posté avec succès !");
+          document.getElementById("warnForm").reset();
+          // Reset champs admin manuellement aussi
+          document.getElementById("adminId").value = "";
+          document.getElementById("adminPseudo").value = "";
+          document.getElementById("adminRef").value = "";
+        } else {
+          alert(`❌ Erreur : ${result.message}`);
+          console.error(result);
+        }
+      } catch (err) {
+        alert("❌ Erreur réseau lors de la soumission.");
+        console.error(err);
+      }
+    }
+
+    // 6. Initialisation des événements
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("adminSelect").addEventListener("change", handleAdminSelect);
+
+      document.getElementById("emailMe").addEventListener("click", () => {
+        const email = getLocalEmail();
+        if (email) {
+          document.getElementById("adminSelect").value = email;
+          handleAdminSelect();
+        } else {
+          alert("Email introuvable dans le localStorage.");
+        }
+      });
+
+      document.getElementById("warnForm").addEventListener("submit", handleSubmit);
+    });
   </script>
+  <style>
+    /* simple style input avec Tailwind */
+    .input-field {
+      @apply w-full rounded border border-gray-300 dark:border-gray-700 p-2 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h2>⚙️ Formulaire Action ECDE</h2>
-<form id="warnForm" class="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg space-y-6">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
 
-  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">⚙️ Action administrative</h2>
+  <main class="flex-grow container mx-auto p-6 max-w-3xl">
+    <h1 class="text-3xl font-bold mb-8 text-center">⚙️ Formulaire Action ECDE</h1>
+    <form id="warnForm" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-6" novalidate>
 
-  <!-- Serveur -->
-  <div>
-    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Serveur</h3>
-    <div class="grid grid-cols-2 gap-4 mt-2">
-      <input type="text" id="serverName" placeholder="Nom du serveur" value="EGP - AFF" required
-        class="input-field" />
-      <input type="text" id="serverId" placeholder="ID du serveur" required
-        class="input-field" />
-    </div>
-  </div>
+      <!-- Serveur -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">🔹 Serveur</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="serverName" class="block mb-1 text-gray-700 dark:text-gray-300">Nom du serveur</label>
+            <input type="text" id="serverName" name="serverName" placeholder="Nom du serveur" value="EGP - AFF" required class="input-field" />
+          </div>
+          <div>
+            <label for="serverId" class="block mb-1 text-gray-700 dark:text-gray-300">ID du serveur</label>
+            <input type="text" id="serverId" name="serverId" placeholder="ID du serveur" required class="input-field" />
+          </div>
+        </div>
+      </section>
 
-  <!-- Action -->
-  <div>
-    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Type d'action</h3>
-    <div class="space-y-2 mt-2">
-      <select id="actionType" required class="input-field">
-        <option value="Ban">Ban</option>
-        <option value="Kick">Kick</option>
-        <option value="Warn">Warn</option>
-        <option value="Rappel">Rappel</option>
-        <option value="Autre">Autre</option>
-      </select>
-      <input type="text" id="motif" placeholder="Motif de l'action" required class="input-field" />
-      <input type="text" id="code" placeholder="Code de l'action" required class="input-field" />
-    </div>
-  </div>
+      <!-- Action -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">🔹 Type d'action</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="actionType" class="block mb-1 text-gray-700 dark:text-gray-300">Type</label>
+            <select id="actionType" name="actionType" required class="input-field">
+              <option value="Ban">Ban</option>
+              <option value="Kick">Kick</option>
+              <option value="Warn">Warn</option>
+              <option value="Rappel">Rappel</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div>
+            <label for="motif" class="block mb-1 text-gray-700 dark:text-gray-300">Motif</label>
+            <input type="text" id="motif" name="motif" placeholder="Motif de l'action" required class="input-field" />
+          </div>
+          <div>
+            <label for="code" class="block mb-1 text-gray-700 dark:text-gray-300">Code</label>
+            <input type="text" id="code" name="code" placeholder="Code de l'action" required class="input-field" />
+          </div>
+        </div>
+      </section>
 
-  <!-- Admin -->
-  <div>
-    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Administrateur</h3>
-    <div class="space-y-2 mt-2">
-      <div class="flex items-center gap-3">
-        <select id="adminSelect" required class="input-field flex-1">
-          <option value="">-- Sélectionner un admin --</option>
-          <option value="enes@gmail.com">Moi</option>
-          <option value="selim@ecde-mail.com">Selim</option>
-          <option value="nathan@ecde-mail.com">Nathan</option>
-        </select>
-        <button type="button" id="emailMe"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-sm transition">Moi</button>
+      <!-- Admin -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">🔹 Administrateur</h2>
+        <div class="space-y-4">
+          <label for="adminSelect" class="block mb-1 text-gray-700 dark:text-gray-300">Choisir l'admin</label>
+          <div class="flex gap-3 items-center">
+            <select id="adminSelect" name="adminSelect" required class="input-field flex-1">
+              <option value="">-- Sélectionner un admin --</option>
+              <option value="enes@gmail.com">Moi</option>
+              <option value="selim@ecde-mail.com">Selim</option>
+              <option value="nathan@ecde-mail.com">Nathan</option>
+            </select>
+            <button type="button" id="emailMe" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-sm transition">Moi</button>
+          </div>
+
+          <div>
+            <label for="adminId" class="block mb-1 text-gray-700 dark:text-gray-300">ID Admin</label>
+            <input type="text" id="adminId" name="adminId" placeholder="ID Admin" readonly class="input-field" />
+          </div>
+          <div>
+            <label for="adminPseudo" class="block mb-1 text-gray-700 dark:text-gray-300">Pseudo Admin</label>
+            <input type="text" id="adminPseudo" name="adminPseudo" placeholder="Pseudo Admin" readonly class="input-field" />
+          </div>
+          <div>
+            <label for="adminRef" class="block mb-1 text-gray-700 dark:text-gray-300">Référence EGP-ADM</label>
+            <input type="text" id="adminRef" name="adminRef" placeholder="Référence EGP-ADM" readonly class="input-field" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Utilisateur ciblé -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">🔹 Utilisateur ciblé</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="userId" class="block mb-1 text-gray-700 dark:text-gray-300">ID utilisateur</label>
+            <input type="text" id="userId" name="userId" placeholder="ID utilisateur" required class="input-field" />
+          </div>
+          <div>
+            <label for="userPseudo" class="block mb-1 text-gray-700 dark:text-gray-300">Pseudo utilisateur</label>
+            <input type="text" id="userPseudo" name="userPseudo" placeholder="Pseudo utilisateur" required class="input-field" />
+          </div>
+          <div>
+            <label for="userEmail" class="block mb-1 text-gray-700 dark:text-gray-300">Email ECDE</label>
+            <input type="email" id="userEmail" name="userEmail" placeholder="Email ECDE" required class="input-field" />
+          </div>
+          <div>
+            <label for="userService" class="block mb-1 text-gray-700 dark:text-gray-300">Service ECDE</label>
+            <input type="text" id="userService" name="userService" placeholder="Service ECDE" required class="input-field" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Bouton Envoi -->
+      <div class="text-center">
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-xl transition">
+          📤 Envoyer le dossier
+        </button>
       </div>
-      <input type="text" id="adminId" placeholder="ID Admin" class="input-field" readonly />
-      <input type="text" id="adminPseudo" placeholder="Pseudo Admin" class="input-field" readonly />
-      <input type="text" id="adminRef" placeholder="Référence EGP-ADM" class="input-field" readonly />
-    </div>
-  </div>
-
-  <!-- Utilisateur ciblé -->
-  <div>
-    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">🔹 Utilisateur ciblé</h3>
-    <div class="space-y-2 mt-2">
-      <input type="text" id="userId" placeholder="ID utilisateur" required class="input-field" />
-      <input type="text" id="userPseudo" placeholder="Pseudo utilisateur" required class="input-field" />
-      <input type="email" id="userEmail" placeholder="Email ECDE" required class="input-field" />
-      <input type="text" id="userService" placeholder="Service ECDE" required class="input-field" />
-    </div>
-  </div>
-
-  <!-- Bouton Envoi -->
-  <div class="text-center">
-    <button type="submit"
-      class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-xl transition">
-      📤 Envoyer le dossier
-    </button>
-  </div>
-
-</form>
+    </form>
+  </main>
 
 </body>
 </html>
+
 
 
               
