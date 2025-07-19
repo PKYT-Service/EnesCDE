@@ -19,10 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
   </button>
   </a>
 
-<a href="./Myfld.html">
+<a href="./myfld.html">
   <button
-    class="w-full p-3 flex justify-center rounded-lg text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-    aria-label="Ouvrir dossier utilisateur"
+    class="inline-block rounded-md px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative dark:text-gray-400 dark:hover:text-gray-200"
   >
 <svg
   class="h-6 w-6 stroke-current text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
