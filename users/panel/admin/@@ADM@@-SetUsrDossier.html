@@ -37,184 +37,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Formulaire Avertissement ECDE</title>
   <script defer>
-    // Configuration générale
-    const GITHUB_REPO = "database_EnesCDE";
-    const GITHUB_OWNER = "PKYT-Service";
-    const TARGET_PATH = "ecde/user_ecde_dossier/";
+async function handleSubmit(event) {
+  event.preventDefault();
 
-    // 1. Récupération du token depuis tocken.js
-    async function getGithubToken() {
-      const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
-      const data = await res.json();
-      return data.GITHUB_TOKEN;
+  const token = await getGithubToken();
+  if (!token) {
+    alert("Impossible de récupérer le token GitHub !");
+    return;
+  }
+
+  const emailTarget = document.getElementById("userEmail").value.trim();
+  if (!emailTarget) {
+    alert("L'email de l'utilisateur ciblé est requis !");
+    return;
+  }
+
+  const fileName = `${emailTarget}.json`;
+  const filePath = `${TARGET_PATH}${fileName}`;
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
+
+  // Ton JSON final
+  const payload = {
+    server: {
+      name: document.getElementById("serverName").value.trim(),
+      id: document.getElementById("serverId").value.trim()
+    },
+    action: {
+      type: document.getElementById("actionType").value,
+      motif: document.getElementById("motif").value.trim(),
+      code: document.getElementById("code").value.trim()
+    },
+    admin: {
+      id: document.getElementById("adminId").value,
+      pseudo: document.getElementById("adminPseudo").value,
+      date: new Date().toISOString(),
+      "EGP-ADM": document.getElementById("adminRef").value
+    },
+    utilisateur: {
+      id: document.getElementById("userId").value.trim(),
+      pseudo: document.getElementById("userPseudo").value.trim(),
+      email_ecde: emailTarget,
+      service: document.getElementById("userService").value.trim()
     }
+  };
 
-    // 2. Récupération de l'email depuis le localStorage
-    function getLocalEmail() {
-      try {
-        const compte = JSON.parse(localStorage.getItem("compte"));
-        return compte?.email || "";
-      } catch {
-        return "";
-      }
-    }
+  const base64Content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
 
-
-
-
-
-      async function getAdminInfos(email) {
-  const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
-  const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
-
+  // 🔎 Étape 1 : Vérifier si le fichier existe pour récupérer son SHA
+  let sha = null;
   try {
-    const token = await getGithubToken();  // récupère le token
-    const res = await fetch(apiURL, {
+    const getRes = await fetch(url, {
       headers: {
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       }
     });
-    if (!res.ok) {
-      console.error("Erreur lors de la récupération du fichier admin.");
-      return null;
-    }
-    const json = await res.json();
-    if (!json.content) {
-      console.error("Le contenu admin est manquant.");
-      return null;
-    }
-    const decoded = atob(json.content);
-    const data = JSON.parse(decoded);
 
-    return data.find(admin => admin.email === email) || null;
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      sha = fileData.sha; // 🔐 SHA récupéré
+      console.log("Fichier existant trouvé, SHA :", sha);
+    } else if (getRes.status === 404) {
+      console.log("Fichier inexistant, création prévue.");
+    } else {
+      throw new Error("Erreur lors de la vérification du fichier : " + getRes.status);
+    }
   } catch (err) {
-    console.error("Erreur réseau ou parsing JSON:", err);
-    return null;
+    alert("Erreur lors de la vérification du fichier existant.");
+    console.error(err);
+    return;
+  }
+
+  // 📨 Étape 2 : Création ou mise à jour du fichier
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `Mise à jour des sanctions pour ${emailTarget}`,
+        content: base64Content,
+        ...(sha ? { sha } : {}) // ✅ SHA si fichier existant
+      })
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert("✅ Fichier JSON posté avec succès !");
+      document.getElementById("warnForm").reset();
+      document.getElementById("adminId").value = "";
+      document.getElementById("adminPseudo").value = "";
+      document.getElementById("adminRef").value = "";
+    } else {
+      alert(`❌ Erreur : ${result.message}`);
+      console.error(result);
+    }
+  } catch (err) {
+    alert("❌ Erreur réseau lors de la soumission.");
+    console.error(err);
   }
 }
 
-
-
-      
-
-
-
-      
-    // 4. Mise à jour des champs admin lors de la sélection
-    async function handleAdminSelect() {
-      const email = document.getElementById("adminSelect").value;
-      if (!email) {
-        // Clear fields si aucune sélection
-        document.getElementById("adminId").value = "";
-        document.getElementById("adminPseudo").value = "";
-        document.getElementById("adminRef").value = "";
-        return;
-      }
-      const infos = await getAdminInfos(email);
-      if (infos) {
-        document.getElementById("adminId").value = infos.id;
-        document.getElementById("adminPseudo").value = infos.pseudo;
-        document.getElementById("adminRef").value = infos.ref;
-      } else {
-        // Si admin non trouvé
-        document.getElementById("adminId").value = "";
-        document.getElementById("adminPseudo").value = "";
-        document.getElementById("adminRef").value = "";
-        alert("Admin non trouvé dans la liste.");
-      }
-    }
-
-    // 5. Envoi du JSON vers GitHub
-    async function handleSubmit(event) {
-      event.preventDefault();
-
-      const token = await getGithubToken();
-      if (!token) {
-        alert("Impossible de récupérer le token GitHub !");
-        return;
-      }
-
-      const emailTarget = document.getElementById("userEmail").value.trim();
-      if (!emailTarget) {
-        alert("L'email de l'utilisateur ciblé est requis !");
-        return;
-      }
-      const fileName = `${emailTarget}.json`;
-
-      const payload = {
-        server: {
-          name: document.getElementById("serverName").value.trim(),
-          id: document.getElementById("serverId").value.trim()
-        },
-        action: {
-          type: document.getElementById("actionType").value,
-          motif: document.getElementById("motif").value.trim(),
-          code: document.getElementById("code").value.trim()
-        },
-        admin: {
-          id: document.getElementById("adminId").value,
-          pseudo: document.getElementById("adminPseudo").value,
-          date: new Date().toISOString(),
-          "EGP-ADM": document.getElementById("adminRef").value
-        },
-        utilisateur: {
-          id: document.getElementById("userId").value.trim(),
-          pseudo: document.getElementById("userPseudo").value.trim(),
-          email_ecde: emailTarget,
-          service: document.getElementById("userService").value.trim()
-        }
-      };
-
-      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
-      const content = btoa(JSON.stringify(payload, null, 2));
-
-      try {
-        const res = await fetch(url, {
-          method: "PUT",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: `Création d'un fichier pour ${emailTarget}`,
-            content: content
-          })
-        });
-
-        const result = await res.json();
-        if (res.ok) {
-          alert("✅ Fichier JSON posté avec succès !");
-          document.getElementById("warnForm").reset();
-          // Reset champs admin manuellement aussi
-          document.getElementById("adminId").value = "";
-          document.getElementById("adminPseudo").value = "";
-          document.getElementById("adminRef").value = "";
-        } else {
-          alert(`❌ Erreur : ${result.message}`);
-          console.error(result);
-        }
-      } catch (err) {
-        alert("❌ Erreur réseau lors de la soumission.");
-        console.error(err);
-      }
-    }
-
-    // 6. Initialisation des événements
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("adminSelect").addEventListener("change", handleAdminSelect);
-
-      document.getElementById("emailMe").addEventListener("click", () => {
-        const email = getLocalEmail();
-        if (email) {
-          document.getElementById("adminSelect").value = email;
-          handleAdminSelect();
-        } else {
-          alert("Email introuvable dans le localStorage.");
-        }
-      });
-
-      document.getElementById("warnForm").addEventListener("submit", handleSubmit);
-    });
   </script>
   <style>
     /* simple style input avec Tailwind */
