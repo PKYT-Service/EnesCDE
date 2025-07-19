@@ -36,108 +36,131 @@
   <meta charset="UTF-8">
   <title>Formulaire Avertissement ECDE</title>
   <script defer>
-    // Configuration
-    const GITHUB_REPO = "database_EnesCDE";
-    const GITHUB_OWNER = "PKYT-Service";
-    const TARGET_PATH = "ecde/user_ecde_dossier/";
+// Configuration générale
+const GITHUB_REPO = "database_EnesCDE";
+const GITHUB_OWNER = "PKYT-Service";
+const TARGET_PATH = "ecde/user_ecde_dossier/";
 
-    // Get token depuis tocken.js
-    async function getGithubToken() {
-      const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
-      const data = await res.json();
-      return data.GITHUB_TOKEN;
+// ✅ 1. Récupération du token depuis tocken.js
+async function getGithubToken() {
+  const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+  const data = await res.json();
+  return data.GITHUB_TOKEN;
+}
+
+// ✅ 2. Récupération de l'email depuis le localStorage
+function getLocalEmail() {
+  try {
+    const compte = JSON.parse(localStorage.getItem("EnesCDE_ADM:Compte"));
+    return compte?.email || "";
+  } catch {
+    return "";
+  }
+}
+
+// ✅ 3. Récupération des infos admin depuis le fichier JSON GitHub (en passant par l'API GitHub)
+async function getAdminInfos(email) {
+  const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
+  const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
+
+  const res = await fetch(apiURL);
+  const json = await res.json();
+
+  if (!res.ok || !json.content) {
+    console.error("Erreur lors de la récupération du fichier admin.");
+    return null;
+  }
+
+  const decoded = atob(json.content);
+  const data = JSON.parse(decoded);
+
+  return data.find(admin => admin.email === email);
+}
+
+// ✅ 4. Quand on sélectionne un admin dans la liste
+async function handleAdminSelect() {
+  const email = document.getElementById("adminSelect").value;
+  const infos = await getAdminInfos(email);
+  if (infos) {
+    document.getElementById("adminId").value = infos.id;
+    document.getElementById("adminPseudo").value = infos.pseudo;
+    document.getElementById("adminRef").value = infos.ref;
+  }
+}
+
+// ✅ 5. Envoi du fichier JSON vers le repo GitHub
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  const token = await getGithubToken();
+  const emailTarget = document.getElementById("userEmail").value;
+  const fileName = `${emailTarget}.json`;
+
+  const payload = {
+    server: {
+      name: document.getElementById("serverName").value,
+      id: document.getElementById("serverId").value
+    },
+    action: {
+      type: document.getElementById("actionType").value,
+      motif: document.getElementById("motif").value,
+      code: document.getElementById("code").value
+    },
+    admin: {
+      id: document.getElementById("adminId").value,
+      pseudo: document.getElementById("adminPseudo").value,
+      date: new Date().toISOString(),
+      "EGP-ADM": document.getElementById("adminRef").value
+    },
+    utilisateur: {
+      id: document.getElementById("userId").value,
+      pseudo: document.getElementById("userPseudo").value,
+      email_ecde: emailTarget,
+      service: document.getElementById("userService").value
     }
+  };
 
-    // Récupère email depuis localStorage
-    function getLocalEmail() {
-      try {
-        const compte = JSON.parse(localStorage.getItem("EnesCDE_ADM:Compte"));
-        return compte?.email || "";
-      } catch {
-        return "";
-      }
-    }
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
+  const content = btoa(JSON.stringify(payload, null, 2));
 
-    // Remplit infos admin selon email (depuis un fichier JSON distant)
-    async function getAdminInfos(email) {
-      const url = `https://raw.githubusercontent.com/PKYT-Service/${GITHUB_REPO}/main/ecde/user_ecde_dossier/A_admin_liste.json`;
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.find(admin => admin.email === email);
-    }
+  // Création du fichier
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: `Création d'un fichier pour ${emailTarget}`,
+      content: content
+    })
+  });
 
-    async function handleAdminSelect() {
-      const email = document.getElementById("adminSelect").value;
-      const infos = await getAdminInfos(email);
-      if (infos) {
-        document.getElementById("adminId").value = infos.id;
-        document.getElementById("adminPseudo").value = infos.pseudo;
-        document.getElementById("adminRef").value = infos.ref;
-      }
-    }
+  const result = await res.json();
+  if (res.ok) {
+    alert("✅ Fichier JSON posté avec succès !");
+  } else {
+    alert(`❌ Erreur : ${result.message}`);
+    console.error(result);
+  }
+}
 
-    async function handleSubmit(event) {
-      event.preventDefault();
+// ✅ 6. Initialisation des événements
+document.addEventListener("DOMContentLoaded", () => {
+  // Changement manuel de l'admin
+  document.getElementById("adminSelect").addEventListener("change", handleAdminSelect);
 
-      const token = await getGithubToken();
-      const emailTarget = document.getElementById("userEmail").value;
-      const fileName = `${emailTarget}.json`;
+  // Bouton "Moi"
+  document.getElementById("emailMe").addEventListener("click", () => {
+    const email = getLocalEmail();
+    document.getElementById("adminSelect").value = email;
+    handleAdminSelect();
+  });
 
-      const payload = {
-        server: {
-          name: document.getElementById("serverName").value,
-          id: document.getElementById("serverId").value
-        },
-        action: {
-          type: document.getElementById("actionType").value,
-          motif: document.getElementById("motif").value,
-          code: document.getElementById("code").value
-        },
-        admin: {
-          id: document.getElementById("adminId").value,
-          pseudo: document.getElementById("adminPseudo").value,
-          date: new Date().toISOString(),
-          "EGP-ADM": document.getElementById("adminRef").value
-        },
-        utilisateur: {
-          id: document.getElementById("userId").value,
-          pseudo: document.getElementById("userPseudo").value,
-          email_ecde: emailTarget,
-          service: document.getElementById("userService").value
-        }
-      };
+  // Soumission du formulaire
+  document.getElementById("warnForm").addEventListener("submit", handleSubmit);
+});
 
-      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
-
-      // Encode le contenu
-      const content = btoa(JSON.stringify(payload, null, 2));
-
-      // Requête GitHub
-      const res = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: `Avertissement/Kick/Ban pour ${emailTarget}`,
-          content: content
-        })
-      });
-
-      const result = await res.json();
-      alert(res.ok ? "Fichier JSON posté avec succès !" : `Erreur : ${result.message}`);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("adminSelect").addEventListener("change", handleAdminSelect);
-      document.getElementById("emailMe").addEventListener("click", () => {
-        const email = getLocalEmail();
-        document.getElementById("adminSelect").value = email;
-        handleAdminSelect();
-      });
-      document.getElementById("warnForm").addEventListener("submit", handleSubmit);
-    });
   </script>
 </head>
 <body>
