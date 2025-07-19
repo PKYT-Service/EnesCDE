@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>EnesCDE - Admin > Panel Administratif > web manager</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        
+        <!-- Script pour ajouter dynamiquement le footer -->
+        <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+        <script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js"></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js"></script>
+        <script src="./__sessions__.js"></script>
+        <div id="ecde_all"></div>
+
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Gestion des dossiers d'utilisateurs :</h1>
+
+
+
+
+
+
+
+  <div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6">
+    <h1 class="text-2xl font-bold mb-4">👑 Gestion des Admins ECDE</h1>
+    <table class="w-full table-auto border border-gray-300 mb-4">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="px-2 py-1">ID</th>
+          <th class="px-2 py-1">Pseudo</th>
+          <th class="px-2 py-1">Email</th>
+          <th class="px-2 py-1">Ref</th>
+          <th class="px-2 py-1">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="adminTableBody"></tbody>
+    </table>
+
+    <h2 class="text-lg font-semibold mb-2">➕ Ajouter un Admin</h2>
+    <form id="addAdminForm" class="grid grid-cols-4 gap-2 mb-4">
+      <input type="text" placeholder="ID" id="addId" class="border rounded px-2 py-1 col-span-1" required>
+      <input type="text" placeholder="Pseudo" id="addPseudo" class="border rounded px-2 py-1 col-span-1" required>
+      <input type="email" placeholder="Email" id="addEmail" class="border rounded px-2 py-1 col-span-1" required>
+      <input type="text" placeholder="Ref" id="addRef" class="border rounded px-2 py-1 col-span-1" required>
+      <button class="col-span-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded" type="submit">
+        Ajouter
+      </button>
+    </form>
+  </div>
+
+<script>
+  let admins = [];
+let fileSha = "";
+
+const filePath = "ecde/user_ecde_dossier/A_admin_liste.json";
+const repo = "database_EnesCDE";
+const owner = "PKYT-Service";
+
+async function getToken() {
+  const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+  const json = await res.json();
+  return json.GITHUB_TOKEN;
+}
+
+async function fetchAdmins() {
+  const token = await getToken();
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await res.json();
+  admins = JSON.parse(atob(data.content));
+  fileSha = data.sha;
+  renderTable();
+}
+
+function renderTable() {
+  const tbody = document.getElementById("adminTableBody");
+  tbody.innerHTML = "";
+  admins.forEach((admin, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="border px-2 py-1">${admin.id}</td>
+      <td class="border px-2 py-1">${admin.pseudo}</td>
+      <td class="border px-2 py-1">${admin.email}</td>
+      <td class="border px-2 py-1">${admin.ref}</td>
+      <td class="border px-2 py-1 space-x-2">
+        <button class="bg-yellow-400 hover:bg-yellow-500 px-2 py-1 rounded" onclick="editAdmin(${index})">✏️</button>
+        <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded" onclick="deleteAdmin(${index})">❌</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function updateGitHub() {
+  const token = await getToken();
+  const updatedContent = btoa(JSON.stringify(admins, null, 2));
+  await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "🔄 Update admin list",
+      content: updatedContent,
+      sha: fileSha
+    })
+  });
+  fetchAdmins(); // reload after update
+}
+
+function deleteAdmin(index) {
+  if (confirm("Supprimer cet admin ?")) {
+    admins.splice(index, 1);
+    updateGitHub();
+  }
+}
+
+function editAdmin(index) {
+  const admin = admins[index];
+  const id = prompt("ID ?", admin.id);
+  const pseudo = prompt("Pseudo ?", admin.pseudo);
+  const email = prompt("Email ?", admin.email);
+  const ref = prompt("Ref ?", admin.ref);
+  if (id && pseudo && email && ref) {
+    admins[index] = { id, pseudo, email, ref };
+    updateGitHub();
+  }
+}
+
+document.getElementById("addAdminForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const id = document.getElementById("addId").value;
+  const pseudo = document.getElementById("addPseudo").value;
+  const email = document.getElementById("addEmail").value;
+  const ref = document.getElementById("addRef").value;
+  admins.push({ id, pseudo, email, ref });
+  updateGitHub();
+  e.target.reset();
+});
+
+window.addEventListener("DOMContentLoaded", fetchAdmins);
+
+</script>
+
+
+
+
+              
+  </main>
+
+</body>
+</html>
+
+
+
+              
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+
+</body>
+</html>
