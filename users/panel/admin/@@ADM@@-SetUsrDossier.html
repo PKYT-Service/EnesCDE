@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>EnesCDE - Admin > Panel Administratif > web manager</title>
+        <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+        
+        <!-- Script pour ajouter dynamiquement le footer -->
+        <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+        <script src="https://enes-cde.vercel.app/users/panel/admin/__menu__.js"></script>
+        <script src="https://enes-cde.vercel.app/script/A-all.js"></script>
+        <script src="./__sessions__.js"></script>
+        <div id="ecde_all"></div>
+
+    </head>
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Gestion des dossiers d'utilisateurs :</h1>
+
+
+
+              <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire Avertissement ECDE</title>
+  <script defer>
+    // Configuration
+    const GITHUB_REPO = "database_EnesCDE";
+    const GITHUB_OWNER = "PKYT-Service";
+    const TARGET_PATH = "ecde/user_ecde_dossier/";
+
+    // Get token depuis tocken.js
+    async function getGithubToken() {
+      const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+      const data = await res.json();
+      return data.GITHUB_TOKEN;
+    }
+
+    // Récupère email depuis localStorage
+    function getLocalEmail() {
+      try {
+        const compte = JSON.parse(localStorage.getItem("EnesCDE_ADM:Compte"));
+        return compte?.email || "";
+      } catch {
+        return "";
+      }
+    }
+
+    // Remplit infos admin selon email (depuis un fichier JSON distant)
+    async function getAdminInfos(email) {
+      const url = `https://raw.githubusercontent.com/PKYT-Service/${GITHUB_REPO}/main/ecde/user_ecde_dossier/A_admin_liste.json`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.find(admin => admin.email === email);
+    }
+
+    async function handleAdminSelect() {
+      const email = document.getElementById("adminSelect").value;
+      const infos = await getAdminInfos(email);
+      if (infos) {
+        document.getElementById("adminId").value = infos.id;
+        document.getElementById("adminPseudo").value = infos.pseudo;
+        document.getElementById("adminRef").value = infos.ref;
+      }
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+
+      const token = await getGithubToken();
+      const emailTarget = document.getElementById("userEmail").value;
+      const fileName = `${emailTarget}.json`;
+
+      const payload = {
+        server: {
+          name: document.getElementById("serverName").value,
+          id: document.getElementById("serverId").value
+        },
+        action: {
+          type: document.getElementById("actionType").value,
+          motif: document.getElementById("motif").value,
+          code: document.getElementById("code").value
+        },
+        admin: {
+          id: document.getElementById("adminId").value,
+          pseudo: document.getElementById("adminPseudo").value,
+          date: new Date().toISOString(),
+          "EGP-ADM": document.getElementById("adminRef").value
+        },
+        utilisateur: {
+          id: document.getElementById("userId").value,
+          pseudo: document.getElementById("userPseudo").value,
+          email_ecde: emailTarget,
+          service: document.getElementById("userService").value
+        }
+      };
+
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
+
+      // Encode le contenu
+      const content = btoa(JSON.stringify(payload, null, 2));
+
+      // Requête GitHub
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `Avertissement/Kick/Ban pour ${emailTarget}`,
+          content: content
+        })
+      });
+
+      const result = await res.json();
+      alert(res.ok ? "Fichier JSON posté avec succès !" : `Erreur : ${result.message}`);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("adminSelect").addEventListener("change", handleAdminSelect);
+      document.getElementById("emailMe").addEventListener("click", () => {
+        const email = getLocalEmail();
+        document.getElementById("adminSelect").value = email;
+        handleAdminSelect();
+      });
+      document.getElementById("warnForm").addEventListener("submit", handleSubmit);
+    });
+  </script>
+</head>
+<body>
+  <h2>⚙️ Formulaire Action ECDE</h2>
+  <form id="warnForm">
+    <h3>🔹 Serveur</h3>
+    <input type="text" id="serverName" placeholder="Nom serveur" value="EGP - AFF" required><br>
+    <input type="text" id="serverId" placeholder="ID serveur" required><br>
+
+    <h3>🔹 Action</h3>
+    <select id="actionType" required>
+      <option>Ban</option>
+      <option>Kick</option>
+      <option>Warn</option>
+      <option>Rappel</option>
+      <option>Autre</option>
+    </select><br>
+    <input type="text" id="motif" placeholder="Motif" required><br>
+    <input type="text" id="code" placeholder="Code action" required><br>
+
+    <h3>🔹 Administrateur</h3>
+    <label>Choisir l'admin :</label>
+    <select id="adminSelect" required>
+      <option value="">-- Sélectionner --</option>
+      <option value="enes@gmail.com">Moi</option>
+      <option value="selim@ecde-mail.com">Selim</option>
+      <option value="nathan@ecde-mail.com">Nathan</option>
+      <!-- Ajoute d'autres admins ici -->
+    </select>
+    <button type="button" id="emailMe">Utiliser Mon Email</button><br>
+    <input type="text" id="adminId" placeholder="ID admin" readonly><br>
+    <input type="text" id="adminPseudo" placeholder="Pseudo admin" readonly><br>
+    <input type="text" id="adminRef" placeholder="EGP-ADM" readonly><br>
+
+    <h3>🔹 Utilisateur ciblé</h3>
+    <input type="text" id="userId" placeholder="ID utilisateur" required><br>
+    <input type="text" id="userPseudo" placeholder="Pseudo utilisateur" required><br>
+    <input type="email" id="userEmail" placeholder="Email ECDE" required><br>
+    <input type="text" id="userService" placeholder="Service" required><br>
+
+    <br><button type="submit">📤 Envoyer</button>
+  </form>
+</body>
+</html>
+
+
+              
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+
+</body>
+</html>
