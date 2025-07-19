@@ -52,7 +52,7 @@
     // 2. Récupération de l'email depuis le localStorage
     function getLocalEmail() {
       try {
-        const compte = JSON.parse(localStorage.getItem("EnesCDE_ADM:Compte"));
+        const compte = JSON.parse(localStorage.getItem("compte"));
         return compte?.email || "";
       } catch {
         return "";
