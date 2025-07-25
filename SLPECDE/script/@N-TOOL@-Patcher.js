@@ -10,6 +10,7 @@ export function ADM_RPE() {
 }
 
 export function patch() {
+    fixMains()
   // Ne rien faire si une div avec id commencant par "repo/" existe
   const repoDiv = document.querySelector('div[id^="repo/"]');
   if (repoDiv) return;
@@ -54,15 +55,15 @@ export function patch() {
 
 
 
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("main").forEach(main => {
-      main.classList.add(
-        "flex-1",
-        "p-6",
-        "bg-gray-100",
-        "dark:bg-gray-800",
-        "overflow-y-auto",
-        "min-w-0"
-      );
-    });
+  function fixMains() {
+  document.querySelectorAll("main").forEach(main => {
+    main.classList.add(
+      "flex-1",
+      "p-6",
+      "bg-gray-100",
+      "dark:bg-gray-800",
+      "overflow-y-auto",
+      "min-w-0"
+    );
   });
+  }
