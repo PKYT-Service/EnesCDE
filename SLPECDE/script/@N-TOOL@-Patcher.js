@@ -51,3 +51,18 @@ export function patch() {
     document.head.appendChild(favicon)
   }
 }
+
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("main").forEach(main => {
+      main.classList.add(
+        "flex-1",
+        "p-6",
+        "bg-gray-100",
+        "dark:bg-gray-800",
+        "overflow-y-auto",
+        "min-w-0"
+      );
+    });
+  });
