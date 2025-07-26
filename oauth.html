@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>OAuth Google Chat</title>
+</head>
+<body>
+  <h1>Authentification terminée</h1>
+  <p id="info">Récupération du code...</p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+      document.getElementById('info').innerText = "Code OAuth : " + code;
+      console.log("Ton code OAuth :", code);
+    } else {
+      document.getElementById('info').innerText = "Aucun code reçu.";
+    }
+  </script>
+</body>
+</html>
