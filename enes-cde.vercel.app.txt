@@ -1,0 +1,39 @@
+;;
+;; Domain:     enes-cde.vercel.app.
+;; Exported:   2025-07-31 21:02:15
+;;
+;; This file is intended for use for informational and archival
+;; purposes ONLY and MUST be edited before use on a production
+;; DNS server.  In particular, you must:
+;;   -- update the SOA record with the correct authoritative name server
+;;   -- update the SOA record with the contact e-mail address information
+;;   -- update the NS record(s) with the authoritative name servers for this domain.
+;;
+;; For further information, please consult the BIND documentation
+;; located on the following website:
+;;
+;; http://www.isc.org/
+;;
+;; And RFC 1035:
+;;
+;; http://www.ietf.org/rfc/rfc1035.txt
+;;
+;; Please note that we do NOT offer technical support for any use
+;; of this zone data, the BIND name server, or any other third-party
+;; DNS software.
+;;
+;; Use at your own risk.
+;; SOA Record
+enes-cde.vercel.app	3600	IN	SOA	stanley.ns.cloudflare.com. dns.cloudflare.com. 2050566233 10000 2400 604800 3600
+
+;; NS Records
+enes-cde.vercel.app.	86400	IN	NS	stanley.ns.cloudflare.com.
+enes-cde.vercel.app.	86400	IN	NS	zoe.ns.cloudflare.com.
+
+;; A Records
+*.enes-cde.vercel.app.	1	IN	A	216.198.79.131 ; cf_tags=cf-proxied:true
+*.enes-cde.vercel.app.	1	IN	A	64.29.17.131 ; cf_tags=cf-proxied:true
+enes-cde.vercel.app.	1	IN	A	64.29.17.195 ; cf_tags=cf-proxied:true
+enes-cde.vercel.app.	1	IN	A	216.198.79.195 ; cf_tags=cf-proxied:true
+www.enes-cde.vercel.app.	1	IN	A	216.198.79.3 ; cf_tags=cf-proxied:true
+www.enes-cde.vercel.app.	1	IN	A	64.29.17.3 ; cf_tags=cf-proxied:true
