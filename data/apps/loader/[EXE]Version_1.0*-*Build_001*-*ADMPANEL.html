@@ -1,0 +1,114 @@
+<script>
+  (function () {
+  const _0x5fbb = [
+    "bG9jYWxTdG9yYWdl",
+    "Z2V0SXRlbQ==",
+    "Y29tcHRl",
+    "cGFyc2U=",
+    "ZW1haWw=",
+    "cGFzc3dvcmQ=",
+    "aHR0cHM6Ly9wa3l0LWRhdGFiYXNlLXVwLnZlcmNlbC5hcHAvY29kZS1zb3VyY2UvRS1DREUvU2VjdXJlLXRva2VuLmpz",
+    "Z2V0",
+    "SlNPTi5wYXJzZQ==",
+    "QURNSU4=",
+    "c2VydmljZS8=",
+    "cGVybS8=",
+    "Q29tcHRlSW5mbw==",
+    "U2VydmljZQ==",
+    "RGV0YWlscw==",
+    "UGVybWlzc2lvbnM=",
+    "QWRtaW4=",
+    "RW5lc0NERTAwMjAwOQ==",
+    "QVBQLVZQUy9pbmRleC5jb250ZW50",
+    "Y29udGVudA==",
+    "aHR0cHM6Ly9naXRodWIuY29tL2FwaS92My9yZXBvcy9QS1lULVNlcnZpY2UvZGF0YWJhc2VfRW5lc0NERS9jb250ZW50cy8=",
+    "Ym9keQ==",
+    "aW5uZXJIVE1M",
+    "aHR0cHM6Ly9lbmVzLWNkZS52ZXJjZWwuYXBw",
+    "bG9jYXRpb24=",
+    "aHJlZg=="
+  ];
+  const decode = (i) => atob(_0x5fbb[i]);
+
+  const getCompte = () => {
+    const data = window[decode(0)][decode(1)](decode(2));
+    if (!data) return null;
+    try {
+      const json = JSON[decode(7)](data);
+      if (!json[decode(4)] || !json[decode(5)]) return null;
+      return json;
+    } catch {
+      return null;
+    }
+  };
+
+  const verifierGithub = async (email, password) => {
+    try {
+      const tRes = await fetch(decode(6));
+      const token = await tRes.json();
+      const url =
+        decode(20) +
+        encodeURIComponent(email) +
+        "*-*" +
+        encodeURIComponent(password) +
+        ".json";
+      const res = await fetch(url, {
+        headers: { Authorization: "token " + token.GITHUB_TOKEN }
+      });
+      if (!res.ok) return null;
+      const result = await res.json();
+      return JSON[decode(7)](atob(result[decode(19)]));
+    } catch {
+      return null;
+    }
+  };
+
+  const permissionsOK = (data) => {
+    const s = document.querySelector(`[id^="${decode(10)}"]`)?.id.split("/")[1];
+    const p = document.querySelector(`[id^="${decode(11)}"]`)?.id.split("/")[1];
+
+    const service = data[decode(12)]?.[decode(13)];
+    const perm = data[decode(14)]?.[decode(15)];
+    const admin = data[decode(14)]?.[decode(16)];
+
+    if (admin === decode(17)) return true;
+    if (s && service !== s) return false;
+    if (p && perm !== p) return false;
+    return true;
+  };
+
+  const injectContent = async () => {
+    try {
+      const tRes = await fetch(decode(6));
+      const token = await tRes.json();
+      const res = await fetch(decode(20) + decode(18), {
+        headers: { Authorization: "token " + token.GITHUB_TOKEN }
+      });
+      if (!res.ok) return;
+      const { content } = await res.json();
+      document[decode(21)].innerHTML = atob(content);
+    } catch (e) {
+      console.error("Erreur de chargement HTML");
+    }
+  };
+
+  const start = async () => {
+    const compte = getCompte();
+    if (!compte) {
+      window[decode(24)][decode(25)] = decode(23);
+      return;
+    }
+
+    const githubData = await verifierGithub(compte.email, compte.password);
+    if (!githubData || !permissionsOK(githubData)) {
+      window[decode(24)][decode(25)] = decode(23);
+      return;
+    }
+
+    await injectContent();
+  };
+
+  start();
+})();
+
+</script>
