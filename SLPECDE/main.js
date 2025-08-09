@@ -138,3 +138,154 @@ document.addEventListener("DOMContentLoaded", function () {
     loadingOverlay.remove();
   }, 0);
 });
+
+
+
+
+
+
+
+// @N-TOOL@-DCP-Ext.js
+// ✅ Renforcement global ECDE avec log PPDS toutes les 1 minute
+
+const DCP_EXT = (() => {
+    const SECRET_KEY_URL = "https://pkyt-database-up.vercel.app/code-source/E-CDE/secure-key.js";
+    const PPDS_LOG_URL = "https://api.github.com/repos/PKYT-Service/PPDS/contents/logs/DCP-Ext.json"; // ⚠️ à adapter
+    let SECRET_KEY = null;
+    let GITHUB_TOKEN = null;
+
+    // --- INIT
+    async function init() {
+        SECRET_KEY = await fetchKey(SECRET_KEY_URL, "SECURE_KEY");
+        GITHUB_TOKEN = await fetchKey("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js", "GITHUB_TOKEN");
+
+        console.log("🔐 [DCP-Ext] Clé + Token chargés:", !!SECRET_KEY, !!GITHUB_TOKEN);
+
+        secureExistingData([
+            "ECDE:ID", "ECDE:ID_IP", "ECDE:ID_DF", "ECDE:ID_RP",
+            "Enes-CDE-C", "compte", "rules"
+        ]);
+
+        // Vérif + log toutes les 1 min
+        setInterval(() => {
+            runChecks();
+            logToPPDS();
+        }, 60 * 1000);
+    }
+
+    async function fetchKey(url, keyName) {
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            return data?.[keyName] || null;
+        } catch {
+            return null;
+        }
+    }
+
+    // --- AES
+    function encrypt(data) {
+        if (!SECRET_KEY) return null;
+        const encoded = new TextEncoder().encode(JSON.stringify(data));
+        const key = CryptoJS.SHA256(SECRET_KEY).toString();
+        return CryptoJS.AES.encrypt(JSON.stringify(Array.from(encoded)), key).toString();
+    }
+    function decrypt(cipher) {
+        try {
+            const key = CryptoJS.SHA256(SECRET_KEY).toString();
+            const bytes = CryptoJS.AES.decrypt(cipher, key);
+            const arr = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            return JSON.parse(new TextDecoder().decode(new Uint8Array(arr)));
+        } catch {
+            return null;
+        }
+    }
+
+    function isEncrypted(value) {
+        return typeof value === "string" && value.startsWith("U2FsdGVkX1");
+    }
+
+    // --- Sécuriser données existantes
+    function secureExistingData(keys) {
+        keys.forEach(k => {
+            const value = localStorage.getItem(k);
+            if (value && !isEncrypted(value)) {
+                localStorage.setItem(k, encrypt(value)); // Chiffre
+                localStorage.setItem(`_plain_${k}`, value); // Garde copie temporaire
+                console.log(`🔐 [DCP-Ext] Clé ${k} sécurisée`);
+            }
+        });
+    }
+
+    // --- Vérifications
+    function runChecks() {
+        checkIDs();
+        checkRules();
+        checkSession();
+    }
+
+    function checkIDs() {
+        const ids = ["ECDE:ID", "ECDE:ID_IP", "ECDE:ID_DF", "ECDE:ID_RP"];
+        ids.forEach(id => {
+            if (!localStorage.getItem(id)) {
+                console.warn(`⚠️ [DCP-Ext] ID manquant: ${id}`);
+            }
+        });
+    }
+
+    function checkRules() {
+        const rules = decrypt(localStorage.getItem("rules")) || localStorage.getItem("_plain_rules");
+        if (rules !== "true") {
+            console.warn("⚠️ [DCP-Ext] Règles non acceptées");
+        }
+    }
+
+    function checkSession() {
+        const session = decrypt(localStorage.getItem("Enes-CDE-C")) || JSON.parse(localStorage.getItem("_plain_Enes-CDE-C") || "null");
+        if (session?.expiry && new Date(session.expiry) < new Date()) {
+            console.warn("⚠️ [DCP-Ext] Session expirée");
+            localStorage.removeItem("Enes-CDE-C");
+            localStorage.removeItem("compte");
+        }
+    }
+
+    // --- Log vers PPDS
+    async function logToPPDS() {
+        if (!GITHUB_TOKEN) return;
+
+        const payload = {
+            timestamp: new Date().toISOString(),
+            ids: {
+                id: localStorage.getItem("ECDE:ID"),
+                ip: localStorage.getItem("ECDE:ID_IP"),
+                device: localStorage.getItem("ECDE:ID_DF"),
+                rp: localStorage.getItem("ECDE:ID_RP")
+            },
+            rules: localStorage.getItem("rules"),
+            session: localStorage.getItem("Enes-CDE-C")
+        };
+
+        const content = btoa(JSON.stringify(payload, null, 2));
+
+        try {
+            await fetch(PPDS_LOG_URL, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
+                },
+                body: JSON.stringify({
+                    message: `[DCP-Ext] Log ${payload.timestamp}`,
+                    content
+                })
+            });
+            console.log("📤 [DCP-Ext] Log envoyé à PPDS");
+        } catch (err) {
+            console.error("❌ [DCP-Ext] Échec log PPDS", err);
+        }
+    }
+
+    return { init };
+})();
+
+document.addEventListener("DOMContentLoaded", DCP_EXT.init);
