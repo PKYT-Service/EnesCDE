@@ -455,6 +455,28 @@ function inlineReplacements(text) {
     // Assurez-vous que cette fonction est bien définie et appelée au début du traitement.
     // text = escapeHtml(text); // Décommenter si escapeHtml est nécessaire à ce niveau.
 
+    // coche + cases
+    text = text.replace(
+        /`([^`\n]+)`|\[( |x|o)\]/gi,
+        (match, code, box) => {
+            if (code) {
+                // backticks
+                return `<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">${code}</code>`;
+            }
+            if (box === " ") {
+                // format invalide
+                return `<span class="bg-yellow-200 underline">Format invalide. Format valide : [ o ] (case non cochée) / [ x ] (case cochée)</span>`;
+            }
+            if (box.toLowerCase() === "x") {
+                return `<span class="bg-green-200 rounded px-1">☑ Case cochée</span>`;
+            }
+            if (box.toLowerCase() === "o") {
+                return `<span class="bg-red-200 rounded px-1">☐ Case non cochée</span>`;
+            }
+        }
+    );
+
+    
     // Code inline
     text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
 
