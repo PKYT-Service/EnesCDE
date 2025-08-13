@@ -468,10 +468,13 @@ function inlineReplacements(text) {
                 return `<span class="bg-yellow-200 underline">Format invalide. Format valide : [ o ] (case non cochée) / [ x ] (case cochée)</span>`;
             }
             if (box.toLowerCase() === "x") {
-                return `<span class="bg-green-200 rounded px-1">☑ Case cochée</span>`;
+                return `<span class="bg-green-200 rounded px-1">☑</span>`;
             }
             if (box.toLowerCase() === "o") {
-                return `<span class="bg-red-200 rounded px-1">☐ Case non cochée</span>`;
+                return `<span class="bg-red-200 rounded px-1">☐</span>`;
+            }
+             if (box.toLowerCase() === " ") {
+                return `<span class="bg-red-200 rounded px-1">O/X ?</span>`;
             }
         }
     );
