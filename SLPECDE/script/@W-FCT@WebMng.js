@@ -27,17 +27,17 @@ export async function WebManager() {
         return;
     }
 
-    // Extraire l'URL de la page actuelle
+    // Extraire l'URL actuelle
     const currentFullUrl = window.location.href; // avec protocole
     const currentHostOnly = window.location.host; // sans protocole
 
-    // Vérifier si l'URL existe avec ou sans protocole
+    // Vérifier si l'URL existe (avec ou sans protocole)
     let siteExists = jsonData.Sites.some(site => site.URL === currentFullUrl || site.URL === currentHostOnly);
 
     // Ajouter l'URL si elle est absente
     if (!siteExists) {
         jsonData.Sites.push({
-            "URL": currentHostOnly,
+            "URL": currentHostOnly, // stocke toujours sans protocole
             "Type": null,
             "BlackListe": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Maintenance": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
@@ -46,7 +46,7 @@ export async function WebManager() {
         });
     }
 
-    // Mettre à jour le fichier JSON sur GitHub
+    // Mettre à jour GitHub
     try {
         await fetch(apiUrl, {
             method: "PUT",
@@ -65,7 +65,7 @@ export async function WebManager() {
         return;
     }
 
-    // Vérifier les statuts pour afficher les popups ou rediriger
+    // Vérifier les statuts pour afficher popups / redirection
     jsonData.Sites.forEach(site => {
         if (site.URL === currentFullUrl || site.URL === currentHostOnly) {
             ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
@@ -78,14 +78,11 @@ export async function WebManager() {
                 }
             });
 
-            // Redirection
             const redirect = site.Redirection;
             if (redirect?.Statut) {
                 const today = new Date();
                 const fin = redirect.Fin?.trim();
-                const isDateValid = !isNaN(new Date(fin).getTime());
-                const finDate = isDateValid ? new Date(fin) : null;
-
+                const finDate = !isNaN(new Date(fin).getTime()) ? new Date(fin) : null;
                 if (!finDate || finDate >= today) {
                     showRedirectPopup(redirect, () => {
                         window.location.href = redirect.Url;
@@ -96,6 +93,7 @@ export async function WebManager() {
     });
 }
 
+// --- Popups ---
 function showMaintenancePopup(data) {
     const overlay = document.createElement("div");
     Object.assign(overlay.style, {
