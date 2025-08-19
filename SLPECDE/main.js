@@ -49,6 +49,7 @@ async function chargerModule(url, nomFonction) {
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Storage.js", "ID_stock_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js", "ID_verif_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMng.js", "WebManager");
+  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMngProto.js", "WebManagerProto");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-LogsD.js", "LogsDiscord");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js", "secure_psa");
   // storeLoginFromURL est désactivé pour l'instant
