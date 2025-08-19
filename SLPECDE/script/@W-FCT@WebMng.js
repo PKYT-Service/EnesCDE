@@ -27,26 +27,42 @@ export async function WebManager() {
         return;
     }
 
-    // 3. Récupérer l'URL de la page actuelle
-    const currentUrl = window.location.origin;
+    // 3. URL du navigateur
+    const currentUrl = window.location.origin.replace(/^https?:\/\//, ""); // sans protocole
+    const fullUrl = window.location.href; // complet avec chemin
 
-    // 4. Trouver un site correspondant (exact ou par mots-clés)
-    let matchedSite = jsonData.Sites.find(site => site.URL === currentUrl);
+    // 4. Fonction de correspondance
+    function matchSite(siteUrl) {
+        if (!siteUrl) return false;
 
-    if (!matchedSite) {
-        matchedSite = jsonData.Sites.find(site => {
-            const keywords = site.URL
-                .replace(/https?:\/\//, '')
-                .split(/[\/\.\-\_]/)
-                .filter(Boolean);
-            return keywords.some(kw => currentUrl.includes(kw));
-        });
+        // Cas protocole seul
+        if (/^(https?:\/\/|file:\/\/)$/.test(siteUrl)) {
+            return fullUrl.startsWith(siteUrl) || currentUrl.includes("localhost") || currentUrl.includes("127.0.0.1");
+        }
+
+        // Cas avec protocole complet
+        if (/^https?:\/\//.test(siteUrl) || /^file:\/\//.test(siteUrl)) {
+            const cleanSite = siteUrl.replace(/^https?:\/\//, "").replace(/^file:\/\//, "");
+            return currentUrl === cleanSite || currentUrl.includes(cleanSite);
+        }
+
+        // Cas fichier .html → enlever extension
+        if (siteUrl.endsWith(".html")) {
+            const keyword = siteUrl.replace(/\.html$/, "");
+            return fullUrl.includes(keyword);
+        }
+
+        // Cas par défaut → mot-clé
+        return fullUrl.includes(siteUrl);
     }
 
-    // 5. Si le site n'existe pas, on l'ajoute
+    // 5. Trouver un site correspondant
+    let matchedSite = jsonData.Sites.find(site => matchSite(site.URL));
+
+    // 6. Si aucun site, en ajouter un
     if (!matchedSite) {
         const newSite = {
-            "URL": currentUrl,
+            "URL": fullUrl,
             "Type": null,
             "BlackListe": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Maintenance": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
@@ -76,18 +92,18 @@ export async function WebManager() {
         }
     }
 
-    // 6. Gérer les statuts
+    // 7. Vérifier statuts BlackListe / Maintenance / Rappel
     ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
         if (matchedSite[type]?.Statut) {
             const today = new Date();
             const finDate = new Date(matchedSite[type].Fin.split("/").reverse().join("-"));
-
             if (!isNaN(finDate.getTime()) && finDate >= today) {
                 showMaintenancePopup(matchedSite[type]);
             }
         }
     });
 
+    // 8. Vérifier Redirection
     const redirect = matchedSite.Redirection;
     if (redirect?.Statut) {
         const today = new Date();
@@ -101,61 +117,4 @@ export async function WebManager() {
             });
         }
     }
-}
-
-// POPUPS : ----------------------------------------------
-
-function showMaintenancePopup(data) {
-    const overlay = document.createElement("div");
-    Object.assign(overlay.style, {
-        position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.8)", color: "white",
-        display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-        zIndex: "10000", fontFamily: "'Poppins', sans-serif"
-    });
-
-    const mainText = document.createElement("div");
-    mainText.innerHTML = `Enes - <span style="color: #145af2;">CDE</span> <br> <mark>B.M.R</mark>`;
-    mainText.style.cssText = "font-size:30px; font-weight:bold; margin-bottom:20px;";
-
-    const causeText = document.createElement("div");
-    causeText.innerHTML = `Cause : ${data.Raison}`;
-    causeText.style.cssText = "font-size:20px; margin-bottom:10px;";
-
-    const byText = document.createElement("div");
-    byText.innerHTML = `Par : ${data.Par}`;
-    byText.style.cssText = "font-size:18px; margin-bottom:10px;";
-
-    const dateText = document.createElement("div");
-    dateText.innerHTML = `Le : ${data.Date}`;
-    dateText.style.cssText = "font-size:18px;";
-
-    overlay.append(mainText, causeText, byText, dateText);
-    document.body.appendChild(overlay);
-}
-
-function showRedirectPopup(data, callback) {
-    const overlay = document.createElement("div");
-    Object.assign(overlay.style, {
-        position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
-        backgroundColor: "rgba(0,0,0,0.9)", color: "#fff",
-        display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-        zIndex: "10000", fontFamily: "'Poppins', sans-serif", textAlign: "center"
-    });
-
-    const text = document.createElement("div");
-    const date = data.Date || "???";
-    const fin = data.Fin || "illimitée";
-    text.innerHTML = `
-        <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">Redirection active</div>
-        <div>Motif : <strong>${data.Raison || "Aucun"}</strong></div>
-        <div>Par : <strong>${data.Par || "???"}</strong></div>
-        <div>Du <strong>${date}</strong> jusqu'à <strong>${fin}</strong></div>
-        <div style="margin-top:20px;">Redirection en cours...</div>
-    `;
-
-    overlay.appendChild(text);
-    document.body.appendChild(overlay);
-
-    setTimeout(callback, 4000); // délai de 4 secondes avant redirection
 }
