@@ -62,17 +62,17 @@ export async function WebManager() {
     // 6. Si aucun site, en ajouter un
     if (!matchedSite) {
         const newSite = {
-            "URL": fullUrl,
+            "URL": currentUrl,   // <-- ici sans protocole
             "Type": null,
             "BlackListe": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Maintenance": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Rappel": { "Statut": false, "Raison": "", "Par": "", "Date": "", "Fin": "" },
             "Redirection": { "Statut": false, "Raison": "", "Url": "", "Par": "", "Date": "", "Fin": "" }
         };
-
+    
         jsonData.Sites.push(newSite);
         matchedSite = newSite;
-
+    
         try {
             await fetch(apiUrl, {
                 method: "PUT",
@@ -91,6 +91,7 @@ export async function WebManager() {
             return;
         }
     }
+
 
     // 7. Vérifier statuts BlackListe / Maintenance / Rappel
     ["BlackListe", "Maintenance", "Rappel"].forEach(type => {
