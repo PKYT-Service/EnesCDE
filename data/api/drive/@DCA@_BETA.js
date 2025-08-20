@@ -169,126 +169,133 @@ document.write(`<!DOCTYPE html>
   </div>
 
   <!-- Script Notion-like: interactions UI (sans toucher à vos API) -->
-  <script>
-    // Ce script ne remplace pas vos scripts d'API; il gère uniquement l'UX Notion-like
-    const els = {
-      foldersUl: document.getElementById('folders-ul'),
-      foldersUlInside: document.getElementById('folders-ul-inside'),
-      filesUl: document.getElementById('files-ul'),
-      currentFolderName: document.getElementById('current-folder-name'),
-      fileViewSection: document.getElementById('file-view-section'),
-      fileRendered: document.getElementById('file-rendered-content'),
-      fileContent: document.getElementById('file-content'),
-      fileTitle: document.getElementById('file-view-title'),
-      btnToggle: document.getElementById('btn-toggle-view'),
-      btnSave: document.getElementById('btn-save'),
-      btnClose: document.getElementById('btn-close-view'),
-      breadcrumbCurrent: document.getElementById('bc-current'),
-      btnBack: document.getElementById('btn-back-folder'),
-      search: document.getElementById('search'),
-    };
+ <script>
+  // Ce script ne remplace pas vos scripts d'API; il gère uniquement l'UX Notion-like
+  const els = {
+    foldersUl: document.getElementById('folders-ul'),
+    foldersUlInside: document.getElementById('folders-ul-inside'),
+    filesUl: document.getElementById('files-ul'),
+    currentFolderName: document.getElementById('current-folder-name'),
+    fileViewSection: document.getElementById('file-view-section'),
+    fileRendered: document.getElementById('file-rendered-content'),
+    fileContent: document.getElementById('file-content'),
+    fileTitle: document.getElementById('file-view-title'),
+    btnToggle: document.getElementById('btn-toggle-view'),
+    btnSave: document.getElementById('btn-save'),
+    btnClose: document.getElementById('btn-close-view'),
+    breadcrumbCurrent: document.getElementById('bc-current'),
+    btnBack: document.getElementById('btn-back-folder'),
+    search: document.getElementById('search'),
+  };
 
-    // Exemples de helpers visuels (cartes dossier/fichier)
-    function asFolderItem(name) {
-      const li = document.createElement('li');
-      li.className = 'group flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer';
-      li.innerHTML = `<i class="fa-solid fa-folder text-amber-500"></i><span class="truncate">${name}</span>`;
-      return li;
-    }
-    function asFileCard(name) {
-      const li = document.createElement('li');
-      li.className = 'border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 bg-white dark:bg-neutral-900 hover:shadow-sm transition-[box-shadow,transform] hover:-translate-y-0.5 cursor-pointer';
-      li.innerHTML = `
-        <div class="flex items-start gap-2">
-          <i class="fa-regular fa-file-lines mt-0.5"></i>
-          <div class="min-w-0">
-            <div class="font-medium truncate">${name}</div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-400">Markdown • <span>–</span></div>
-          </div>
-        </div>`;
-      return li;
-    }
+  // Exemples de helpers visuels (cartes dossier/fichier)
+  function asFolderItem(name) {
+    const li = document.createElement('li');
+    li.className = 'group flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer';
+    li.innerHTML = "<i class=\"fa-solid fa-folder text-amber-500\"></i><span class=\"truncate\">" + name + "</span>";
+    return li;
+  }
 
-    // Rendu Markdown sécurisé (Notion-like)
-    function renderMarkdown(md) {
-      marked.setOptions({
-        breaks: true,
-        gfm: true,
-        headerIds: true,
-        highlight: (code, lang) => {
-          if (lang && hljs.getLanguage(lang)) {
-            return hljs.highlight(code, { language: lang }).value;
-          }
-          return hljs.highlightAuto(code).value;
-        },
-      });
-      const dirty = marked.parse(md ?? '');
-      const clean = DOMPurify.sanitize(dirty, { USE_PROFILES: { html: true } });
-      els.fileRendered.innerHTML = clean;
-    }
+  function asFileCard(name) {
+    const li = document.createElement('li');
+    li.className = 'border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 bg-white dark:bg-neutral-900 hover:shadow-sm transition-[box-shadow,transform] hover:-translate-y-0.5 cursor-pointer';
+    li.innerHTML =
+      "<div class=\"flex items-start gap-2\">" +
+        "<i class=\"fa-regular fa-file-lines mt-0.5\"></i>" +
+        "<div class=\"min-w-0\">" +
+          "<div class=\"font-medium truncate\">" + name + "</div>" +
+          "<div class=\"text-xs text-neutral-500 dark:text-neutral-400\">Markdown • <span>–</span></div>" +
+        "</div>" +
+      "</div>";
+    return li;
+  }
 
-    // Basculer viewer <-> éditeur
-    let editMode = false;
-    document.getElementById('btn-toggle-view').addEventListener('click', () => {
-      editMode = !editMode;
-      els.fileRendered.classList.toggle('hidden', editMode);
-      els.fileContent.classList.toggle('hidden', !editMode);
-      els.btnSave.classList.toggle('hidden', !editMode);
-      if (editMode) els.fileContent.focus();
-    });
-
-    // Fermer panneau
-    els.btnClose.addEventListener('click', () => {
-      els.fileViewSection.classList.add('hidden');
-    });
-
-    // Démo non bloquante (peut être retirée): peupler un aperçu si vide
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!els.foldersUl.children.length) {
-        ['Docs', 'Specs', 'Notes'].forEach(n => els.foldersUl.appendChild(asFolderItem(n)));
-      }
-      if (!els.filesUl.children.length) {
-        ['README.md', 'Roadmap.md', 'Design.md', 'API.md'].forEach(n => {
-          const card = asFileCard(n);
-          card.addEventListener('click', () => {
-            els.fileViewSection.classList.remove('hidden');
-            els.fileTitle.textContent = n;
-            const sample = `# ${n}\n\n> Ceci est un aperçu *Notion‑like*.\n\n- Listes\n- **Gras** / _italique_\n\n\`\`\`js\nconsole.log('hello');\n\`\`\`\n`;
-            els.fileContent.value = sample;
-            renderMarkdown(sample);
-          });
-          els.filesUl.appendChild(card);
-        });
-      }
-    });
-
-    // Recherche client légère (filtrage visuel)
-    els.search.addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase();
-      Array.from(els.filesUl.children).forEach(li => {
-        const name = li.textContent.toLowerCase();
-        li.style.display = name.includes(q) ? '' : 'none';
-      });
-    });
-
-    // Expose une API minimale si vos scripts veulent déclencher l'ouverture d'un fichier
-    window.NotionLikeUI = {
-      openFile({ name, content }) {
-        els.fileViewSection.classList.remove('hidden');
-        els.fileTitle.textContent = name;
-        els.fileContent.value = content || '';
-        renderMarkdown(content || '');
-        editMode = false;
-        els.fileRendered.classList.remove('hidden');
-        els.fileContent.classList.add('hidden');
-        els.btnSave.classList.add('hidden');
+  // Rendu Markdown sécurisé (Notion-like)
+  function renderMarkdown(md) {
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      headerIds: true,
+      highlight: (code, lang) => {
+        if (lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return hljs.highlightAuto(code).value;
       },
-      setCurrentFolder(name) {
-        els.currentFolderName.textContent = name;
-        document.getElementById('bc-current').textContent = name;
-      }
-    };
-  </script>
+    });
+    const dirty = marked.parse(md || "");
+    const clean = DOMPurify.sanitize(dirty, { USE_PROFILES: { html: true } });
+    els.fileRendered.innerHTML = clean;
+  }
+
+  // Basculer viewer <-> éditeur
+  let editMode = false;
+  document.getElementById('btn-toggle-view').addEventListener('click', () => {
+    editMode = !editMode;
+    els.fileRendered.classList.toggle('hidden', editMode);
+    els.fileContent.classList.toggle('hidden', !editMode);
+    els.btnSave.classList.toggle('hidden', !editMode);
+    if (editMode) els.fileContent.focus();
+  });
+
+  // Fermer panneau
+  els.btnClose.addEventListener('click', () => {
+    els.fileViewSection.classList.add('hidden');
+  });
+
+  // Démo non bloquante (peut être retirée): peupler un aperçu si vide
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!els.foldersUl.children.length) {
+      ["Docs", "Specs", "Notes"].forEach(n => els.foldersUl.appendChild(asFolderItem(n)));
+    }
+    if (!els.filesUl.children.length) {
+      ["README.md", "Roadmap.md", "Design.md", "API.md"].forEach(n => {
+        const card = asFileCard(n);
+        card.addEventListener('click', () => {
+          els.fileViewSection.classList.remove('hidden');
+          els.fileTitle.textContent = n;
+          const sample =
+            "# " + n + "\n\n" +
+            "> Ceci est un aperçu *Notion-like*.\n\n" +
+            "- Listes\n" +
+            "- **Gras** / _italique_\n\n" +
+            "```js\nconsole.log('hello');\n```" + "\n";
+          els.fileContent.value = sample;
+          renderMarkdown(sample);
+        });
+        els.filesUl.appendChild(card);
+      });
+    }
+  });
+
+  // Recherche client légère (filtrage visuel)
+  els.search.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    Array.from(els.filesUl.children).forEach(li => {
+      const name = li.textContent.toLowerCase();
+      li.style.display = name.includes(q) ? "" : "none";
+    });
+  });
+
+  // Expose une API minimale si vos scripts veulent déclencher l'ouverture d'un fichier
+  window.NotionLikeUI = {
+    openFile({ name, content }) {
+      els.fileViewSection.classList.remove('hidden');
+      els.fileTitle.textContent = name;
+      els.fileContent.value = content || "";
+      renderMarkdown(content || "");
+      editMode = false;
+      els.fileRendered.classList.remove('hidden');
+      els.fileContent.classList.add('hidden');
+      els.btnSave.classList.add('hidden');
+    },
+    setCurrentFolder(name) {
+      els.currentFolderName.textContent = name;
+      document.getElementById('bc-current').textContent = name;
+    }
+  };
+</script>
+
 
   <!-- ✅ Conserve vos scripts existants avec leurs IDs (ne pas renommer ces IDs/éléments) -->
   <script id="script-drive" src="https://enes-cde.vercel.app/data/api/drive/@FCT-A@-DriveScript.js" defer></script>
