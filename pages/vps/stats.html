@@ -32,7 +32,7 @@ document.getElementById('getInfo').addEventListener('click', async () => {
     output.textContent = "Chargement...";
 
     try {
-        const res = await fetch('http://51.77.140.39:12345/opt/ServerInfoToStatic', {
+        const res = await fetch('http://51.77.140.39:12345/info', {
             headers: {
                 'Authorization': `Bearer ${TOKEN}`
             }
