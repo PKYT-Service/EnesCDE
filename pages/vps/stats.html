@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infos Serveur</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center font-sans">
+
+  <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Infos Serveur</h1>
+    
+    <p class="text-gray-600 mb-6 text-center">
+      Cliquez sur le bouton pour récupérer les informations système du serveur.
+    </p>
+    
+    <div class="flex justify-center mb-6">
+      <button id="getInfo" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+        Obtenir Infos
+      </button>
+    </div>
+    
+    <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+      <pre id="output" class="text-gray-800 overflow-x-auto max-h-96"></pre>
+    </div>
+  </div>
+
+<script>
+document.getElementById('getInfo').addEventListener('click', async () => {
+    const output = document.getElementById('output');
+    output.textContent = "Chargement...";
+
+    try {
+        const res = await fetch('http://51.77.140.39:12345/info'); // ton endpoint VPS
+        if(!res.ok) throw new Error(`Erreur ${res.status}`);
+        const data = await res.json();
+
+        // Formattage clair
+        let display = `
+💻 CPU : ${data.cpu}
+🧠 RAM totale : ${(data.ram / 1024 / 1024 / 1024).toFixed(2)} GB
+🔌 Ports ouverts : 
+${data.ports}
+        `;
+        output.textContent = display.trim();
+    } catch (e) {
+        output.textContent = `Erreur : ${e.message}`;
+    }
+});
+</script>
+
+</body>
+</html>
