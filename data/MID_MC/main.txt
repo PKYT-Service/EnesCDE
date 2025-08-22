@@ -297,7 +297,7 @@ HTML_CONTENT = """
     </div>
    </section>
   </main>
-  <footer class="bg-purple-800 text-purple-300 text-center py-4 select-none">© 2025 Gestionnaire MID</footer>
+  <footer class="bg-purple-800 text-purple-300 text-center py-4 select-none">© 2025 Enes - CDE </footer>
   <script>
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
