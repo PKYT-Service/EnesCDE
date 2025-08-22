@@ -1,38 +1,31 @@
-# --- CONFIG ---
 $MIDFolder = "C:\e-cde\MID"
 $MIDFile = Join-Path $MIDFolder "mid.py"
 $IconFile = Join-Path $MIDFolder "icon.ico"
 $Shortcut = Join-Path ([Environment]::GetFolderPath("Desktop")) "MID.lnk"
-$PythonExe = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe" # chemin par défaut pour Python 3.12
-$PythonInstallerURL = "https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe"
 
 # --- Création du dossier MID si inexistant ---
 if (-not (Test-Path $MIDFolder)) {
     New-Item -ItemType Directory -Path $MIDFolder -Force
 }
 
-# --- Téléchargement du main.py ---
+# --- Téléchargement du main.py et de l'icône ---
 Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/main.txt" -OutFile $MIDFile
-
-# --- Téléchargement de l'icône ---
 Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/icon.ico" -OutFile $IconFile
 
 # --- Vérification de Python ---
-if (-not (Test-Path $PythonExe)) {
-    Write-Host "Python non trouvé, téléchargement en cours..."
-    $PythonInstaller = Join-Path $env:TEMP "python-installer.exe"
-    Invoke-WebRequest -Uri $PythonInstallerURL -OutFile $PythonInstaller
-    Start-Process -FilePath $PythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
-
-    # Attendre que python.exe soit dispo
-    Start-Sleep -Seconds 10
-    if (-not (Test-Path $PythonExe)) {
-        Write-Host "Python n'a pas été installé automatiquement. Lancez l'installation manuellement."
-        exit
-    }
+$PythonExe = Get-Command python -ErrorAction SilentlyContinue
+if (-not $PythonExe) {
+    $PythonExe = Get-Command py -ErrorAction SilentlyContinue
 }
 
-# --- Création du raccourci sur le bureau ---
+if (-not $PythonExe) {
+    Write-Host "Python n'est pas installé. Veuillez installer Python avant d'exécuter ce script."
+    exit
+} else {
+    $PythonExe = $PythonExe.Source
+}
+
+# --- Création du raccourci ---
 $WshShell = New-Object -ComObject WScript.Shell
 $ShortcutObject = $WshShell.CreateShortcut($Shortcut)
 $ShortcutObject.TargetPath = $PythonExe
