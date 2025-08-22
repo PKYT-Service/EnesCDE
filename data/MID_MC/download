@@ -1,28 +1,38 @@
-# Définir les chemins
+# --- CONFIG ---
 $MIDFolder = "C:\e-cde\MID"
-$PythonExe = "C:\Python311\python.exe"  # Chemin par défaut pour Python 3.11
 $MIDFile = Join-Path $MIDFolder "mid.py"
 $IconFile = Join-Path $MIDFolder "icon.ico"
-$Shortcut = "$env:UserProfile\Desktop\MID.lnk"
+$Shortcut = Join-Path ([Environment]::GetFolderPath("Desktop")) "MID.lnk"
+$PythonExe = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe" # chemin par défaut pour Python 3.12
+$PythonInstallerURL = "https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe"
 
-# Créer le dossier si inexistant
-if (-not (Test-Path $MIDFolder)) { New-Item -ItemType Directory -Path $MIDFolder -Force }
-
-# Télécharger main.txt en mid.py
-Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/main.txt" -OutFile $MIDFile
-
-# Télécharger l'icône
-Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/icon.ico" -OutFile $IconFile
-
-# Installer Python si non trouvé
-if (-not (Test-Path $PythonExe)) {
-    Write-Host "Python non trouvé, téléchargement en cours..."
-    $PythonInstaller = "$env:TEMP\python-installer.exe"
-    Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe" -OutFile $PythonInstaller
-    Start-Process -FilePath $PythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
+# --- Création du dossier MID si inexistant ---
+if (-not (Test-Path $MIDFolder)) {
+    New-Item -ItemType Directory -Path $MIDFolder -Force
 }
 
-# Créer un raccourci sur le bureau
+# --- Téléchargement du main.py ---
+Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/main.txt" -OutFile $MIDFile
+
+# --- Téléchargement de l'icône ---
+Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/icon.ico" -OutFile $IconFile
+
+# --- Vérification de Python ---
+if (-not (Test-Path $PythonExe)) {
+    Write-Host "Python non trouvé, téléchargement en cours..."
+    $PythonInstaller = Join-Path $env:TEMP "python-installer.exe"
+    Invoke-WebRequest -Uri $PythonInstallerURL -OutFile $PythonInstaller
+    Start-Process -FilePath $PythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
+
+    # Attendre que python.exe soit dispo
+    Start-Sleep -Seconds 10
+    if (-not (Test-Path $PythonExe)) {
+        Write-Host "Python n'a pas été installé automatiquement. Lancez l'installation manuellement."
+        exit
+    }
+}
+
+# --- Création du raccourci sur le bureau ---
 $WshShell = New-Object -ComObject WScript.Shell
 $ShortcutObject = $WshShell.CreateShortcut($Shortcut)
 $ShortcutObject.TargetPath = $PythonExe
@@ -30,5 +40,5 @@ $ShortcutObject.Arguments = "`"$MIDFile`""
 $ShortcutObject.IconLocation = $IconFile
 $ShortcutObject.Save()
 
-# Exécuter le script mid.py
+# --- Lancement du script ---
 Start-Process $PythonExe -ArgumentList "`"$MIDFile`""
