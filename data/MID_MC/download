@@ -8,8 +8,10 @@ if (-not (Test-Path $MIDFolder)) {
     New-Item -ItemType Directory -Path $MIDFolder -Force
 }
 
-# --- Téléchargement du main.py et de l'icône ---
+# --- Téléchargement du fichier main.txt et renommage en mid.py ---
 Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/main.txt" -OutFile $MIDFile
+
+# --- Téléchargement de l'icône ---
 Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/icon.ico" -OutFile $IconFile
 
 # --- Vérification de Python ---
@@ -25,7 +27,7 @@ if (-not $PythonExe) {
     $PythonExe = $PythonExe.Source
 }
 
-# --- Création du raccourci ---
+# --- Création du raccourci sur le bureau ---
 $WshShell = New-Object -ComObject WScript.Shell
 $ShortcutObject = $WshShell.CreateShortcut($Shortcut)
 $ShortcutObject.TargetPath = $PythonExe
@@ -33,5 +35,5 @@ $ShortcutObject.Arguments = "`"$MIDFile`""
 $ShortcutObject.IconLocation = $IconFile
 $ShortcutObject.Save()
 
-# --- Lancement du script ---
+# --- Lancement du script Python ---
 Start-Process $PythonExe -ArgumentList "`"$MIDFile`""
