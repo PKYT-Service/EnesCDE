@@ -1,39 +1,322 @@
-$MIDFolder = "C:\e-cde\MID"
-$MIDFile = Join-Path $MIDFolder "mid.py"
-$IconFile = Join-Path $MIDFolder "icon.ico"
-$Shortcut = Join-Path ([Environment]::GetFolderPath("Desktop")) "MID.lnk"
+# mid.ps1
+# Gestionnaire MID - PowerShell UI
+# Conçu pour être exécuté via: powershell -c "iwr http://.../mid.ps1 | iex"
+[void][System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+[void][System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-# --- Création du dossier MID si inexistant ---
-if (-not (Test-Path $MIDFolder)) {
-    New-Item -ItemType Directory -Path $MIDFolder -Force
+# ---------------- CONFIG ----------------
+$MID_FOLDER = "C:\e-cde\MID"
+$CONFIG_FILE = Join-Path $MID_FOLDER "config.json"
+$LFP_FOLDER = Join-Path $MID_FOLDER "LFP"
+$VPS_FTP_HOST = "51.77.140.39"
+$VPS_FTP_USER = "ftpuser"
+$VPS_FTP_PASS = "instance"
+
+# ---------------- UTIL ----------------
+function Ensure-Dirs {
+    param([string[]]$Dirs)
+    foreach ($d in $Dirs) {
+        if ([string]::IsNullOrWhiteSpace($d)) { continue }
+        if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
+    }
 }
 
-# --- Téléchargement du fichier main.txt et renommage en mid.py ---
-Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/main.txt" -OutFile $MIDFile
-
-# --- Téléchargement de l'icône ---
-Invoke-WebRequest -Uri "https://enes-cde.vercel.app/data/MID_MC/icon.ico" -OutFile $IconFile
-
-# --- Vérification de Python ---
-$PythonExe = Get-Command python -ErrorAction SilentlyContinue
-if (-not $PythonExe) {
-    $PythonExe = Get-Command py -ErrorAction SilentlyContinue
+function Load-Json {
+    param([string]$Path)
+    if (Test-Path $Path) {
+        try { Get-Content $Path -Raw | ConvertFrom-Json } catch { @{} }
+    } else { @{} }
 }
 
-if (-not $PythonExe) {
-    Write-Host "Python n'est pas installé. Veuillez installer Python avant d'exécuter ce script."
-    exit
-} else {
-    $PythonExe = $PythonExe.Source
+function Save-Json {
+    param([string]$Path, $Object)
+    $dir = Split-Path $Path
+    Ensure-Dirs -Dirs $dir
+    $Object | ConvertTo-Json -Depth 10 | Set-Content -Path $Path -Encoding UTF8
 }
 
-# --- Création du raccourci sur le bureau ---
-$WshShell = New-Object -ComObject WScript.Shell
-$ShortcutObject = $WshShell.CreateShortcut($Shortcut)
-$ShortcutObject.TargetPath = $PythonExe
-$ShortcutObject.Arguments = "`"$MIDFile`""
-$ShortcutObject.IconLocation = $IconFile
-$ShortcutObject.Save()
+# ---------------- CONFIG CLIENT ----------------
+function Setup-Config {
+    Ensure-Dirs -Dirs @($MID_FOLDER, $LFP_FOLDER)
+    $cfg = @{}
+    # Folder browser dialogues
+    $fbd = New-Object System.Windows.Forms.FolderBrowserDialog
+    $fbd.Description = "Sélectionnez le dossier mods"
+    if ($fbd.ShowDialog() -eq "OK") { $cfg.mods = $fbd.SelectedPath } else { $cfg.mods = Read-Host "Chemin dossier mods :" }
+    $fbd.Description = "Sélectionnez le dossier shaderpacks"
+    if ($fbd.ShowDialog() -eq "OK") { $cfg.shaderpacks = $fbd.SelectedPath } else { $cfg.shaderpacks = Read-Host "Chemin dossier shaderpacks :" }
+    $fbd.Description = "Sélectionnez le dossier resourcepacks"
+    if ($fbd.ShowDialog() -eq "OK") { $cfg.resourcepacks = $fbd.SelectedPath } else { $cfg.resourcepacks = Read-Host "Chemin dossier resourcepacks :" }
+    $cfg.LFP = $LFP_FOLDER
+    Ensure-Dirs -Dirs @($cfg.mods, $cfg.shaderpacks, $cfg.resourcepacks, $LFP_FOLDER)
+    Save-Json -Path $CONFIG_FILE -Object $cfg
+    return $cfg
+}
 
-# --- Lancement du script Python ---
-Start-Process $PythonExe -ArgumentList "`"$MIDFile`""
+function Load-Config {
+    $cfg = Load-Json -Path $CONFIG_FILE
+    if (-not $cfg -or $cfg.Count -eq 0) { $cfg = Setup-Config }
+    return $cfg
+}
+
+# ---------------- FTP HELPERS (récursif) ----------------
+function New-FtpRequest {
+    param($uri, $method)
+    $req = [System.Net.FtpWebRequest]::Create($uri)
+    $req.Credentials = New-Object System.Net.NetworkCredential($VPS_FTP_USER, $VPS_FTP_PASS)
+    $req.Method = $method
+    $req.UseBinary = $true
+    $req.KeepAlive = $false
+    return $req
+}
+
+function Get-FtpList {
+    param([string]$ftpPath)
+    $uri = "ftp://$VPS_FTP_HOST$ftpPath"
+    try {
+        $req = New-FtpRequest -uri $uri -method [System.Net.WebRequestMethods+Ftp]::ListDirectory
+        $resp = $req.GetResponse()
+        $sr = New-Object System.IO.StreamReader($resp.GetResponseStream())
+        $data = $sr.ReadToEnd().Trim()
+        $sr.Close(); $resp.Close()
+        if ($data -eq "") { return @() }
+        return $data -split "`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" }
+    } catch {
+        return @()
+    }
+}
+
+function Test-FtpIsDirectory {
+    param([string]$ftpPath)
+    # Try to list that path; if list returns something -> it's a dir
+    $items = Get-FtpList -ftpPath $ftpPath
+    return $items.Count -gt 0
+}
+
+function Download-FtpRecursive {
+    param([string]$remotePath, [string]$localPath)
+    Ensure-Dirs -Dirs $localPath
+    $items = Get-FtpList -ftpPath $remotePath
+    foreach ($item in $items) {
+        $remoteItem = if ($remotePath -eq "/") { "/$item" } else { "$remotePath/$item" }
+        $localItem = Join-Path $localPath $item
+        if (Test-FtpIsDirectory -ftpPath $remoteItem) {
+            Download-FtpRecursive -remotePath $remoteItem -localPath $localItem
+        } else {
+            try {
+                $uri = "ftp://$VPS_FTP_HOST$remoteItem"
+                $req = New-FtpRequest -uri $uri -method [System.Net.WebRequestMethods+Ftp]::DownloadFile
+                $resp = $req.GetResponse()
+                $stream = $resp.GetResponseStream()
+                Ensure-Dirs -Dirs (Split-Path $localItem)
+                $fs = [System.IO.File]::Create($localItem)
+                $buffer = New-Object byte[] 8192
+                while (($read = $stream.Read($buffer,0,$buffer.Length)) -gt 0) {
+                    $fs.Write($buffer,0,$read)
+                }
+                $fs.Close()
+                $stream.Close()
+                $resp.Close()
+            } catch {
+                # ignore single file errors but log
+                Write-Host "Erreur téléchargement $remoteItem : $_" -ForegroundColor Yellow
+            }
+        }
+    }
+}
+
+# ---------------- OPERATIONS ----------------
+function Compare-And-Clean {
+    param($clientFolder, $lfpFolder)
+    if (-not (Test-Path $lfpFolder)) { return }
+    Get-ChildItem -Path $lfpFolder -Recurse -File | ForEach-Object {
+        $rel = $_.FullName.Substring($lfpFolder.Length).TrimStart("\/")
+        $clientFile = Join-Path $clientFolder $rel
+        if (Test-Path $clientFile) {
+            try {
+                if ((Get-Item $clientFile).Length -eq $_.Length) {
+                    Remove-Item $clientFile -Force -ErrorAction SilentlyContinue
+                }
+            } catch {}
+        }
+    }
+}
+
+function Copy-To-LFP-And-Local {
+    param($srcFolder, $clientFolder, $lfpFolder)
+    if (-not (Test-Path $srcFolder)) { return }
+    Get-ChildItem -Path $srcFolder -Recurse -File | ForEach-Object {
+        $rel = $_.Directory.FullName.Substring($srcFolder.Length).TrimStart("\/")
+        $destClient = Join-Path $clientFolder $rel
+        $destLfp = Join-Path $lfpFolder $rel
+        Ensure-Dirs -Dirs @($destClient, $destLfp)
+        Copy-Item -Path $_.FullName -Destination (Join-Path $destClient $_.Name) -Force
+        Copy-Item -Path $_.FullName -Destination (Join-Path $destLfp $_.Name) -Force
+    }
+}
+
+function Install-Instance-From-FTP {
+    param([string]$ftpPath, [hashtable]$clientFolders, [string]$instanceName = "Base")
+    $tmpLocal = Join-Path $LFP_FOLDER "tmp_download"
+    if (Test-Path $tmpLocal) { Remove-Item -Path $tmpLocal -Recurse -Force -ErrorAction SilentlyContinue }
+    Ensure-Dirs -Dirs $tmpLocal
+    foreach ($key in $clientFolders.Keys) {
+        $remoteSub = "$ftpPath/$key"
+        $localSub = Join-Path $tmpLocal $key
+        Download-FtpRecursive -remotePath $remoteSub -localPath $localSub
+    }
+    # copy into LFP and client folders
+    foreach ($pair in $clientFolders.GetEnumerator()) {
+        $key = $pair.Key; $folder = $pair.Value
+        $lfpSub = Join-Path $LFP_FOLDER ($instanceName + "\" + $key.ToUpper())
+        Compare-And-Clean -clientFolder $folder -lfpFolder $lfpSub
+        Remove-Item -Path $lfpSub -Recurse -Force -ErrorAction SilentlyContinue
+        Ensure-Dirs -Dirs $lfpSub
+        $srcSub = Join-Path $tmpLocal $key
+        if (Test-Path $srcSub) {
+            Copy-To-LFP-And-Local -srcFolder $srcSub -clientFolder $folder -lfpFolder $lfpSub
+        }
+    }
+    Remove-Item -Path $tmpLocal -Recurse -Force -ErrorAction SilentlyContinue
+    return "$instanceName installé avec succès !"
+}
+
+function Remove-Instance {
+    param([hashtable]$clientFolders, [string]$instanceName = "Base")
+    foreach ($pair in $clientFolders.GetEnumerator()) {
+        $key = $pair.Key; $folder = $pair.Value
+        $lfpSub = Join-Path $LFP_FOLDER ($instanceName + "\" + $key.ToUpper())
+        Compare-And-Clean -clientFolder $folder -lfpFolder $lfpSub
+        Remove-Item -Path $lfpSub -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    return "$instanceName supprimé !"
+}
+
+# ---------------- UI API ----------------
+class PSAPI {
+    [hashtable]$config
+    [hashtable]$folders
+
+    PSAPI([hashtable]$cfg) {
+        $this.config = $cfg
+        $this.folders = @{
+            mods = $cfg.mods
+            shaderpacks = $cfg.shaderpacks
+            resourcepacks = $cfg.resourcepacks
+        }
+    }
+
+    [string] Install_Base() {
+        return Install-Instance-From-FTP -ftpPath "/base" -clientFolders $this.folders -instanceName "Base"
+    }
+    [string] Remove_Base() {
+        return Remove-Instance -clientFolders $this.folders -instanceName "Base"
+    }
+    [string] Update_Base() {
+        return Install-Instance-From-FTP -ftpPath "/base" -clientFolders $this.folders -instanceName "Base"
+    }
+    [string] Install_Server() {
+        # Ask server name
+        $srv = [System.Windows.Forms.Interaction]::InputBox("Nom de l'instance serveur :", "Installer Instance Serveur", "Serveur")
+        if ([string]::IsNullOrWhiteSpace($srv)) { return "Opération annulée." }
+        return Install-Instance-From-FTP -ftpPath "/server/$srv" -clientFolders $this.folders -instanceName $srv
+    }
+    [string] Remove_Server() {
+        $srv = [System.Windows.Forms.Interaction]::InputBox("Nom de l'instance serveur :", "Supprimer Instance Serveur", "Serveur")
+        if ([string]::IsNullOrWhiteSpace($srv)) { return "Opération annulée." }
+        return Remove-Instance -clientFolders $this.folders -instanceName $srv
+    }
+    [string] Update_Server() {
+        $srv = [System.Windows.Forms.Interaction]::InputBox("Nom de l'instance serveur :", "Mettre à jour Instance Serveur", "Serveur")
+        if ([string]::IsNullOrWhiteSpace($srv)) { return "Opération annulée." }
+        return Install-Instance-From-FTP -ftpPath "/server/$srv" -clientFolders $this.folders -instanceName $srv
+    }
+}
+
+# ---------------- LANCEMENT UI ----------------
+Ensure-Dirs -Dirs @($MID_FOLDER, $LFP_FOLDER)
+$cfg = Load-Config
+$api = [PSAPI]::new($cfg)
+
+# Create Form
+$form = New-Object System.Windows.Forms.Form
+$form.Text = "Gestionnaire MID"
+$form.Width = 1000
+$form.Height = 700
+$form.StartPosition = "CenterScreen"
+$form.FormBorderStyle = "FixedDialog"
+
+# Left panel (menu)
+$panel = New-Object System.Windows.Forms.Panel
+$panel.Width = 260
+$panel.Dock = "Left"
+$panel.BackColor = [System.Drawing.Color]::FromArgb(55, 0, 90)
+$form.Controls.Add($panel)
+
+# Content area
+$content = New-Object System.Windows.Forms.TextBox
+$content.Multiline = $true
+$content.Dock = "Fill"
+$content.ReadOnly = $true
+$content.ScrollBars = "Vertical"
+$content.Font = New-Object System.Drawing.Font("Consolas",10)
+$content.BackColor = [System.Drawing.Color]::WhiteSmoke
+$content.ForeColor = [System.Drawing.Color]::Black
+$content.Text = "Bienvenue dans le Gestionnaire MID`r`nUtilisez les boutons à gauche."
+$form.Controls.Add($content)
+
+function Append-Content {
+    param([string]$text)
+    $content.AppendText((Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " — " + $text + "`r`n")
+}
+
+# Buttons factory
+function New-MenuButton {
+    param($text, $y, $handler)
+    $b = New-Object System.Windows.Forms.Button
+    $b.Text = $text
+    $b.Width = 220
+    $b.Height = 44
+    $b.Left = 20
+    $b.Top = $y
+    $b.FlatStyle = "Flat"
+    $b.Font = New-Object System.Drawing.Font("Segoe UI",10,[System.Drawing.FontStyle]::Bold)
+    $b.BackColor = [System.Drawing.Color]::FromArgb(120, 40, 160)
+    $b.ForeColor = [System.Drawing.Color]::White
+    $b.Add_Click($handler)
+    return $b
+}
+
+# Add buttons (note: "Mettre à jour l'app" volontairement supprimé)
+$y = 20
+$btnInstallBase = New-MenuButton "Installer / Réinstaller Base" $y { Start-Job -ScriptBlock { $msg = $using:api.Install_Base(); $msg } | Wait-Job | Receive-Job | ForEach-Object { [void][System.Windows.Forms.Application]::DoEvents(); $global:LastResult = $_ } ; Append-Content $global:LastResult }
+$panel.Controls.Add($btnInstallBase); $y += 54
+
+$btnRemoveBase = New-MenuButton "Supprimer Base" $y { Start-Job -ScriptBlock { $msg = $using:api.Remove_Base(); $msg } | Wait-Job | Receive-Job | ForEach-Object { $global:LastResult = $_ } ; Append-Content $global:LastResult }
+$panel.Controls.Add($btnRemoveBase); $y += 54
+
+$btnUpdateBase = New-MenuButton "Mettre à jour Base" $y { Start-Job -ScriptBlock { $msg = $using:api.Update_Base(); $msg } | Wait-Job | Receive-Job | ForEach-Object { $global:LastResult = $_ } ; Append-Content $global:LastResult }
+$panel.Controls.Add($btnUpdateBase); $y += 54
+
+$panel.Controls.Add((New-Object System.Windows.Forms.Label -Property @{Text=""; Width=220; Height=10; Top=$y; Left=20})) ; $y += 16
+
+$btnInstallServer = New-MenuButton "Installer Instance Serveur" $y { Start-Job -ScriptBlock { $msg = $using:api.Install_Server(); $msg } | Wait-Job | Receive-Job | ForEach-Object { $global:LastResult = $_ } ; Append-Content $global:LastResult }
+$panel.Controls.Add($btnInstallServer); $y += 54
+
+$btnRemoveServer = New-MenuButton "Supprimer Instance Serveur" $y { Start-Job -ScriptBlock { $msg = $using:api.Remove_Server(); $msg } | Wait-Job | Receive-Job | ForEach-Object { $global:LastResult = $_ } ; Append-Content $global:LastResult }
+$panel.Controls.Add($btnRemoveServer); $y += 54
+
+$btnUpdateServer = New-MenuButton "Mettre à jour Instance Serveur" $y { Start-Job -ScriptBlock { $msg = $using:api.Update_Server(); $msg } | Wait-Job | Receive-Job | ForEach-Object { $global:LastResult = $_ } ; Append-Content $global:LastResult }
+$panel.Controls.Add($btnUpdateServer); $y += 54
+
+$panel.Controls.Add((New-Object System.Windows.Forms.Label -Property @{Text=""; Width=220; Height=10; Top=$y; Left=20})) ; $y += 16
+
+$btnQuit = New-MenuButton "Quitter" $y { if ([System.Windows.Forms.MessageBox]::Show("Voulez-vous vraiment quitter ?", "Quitter", "YesNo", "Question") -eq "Yes") { $form.Close() } }
+$btnQuit.BackColor = [System.Drawing.Color]::FromArgb(200,30,30)
+$panel.Controls.Add($btnQuit)
+
+# Show form
+$form.Add_Shown({ Append-Content "Interface démarrée." })
+[System.Windows.Forms.Application]::EnableVisualStyles()
+[System.Windows.Forms.Application]::Run($form)
