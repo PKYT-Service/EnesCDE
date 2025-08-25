@@ -1,4 +1,3 @@
-
 # launch.ps1
 # Gère l'installation, la mise à jour et le lancement de l'application MID
 
@@ -6,11 +5,12 @@
 chcp 65001 >$null
 
 $MID_DEST = "C:\e-cde\MID"
-$PS1_URL = "http://enes-cde.vercel.app/data/MID_MC/mid.ps1"
-$V_URL = "http://enes-cde.vercel.app/data/MID_MC/v.json"
+$PS1_URL = "https://enes-cde.vercel.app/data/MID_MC/mid.ps1"
+$V_URL = "https://enes-cde.vercel.app/data/MID_MC/v.json"
 $PS1_PATH = Join-Path $MID_DEST "mid.ps1"
 $JSON_PATH = Join-Path $MID_DEST "config.json"
 $LOG_PATH = Join-Path $MID_DEST "install.log"
+$LAUNCHER_URL = "https://enes-cde.vercel.app/data/MID_MC/launch.ps1"
 
 function Write-Log($message, [string]$type = "INFO") {
     $timestamp = Get-Date -Format "dd/MM/yyyy HH:mm:ss"
@@ -18,16 +18,42 @@ function Write-Log($message, [string]$type = "INFO") {
     Add-Content -Path $LOG_PATH -Value $logEntry
 }
 
-# 1. Verification des fichiers et mise à jour
-Write-Host "Verification des fichiers de l'application et de la version..."
-Write-Log "Verification des fichiers de l'application et de la version."
+# 1. Verification et mise a jour du lanceur
+try {
+    Write-Host "Verification d'une nouvelle version du lanceur..."
+    $web_launcher = (Invoke-WebRequest -Uri $LAUNCHER_URL -UseBasicParsing).Content
+    $local_launcher = Get-Content $MyInvocation.MyCommand.Path
+    if ($web_launcher -ne $local_launcher) {
+        Write-Host "Mise a jour du lanceur requise. Telechargement..." -ForegroundColor Yellow
+        $web_launcher | Out-File $MyInvocation.MyCommand.Path -Encoding UTF8
+        Write-Host "Le lanceur a ete mis a jour. Relancez l'application." -ForegroundColor Green
+        Write-Log "Le lanceur a ete mis a jour. Relancement de l'application."
+        Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$MyInvocation.MyCommand.Path`""
+        exit
+    }
+} catch {
+    Write-Host "Impossible de verifier la version du lanceur." -ForegroundColor Red
+    Write-Log "Erreur lors de la verification du lanceur." -type "ERREUR"
+}
+
+# 2. Creation du repertoire d'installation
+if (-not (Test-Path $MID_DEST)) {
+    Write-Host "Creation du repertoire d'installation..."
+    New-Item -ItemType Directory -Path $MID_DEST | Out-Null
+    Write-Log "Repertoire d'installation cree."
+}
+
+# 3. Verification des fichiers et mise à jour de l'application
+Write-Host ""
+Write-Host "Verification des fichiers de l'application..."
+Write-Log "Verification des fichiers de l'application."
 
 $isOutdated = $false
 
-if (-not (Test-Path $PS1_PATH) -or -not (Test-Path $JSON_PATH)) {
+if (-not (Test-Path $PS1_PATH)) {
     Write-Host "Fichiers manquants. Installation complete requise." -ForegroundColor Yellow
     $isOutdated = $true
-} else {
+} elseif (Test-Path $JSON_PATH) {
     try {
         $web_version_obj = Invoke-WebRequest -Uri $V_URL -UseBasicParsing | ConvertFrom-Json
         $local_version_obj = Get-Content $JSON_PATH | ConvertFrom-Json
@@ -44,7 +70,7 @@ if (-not (Test-Path $PS1_PATH) -or -not (Test-Path $JSON_PATH)) {
     }
 }
 
-# 2. Installation ou mise à jour
+# 4. Installation ou mise à jour
 if ($isOutdated) {
     Write-Host ""
     Write-Host "Lancement de l'installation/mise a jour..."
@@ -71,7 +97,7 @@ if ($isOutdated) {
     }
 }
 
-# 3. Lancement de l'application
+# 5. Lancement de l'application
 Write-Host ""
 Write-Host "Lancement de l'application MID..."
 Write-Log "Lancement de l'application MID."
