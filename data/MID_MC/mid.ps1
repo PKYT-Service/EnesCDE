@@ -267,7 +267,10 @@ while ($true) {
             $srvName = Read-Host "Nom de l'instance serveur"
             Update-Content -sourceType "server" -sourceName $srvName
         }
-        "0" { break }
+"0" {
+    Write-Host "Fermeture de l'application."
+    exit
+}
         default { 
             Write-Host "Option invalide ! Veuillez reessayer." -ForegroundColor Yellow
             Write-Log "Option invalide choisie." -type "ATTENTION"
