@@ -1,9 +1,6 @@
 # launch.ps1
 # Gère l'installation, la mise à jour et le lancement de l'application MID
 
-# Force l'encodage du terminal en UTF-8 pour un affichage correct
-chcp 65001 >$null
-
 $MID_DEST = "C:\e-cde\MID"
 $PS1_URL = "https://enes-cde.vercel.app/data/MID_MC/mid.ps1"
 $V_URL = "https://enes-cde.vercel.app/data/MID_MC/v.json"
