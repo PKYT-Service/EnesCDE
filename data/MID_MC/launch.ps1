@@ -1,6 +1,9 @@
 # launch.ps1
 # Gère l'installation, la mise à jour et le lancement de l'application MID
 
+# Force l'encodage du terminal en UTF-8 pour un affichage correct
+chcp 65001 >$null
+
 $MID_DEST = "C:\e-cde\MID"
 $PS1_URL = "https://enes-cde.vercel.app/data/MID_MC/mid.ps1"
 $V_URL = "https://enes-cde.vercel.app/data/MID_MC/v.json"
@@ -15,17 +18,32 @@ function Write-Log($message, [string]$type = "INFO") {
     Add-Content -Path $LOG_PATH -Value $logEntry
 }
 
-# 1. Verification et mise a jour du lanceur
+# 1. Verification et mise a jour du lanceur (sans se toucher)
 try {
     Write-Host "Verification d'une nouvelle version du lanceur..."
     $web_launcher = (Invoke-WebRequest -Uri $LAUNCHER_URL -UseBasicParsing).Content
     $local_launcher = Get-Content $MyInvocation.MyCommand.Path
+    
     if ($web_launcher -ne $local_launcher) {
         Write-Host "Mise a jour du lanceur requise. Telechargement..." -ForegroundColor Yellow
-        $web_launcher | Out-File $MyInvocation.MyCommand.Path -Encoding UTF8
-        Write-Host "Le lanceur a ete mis a jour. Relancez l'application." -ForegroundColor Green
-        Write-Log "Le lanceur a ete mis a jour. Relancement de l'application."
-        Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$MyInvocation.MyCommand.Path`""
+        
+        # Création d'un script de mise à jour temporaire
+        $updateScriptContent = @"
+# Ce script va mettre a jour le lanceur et le relancer.
+Write-Host "Mise a jour du lanceur en cours..."
+(Invoke-WebRequest -Uri '$LAUNCHER_URL' -UseBasicParsing).Content | Out-File '$MyInvocation.MyCommand.Path' -Encoding UTF8
+Write-Host "Mise a jour terminee. Relancement..."
+Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$MyInvocation.MyCommand.Path`""
+Start-Sleep -Seconds 2
+Remove-Item -Path `$MyInvocation.MyCommand.Path` -Force
+"@
+        
+        # Enregistrer le script de mise à jour temporaire
+        $tempUpdatePath = Join-Path (Get-Item 'Env:TEMP').Value "update_launcher.ps1"
+        $updateScriptContent | Out-File $tempUpdatePath -Encoding UTF8
+
+        # Lancer le script de mise à jour et quitter le script actuel
+        Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$tempUpdatePath`""
         exit
     }
 } catch {
