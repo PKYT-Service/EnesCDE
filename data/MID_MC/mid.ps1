@@ -18,12 +18,14 @@ if (Test-Path $ConfigFile) {
         resourcepacks = Read-Host "Chemin complet du dossier resourcepacks"
         LFP = $LFPFolder
     }
+    foreach ($path in @($Config.mods, $Config.shaderpacks, $Config.resourcepacks, $Config.LFP)) {
+        if ($path -and -not (Test-Path $path)) { New-Item -ItemType Directory -Path $path | Out-Null }
+    }
     $Config | ConvertTo-Json -Depth 5 | Set-Content $ConfigFile
     Write-Host "Config.json créé avec succès !" -ForegroundColor Green
 }
 
 # ---------------- FONCTIONS ----------------
-
 function Ensure-Dir($path) {
     if (-not (Test-Path $path)) { New-Item -ItemType Directory -Path $path | Out-Null }
 }
@@ -75,28 +77,75 @@ function Sync-Dir($sourceFolder, $destFolder) {
         if ($_.PSIsContainer) {
             Ensure-Dir $targetPath
         } else {
-            Copy-Item $_.FullName -Destination $targetPath -Force
+            Copy-Item -LiteralPath $_.FullName -Destination $targetPath -Force
         }
     }
 }
 
 function Remove-LFPContent($lfpSubFolder, $clientFolder) {
-    if (-not (Test-Path $lfpSubFolder)) { return }
-    if (-not (Test-Path $clientFolder)) { return }
+    # Supprimer côté client
+    if (Test-Path $clientFolder) {
+        Get-ChildItem -Path $clientFolder -Recurse -Force | Remove-Item -Force -Recurse
+        Write-Host "Dossier vidé côté client : $clientFolder"
+    }
 
-    Get-ChildItem -Path $lfpSubFolder -Recurse -File | ForEach-Object {
-        $rel = $_.FullName.Substring($lfpSubFolder.Length).TrimStart('\')
-        $clientFile = Join-Path $clientFolder $rel
-        if (Test-Path $clientFile) {
-            Remove-Item $clientFile -Force
-            Write-Host "Supprimé : $clientFile"
+    # Supprimer côté LFP
+    if (Test-Path $lfpSubFolder) {
+        Remove-Item $lfpSubFolder -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "Dossier supprimé côté LFP : $lfpSubFolder"
+    }
+}
+
+# ----------- PATCH UPDATE -----------
+function Update-Base {
+    Write-Host "➡ Mise à jour Base..."
+    # Suppression
+    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
+        $lfpSub = Join-Path $LFPFolder "base\$type"
+        $clientDest = $Config.$type
+        Remove-LFPContent $lfpSub $clientDest
+    }
+    Start-Sleep -Seconds 1
+    # Réinstallation
+    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
+        $ftp = "ftp://ftpuser:instance@51.77.140.39/base/$type"
+        $lfpDest = Join-Path $LFPFolder "base\$type"
+        Download-FTP $ftp $lfpDest
+
+        $clientDest = $Config.$type
+        if ($clientDest) {
+            Ensure-Dir $clientDest
+            Sync-Dir $lfpDest $clientDest
         }
     }
-    Remove-Item $lfpSubFolder -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "✅ Base mise à jour !"
+}
+
+function Update-Server($srvName) {
+    Write-Host "➡ Mise à jour Serveur $srvName..."
+    # Suppression
+    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
+        $lfpSub = Join-Path $LFPFolder "servers\$srvName\$type"
+        $clientDest = $Config.$type
+        Remove-LFPContent $lfpSub $clientDest
+    }
+    Start-Sleep -Seconds 1
+    # Réinstallation
+    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
+        $ftp = "ftp://ftpuser:instance@51.77.140.39/server/$srvName/$type"
+        $lfpDest = Join-Path $LFPFolder "servers\$srvName\$type"
+        Download-FTP $ftp $lfpDest
+
+        $clientDest = $Config.$type
+        if ($clientDest) {
+            Ensure-Dir $clientDest
+            Sync-Dir $lfpDest $clientDest
+        }
+    }
+    Write-Host "✅ Serveur $srvName mis à jour !"
 }
 
 # ---------------- MENU ----------------
-
 while ($true) {
     Write-Host "=== Gestionnaire MID ==="
     Write-Host "1. Installer Base"
@@ -117,7 +166,6 @@ while ($true) {
                 $lfpDest = Join-Path $LFPFolder "base\$type"
                 Download-FTP $ftp $lfpDest
 
-                # Copier vers client
                 $clientDest = $Config.$type
                 if ($clientDest) {
                     Ensure-Dir $clientDest
@@ -126,7 +174,7 @@ while ($true) {
                     Write-Warning "Dossier client non configuré pour $type"
                 }
             }
-            Write-Host "Base installée avec succès !"
+            Write-Host "✅ Base installée avec succès !"
         }
         "2" {
             Write-Host "Suppression Base..."
@@ -135,13 +183,9 @@ while ($true) {
                 $clientDest = $Config.$type
                 Remove-LFPContent $lfpSub $clientDest
             }
-            Write-Host "Base supprimée !"
+            Write-Host "✅ Base supprimée !"
         }
-        "3" {
-            Write-Host "Mise à jour Base..."
-            & $PSCommandPath -Command 2
-            & $PSCommandPath -Command 1
-        }
+        "3" { Update-Base }
         "4" {
             $srvName = Read-Host "Nom de l'instance serveur"
             Write-Host "Téléchargement Serveur $srvName..."
@@ -158,7 +202,7 @@ while ($true) {
                     Write-Warning "Dossier client non configuré pour $type"
                 }
             }
-            Write-Host "Instance Serveur installée avec succès !"
+            Write-Host "✅ Instance Serveur installée avec succès !"
         }
         "5" {
             $srvName = Read-Host "Nom de l'instance serveur"
@@ -168,13 +212,11 @@ while ($true) {
                 $clientDest = $Config.$type
                 Remove-LFPContent $lfpSub $clientDest
             }
-            Write-Host "Instance Serveur supprimée !"
+            Write-Host "✅ Instance Serveur supprimée !"
         }
         "6" {
             $srvName = Read-Host "Nom de l'instance serveur"
-            Write-Host "Mise à jour Serveur $srvName..."
-            & $PSCommandPath -Command 5
-            & $PSCommandPath -Command 4
+            Update-Server $srvName
         }
         "0" { break }
         default { Write-Host "Option invalide !" -ForegroundColor Yellow }
