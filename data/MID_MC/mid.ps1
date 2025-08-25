@@ -9,9 +9,10 @@ $ConfigFile = Join-Path $MIDFolder "config.json"
 
 # Charger ou créer config.json
 if (Test-Path $ConfigFile) {
+    Write-Host "Config.json trouvé. Chargement..." -ForegroundColor Green
     $Config = Get-Content $ConfigFile | ConvertFrom-Json
 } else {
-    Write-Host "Config introuvable. Création automatique..."
+    Write-Host "Config introuvable. Création automatique..." -ForegroundColor Yellow
     $Config = [ordered]@{
         mods = Read-Host "Chemin complet du dossier mods"
         shaderpacks = Read-Host "Chemin complet du dossier shaderpacks"
@@ -41,21 +42,17 @@ function Download-FTP($ftpSource, $localDest) {
         $files = @()
         while(-not $reader.EndOfStream) {
             $line = $reader.ReadLine()
-            if ($line -and -not ($line.EndsWith("/"))) { $files += $line }
+            if ($line -and ($line -match '\.')) { $files += $line }
         }
         $reader.Close()
         $response.Close()
 
         foreach ($file in $files) {
-            if ([string]::IsNullOrWhiteSpace($file)) { continue }
-            if ($file.EndsWith("/")) { continue }
-            if (-not $file.Contains(".")) { continue }
-
             $fileName = [System.IO.Path]::GetFileName($file)
             $fileUrl  = "$ftpSource/$fileName"
             $destFile = Join-Path $localDest $fileName
 
-            Write-Host "Téléchargement $fileUrl -> $destFile"
+            Write-Host "  Téléchargement $fileName..."
             try {
                 $webclient = New-Object System.Net.WebClient
                 $webclient.Credentials = New-Object System.Net.NetworkCredential("ftpuser","instance")
@@ -65,160 +62,133 @@ function Download-FTP($ftpSource, $localDest) {
             }
         }
     } catch {
-        Write-Warning "Impossible de lister : $ftpSource"
+        Write-Warning "Impossible de lister le contenu de : $ftpSource"
     }
 }
 
 function Sync-Dir($sourceFolder, $destFolder) {
     Ensure-Dir $destFolder
-    Get-ChildItem -Path $sourceFolder -Recurse | ForEach-Object {
-        $relativePath = $_.FullName.Substring($sourceFolder.Length).TrimStart('\')
+    $sourceFiles = Get-ChildItem -Path $sourceFolder -File -Recurse
+    foreach ($file in $sourceFiles) {
+        $relativePath = $file.FullName.Substring($sourceFolder.Length).TrimStart('\')
         $targetPath = Join-Path $destFolder $relativePath
-        if ($_.PSIsContainer) {
-            Ensure-Dir $targetPath
-        } else {
-            Copy-Item -LiteralPath $_.FullName -Destination $targetPath -Force
+        try {
+            Copy-Item -LiteralPath $file.FullName -Destination $targetPath -Force
+        } catch {
+            Write-Warning "Impossible de copier $file.Name vers le client."
         }
     }
 }
 
 function Remove-LFPContent($lfpSubFolder, $clientFolder) {
-    # Supprimer côté client
-    if (Test-Path $clientFolder) {
-        Get-ChildItem -Path $clientFolder -Recurse -Force | Remove-Item -Force -Recurse
-        Write-Host "Dossier vidé côté client : $clientFolder"
+    if (-not (Test-Path $lfpSubFolder)) { 
+        Write-Host "  Dossier LFP non trouvé, pas de suppression nécessaire."
+        return 
+    }
+    if (-not (Test-Path $clientFolder)) { 
+        Write-Host "  Dossier client non trouvé, pas de suppression nécessaire."
+        return 
+    }
+    
+    # On récupère les fichiers de la LFP et on crée une liste
+    $lfpFiles = Get-ChildItem -LiteralPath $lfpSubFolder -Recurse -File
+
+    if ($lfpFiles.Count -eq 0) {
+        Write-Host "  Aucun fichier à supprimer dans $lfpSubFolder."
+        return
     }
 
-    # Supprimer côté LFP
+    Write-Host "  Fichiers à supprimer : " -ForegroundColor Yellow
+    $lfpFiles | ForEach-Object { Write-Host "  - $($_.BaseName)$($_.Extension)" }
+
+    foreach ($lfpFile in $lfpFiles) {
+        # On utilise le nom de base du fichier pour la recherche, plus simple et sûr
+        $fileName = $lfpFile.Name
+        $clientFilePath = Join-Path $clientFolder $fileName
+        
+        # On vérifie que le fichier existe bien avant de le supprimer
+        if (Test-Path -LiteralPath $clientFilePath) {
+            Remove-Item -LiteralPath $clientFilePath -Force -ErrorAction SilentlyContinue
+            Write-Host "  Supprimé côté client : $clientFilePath"
+        }
+    }
+}
+
+function Clean-LFPFolder($lfpSubFolder) {
     if (Test-Path $lfpSubFolder) {
+        Write-Host "  Nettoyage du cache LFP : $lfpSubFolder" -ForegroundColor Green
         Remove-Item $lfpSubFolder -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "Dossier supprimé côté LFP : $lfpSubFolder"
     }
 }
 
-# ----------- PATCH UPDATE -----------
-function Update-Base {
-    Write-Host "➡ Mise à jour Base..."
-    # Suppression
-    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-        $lfpSub = Join-Path $LFPFolder "base\$type"
-        $clientDest = $Config.$type
-        Remove-LFPContent $lfpSub $clientDest
+# ---------------- ACTIONS ----------------
+function Install-Content($sourceType, $sourceName) {
+    Write-Host "➡ Installation de $sourceType $sourceName..." -ForegroundColor Cyan
+    $types = @("mods","shaderpacks","resourcepacks")
+    foreach ($type in $types) {
+        $ftpPath = "ftp://ftpuser:instance@51.77.140.39/$sourceType/$sourceName/$type"
+        $lfpPath = Join-Path $LFPFolder "$sourceType\$sourceName\$type"
+        Download-FTP $ftpPath $lfpPath
+        Sync-Dir $lfpPath $Config.$type
     }
-    Start-Sleep -Seconds 1
-    # Réinstallation
-    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-        $ftp = "ftp://ftpuser:instance@51.77.140.39/base/$type"
-        $lfpDest = Join-Path $LFPFolder "base\$type"
-        Download-FTP $ftp $lfpDest
-
-        $clientDest = $Config.$type
-        if ($clientDest) {
-            Ensure-Dir $clientDest
-            Sync-Dir $lfpDest $clientDest
-        }
-    }
-    Write-Host "✅ Base mise à jour !"
+    Write-Host "✅ $sourceType $sourceName installé avec succès !" -ForegroundColor Green
 }
 
-function Update-Server($srvName) {
-    Write-Host "➡ Mise à jour Serveur $srvName..."
-    # Suppression
-    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-        $lfpSub = Join-Path $LFPFolder "servers\$srvName\$type"
-        $clientDest = $Config.$type
-        Remove-LFPContent $lfpSub $clientDest
+function Remove-Content($sourceType, $sourceName) {
+    Write-Host "➡ Suppression de $sourceType $sourceName..." -ForegroundColor Cyan
+    $types = @("mods","shaderpacks","resourcepacks")
+    foreach ($type in $types) {
+        $lfpPath = Join-Path $LFPFolder "$sourceType\$sourceName\$type"
+        $clientPath = $Config.$type
+        Remove-LFPContent $lfpPath $clientPath
     }
-    Start-Sleep -Seconds 1
-    # Réinstallation
-    foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-        $ftp = "ftp://ftpuser:instance@51.77.140.39/server/$srvName/$type"
-        $lfpDest = Join-Path $LFPFolder "servers\$srvName\$type"
-        Download-FTP $ftp $lfpDest
+    # Nettoyer les fichiers de la base du cache LFP après la suppression
+    foreach ($type in $types) {
+        $lfpPath = Join-Path $LFPFolder "$sourceType\$sourceName\$type"
+        Clean-LFPFolder $lfpPath
+    }
+    Write-Host "✅ $sourceType $sourceName supprimé avec succès !" -ForegroundColor Green
+}
 
-        $clientDest = $Config.$type
-        if ($clientDest) {
-            Ensure-Dir $clientDest
-            Sync-Dir $lfpDest $clientDest
-        }
-    }
-    Write-Host "✅ Serveur $srvName mis à jour !"
+function Update-Content($sourceType, $sourceName) {
+    Write-Host "➡ Mise à jour de $sourceType $sourceName..." -ForegroundColor Cyan
+    Remove-Content -sourceType $sourceType -sourceName $sourceName
+    Install-Content -sourceType $sourceType -sourceName $sourceName
+    Write-Host "✅ $sourceType $sourceName mis à jour avec succès !" -ForegroundColor Green
 }
 
 # ---------------- MENU ----------------
 while ($true) {
-    Write-Host "=== Gestionnaire MID ==="
+    Write-Host ""
+    Write-Host "=== Gestionnaire MID ===" -ForegroundColor Cyan
     Write-Host "1. Installer Base"
     Write-Host "2. Supprimer Base"
     Write-Host "3. Mettre à jour Base"
-    Write-Host "4. Installer Instance Serveur"
-    Write-Host "5. Supprimer Instance Serveur"
-    Write-Host "6. Mettre à jour Instance Serveur"
+    Write-Host "4. Installer Serveur"
+    Write-Host "5. Supprimer Serveur"
+    Write-Host "6. Mettre à jour Serveur"
     Write-Host "0. Quitter"
+    Write-Host "========================" -ForegroundColor Cyan
 
     $choice = Read-Host "Choisissez une option"
 
     switch ($choice) {
-        "1" {
-            Write-Host "Téléchargement Base depuis VPS..."
-            foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-                $ftp = "ftp://ftpuser:instance@51.77.140.39/base/$type"
-                $lfpDest = Join-Path $LFPFolder "base\$type"
-                Download-FTP $ftp $lfpDest
-
-                $clientDest = $Config.$type
-                if ($clientDest) {
-                    Ensure-Dir $clientDest
-                    Sync-Dir $lfpDest $clientDest
-                } else {
-                    Write-Warning "Dossier client non configuré pour $type"
-                }
-            }
-            Write-Host "✅ Base installée avec succès !"
-        }
-        "2" {
-            Write-Host "Suppression Base..."
-            foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-                $lfpSub = Join-Path $LFPFolder "base\$type"
-                $clientDest = $Config.$type
-                Remove-LFPContent $lfpSub $clientDest
-            }
-            Write-Host "✅ Base supprimée !"
-        }
-        "3" { Update-Base }
+        "1" { Install-Content -sourceType "base" -sourceName "" }
+        "2" { Remove-Content -sourceType "base" -sourceName "" }
+        "3" { Update-Content -sourceType "base" -sourceName "" }
         "4" {
             $srvName = Read-Host "Nom de l'instance serveur"
-            Write-Host "Téléchargement Serveur $srvName..."
-            foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-                $ftp = "ftp://ftpuser:instance@51.77.140.39/server/$srvName/$type"
-                $lfpDest = Join-Path $LFPFolder "servers\$srvName\$type"
-                Download-FTP $ftp $lfpDest
-
-                $clientDest = $Config.$type
-                if ($clientDest) {
-                    Ensure-Dir $clientDest
-                    Sync-Dir $lfpDest $clientDest
-                } else {
-                    Write-Warning "Dossier client non configuré pour $type"
-                }
-            }
-            Write-Host "✅ Instance Serveur installée avec succès !"
+            Install-Content -sourceType "server" -sourceName $srvName
         }
         "5" {
             $srvName = Read-Host "Nom de l'instance serveur"
-            Write-Host "Suppression Serveur $srvName..."
-            foreach ($type in @("mods","shaderpacks","resourcepacks")) {
-                $lfpSub = Join-Path $LFPFolder "servers\$srvName\$type"
-                $clientDest = $Config.$type
-                Remove-LFPContent $lfpSub $clientDest
-            }
-            Write-Host "✅ Instance Serveur supprimée !"
+            Remove-Content -sourceType "server" -sourceName $srvName
         }
         "6" {
             $srvName = Read-Host "Nom de l'instance serveur"
-            Update-Server $srvName
+            Update-Content -sourceType "server" -sourceName $srvName
         }
         "0" { break }
-        default { Write-Host "Option invalide !" -ForegroundColor Yellow }
+        default { Write-Host "Option invalide ! Veuillez réessayer." -ForegroundColor Yellow }
     }
 }
