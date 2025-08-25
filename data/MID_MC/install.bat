@@ -4,18 +4,23 @@ color 0b
 
 echo.
 echo ======================================================
-echo == Installation du Lanceur MID sur le Bureau      ==
+echo == Installation et Configuration de MID.ps1         ==
 ======================================================
 echo.
 
 set "MID_DEST=C:\e-cde\MID"
-set "LAUNCHER_PS1_URL=https://enes-cde.vercel.app/data/MID_MC/launch.ps1"
-set "LAUNCHER_BAT_URL=https://enes-cde.vercel.app/data/MID_MC/launch.bat"
-set "LAUNCHER_PS1_PATH=%MID_DEST%\launch.ps1"
-set "LAUNCHER_BAT_PATH=%MID_DEST%\launch.bat"
-set "DESKTOP_BAT_PATH=%USERPROFILE%\Desktop\Launch_MID.bat"
+set "MID_URL=https://enes-cde.vercel.app/data/MID_MC/mid.ps1"
+set "VERSION_URL=https://enes-cde.vercel.app/data/MID_MC/v.json"
+set "LAUNCHER_URL=https://enes-cde.vercel.app/data/MID_MC/launch.bat"
+set "UPDATER_URL=https://enes-cde.vercel.app/data/MID_MC/update.ps1"
 
-REM 1. Creation du repertoire d'installation
+set "MID_PATH=%MID_DEST%\mid.ps1"
+set "VERSION_PATH=%MID_DEST%\v.json"
+set "LAUNCHER_PATH=%MID_DEST%\launch.bat"
+set "UPDATER_PATH=%MID_DEST%\update.ps1"
+set "DESKTOP_PATH=%USERPROFILE%\Desktop\Launch_MID.bat"
+
+REM 1. Création du répertoire d'installation
 echo Verification et creation du repertoire d'installation...
 if not exist "%MID_DEST%" (
     mkdir "%MID_DEST%"
@@ -26,31 +31,41 @@ if not exist "%MID_DEST%" (
 echo.
 
 REM 2. Telechargement des fichiers
-echo Telechargement des scripts de lancement...
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri '%LAUNCHER_PS1_URL%' -OutFile '%LAUNCHER_PS1_PATH%'"
+echo Telechargement des fichiers...
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('%MID_URL%', '%MID_PATH%')"
 if %errorlevel% neq 0 (
-    echo.
-    echo Erreur lors du telechargement du script PS1. Verifiez votre connexion.
+    echo Erreur lors du telechargement de mid.ps1.
     pause
     exit /b 1
-) else (
-    echo Telechargement du lanceur PS1 reussi.
 )
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri '%LAUNCHER_BAT_URL%' -OutFile '%LAUNCHER_BAT_PATH%'"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('%VERSION_URL%', '%VERSION_PATH%')"
 if %errorlevel% neq 0 (
-    echo.
-    echo Erreur lors du telechargement du script BAT. Verifiez votre connexion.
+    echo Erreur lors du telechargement de v.json.
     pause
     exit /b 1
-) else (
-    echo Telechargement du lanceur BAT reussi.
 )
 
-REM 3. Deplacer le lanceur BAT sur le bureau
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('%LAUNCHER_URL%', '%LAUNCHER_PATH%')"
+if %errorlevel% neq 0 (
+    echo Erreur lors du telechargement de launch.bat.
+    pause
+    exit /b 1
+)
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('%UPDATER_URL%', '%UPDATER_PATH%')"
+if %errorlevel% neq 0 (
+    echo Erreur lors du telechargement de update.ps1.
+    pause
+    exit /b 1
+)
+
+echo Tous les fichiers ont ete telecharges avec succes.
+
+REM 3. Création du raccourci sur le Bureau
 echo.
 echo Creation du raccourci sur le Bureau...
-copy "%LAUNCHER_BAT_PATH%" "%DESKTOP_BAT_PATH%"
+copy "%LAUNCHER_PATH%" "%DESKTOP_PATH%"
 if %errorlevel% neq 0 (
     echo Erreur lors de la creation du raccourci sur le Bureau.
 ) else (
@@ -60,8 +75,7 @@ if %errorlevel% neq 0 (
 REM 4. Afficher un message d'instruction
 echo.
 echo L'installation est terminee.
-echo Vous pouvez maintenant utiliser le fichier 'Launch_MID.bat' sur votre Bureau.
-echo Double-cliquez dessus pour lancer l'application.
+echo Vous pouvez desormais lancer l'application en utilisant le raccourci sur votre Bureau.
 echo.
 pause
 endlocal
