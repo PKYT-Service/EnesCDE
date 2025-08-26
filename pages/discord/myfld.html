@@ -139,7 +139,6 @@
                 return;
             }
 
-            // MODIFICATION CLÉ
             const fileName = `discord:${pseudo}.json`;
             const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
 
@@ -193,13 +192,13 @@
         });
 
         document.getElementById("searchButton").addEventListener("click", () => {
-            const pseudo = document.getElementById("pseudoInput").value.trim().toLowerCase();
+            const pseudo = document.getElementById("pseudoInput").value.trim(); // CHANGEMENT ICI
             fetchSanctions(pseudo);
         });
 
         document.getElementById("pseudoInput").addEventListener("keypress", (e) => {
             if (e.key === 'Enter') {
-                const pseudo = document.getElementById("pseudoInput").value.trim().toLowerCase();
+                const pseudo = document.getElementById("pseudoInput").value.trim(); // ET ICI
                 fetchSanctions(pseudo);
             }
         });
