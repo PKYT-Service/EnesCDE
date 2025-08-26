@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+          <!-- Base configuration -->
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>EnesCDE - Accueil</title>
+        
+          <!-- SEO -->
+          <meta name="description" content="Enes - CDE > Accueil">
+          <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web, LosFly, LsFly, PikaYutMG, GFLP, LSP, SRDMG, Ebsayder, Howard, Armory, PikaYut, enes, enesgp, egp, ecde, enes cde, communitydeveloppement, developpement, community PikaYutMG, Projet, MultiGaming, Gaming HTML">
+          <meta name="author" content="EnesCDE">
+          <meta name="google-site-verification" content="nN4nrIcnjsg1gLAVkkBA2tnZs7e5CHG_QiW6NPJm1vU" />
+        
+          <!-- Search engine tags -->
+          <meta itemprop="name" content="Enes - CDE > Accueil">
+          <meta itemprop="description" content="EnesCDE - Plateforme de services et documentation.">
+          <meta itemprop="image" content="https://enes-cde.vercel.app/data/img/web/meta.html">
+        
+          <!-- Open Graph (Facebook, LinkedIn) -->
+          <meta property="og:title" content="Enes - CDE > Accueil">
+          <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+          <meta property="og:image" content="https://enes-cde.vercel.app/data/img/web/meta.html">
+          <meta property="og:url" content="https://enes-cde.vercel.app">
+          <meta property="og:type" content="website">
+        
+          <!-- Twitter Card -->
+          <meta name="twitter:card" content="summary_large_image">
+          <meta name="twitter:title" content="Enes - CDE > Accueil">
+          <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+          <meta name="twitter:image" content="https://enes-cde.vercel.app/data/img/web/meta.html">
+        
+          <!-- Favicon -->
+          <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+          <!-- Styles -->
+          <style>.hidden { display: none; }</style>
+          <script src="https://cdn.tailwindcss.com"></script>
+        
+          <!-- Scripts -->
+          <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+          <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+          <script src="https://enes-cde.vercel.app/script/A-menu.js"></script>
+          <script src="https://enes-cde.vercel.app/script/A-all.js"></script>
+        </head>
+        
+ 
+
+
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">         
+        <div id="ecde_all"></div>
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Vos BWK E-CDE : </h1>
+
+
+ 
+    <main class="container mx-auto max-w-4xl p-6 flex-grow">
+        <div class="mb-6 flex flex-col md:flex-row items-center gap-4">
+            <input type="text" id="pseudoInput" placeholder="Entrez le pseudo Discord (ex: JeanMichel)" class="w-full md:w-auto flex-grow p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="searchButton" class="w-full md:w-auto bg-blue-600 text-white font-bold p-3 rounded-md hover:bg-blue-700 transition">
+                Rechercher
+            </button>
+        </div>
+
+        <div id="message" class="mb-6 text-center text-lg"></div>
+        <div id="sanctionsList" class="space-y-6"></div>
+    </main>
+
+    <footer class="text-center p-4 text-sm text-gray-600 dark:text-gray-400">
+        Repo: <code>PKYT-Service/database_EnesCDE</code> / Path: <code>ecde/user_ecde_dossier/</code>
+    </footer>
+
+              
+                    <script>
+        // Config GitHub
+        const GITHUB_REPO = "database_EnesCDE";
+        const GITHUB_OWNER = "PKYT-Service";
+        const TARGET_PATH = "ecde/user_ecde_dossier/";
+
+        async function getGithubToken() {
+            const res = await fetch("https://pkyt-database-up.vercel.app/code-source/E-CDE/Secure-token.js");
+            const data = await res.json();
+            return data.GITHUB_TOKEN;
+        }
+
+        // Décodage base64 UTF-8 propre
+        function b64DecodeUnicode(str) {
+            return decodeURIComponent(
+                atob(str)
+                .split('')
+                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+            );
+        }
+
+        // Formattage date ISO vers FR lisible
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return d.toLocaleString('fr-FR', {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        // Crée une carte HTML pour une sanction
+        function createCard(sanction) {
+            return `
+            <article class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-semibold mb-2 text-blue-600 dark:text-blue-400">${sanction.action.type} - ${sanction.action.motif}</h2>
+                <p class="mb-2"><strong>Code :</strong> <code>${sanction.action.code}</code></p>
+                <p class="mb-1"><strong>Serveur :</strong> ${sanction.server.name} (ID: ${sanction.server.id})</p>
+                <p class="mb-1"><strong>Admin :</strong> ${sanction.admin.pseudo} (ID: ${sanction.admin.id}, Ref: ${sanction.admin['EGP-ADM']})</p>
+                <p class="mb-1"><strong>Date :</strong> ${formatDate(sanction.admin.date)}</p>
+                <p class="mb-1"><strong>Utilisateur :</strong> ${sanction.utilisateur.pseudo} (ID: ${sanction.utilisateur.id})</p>
+                <p><strong>Service :</strong> ${sanction.utilisateur.service}</p>
+            </article>`;
+        }
+
+        async function fetchSanctions(pseudo) {
+            // AJOUT: Vérifie si le pseudo est vide
+            if (!pseudo) {
+                document.getElementById("message").textContent = "Veuillez entrer un pseudo.";
+                document.getElementById("sanctionsList").innerHTML = "";
+                return;
+            }
+
+            document.getElementById("message").textContent = "Recherche en cours...";
+            document.getElementById("sanctionsList").innerHTML = ""; // Vide la liste précédente
+
+            const token = await getGithubToken();
+            if (!token) {
+                document.getElementById("message").textContent = "Impossible de récupérer le token GitHub.";
+                return;
+            }
+
+            // MODIFICATION: Utilise le pseudo pour le nom de fichier
+            const fileName = `${pseudo}.json`;
+            const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${TARGET_PATH}${fileName}`;
+
+            try {
+                const res = await fetch(url, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (res.status === 404) {
+                    // MODIFICATION: Affiche un message plus précis
+                    document.getElementById("message").textContent = `Aucun dossier de sanction trouvé pour "${pseudo}".`;
+                    return;
+                }
+
+                if (!res.ok) {
+                    document.getElementById("message").textContent = `Erreur GitHub: ${res.status}`;
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (!data.content) {
+                    document.getElementById("message").textContent = "Le fichier ne contient pas de contenu valide.";
+                    return;
+                }
+
+                const decoded = b64DecodeUnicode(data.content);
+                const sanctions = JSON.parse(decoded);
+
+                if (!Array.isArray(sanctions) || sanctions.length === 0) {
+                    document.getElementById("message").textContent = `Aucune sanction trouvée pour "${pseudo}".`;
+                    return;
+                }
+
+                // Générer l'affichage
+                const listHTML = sanctions.map(createCard).join('\n');
+                document.getElementById("sanctionsList").innerHTML = listHTML;
+                document.getElementById("message").textContent = `Affichage de ${sanctions.length} sanction(s) pour "${pseudo}"`;
+            } catch (err) {
+                console.error(err);
+                document.getElementById("message").textContent = "Erreur lors du chargement des sanctions.";
+            }
+        }
+
+        // Dark mode toggle
+        const btnDark = document.getElementById("toggleDark");
+        btnDark.addEventListener("click", () => {
+            if (document.documentElement.classList.contains("dark")) {
+                document.documentElement.classList.remove("dark");
+                localStorage.setItem("theme", "light");
+            } else {
+                document.documentElement.classList.add("dark");
+                localStorage.setItem("theme", "dark");
+            }
+        });
+
+        // AJOUT: Événement pour le clic sur le bouton de recherche
+        document.getElementById("searchButton").addEventListener("click", () => {
+            const pseudo = document.getElementById("pseudoInput").value.trim().toLowerCase();
+            fetchSanctions(pseudo);
+        });
+
+        // AJOUT: Permet de faire la recherche en appuyant sur 'Entrée' dans le champ de saisie
+        document.getElementById("pseudoInput").addEventListener("keypress", (e) => {
+            if (e.key === 'Enter') {
+                const pseudo = document.getElementById("pseudoInput").value.trim().toLowerCase();
+                fetchSanctions(pseudo);
+            }
+        });
+
+        // On load, set dark mode if saved
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark");
+            }
+            // MODIFICATION: Ne lance plus la recherche automatiquement au chargement
+            document.getElementById("message").textContent = "Entrez un pseudo Discord pour voir les sanctions.";
+        });
+    </script>
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>     
+</body>
+</html>
