@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+          <!-- Base configuration -->
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>EnesCDE - MID </title>
+        
+                    <!-- Favicon -->
+          <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+          <!-- Styles -->
+          <style>.hidden { display: none; }</style>
+          <script src="https://cdn.tailwindcss.com"></script>
+        
+          <!-- Scripts -->
+          <script src="https://enes-cde.vercel.app/SLPECDE/none/main.js" type="module"></script>
+          <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+          <script src="https://enes-cde.vercel.app/script/A-menu.js"></script>
+          <script src="https://enes-cde.vercel.app/script/A-all.js"></script>
+        </head>
+        
+ 
+
+
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">         
+        <div id="ecde_all"></div>
+        <div class="flex h-screen">
+             <!-- Menu enu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    
+
+
+
+<h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Enes - CDE : </h1>
+<div class="mt-4 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+    <p class="text-gray-600 dark:text-gray-300">Le MID vous permet de gerer vos serveurs et modpacks.<br>Pour information : Ne fermé pas le serveur, car sinon impossible d'acceder a l'ui. <a href="https://enes-cde.vercel.app/pages/forum/mc-support.html#Java%2FMID-Installation.md">Forum?</a> </p>
+</div>
+
+<div class="mt-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">MID</h2>
+    
+    <div id="statusMessage" class="hidden p-4 mb-4 text-sm rounded-lg" role="alert"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-inner">
+            <h3 class="font-bold text-lg mb-2 text-yellow-500">Base de Mods</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Gère la base de mods principale.</p>
+            <div class="flex flex-col space-y-2">
+                <button onclick="sendAction('install', 'base', '')" class="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300">Installer</button>
+                <button onclick="sendAction('remove', 'base', '')" class="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">Supprimer</button>
+                <button onclick="sendAction('update', 'base', '')" class="py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300">Mettre à jour</button>
+            </div>
+        </div>
+
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-inner">
+            <h3 class="font-bold text-lg mb-2 text-yellow-500">Instances Serveurs</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Gère les instances de serveurs.</p>
+            <input type="text" id="serverName" placeholder="Nom du serveur" class="w-full mb-2 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">
+            <div class="flex flex-col space-y-2">
+                <button onclick="sendAction('install', 'server', document.getElementById('serverName').value)" class="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300">Installer</button>
+                <button onclick="sendAction('remove', 'server', document.getElementById('serverName').value)" class="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">Supprimer</button>
+                <button onclick="sendAction('update', 'server', document.getElementById('serverName').value)" class="py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300">Mettre à jour</button>
+            </div>
+        </div>
+
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-inner">
+            <h3 class="font-bold text-lg mb-2 text-yellow-500">Modpacks</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Gère les modpacks individuels.</p>
+            <input type="text" id="modpackName" placeholder="Nom du modpack" class="w-full mb-2 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">
+            <div class="flex flex-col space-y-2">
+                <button onclick="sendAction('install', 'modpack', document.getElementById('modpackName').value)" class="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300">Installer</button>
+                <button onclick="sendAction('remove', 'modpack', document.getElementById('modpackName').value)" class="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">Supprimer</button>
+                <button onclick="sendAction('update', 'modpack', document.getElementById('modpackName').value)" class="py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-300">Mettre à jour</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    async function sendAction(action, sourceType, sourceName) {
+        const statusDiv = document.getElementById('statusMessage');
+        statusDiv.className = "hidden"; // Cache le message précédent
+        statusDiv.innerText = "";
+
+        // Construction de l'URL de la requête
+        const url = `http://localhost:8085/mid/${action}/${sourceType}/${sourceName}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.success) {
+                statusDiv.className = "p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800";
+                statusDiv.innerText = data.message;
+            } else {
+                statusDiv.className = "p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800";
+                statusDiv.innerText = data.message;
+            }
+        } catch (error) {
+            statusDiv.className = "p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800";
+            statusDiv.innerText = `Erreur de connexion avec le serveur MID : ${error.message}. Assurez-vous qu'il est en cours d'exécution.`;
+        }
+        statusDiv.classList.remove('hidden');
+    }
+</script>
+
+
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+</body>
+</html>
