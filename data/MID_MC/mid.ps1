@@ -211,9 +211,9 @@ function Start-HttpServer {
             Write-Log "Requete reçue pour : $urlPath"
             
             # Traite la requête pour le fichier HTML
-            if ($urlPath -eq "/" -or $urlPath -eq "/depots.html") {
+            if ($urlPath -eq "/" -or $urlPath -eq "C:\e-cde\MID\depots.html") {
                 try {
-                    $htmlContent = Get-Content ".\depots.html" -Raw -Encoding UTF8
+                    $htmlContent = Get-Content "C:\e-cde\MID\depots.html" -Raw -Encoding UTF8
                     $response.StatusCode = 200
                     $response.ContentType = "text/html"
                     $buffer = [System.Text.Encoding]::UTF8.GetBytes($htmlContent)
