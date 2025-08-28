@@ -46,9 +46,10 @@ function Ensure-Dir($path) {
 }
 
 function Show-Progress-Simple($current, $total, $title) {
-    $plus = "+" * $current
-    $minus = "-" * ($total - $current)
-    Write-Host "`r[$plus$minus] ($current/$total) $title" -NoNewline
+    $plus = "+" * [math]::round($current * 10 / $total)
+    $minus = "-" * (10 - $plus.Length)
+    $percent = [math]::round($current * 100 / $total)
+    Write-Host "`r[$plus$minus] ($percent%) $title" -NoNewline
 }
 
 function Download-FTP($ftpSource, $localDest) {
@@ -87,7 +88,7 @@ function Download-FTP($ftpSource, $localDest) {
                 Write-Log "Telechargement de $fileName reussi."
             } catch {
                 Write-Log "Erreur de telechargement : $fileUrl - Erreur: $($_.Exception.Message)" -type "ERREUR"
-                Write-Host "  Erreur de telechargement ! Verifiez le log pour plus de details." -ForegroundColor Red
+                # On ne montre pas l'erreur de telechargement ici pour rester plus simple visuellement
             }
             Show-Progress-Simple $currentFile $totalFiles "Telechargement"
         }
@@ -115,7 +116,7 @@ function Sync-Dir($sourceFolder, $destFolder) {
             Write-Log "Fichier copie : $file vers $targetPath"
         } catch {
             Write-Log "Impossible de copier $file.Name vers le client. Erreur: $($_.Exception.Message)" -type "ERREUR"
-            Write-Host "  Erreur de copie du fichier $file.Name. Verifiez le log." -ForegroundColor Red
+            # On ne montre pas l'erreur de copie ici
         }
         Show-Progress-Simple $currentFile $totalFiles "Copie"
     }
@@ -156,7 +157,7 @@ function Remove-LFPContent($lfpSubFolder, $clientFolder) {
                 Write-Log "Supprime cote client : $clientFilePath"
             } catch {
                 Write-Log "Impossible de supprimer $clientFilePath. Erreur: $($_.Exception.Message)" -type "ERREUR"
-                Write-Host "  Erreur de suppression du fichier $fileName. Verifiez le log." -ForegroundColor Red
+                # On ne montre pas l'erreur de suppression ici
             }
         } else {
             Write-Log "Fichier non trouve a l'emplacement client : $clientFilePath"
@@ -244,11 +245,16 @@ while ($true) {
     Write-Host "     5. Supprimer un Serveur" -ForegroundColor Red
     Write-Host "     6. Mettre a jour un Serveur" -ForegroundColor Magenta
     Write-Host ""
+    Write-Host "   Gerer les modpacks" -ForegroundColor Yellow
+    Write-Host "     7. Installer un Modpack" -ForegroundColor Green
+    Write-Host "     8. Supprimer un Modpack" -ForegroundColor Red
+    Write-Host "     9. Mettre a jour un Modpack" -ForegroundColor Magenta
+    Write-Host ""
     Write-Host "   Quitter" -ForegroundColor Yellow
     Write-Host "     0. Quitter l'application" -ForegroundColor Gray
     Write-Host "================================" -ForegroundColor Cyan
 
-    $choice = Read-Host "Choisissez une option (0-6)"
+    $choice = Read-Host "Choisissez une option (0-9)"
     Write-Log "Option choisie : $choice"
 
     switch ($choice) {
@@ -267,10 +273,22 @@ while ($true) {
             $srvName = Read-Host "Nom de l'instance serveur"
             Update-Content -sourceType "server" -sourceName $srvName
         }
-"0" {
-    Write-Host "Fermeture de l'application."
-    exit
-}
+        "7" {
+            $modpackName = Read-Host "Nom du modpack"
+            Install-Content -sourceType "modpack" -sourceName $modpackName
+        }
+        "8" {
+            $modpackName = Read-Host "Nom du modpack"
+            Remove-Content -sourceType "modpack" -sourceName $modpackName
+        }
+        "9" {
+            $modpackName = Read-Host "Nom du modpack"
+            Update-Content -sourceType "modpack" -sourceName $modpackName
+        }
+        "0" {
+            Write-Host "Fermeture de l'application."
+            exit
+        }
         default { 
             Write-Host "Option invalide ! Veuillez reessayer." -ForegroundColor Yellow
             Write-Log "Option invalide choisie." -type "ATTENTION"
