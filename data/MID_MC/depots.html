@@ -89,7 +89,7 @@
         statusDiv.innerText = "";
 
         // Construction de l'URL de la requête
-        const url = `http://localhost:8085/mid/${action}/${sourceType}/${sourceName}`;
+        const url = `http://localhost:8080/mid/${action}/${sourceType}/${sourceName}`;
         
         try {
             const response = await fetch(url);
@@ -118,3 +118,4 @@
         </div>
 </body>
 </html>
+
