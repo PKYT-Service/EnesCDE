@@ -59,8 +59,7 @@
     <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
 
 
-
-              <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -132,7 +131,6 @@ let lastSysInfo = {};
 function log(msg){ 
   resultsEl.innerHTML += `<p style="color:lime">${msg}</p>`;
 }
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 /* ===== CPU ===== */
 async function runCpuTest(duration=4){
@@ -212,53 +210,68 @@ function collectSystemInfo(){
 }
 lastSysInfo = collectSystemInfo();
 
+/* ===== Normalisation en % ===== */
+function computeScores(res){
+  let scores={};
+  if(res.cpu) scores.cpu = Math.min(100, Math.round(res.cpu.opsPerSec/500000*100));
+  if(res.ram) scores.ram = Math.min(100, Math.round(res.ram.allocatedMB/200*100));
+  if(res.gpu) scores.gpu = Math.min(100, Math.round(res.gpu.fps/60*100));
+  if(res.net) scores.net = Math.min(100, Math.round(res.net.mbps/100*100));
+  let total = 0, count=0;
+  for(let k of Object.keys(scores)){ total+=scores[k]; count++; }
+  scores.total = Math.round(total/count);
+  return scores;
+}
+
 /* ===== UI Wiring ===== */
 id('btnCpu').onclick = async()=>{
-  const dur = Number(id('durCpu').value || 4);
-  const res = await runCpuTest(dur);
-  resultsEl.innerHTML = `<h4>CPU</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  const res = await runCpuTest(Number(id('durCpu').value || 4));
   lastResults.cpu = res;
+  const scores = computeScores(lastResults);
+  resultsEl.innerHTML = `<h4>CPU</h4><pre>${JSON.stringify(res,null,2)}</pre>
+                         <p>Puissance CPU: ${scores.cpu||0}%</p>`;
 };
 id('btnRam').onclick = async()=>{
   const res = await runRamTest();
-  resultsEl.innerHTML = `<h4>RAM</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
   lastResults.ram = res;
+  const scores = computeScores(lastResults);
+  resultsEl.innerHTML = `<h4>RAM</h4><pre>${JSON.stringify(res,null,2)}</pre>
+                         <p>Puissance RAM: ${scores.ram||0}%</p>`;
 };
 id('btnGpu').onclick = async()=>{
-  const dur = Number(id('durGpu').value || 4);
-  const res = await runGpuTest(dur);
-  resultsEl.innerHTML = `<h4>GPU</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  const res = await runGpuTest(Number(id('durGpu').value || 4));
   lastResults.gpu = res;
+  const scores = computeScores(lastResults);
+  resultsEl.innerHTML = `<h4>GPU</h4><pre>${JSON.stringify(res,null,2)}</pre>
+                         <p>Puissance GPU: ${scores.gpu||0}%</p>`;
 };
 id('btnNet').onclick = async()=>{
-  const dur = Number(id('durNet').value || 6);
-  const url = id('netUrl').value.trim() || undefined;
-  const res = await runNetTest(url,dur);
-  resultsEl.innerHTML = `<h4>Réseau</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  const res = await runNetTest(id('netUrl').value.trim()||undefined, Number(id('durNet').value||6));
   lastResults.net = res;
+  const scores = computeScores(lastResults);
+  resultsEl.innerHTML = `<h4>Réseau</h4><pre>${JSON.stringify(res,null,2)}</pre>
+                         <p>Puissance Réseau: ${scores.net||0}%</p>`;
 };
 
 id('btnAll').onclick = async()=>{
   resultsEl.innerHTML = '<p class="small">Tout: lancement séquentiel</p>';
   lastResults = {};
 
-  const cpu = await runCpuTest(Number(id('durCpu').value || 4));
-  resultsEl.innerHTML += `<h4>CPU</h4><pre>${JSON.stringify(cpu,null,2)}</pre>`;
-  lastResults.cpu = cpu;
-
-  const ram = await runRamTest();
-  resultsEl.innerHTML += `<h4>RAM</h4><pre>${JSON.stringify(ram,null,2)}</pre>`;
-  lastResults.ram = ram;
-
-  const gpu = await runGpuTest(Number(id('durGpu').value || 4));
-  resultsEl.innerHTML += `<h4>GPU</h4><pre>${JSON.stringify(gpu,null,2)}</pre>`;
-  lastResults.gpu = gpu;
-
-  const net = await runNetTest(id('netUrl').value.trim()||undefined, Number(id('durNet').value||6));
-  resultsEl.innerHTML += `<h4>Réseau</h4><pre>${JSON.stringify(net,null,2)}</pre>`;
-  lastResults.net = net;
+  lastResults.cpu = await runCpuTest(Number(id('durCpu').value || 4));
+  lastResults.ram = await runRamTest();
+  lastResults.gpu = await runGpuTest(Number(id('durGpu').value || 4));
+  lastResults.net = await runNetTest(id('netUrl').value.trim()||undefined, Number(id('durNet').value||6));
 
   lastSysInfo = collectSystemInfo();
+  const scores = computeScores(lastResults);
+
+  resultsEl.innerHTML += `<h4>Résultats bruts</h4><pre>${JSON.stringify(lastResults,null,2)}</pre>`;
+  resultsEl.innerHTML += `<h4>Scores (%)</h4>
+                          <p>CPU: ${scores.cpu||0}%</p>
+                          <p>RAM: ${scores.ram||0}%</p>
+                          <p>GPU: ${scores.gpu||0}%</p>
+                          <p>Réseau: ${scores.net||0}%</p>
+                          <p style="color:cyan;font-weight:bold">Puissance Totale: ${scores.total}%</p>`;
 };
 
 /* ===== Supabase ===== */
@@ -267,13 +280,14 @@ const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
 id('btnSend').onclick = async()=>{
+  const scores = computeScores(lastResults);
   const data = {
     model: id('formModel').value.trim(),
     marque: id('formMarque').value.trim(),
     ram: id('formRam').value.trim(),
     processeur: id('formProc').value.trim(),
     sys_info: lastSysInfo,
-    results: lastResults
+    results: {...lastResults, scores}
   };
   log("Envoi vers Supabase...");
   const {error} = await supabase.from("bench_results").insert([data]);
@@ -288,6 +302,7 @@ id('btnSend').onclick = async()=>{
 </script>
 </body>
 </html>
+
 
 
                 
