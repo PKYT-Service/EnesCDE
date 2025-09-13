@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+          <!-- Base configuration -->
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>EnesCDE - Accueil</title>
+        
+          <!-- SEO -->
+          <meta name="description" content="Enes - CDE > Accueil">
+          <meta name="keywords" content="EnesCDE, Services, Documentation, PKYT, Web, LosFly, LsFly, PikaYutMG, GFLP, LSP, SRDMG, Ebsayder, Howard, Armory, PikaYut, enes, enesgp, egp, ecde, enes cde, communitydeveloppement, developpement, community PikaYutMG, Projet, MultiGaming, Gaming HTML">
+          <meta name="author" content="EnesCDE">
+          <meta name="google-site-verification" content="nN4nrIcnjsg1gLAVkkBA2tnZs7e5CHG_QiW6NPJm1vU" />
+        
+          <!-- Search engine tags -->
+          <meta itemprop="name" content="Enes - CDE > Accueil">
+          <meta itemprop="description" content="EnesCDE - Plateforme de services et documentation.">
+          <meta itemprop="image" content="https://enes-cde.vercel.app/data/img/web/meta.html">
+        
+          <!-- Open Graph (Facebook, LinkedIn) -->
+          <meta property="og:title" content="Enes - CDE > Accueil">
+          <meta property="og:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+          <meta property="og:image" content="https://enes-cde.vercel.app/data/img/web/meta.html">
+          <meta property="og:url" content="https://enes-cde.vercel.app">
+          <meta property="og:type" content="website">
+        
+          <!-- Twitter Card -->
+          <meta name="twitter:card" content="summary_large_image">
+          <meta name="twitter:title" content="Enes - CDE > Accueil">
+          <meta name="twitter:description" content="Découvrez EnesCDE, la plateforme offrant divers services et documentations en ligne.">
+          <meta name="twitter:image" content="https://enes-cde.vercel.app/data/img/web/meta.html">
+        
+          <!-- Favicon -->
+          <link rel="icon" type="image/png" href="https://enes-cde.vercel.app/data/img/web/favicon.png">
+        
+          <!-- Styles -->
+          <style>.hidden { display: none; }</style>
+          <script src="https://cdn.tailwindcss.com"></script>
+        
+          <!-- Scripts -->
+          <script src="https://enes-cde.vercel.app/SLPECDE/main.js" type="module"></script>
+          <script src="https://enes-cde.vercel.app/script/A-footer.js"></script>
+          <script src="https://enes-cde.vercel.app/script/A-menu.js"></script>
+          <script src="https://enes-cde.vercel.app/script/A-all.js"></script>
+        </head>
+        
+ 
+
+
+    <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">         
+        <div id="ecde_all"></div>
+        <div class="flex h-screen">
+            <!-- Menu : Deb -->
+            <div id="ecde_menu"  class="w-20"></div>
+            <!-- Menu : Fin -->
+    
+            <!-- Main Content -->
+            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+
+
+
+              <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bench navigateur</title>
+  <style>
+    body{font-family:sans-serif;margin:20px;background:#111;color:#eee;}
+    button{margin:4px;padding:6px 12px;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+    .card{background:#222;padding:12px;border-radius:8px;}
+    h2{margin-top:0;}
+    pre{background:#000;padding:8px;border-radius:4px;overflow:auto;max-height:200px;}
+    label{display:block;margin-top:6px;}
+    input{width:100%;padding:4px;margin-top:2px;}
+  </style>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h1>Tests CPU / RAM / GPU / Réseau</h1>
+  <div class="grid">
+    <div class="card">
+      <h2>CPU</h2>
+      <label>Durée (sec)</label><input id="durCpu" type="number" value="4"/>
+      <button id="btnCpu">Lancer CPU</button>
+    </div>
+    <div class="card">
+      <h2>RAM</h2>
+      <button id="btnRam">Lancer RAM</button>
+    </div>
+    <div class="card">
+      <h2>GPU</h2>
+      <label>Durée (sec)</label><input id="durGpu" type="number" value="4"/>
+      <button id="btnGpu">Lancer GPU</button>
+    </div>
+    <div class="card">
+      <h2>Réseau</h2>
+      <label>Durée (sec)</label><input id="durNet" type="number" value="6"/>
+      <label>URL fichier test</label><input id="netUrl" type="text" placeholder="https://speed.hetzner.de/10MB.bin"/>
+      <button id="btnNet">Lancer Net</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <button id="btnAll">Tout lancer</button>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Résultats</h2>
+    <div id="results"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Envoyer résultats vers Supabase</h3>
+    <label>Model</label><input id="formModel" type="text" />
+    <label>Marque</label><input id="formMarque" type="text" />
+    <label>RAM</label><input id="formRam" type="text" />
+    <label>Processeur</label><input id="formProc" type="text" />
+    <button id="btnSend">Envoyer</button>
+  </div>
+
+<script>
+/* ===== Variables globales ===== */
+const id = sel => document.getElementById(sel);
+const resultsEl = id('results');
+
+let lastResults = {};
+let lastSysInfo = {};
+
+/* ===== Utils ===== */
+function log(msg){ 
+  resultsEl.innerHTML += `<p style="color:lime">${msg}</p>`;
+}
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ===== CPU ===== */
+async function runCpuTest(duration=4){
+  const end = performance.now()+duration*1000;
+  let ops=0;
+  while(performance.now()<end){
+    Math.sqrt(Math.random()*1e9);
+    ops++;
+  }
+  const res = {ops, duration, opsPerSec:Math.round(ops/duration)};
+  return res;
+}
+
+/* ===== RAM ===== */
+async function runRamTest(){
+  const arr = [];
+  const target = 50*1024*1024; // 50 MB
+  for(let i=0;i<target;i++){ arr[i]=i%256; }
+  const checksum = arr.reduce((a,b)=>a+b,0);
+  const res = {allocatedMB: Math.round(target*4/1024/1024), checksum};
+  return res;
+}
+
+/* ===== GPU (WebGL) ===== */
+async function runGpuTest(duration=4){
+  const canvas = document.createElement("canvas");
+  const gl = canvas.getContext("webgl");
+  if(!gl) return {error:"Pas de WebGL"};
+  const start = performance.now();
+  let frames=0;
+  function frame(resolve){
+    frames++;
+    gl.clearColor(Math.random(),Math.random(),Math.random(),1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    if(performance.now()<start+duration*1000){
+      requestAnimationFrame(()=>frame(resolve));
+    }else{
+      resolve(frames);
+    }
+  }
+  const framesCount = await new Promise(res=>frame(res));
+  return {frames:framesCount, fps:Math.round(framesCount/duration)};
+}
+
+/* ===== Réseau ===== */
+async function runNetTest(url="https://speed.hetzner.de/10MB.bin",duration=6){
+  try{
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(), duration*1000);
+    const start=performance.now();
+    const resp = await fetch(url,{signal:ctrl.signal});
+    const reader = resp.body.getReader();
+    let size=0;
+    while(true){
+      const {done,value} = await reader.read();
+      if(done) break;
+      size+=value.length;
+    }
+    const ms = performance.now()-start;
+    const mb = size/1024/1024;
+    const mbps = mb/(ms/1000);
+    return {downloadedMB:mb.toFixed(2), mbps:mbps.toFixed(2)};
+  }catch(e){
+    return {error:e.message};
+  }
+}
+
+/* ===== Infos système ===== */
+function collectSystemInfo(){
+  return {
+    userAgent: navigator.userAgent,
+    memory: navigator.deviceMemory || "n/a",
+    cores: navigator.hardwareConcurrency || "n/a",
+    platform: navigator.platform,
+    lang: navigator.language
+  };
+}
+lastSysInfo = collectSystemInfo();
+
+/* ===== UI Wiring ===== */
+id('btnCpu').onclick = async()=>{
+  const dur = Number(id('durCpu').value || 4);
+  const res = await runCpuTest(dur);
+  resultsEl.innerHTML = `<h4>CPU</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  lastResults.cpu = res;
+};
+id('btnRam').onclick = async()=>{
+  const res = await runRamTest();
+  resultsEl.innerHTML = `<h4>RAM</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  lastResults.ram = res;
+};
+id('btnGpu').onclick = async()=>{
+  const dur = Number(id('durGpu').value || 4);
+  const res = await runGpuTest(dur);
+  resultsEl.innerHTML = `<h4>GPU</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  lastResults.gpu = res;
+};
+id('btnNet').onclick = async()=>{
+  const dur = Number(id('durNet').value || 6);
+  const url = id('netUrl').value.trim() || undefined;
+  const res = await runNetTest(url,dur);
+  resultsEl.innerHTML = `<h4>Réseau</h4><pre>${JSON.stringify(res,null,2)}</pre>`;
+  lastResults.net = res;
+};
+
+id('btnAll').onclick = async()=>{
+  resultsEl.innerHTML = '<p class="small">Tout: lancement séquentiel</p>';
+  lastResults = {};
+
+  const cpu = await runCpuTest(Number(id('durCpu').value || 4));
+  resultsEl.innerHTML += `<h4>CPU</h4><pre>${JSON.stringify(cpu,null,2)}</pre>`;
+  lastResults.cpu = cpu;
+
+  const ram = await runRamTest();
+  resultsEl.innerHTML += `<h4>RAM</h4><pre>${JSON.stringify(ram,null,2)}</pre>`;
+  lastResults.ram = ram;
+
+  const gpu = await runGpuTest(Number(id('durGpu').value || 4));
+  resultsEl.innerHTML += `<h4>GPU</h4><pre>${JSON.stringify(gpu,null,2)}</pre>`;
+  lastResults.gpu = gpu;
+
+  const net = await runNetTest(id('netUrl').value.trim()||undefined, Number(id('durNet').value||6));
+  resultsEl.innerHTML += `<h4>Réseau</h4><pre>${JSON.stringify(net,null,2)}</pre>`;
+  lastResults.net = net;
+
+  lastSysInfo = collectSystemInfo();
+};
+
+/* ===== Supabase ===== */
+const SUPA_URL = "https://tvhnfcldwywyafhyoqad.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2aG5mY2xkd3l3eWFmaHlvcWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3NzcxNzcsImV4cCI6MjA3MzM1MzE3N30.H51TzRavi4ljEdz2TQedcf37-xYu_3LVm8XZSJT6CS0";
+const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+id('btnSend').onclick = async()=>{
+  const data = {
+    model: id('formModel').value.trim(),
+    marque: id('formMarque').value.trim(),
+    ram: id('formRam').value.trim(),
+    processeur: id('formProc').value.trim(),
+    sys_info: lastSysInfo,
+    results: lastResults
+  };
+  log("Envoi vers Supabase...");
+  const {error} = await supabase.from("bench_results").insert([data]);
+  if(error){
+    log("Erreur DB: "+error.message);
+    alert("Erreur: "+error.message);
+  }else{
+    log("Résultat enregistré !");
+    alert("Résultat envoyé !");
+  }
+};
+</script>
+</body>
+</html>
+
+
+                
+                <!-- Footer : Deb -->
+                <div id="ecde_footer"></div>
+                <!-- Footer : Fin -->
+            </main>
+        </div>
+
+        
+  <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const isOutdated = localStorage.getItem("APP:OutDated") === "true";
+            if (isOutdated) {
+                document.getElementById("outdated-popup").classList.remove("hidden");
+            }
+        });
+    </script>
+        
+</body>
+
+        <script>                window.addEventListener("DOMContentLoaded", () => {
+    if (window.location.hash === "#personal") {
+        window.location.href = "./users/A-Personal/";
+    }
+});</script>
+<script>                window.addEventListener("DOMContentLoaded", () => {
+    if (window.location.hash === "#clg") {
+        window.location.href = "https://enes-cde.vercel.app/redirect.html?LB=depot-clg";
+    }
+});</script>
+</html>
