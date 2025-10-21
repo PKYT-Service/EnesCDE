@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Drive</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css"> <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+/* --- STYLES EXISTANTS ET AJOUTÉS --- */
+body { font-family:'Inter', sans-serif; display:flex; height:100vh; margin:0; }
+/* Styles pour le rendu Markdown (prose est géré par Tailwind) */
+.math-block { background:#f3f4f6; border-left:4px solid #3b82f6; padding:.5rem 1rem; margin:1rem 0; font-family:'Courier New', monospace; white-space:pre-wrap; }
+.dark .math-block { background:#1e293b; color:#cbd5e1; border-left-color:#3b82f6; }
+.math-inline { background:#e0f2fe; padding:0 .2rem; font-family:'Courier New', monospace; border-radius:2px; }
+.dark .math-inline { background:#0c4a6e; color:#bae6fd; }
+mark { background:#fde68a; padding:0 .2rem; border-radius:2px; }
+.dark mark { background:#facc15; color:#1e293b; }
+#table-of-contents { border:1px solid #d1d5db; padding:.5rem 1rem; margin-bottom:1rem; background:#f9fafb; font-size:.9rem; color:#374151; }
+.dark #table-of-contents { border-color:#374151; background:#1f2937; color:#d1d5db; }
+sup { font-size:.7rem; vertical-align:super; cursor:help; color:#6b7280; }
+.dark sup { color:#9ca3af; }
+/* Scrollbars */
+#folders-ul::-webkit-scrollbar, #files-ul::-webkit-scrollbar, #folders-ul-inside::-webkit-scrollbar { width:8px; }
+#folders-ul::-webkit-scrollbar-thumb, #files-ul::-webkit-scrollbar-thumb, #folders-ul-inside::-webkit-scrollbar-thumb { background:rgba(107,114,128,.4); border-radius:4px; }
+</style>
+</head>
+<body class="flex bg-gray-100 dark:bg-gray-900">
+
+<nav id="folder-list" class="w-64 bg-white border-r border-gray-300 overflow-y-auto flex flex-col dark:bg-gray-950" aria-label="Liste des dossiers">
+  <h2 class="p-4 font-semibold border-b border-gray-300 dark:text-white">Dossiers racine</h2>
+  <ul id="folders-ul" class="divide-y divide-gray-200 flex-1 overflow-y-auto dark:divide-gray-700"></ul>
+  <div class="border-t border-gray-300 bg-white dark:bg-gray-950 p-4">
+    <h3 class="font-semibold mb-2 text-black dark:text-white">Sous-dossiers</h3>
+    <ul id="folders-ul-inside" class="divide-y divide-gray-200 max-h-48 overflow-y-auto dark:divide-gray-700"></ul>
+    <button id="btn-create-folder" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 dark:text-gray-900 px-3 py-1 rounded flex items-center gap-2 mt-2">
+      <i class="fas fa-folder-plus"></i> Dossier
+    </button>
+  </div>
+</nav>
+
+<section id="file-list-section" class="flex-1 flex flex-col overflow-hidden" aria-label="Liste des fichiers">
+  <header class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 border-b border-gray-300 p-4 flex items-center justify-between">
+    <h2 id="current-folder-name" class="text-lg font-semibold truncate">Racine</h2>
+    <div class="flex items-center gap-3">
+      <button id="btn-back-folder" class="text-blue-600 hover:underline disabled:text-gray-400" disabled>
+        <i class="fas fa-arrow-left"></i> Retour
+      </button>
+      <button id="btn-create-file" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        <i class="fas fa-file-medical"></i> Fichier
+      </button>
+      <input type="file" id="file-input" multiple accept=".md" class="hidden"/>
+    </div>
+  </header>
+  <ul id="files-ul" class="bg-white text-gray-950 dark:bg-gray-900 dark:text-gray-100 flex-1 overflow-y-auto divide-y divide-gray-200 p-4"></ul>
+</section>
+
+<section id="file-view-section" class="w-[28rem] bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 border-l border-gray-300 flex flex-col overflow-hidden hidden">
+  <header class="p-4 border-b border-gray-300 flex items-center justify-between dark:bg-gray-950 dark:text-white">
+    <h3 id="file-view-title" class="text-lg font-semibold truncate max-w-[70%]"></h3>
+    <div class="flex items-center gap-3">
+      <button id="btn-share" class="text-blue-600 hover:text-blue-800" title="Partager"><i class="fas fa-share-alt"></i></button>
+      <button id="btn-toggle-view" class="text-blue-600 hover:text-blue-800" title="Basculer édition/lecture"><i class="fas fa-edit"></i></button>
+      <button id="btn-close-view" class="text-gray-600 hover:text-gray-900" title="Fermer"><i class="fas fa-times"></i></button>
+    </div>
+  </header>
+  <div id="file-rendered-content" class="flex-1 overflow-y-auto p-4 prose max-w-full bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-100" style="white-space: pre-wrap;" tabindex="0"></div>
+  <textarea id="file-content" class="flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-950 resize-none outline-none hidden" spellcheck="false"></textarea>
+  <footer class="p-4 border-t border-gray-300 flex justify-end gap-2">
+    <button id="btn-save" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed hidden" disabled>
+      <i class="fas fa-save mr-2"></i> Sauvegarder
+    </button>
+  </footer>
+</section>
+
+<script type="module">
+// drive-api.js
+
+// ATTENTION: C'est le point d'échec le plus probable (CORS/URL incorrecte). 
+// Assurez-vous que le fichier db.js existe ET que la variable DB_URL est correcte.
+import { DB_URL } from 'https://enes-cde.vercel.app/data/db.js';
+
+let driveData = {
+  files: []
+};
+let currentDirectory = "";
+let folderStack = [];
+let currentFileId = null;
+
+// --- GESTION DES ERREURS API ---
+function handleApiError(e, action = "charger les données") {
+  console.error(`Erreur lors de l'opération "${action}":`, e);
+  // Alerte plus explicite en cas d'erreur de réseau (CORS) ou HTTP
+  alert(`Erreur API: Impossible d'${action}. 
+  - Si vous êtes en local, vérifiez la configuration CORS sur le serveur de l'API.
+  - Détails dans la console.`);
+}
+
+// --- NAVIGATION STATE UPDATER ---
+function updateNavigationState() {
+  // Met à jour le nom du dossier et l'état du bouton Retour
+  document.getElementById('current-folder-name').textContent = currentDirectory || 'Racine';
+  document.getElementById('btn-back-folder').disabled = !currentDirectory; // Désactivé si currentDirectory est vide (Racine)
+  renderFiles();
+  renderFolders();
+}
+
+// --- FETCH DRIVE DATA --- 
+async function loadDrive() {
+  try {
+    const res = await fetch(`${DB_URL}/files`);
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status} (${res.statusText})`);
+    }
+    driveData.files = await res.json();
+    updateNavigationState();
+  } catch(e) {
+    handleApiError(e, "charger les données du Drive");
+  }
+}
+
+// --- RENDER FOLDERS ---
+function renderFolders() {
+  const foldersUl = document.getElementById('folders-ul');
+  const insideUl = document.getElementById('folders-ul-inside');
+  foldersUl.innerHTML = '';
+  insideUl.innerHTML = '';
+
+  // 1. Dossiers Racine
+  const allDirectories = driveData.files.map(f => f.directory).filter(d => d);
+  const rootFolders = [...new Set(allDirectories.map(d => d.split('/')[0]))];
+  
+  rootFolders.forEach(f => {
+    const li = document.createElement('li');
+    li.innerHTML = `<i class="fas fa-folder text-yellow-500 mr-2"></i> ${f}`;
+    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'flex', 'items-center');
+    li.onclick = () => enterFolder(f);
+    foldersUl.appendChild(li);
+  });
+
+  // 2. Sous-dossiers si dans un dossier
+  if(currentDirectory){
+    const currentDepth = currentDirectory.split('/').length;
+    const insideFolders = [...new Set(
+      driveData.files
+        .filter(f => f.directory.startsWith(currentDirectory+'/') && 
+                    f.directory.split('/').length === currentDepth + 1
+        )
+        .map(f => f.directory.split('/')[currentDepth])
+        .filter(d => d) 
+    )];
+    
+    insideFolders.forEach(f => {
+      const li = document.createElement('li');
+      li.innerHTML = `<i class="fas fa-folder-open text-yellow-600 mr-2"></i> ${f}`;
+      li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'flex', 'items-center');
+      li.onclick = () => enterFolder(currentDirectory+'/'+f);
+      insideUl.appendChild(li);
+    });
+  }
+}
+
+// --- NAVIGATION HANDLERS ---
+function enterFolder(dir){
+  if (currentDirectory) {
+    folderStack.push(currentDirectory);
+  }
+  currentDirectory = dir;
+  updateNavigationState();
+}
+
+document.getElementById('btn-back-folder').onclick = () => {
+  // S'il y a quelque chose dans la pile, on y retourne. Sinon, on va à la racine.
+  currentDirectory = folderStack.pop() || '';
+  updateNavigationState();
+};
+
+// --- RENDER FILES ---
+function renderFiles() {
+  const filesUl = document.getElementById('files-ul');
+  filesUl.innerHTML = '';
+  // Filtre strict pour n'afficher que les fichiers DANS le dossier actuel
+  const files = driveData.files.filter(f => f.directory === currentDirectory);
+  
+  if (files.length === 0) {
+    filesUl.innerHTML = `<li class="p-2 text-gray-500 dark:text-gray-400">Ce dossier est vide.</li>`;
+  }
+  
+  files.forEach(f => {
+    const li = document.createElement('li');
+    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'flex', 'items-center', 'gap-2');
+    li.innerHTML = `<i class="fas fa-file-alt text-blue-500"></i> ${f.name}`;
+    li.onclick = () => openFile(f.id);
+    filesUl.appendChild(li);
+  });
+  document.getElementById('btn-create-file').disabled = !currentDirectory; // Désactiver la création de fichiers à la racine
+}
+
+// --- OUVRIR FICHIER ---
+async function openFile(id){
+  currentFileId = id;
+  try {
+    const res = await fetch(`${DB_URL}/files/${id}`);
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status} (${res.statusText})`);
+    }
+    const file = await res.json();
+    const rendered = document.getElementById('file-rendered-content');
+    const textarea = document.getElementById('file-content');
+
+    document.getElementById('file-view-title').textContent = file.name;
+    textarea.value = file.content;
+    
+    // Basculer en mode Lecture par défaut
+    textarea.style.display = 'none';
+    rendered.style.display = 'block';
+    document.getElementById('btn-save').style.display = 'none';
+    document.getElementById('file-view-section').style.display = 'flex';
+
+    // Rendu du Markdown et coloration syntaxique
+    rendered.innerHTML = DOMPurify.sanitize(marked.parse(file.content));
+    highlightCodeBlocks();
+    
+  } catch(e) { handleApiError(e, "ouvrir le fichier"); }
+}
+
+function highlightCodeBlocks() {
+  // Fonction utilitaire pour appliquer l'highlight.js après le rendu de marked.parse
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightElement(block);
+  });
+}
+
+// --- TOGGLE EDIT ---
+document.getElementById('btn-toggle-view').onclick = () => {
+  const txt = document.getElementById('file-content');
+  const render = document.getElementById('file-rendered-content');
+  const saveBtn = document.getElementById('btn-save');
+  
+  if(txt.style.display === 'none'){
+    // Mode Édition
+    txt.style.display = 'block';
+    render.style.display = 'none';
+    saveBtn.style.display = 'inline-block';
+    saveBtn.disabled = false;
+  } else {
+    // Mode Lecture
+    txt.style.display = 'none';
+    render.style.display = 'block';
+    saveBtn.style.display = 'none';
+    
+    // Nouveau rendu + Highlight
+    render.innerHTML = DOMPurify.sanitize(marked.parse(txt.value));
+    highlightCodeBlocks();
+  }
+};
+
+// --- SAVE FILE ---
+document.getElementById('btn-save').onclick = async () => {
+  const content = document.getElementById('file-content').value;
+  try {
+    const res = await fetch(`${DB_URL}/files/${currentFileId}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ content })
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status} (${res.statusText})`);
+    }
+    
+    // Mise à jour locale
+    const file = driveData.files.find(f => f.id === currentFileId);
+    if (file) file.content = content;
+    
+    alert('Fichier sauvegardé !');
+    // Le fichier restera en mode édition, mais on le met à jour s'il repasse en lecture
+    document.getElementById('btn-save').disabled = true;
+
+  } catch(e) { handleApiError(e, "sauvegarder le fichier"); }
+};
+
+// --- ACTIVER SAUVEGARDE LORS DE L'ÉDITION ---
+document.getElementById('file-content').oninput = () => {
+  document.getElementById('btn-save').disabled = false;
+};
+
+// --- CREATE FILE ---
+document.getElementById('btn-create-file').onclick = async () => {
+  if (!currentDirectory) {
+    alert("Veuillez entrer dans un dossier pour créer un fichier.");
+    return;
+  }
+  
+  let name = prompt(`Nom du nouveau fichier (.md) dans /${currentDirectory}:`);
+  if(!name) return;
+  if(!name.toLowerCase().endsWith('.md')) {
+    name += '.md'; // Ajout automatique de l'extension
+  }
+  
+  const payload = { 
+    // L'API requiert probablement un ID pour la clé primaire TEXT. Simulez-en un si l'API ne le génère pas.
+    // id: Date.now().toString(), 
+    name, 
+    content: `# ${name.replace('.md', '')}\n\n`, 
+    directory: currentDirectory 
+  };
+  
+  try {
+    const res = await fetch(`${DB_URL}/files`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status} (${res.statusText})`);
+    }
+    
+    const newFile = await res.json();
+    driveData.files.push(newFile);
+    renderFiles();
+  } catch(e) { handleApiError(e, "créer un fichier"); }
+};
+
+// --- CREATE FOLDER ---
+document.getElementById('btn-create-folder').onclick = () => {
+  const name = prompt('Nom du nouveau dossier :');
+  if (!name) return;
+  
+  // Crée un chemin d'accès valide
+  const parentDir = currentDirectory || '';
+  const fullDir = parentDir ? parentDir + '/' + name : name;
+  
+  // Simplement entrer dans ce nouveau dossier (il sera créé virtuellement
+  // par le simple fait qu'un fichier y soit créé plus tard)
+  setTimeout(() => {
+    enterFolder(fullDir);
+  }, 0);
+};
+
+// --- SHARE FILE ---
+document.getElementById('btn-share').onclick = () => {
+  if (!currentFileId) {
+    alert("Veuillez sélectionner un fichier d'abord.");
+    return;
+  }
+  const url = `${location.origin}/?file=${currentFileId}`;
+  navigator.clipboard.writeText(url)
+    .then(() => alert('Lien copié : ' + url))
+    .catch(err => console.error('Erreur de copie:', err));
+};
+
+// --- CLOSE FILE VIEW ---
+document.getElementById('btn-close-view').onclick = () => {
+  document.getElementById('file-view-section').classList.add('hidden');
+  document.getElementById('file-view-section').classList.remove('flex');
+  currentFileId = null;
+};
+
+// --- INITIAL LOAD ---
+loadDrive();
+</script>
+</body>
+</html>
