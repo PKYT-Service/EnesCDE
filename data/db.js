@@ -1,1 +1,1 @@
-https://brittney-lazier-blondell.ngrok-free.dev/
+https://brittney-lazier-blondell.ngrok-free.dev
