@@ -1,4 +1,3 @@
-
 document.write(`
 <style>
     body {
@@ -81,7 +80,7 @@ document.write(`
         <div class="flex gap-2">
              <button
                 id="btn-create-folder"
-                class="text-gray-600 hover:text-blue-600 disabled:text-gray-400"
+                class="text-gray-600 hover:text-blue-600 disabled:text-gray-400 hidden"
                 title="Nouveau dossier"
                 disabled
             >
@@ -89,7 +88,7 @@ document.write(`
             </button>
             <button
                 id="btn-create-file"
-                class="text-gray-600 hover:text-blue-600 disabled:text-gray-400"
+                class="text-gray-600 hover:text-blue-600 disabled:text-gray-400 hidden"
                 title="Nouveau fichier"
                 disabled
             >
@@ -97,7 +96,7 @@ document.write(`
             </button>
              <button
                 id="btn-import"
-                class="text-gray-600 hover:text-blue-600 disabled:text-gray-400"
+                class="text-gray-600 hover:text-blue-600 disabled:text-gray-400 hidden"
                 title="Importer"
                 disabled
             >
@@ -216,7 +215,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     let foldersByFolder = {};
     let currentFolder = null; // null means root
     let currentFile = null;
-    let historyStack = [];
     let isEditing = false;
 
     // --- Initialization Logic ---
@@ -297,13 +295,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function openFolder(folder) {
-        if (currentFolder !== null && currentFolder !== folder) {
-            historyStack.push(currentFolder);
-        }
-
         currentFolder = folder;
         if (currentFolderName) currentFolderName.textContent = folder === null ? "Racine" : folder;
-        if (btnBackFolder) btnBackFolder.disabled = historyStack.length === 0;
+
+        // Logic for back button: disabled if root
+        if (btnBackFolder) btnBackFolder.disabled = currentFolder === null;
 
         const canEdit = isEditingAllowed();
         if (btnCreateFile) btnCreateFile.disabled = !canEdit;
@@ -322,20 +318,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    if (btnShare) {
-      btnShare.addEventListener("click", () => {
-        if (!currentFile) return;
-        const url = location.href;
-        navigator.clipboard
-          .writeText(url)
-          .then(() => {
-            alert("URL de partage copiée dans le presse-papiers !");
-          })
-          .catch(() => {
-            alert("Impossible de copier l'URL dans le presse-papiers.");
-          });
-      });
-    }
     function renderContent(folder) {
         const key = folder === null ? "root" : folder;
         const folders = foldersByFolder[key] || [];
@@ -612,9 +594,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // --- Event Listeners ---
+
+    // FIX: Back button uses parent directory logic
     btnBackFolder.onclick = () => {
-        if (historyStack.length > 0) {
-            openFolder(historyStack.pop());
+        if (!currentFolder) return; // Already at root
+        const lastSlashIndex = currentFolder.lastIndexOf('/');
+        if (lastSlashIndex === -1) {
+            openFolder(null); // Go to root
+        } else {
+            openFolder(currentFolder.substring(0, lastSlashIndex));
         }
     };
 
@@ -623,9 +611,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentFile = null;
     };
 
+    // FIX: Share button
+    btnShare.onclick = () => {
+        if (!currentFile) return;
+        // Path construction
+        let path = currentFile.folder === null ? currentFile.file.name : `${currentFile.folder}/${currentFile.file.name}`;
+        const url = `${window.location.origin}${window.location.pathname}#${encodeURIComponent(path)}`;
+        navigator.clipboard.writeText(url).then(() => {
+            alert("Lien copié dans le presse-papier !");
+        }).catch(err => {
+            console.error('Erreur copie:', err);
+            prompt("Copiez le lien :", url);
+        });
+    };
+
     // --- Start ---
     await loadToken();
     if (TOKEN) {
-        await openFolder(null);
+        // FIX: Deep Linking
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const path = decodeURIComponent(hash);
+            if (path.toLowerCase().endsWith('.md')) {
+                // It's a file
+                const lastSlash = path.lastIndexOf('/');
+                let folder = null;
+                let fileName = path;
+                if (lastSlash !== -1) {
+                    folder = path.substring(0, lastSlash);
+                    fileName = path.substring(lastSlash + 1);
+                }
+                await openFolder(folder);
+                await openFile(folder, { name: fileName });
+            } else {
+                // It's a folder
+                await openFolder(path);
+            }
+        } else {
+            await openFolder(null);
+        }
     }
 });
