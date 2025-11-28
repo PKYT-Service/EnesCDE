@@ -614,24 +614,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     // FIX: Share button
     btnShare.onclick = async () => {
         if (!currentFile) return;
-        // Path construction
+
+        // 1. Prepare Data
         let path = currentFile.folder === null ? currentFile.file.name : `${currentFile.folder}/${currentFile.file.name}`;
         const url = `${window.location.origin}${window.location.pathname}#${encodeURIComponent(path)}`;
-        const displayUrl = url.replace(/^https?:\/\//, '');
+        const domain = window.location.hostname; // e.g. "campyskerie.vercel.app" or "localhost"
+
+        // Content Preview (First 2 lines)
+        const rawContent = fileContent.value || "";
+        const lines = rawContent.split(/\r?\n/).filter(line => line.trim() !== "");
+        const preview = lines.slice(0, 2).join("\n");
+
+        // File Name without extension
+        const fileName = currentFile.file.name.replace(/\.md$/i, "");
+
+        // Construct Message
+        const message = `${fileName}\n\n${preview}\n\n-----------------\nProvient de : ${domain}\nFichier partagé : ${url}`;
+
         const shareData = {
-            title: currentFile.file.name,
-            text: `Voici un fichier partager sur le site ${displayUrl}`,
+            title: fileName,
+            text: message,
             url: url
         };
 
-        // 1. Always try to copy to clipboard
+        // 2. Always try to copy to clipboard (Message + URL for better context in clipboard)
         try {
-            await navigator.clipboard.writeText(url);
+            await navigator.clipboard.writeText(message);
         } catch (err) {
             console.error('Erreur copie presse-papier:', err);
         }
 
-        // 2. Try native share
+        // 3. Try native share
         if (navigator.share) {
             try {
                 await navigator.share(shareData);
@@ -639,8 +652,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.error('Erreur partage:', err);
             }
         } else {
-            // Only alert if native share is not available (to avoid UI clutter)
-            alert("Lien copié dans le presse-papier !");
+            // Only alert if native share is not available
+            alert("Message et lien copiés dans le presse-papier !");
         }
     };
 
