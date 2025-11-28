@@ -612,17 +612,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     // FIX: Share button
-    btnShare.onclick = () => {
+    btnShare.onclick = async () => {
         if (!currentFile) return;
         // Path construction
         let path = currentFile.folder === null ? currentFile.file.name : `${currentFile.folder}/${currentFile.file.name}`;
         const url = `${window.location.origin}${window.location.pathname}#${encodeURIComponent(path)}`;
-        navigator.clipboard.writeText(url).then(() => {
+        const displayUrl = url.replace(/^https?:\/\//, '');
+        const shareData = {
+            title: currentFile.file.name,
+            text: `Voici un fichier partager sur le site ${displayUrl}`,
+            url: url
+        };
+
+        // 1. Always try to copy to clipboard
+        try {
+            await navigator.clipboard.writeText(url);
+        } catch (err) {
+            console.error('Erreur copie presse-papier:', err);
+        }
+
+        // 2. Try native share
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.error('Erreur partage:', err);
+            }
+        } else {
+            // Only alert if native share is not available (to avoid UI clutter)
             alert("Lien copié dans le presse-papier !");
-        }).catch(err => {
-            console.error('Erreur copie:', err);
-            prompt("Copiez le lien :", url);
-        });
+        }
     };
 
     // --- Start ---
