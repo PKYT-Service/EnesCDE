@@ -322,6 +322,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    if (btnShare) {
+      btnShare.addEventListener("click", () => {
+        if (!currentFile) return;
+        const url = location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            alert("URL de partage copiée dans le presse-papiers !");
+          })
+          .catch(() => {
+            alert("Impossible de copier l'URL dans le presse-papiers.");
+          });
+      });
+    }
     function renderContent(folder) {
         const key = folder === null ? "root" : folder;
         const folders = foldersByFolder[key] || [];
