@@ -131,13 +131,6 @@ document.write(`
     >
         <h3 id="file-view-title" class="text-lg font-semibold truncate max-w-[70%]"></h3>
         <div class="flex items-center gap-3">
-             <button
-                id="btn-toggle-view"
-                class="text-gray-600 hover:text-gray-900"
-                title="Basculer vue/édition"
-            >
-                <i class="fas fa-edit"></i>
-            </button>
             <button
                 id="btn-share"
                 class="text-blue-600 hover:text-blue-800"
@@ -344,7 +337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         files.forEach(file => {
             const li = document.createElement("li");
             li.className = "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 px-4 py-3 flex items-center gap-3 select-none border-b border-gray-100 dark:border-gray-800";
-            li.innerHTML = `<i class="fas fa-file-alt text-gray-500 text-xl"></i> <span>${file.name}</span>`;
+            li.innerHTML = `<i class="fas fa-file-alt text-gray-500 text-xl"></i> <span>${file.name.replace(/\.md$/i, "")}</span>`;
             li.onclick = () => openFile(folder, file);
             contentUl.appendChild(li);
         });
@@ -361,7 +354,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const content = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
 
             currentFile = { folder, file };
-            fileViewTitle.textContent = file.name;
+            fileViewTitle.textContent = file.name.replace(/\.md$/i, "");
             fileContent.value = content;
             renderMarkdown(content);
 
