@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         files.forEach(file => {
             const li = document.createElement("li");
             li.className = "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 px-4 py-3 flex items-center gap-3 select-none border-b border-gray-100 dark:border-gray-800";
-            li.innerHTML = `<i class="fas fa-file-alt text-gray-500 text-xl"></i> <span>${file.name}</span>li.innerHTML = `<i class="fas fa-file-alt text-gray-500 text-xl"></i> <span>${file.name.replace(/\.md$/i, "")}</span>`;
+            li.innerHTML = `<i class="fas fa-file-alt text-gray-500 text-xl"></i> <span>${file.name}</span>`;
             li.onclick = () => openFile(folder, file);
             contentUl.appendChild(li);
         });
@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const content = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
 
             currentFile = { folder, file };
-            fileViewTitle.textContent = file.name.replace(/\.md$/i, "");
+            fileViewTitle.textContent = file.name;
             fileContent.value = content;
             renderMarkdown(content);
 
