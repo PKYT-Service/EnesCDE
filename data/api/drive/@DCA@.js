@@ -168,7 +168,7 @@ document.write(`
         class="flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 resize-none outline-none hidden"
         spellcheck="false"
         aria-label="Contenu du fichier markdown"
-        readonly
+        
     ></textarea>
     <footer class="p-4 border-t border-gray-300 flex justify-end gap-2">
         <button
