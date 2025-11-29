@@ -168,7 +168,7 @@ document.write(`
         class="flex-1 p-4 font-mono text-sm text-gray-800 dark:text-gray-100 resize-none outline-none hidden"
         spellcheck="false"
         aria-label="Contenu du fichier markdown"
-        
+        readonly
     ></textarea>
     <footer class="p-4 border-t border-gray-300 flex justify-end gap-2">
         <button
@@ -851,18 +851,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (isEditing) {
             fileRenderedContent.classList.add("hidden");
             fileContent.classList.remove("hidden");
+            fileContent.removeAttribute("readonly"); // ✅ Retire readonly pour éditer
             btnSave.classList.remove("hidden");
             btnSave.disabled = false;
         } else {
             fileContent.classList.add("hidden");
             fileRenderedContent.classList.remove("hidden");
+            fileContent.setAttribute("readonly", "true"); // ✅ Remet readonly
             btnSave.classList.add("hidden");
             btnSave.disabled = true;
             // Re-render markdown from textarea
             renderMarkdown(fileContent.value);
         }
     };
-
     btnSave.onclick = async () => {
         if (!currentFile) return;
         const content = fileContent.value;
