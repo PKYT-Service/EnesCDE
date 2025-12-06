@@ -1,14 +1,22 @@
 // Vérifie les conditions d'accès
 function Check_ConditionDaccesService() {
     const rulesAccepted = localStorage.getItem('rules') === 'true';
+    const EnesCDE_ADM_RPE = localStorage.getItem('EnesCDE_ADM:RPE');
 
-    // Affiche le popup seulement si rules n'existe pas
-    if (!rulesAccepted) {
+    if (EnesCDE_ADM_RPE === 'false') {
+        localStorage.removeItem('EnesCDE_ADM:RPE');
+    }
+
+    if (!EnesCDE_ADM_RPE && !rulesAccepted) {
         createPopup();
+    } else if (EnesCDE_ADM_RPE === 'true' && !rulesAccepted) {
+        showFloatingReminder("[RAPPEL 01] Vous n'avez pas accepté les CDT.");
+    } else if (EnesCDE_ADM_RPE === 'true' && rulesAccepted) {
+        showFloatingReminder("[RAPPEL] Vous êtes en mode Admin.");
     }
 }
 
-// Message flottant en bas
+// Message flottant
 function showFloatingReminder(message) {
     let reminder = document.createElement('span');
     reminder.className = "inline-flex items-center justify-center rounded-full border border-red-500 px-2.5 py-0.5 text-red-700 dark:text-red-100 fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-900 shadow-lg";
