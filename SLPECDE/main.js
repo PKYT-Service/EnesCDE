@@ -32,25 +32,26 @@ async function chargerModule(url, nomFonction) {
 }
 
 (async () => {
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Csl.js", "ECDE_Console");
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js", "Secure_F12");
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Rfh.js", "Secure_Ref");
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js", "CheckRulesToAcces"); // MAJ
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-V3AccBan.js", "checkBan_Account3V");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-FCT@-ClearCsl.js", "CO_Cleaner_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js", "Rules");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js", "ADM_RPE");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js", "patch");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-E.CDE-Sys.js", "pu_ucd_ecde");
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-SyncData.js", "PU_Sync");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Ban.js", "ecde_client");
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Log.js", "ID_log_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Storage.js", "ID_stock_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Verification.js", "ID_verif_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMng.js", "WebManager");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@W-FCT@WebMngProto.js", "WebManagerProto");
-  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-LogsD.js", "LogsDiscord");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-PSP@-enhance.js", "secure_psa");
+  
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-LogsD.js", "LogsDiscord"); // MAJ
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-SyncData.js", "PU_Sync"); // MAJ
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js", "CheckRulesToAcces"); // MAJ
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Rfh.js", "Secure_Ref"); // MAJ
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js", "Secure_F12"); // MAJ
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Csl.js", "ECDE_Console"); // MAJ
+  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-ID@-Log.js", "ID_log_ecde"); // MAJ
   // storeLoginFromURL est désactivé pour l'instant
   // await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-StoreLogin.js", "storeLoginFromURL");
 })();
