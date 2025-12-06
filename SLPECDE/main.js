@@ -32,6 +32,7 @@ async function chargerModule(url, nomFonction) {
 }
 
 (async () => {
+  await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js", "CheckRulesToAcces");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-V3AccBan.js", "checkBan_Account3V");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-FCT@-ClearCsl.js", "CO_Cleaner_ecde");
   await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-TOOL@-Patcher.js", "Rules");
@@ -47,7 +48,6 @@ async function chargerModule(url, nomFonction) {
   
   //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-LogsD.js", "LogsDiscord"); // MAJ
   //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@U-FCT@-SyncData.js", "PU_Sync"); // MAJ
-  //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@N-Check@-RulesIsTrue.js", "CheckRulesToAcces"); // MAJ
   //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Rfh.js", "Secure_Ref"); // MAJ
   //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-F12.js", "Secure_F12"); // MAJ
   //await chargerModule("https://enes-cde.vercel.app/SLPECDE/script/@A-FCT@-Csl.js", "ECDE_Console"); // MAJ
