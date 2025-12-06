@@ -1,28 +1,38 @@
+// --------------------------
 // Vérifie les conditions d'accès
-function Check_ConditionDaccesService() {
+// --------------------------
+export function CheckRulesToAcces() {
     const rulesAccepted = localStorage.getItem('rules') === 'true';
     const EnesCDE_ADM_RPE = localStorage.getItem('EnesCDE_ADM:RPE');
 
+    // Nettoyage si valeur false
     if (EnesCDE_ADM_RPE === 'false') {
         localStorage.removeItem('EnesCDE_ADM:RPE');
     }
 
-    if (!EnesCDE_ADM_RPE && !rulesAccepted) {
+    // Déclenchement du popup si aucune règle acceptée
+    if ((!EnesCDE_ADM_RPE || EnesCDE_ADM_RPE === 'false') && !rulesAccepted) {
         createPopup();
-    } else if (EnesCDE_ADM_RPE === 'true' && !rulesAccepted) {
+    } 
+    // Rappel CDT si admin mais règles non acceptées
+    else if (EnesCDE_ADM_RPE === 'true' && !rulesAccepted) {
         showFloatingReminder("[RAPPEL 01] Vous n'avez pas accepté les CDT.");
-    } else if (EnesCDE_ADM_RPE === 'true' && rulesAccepted) {
+    } 
+    // Mode admin rappel
+    else if (EnesCDE_ADM_RPE === 'true' && rulesAccepted) {
         showFloatingReminder("[RAPPEL] Vous êtes en mode Admin.");
     }
 }
 
+// --------------------------
 // Message flottant
+// --------------------------
 function showFloatingReminder(message) {
-    let reminder = document.createElement('span');
+    const reminder = document.createElement('span');
     reminder.className = "inline-flex items-center justify-center rounded-full border border-red-500 px-2.5 py-0.5 text-red-700 dark:text-red-100 fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-900 shadow-lg";
-    reminder.innerHTML = ` 
+    reminder.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-ms-1 me-1.5 size-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
         </svg>
         <p class="text-sm whitespace-nowrap"> <mark>${message}</mark></p>
     `;
@@ -30,9 +40,11 @@ function showFloatingReminder(message) {
     setTimeout(() => reminder.remove(), 10000);
 }
 
+// --------------------------
 // Bloque l’arrière-plan
+// --------------------------
 function disableInteraction() {
-    let overlay = document.createElement('div');
+    const overlay = document.createElement('div');
     overlay.id = "popup-overlay";
     overlay.className = "fixed inset-0 bg-black/50 dark:bg-black/60 backdrop-blur-sm";
     overlay.style.zIndex = "9998";
@@ -41,14 +53,16 @@ function disableInteraction() {
 }
 
 function enableInteraction() {
-    let overlay = document.getElementById("popup-overlay");
+    const overlay = document.getElementById("popup-overlay");
     if (overlay) overlay.remove();
     document.body.style.overflow = "auto";
 }
 
+// --------------------------
 // Crée le popup principal
+// --------------------------
 function createPopup() {
-    let popup = document.createElement('div');
+    const popup = document.createElement('div');
     popup.setAttribute('role', 'alert');
     popup.className = 'rounded-xl border p-4 shadow-2xl backdrop-blur-md bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700';
     popup.style.position = 'fixed';
@@ -69,10 +83,8 @@ function createPopup() {
                 </svg>
             </div>
 
-            <div>
-                <h2 class="font-bold text-lg text-gray-900 dark:text-gray-100">Accès Protégé SLPECDE</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Conditions d’utilisation</p>
-            </div>
+            <h2 class="font-bold text-lg text-gray-900 dark:text-gray-100">Accès Protégé SLPECDE</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Conditions d’utilisation</p>
 
             <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                 Pour utiliser les services officiels ou affiliés, vous devez accepter
@@ -105,9 +117,9 @@ function createPopup() {
                 </button>
 
                 <button id="accept-terms-btn"
-                    class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-400 text-white cursor-not-allowed
-                           transition-colors"
-                    style="pointer-events: none;">
+                        class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-400 text-white cursor-not-allowed
+                               transition-colors"
+                        style="pointer-events: none;">
                     Accepter
                 </button>
             </div>
@@ -117,17 +129,15 @@ function createPopup() {
     document.body.appendChild(popup);
     disableInteraction();
 
-    let acceptBtn = document.getElementById("accept-terms-btn");
-    let checkbox = document.getElementById("terms-checkbox");
-    let conditionsContainer = document.getElementById("conditions-container");
-    let openConditionsLink = document.getElementById("open-conditions");
+    const acceptBtn = document.getElementById("accept-terms-btn");
+    const checkbox = document.getElementById("terms-checkbox");
+    const conditionsContainer = document.getElementById("conditions-container");
+    const openConditionsLink = document.getElementById("open-conditions");
 
     // Activation du checkbox après 5 secondes
-    setTimeout(() => {
-        checkbox.disabled = false;
-    }, 5000);
+    setTimeout(() => checkbox.disabled = false, 5000);
 
-    // Checkbox
+    // Toggle checkbox
     checkbox.addEventListener("change", () => {
         const active = checkbox.checked;
         acceptBtn.style.pointerEvents = active ? "auto" : "none";
@@ -151,7 +161,7 @@ function createPopup() {
         window.location.href = "https://www.google.com";
     });
 
-    // Affiche ou masque les conditions dans le même popup
+    // Affiche/masque les conditions
     openConditionsLink.addEventListener("click", (e) => {
         e.preventDefault();
         conditionsContainer.classList.toggle("hidden");
@@ -159,7 +169,9 @@ function createPopup() {
     });
 }
 
-// Fonction principale exportable
-export function CheckRulesToAcces() {
+// --------------------------
+// Exécution directe (fonctionne partout)
+// --------------------------
+document.addEventListener("DOMContentLoaded", () => {
     Check_ConditionDaccesService();
-}
+});
