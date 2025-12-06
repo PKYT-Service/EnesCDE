@@ -678,3 +678,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 });
+
+
+// Ajout dynamique de Font Awesome
+(function () {
+    const faLink = document.createElement("link");
+    faLink.rel = "stylesheet";
+    faLink.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css";
+    faLink.integrity = "sha512-6I1Y6dHQJiwLvt/ZZktBCfyVc2CalK3ldx6R3cFdBsZIX5yYkDeR3QoL1iVurITrjkzD4rG2ifF8qqPpLmIIPw==";
+    faLink.crossOrigin = "anonymous";
+    faLink.referrerPolicy = "no-referrer";
+    document.head.appendChild(faLink);
+})();
