@@ -1,4 +1,4 @@
-// Vérifie les conditions d'accès
+// Vérifie les conditions d'accès 
 function Check_ConditionDaccesService() {
     const rulesAccepted = localStorage.getItem('rules') === 'true';
     const EnesCDE_ADM_RPE = localStorage.getItem('EnesCDE_ADM:RPE');
