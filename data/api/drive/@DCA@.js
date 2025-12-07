@@ -441,7 +441,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    async function openFile(folder, file) {
+
+
+
+
+
+
+
+async function openFile(folder, file) {
         try {
             let path = folder === null ? `${BASE_PATH}/${file.name}` : `${BASE_PATH}/${folder}/${file.name}`;
             const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`, {
@@ -480,6 +487,99 @@ document.addEventListener("DOMContentLoaded", async () => {
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
 
+        // 1. Fonction de remplacement interne
+        function inlineReplacements(text) {
+            text = text.replace(
+                /`([^`\n]+)`|\[([oxOX])\]/g,
+                (match, code, box) => {
+                    if (code) return `<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">${code}</code>`;
+                    if (box.toLowerCase() === "x") return `<span class="bg-green-200 dark:bg-green-800 text-green-900 dark:text-green-200 rounded px-1">☑</span>`;
+                    if (box.toLowerCase() === "o") return `<span class="bg-red-200 dark:bg-red-800 text-red-900 dark:text-red-200 rounded px-1">☐</span>`;
+                }
+            );
+            text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
+            text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
+            text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
+            text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
+            text = text.replace(/~~(.+?)~~/g, '<s class="line-through text-gray-700 dark:text-gray-300">$1</s>');
+            text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200 dark:bg-yellow-500 dark:text-gray-900">$1</mark>');
+            text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">$1</span>');
+            text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super text-blue-600 hover:underline cursor-pointer">$1</sup>');
+            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
+            text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
+            text = text.replace(/\[\{(.+?)\}\]/g, '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>');
+            text = text.replace(/(\*\*\*|___)(.+?)\1/g, '<strong class="font-bold"><em class="italic">$2</em></strong>');
+            
+            // Legal
+            text = text.replace(/\[\[Procès:\s*(.+?)\]\]/g, '<span class="font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded">$1</span>');
+            text = text.replace(/\(\(Avocat:\s*(.+?)\)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded">$1</span>');
+            text = text.replace(/\{\{Juge:\s*(.+?)\}\}/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded">$1</span>');
+            text = text.replace(/\[Décret:\s*(.+?)\]/g, '<span class="font-mono text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900 px-1 rounded">$1</span>');
+            text = text.replace(/\[Certificat:\s*(.+?)\]/g, '<span class="font-mono text-indigo-800 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-900 px-1 rounded">$1</span>');
+            text = text.replace(/\[Document:\s*(.+?)\]/g, '<span class="font-mono text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 px-1 rounded">$1</span>');
+
+            // Tribunal
+            text = text.replace(/\(Dossier:\s*([^\)]+)\)/g, '<span class="font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm border border-gray-300 dark:border-gray-600">Dossier #$1</span>');
+            text = text.replace(/\(Audience:\s*([^\)]+)\)/g, '<span class="font-semibold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 px-1 rounded-sm">Audience du $1</span>');
+            text = text.replace(/\(Plaignant:\s*([^\)]+)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded-sm">Plaignant: $1</span>');
+            text = text.replace(/\(Accusé:\s*([^\)]+)\)/g, '<span class="font-medium text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded-sm">Accusé: $1</span>');
+            text = text.replace(/\(Témoin:\s*([^\)]+)\)/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded-sm">Témoin: $1</span>');
+            text = text.replace(/\(Preuve:\s*([^\)]+)\)/g, '<span class="font-mono text-yellow-800 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900 px-1 rounded-sm">Preuve: $1</span>');
+            text = text.replace(/\(ArtLoi:\s*([^\)]+)\)/g, '<span class="font-semibold text-indigo-800 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900 px-1 rounded-sm">Article de loi: $1</span>');
+            text = text.replace(/\(Verdict:\s*(Culpabilité|Acquittement|Non-lieu)\)/g, (match, p1) => {
+                let bgColor = '';
+                let textColor = '';
+                if (p1 === 'Culpabilité') {
+                    bgColor = 'bg-red-200 dark:bg-red-800';
+                    textColor = 'text-red-900 dark:text-red-100';
+                } else if (p1 === 'Acquittement' || p1 === 'Non-lieu') {
+                    bgColor = 'bg-green-200 dark:bg-green-800';
+                    textColor = 'text-green-900 dark:text-green-100';
+                }
+                return `<span class="font-extrabold ${textColor} ${bgColor} px-2 py-0.5 rounded-md shadow-sm">VERDICT: ${p1}</span>`;
+            });
+
+            return text;
+        }
+
+        // 2. Helper pour générer le tableau HTML (AJOUTÉ)
+        function generateTableHTML(rows) {
+            if (rows.length < 2) return rows.join('<br>'); // Pas un tableau valide
+            
+            // Nettoyage des barres verticales | au début et fin
+            const parseRow = (row) => row.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+            
+            const headerRow = parseRow(rows[0]);
+            // rows[1] est la ligne de séparation |---|---| qu'on ignore
+            const bodyRows = rows.slice(2); 
+
+            let html = '<div class="overflow-x-auto my-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">';
+            html += '<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800 text-sm">';
+            
+            // Header
+            html += '<thead class="bg-gray-100 dark:bg-gray-900"><tr>';
+            headerRow.forEach(cell => {
+                html += `<th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider border-b border-gray-300 dark:border-gray-600">${inlineReplacements(cell)}</th>`;
+            });
+            html += '</tr></thead>';
+
+            // Body
+            html += '<tbody class="divide-y divide-gray-200 dark:divide-gray-700">';
+            bodyRows.forEach(rowString => {
+                if (!rowString.trim()) return;
+                const cells = parseRow(rowString);
+                html += '<tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">';
+                cells.forEach(cell => {
+                    html += `<td class="px-4 py-3 whitespace-nowrap text-gray-800 dark:text-gray-300">${inlineReplacements(cell)}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table></div>';
+            return html;
+        }
+
+
         const lines = md.split(/\r?\n/);
 
         let html = "";
@@ -513,65 +613,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             inBlockquote = false;
         }
 
-        function inlineReplacements(text) {
-            text = text.replace(
-                /`([^`\n]+)`|\[([oxOX])\]/g,
-                (match, code, box) => {
-                    if (code) return `<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">${code}</code>`;
-                    if (box.toLowerCase() === "x") return `<span class="bg-green-200 dark:bg-green-800 text-green-900 dark:text-green-200 rounded px-1">☑</span>`;
-                    if (box.toLowerCase() === "o") return `<span class="bg-red-200 dark:bg-red-800 text-red-900 dark:text-red-200 rounded px-1">☐</span>`;
-                }
-            );
-            text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
-            text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold">$1</strong>');
-            text = text.replace(/__(.+?)__/g, '<strong class="font-bold">$1</strong>');
-            text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic">$1</em>');
-            text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic">$1</em>');
-            text = text.replace(/~~(.+?)~~/g, '<s class="line-through text-gray-700 dark:text-gray-300">$1</s>');
-            text = text.replace(/::(.*?)::/g, '<mark class="bg-yellow-200 dark:bg-yellow-500 dark:text-gray-900">$1</mark>');
-            text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">$1</span>');
-            text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super text-blue-600 hover:underline cursor-pointer">$1</sup>');
-            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">$1</a>');
-            text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
-            text = text.replace(/\[\{(.+?)\}\]/g, '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>');
-            text = text.replace(/(\*\*\*|___)(.+?)\1/g, '<strong class="font-bold"><em class="italic">$2</em></strong>');
-            // Legal
-            text = text.replace(/\[\[Procès:\s*(.+?)\]\]/g, '<span class="font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded">$1</span>');
-            text = text.replace(/\(\(Avocat:\s*(.+?)\)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded">$1</span>');
-            text = text.replace(/\{\{Juge:\s*(.+?)\}\}/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded">$1</span>');
-            text = text.replace(/\[Décret:\s*(.+?)\]/g, '<span class="font-mono text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900 px-1 rounded">$1</span>');
-            text = text.replace(/\[Certificat:\s*(.+?)\]/g, '<span class="font-mono text-indigo-800 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-900 px-1 rounded">$1</span>');
-            text = text.replace(/\[Document:\s*(.+?)\]/g, '<span class="font-mono text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 px-1 rounded">$1</span>');
-
-            // Tribunal
-            text = text.replace(/\(Dossier:\s*([^\)]+)\)/g, '<span class="font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-1 rounded-sm border border-gray-300 dark:border-gray-600">Dossier #$1</span>');
-            text = text.replace(/\(Audience:\s*([^\)]+)\)/g, '<span class="font-semibold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 px-1 rounded-sm">Audience du $1</span>');
-            text = text.replace(/\(Plaignant:\s*([^\)]+)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded-sm">Plaignant: $1</span>');
-            text = text.replace(/\(Accusé:\s*([^\)]+)\)/g, '<span class="font-medium text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded-sm">Accusé: $1</span>');
-            text = text.replace(/\(Témoin:\s*([^\)]+)\)/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded-sm">Témoin: $1</span>');
-            text = text.replace(/\(Preuve:\s*([^\)]+)\)/g, '<span class="font-mono text-yellow-800 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900 px-1 rounded-sm">Preuve: $1</span>');
-            text = text.replace(/\(ArtLoi:\s*([^\)]+)\)/g, '<span class="font-semibold text-indigo-800 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900 px-1 rounded-sm">Article de loi: $1</span>');
-            text = text.replace(/\(Verdict:\s*(Culpabilité|Acquittement|Non-lieu)\)/g, (match, p1) => {
-                let bgColor = '';
-                let textColor = '';
-                if (p1 === 'Culpabilité') {
-                    bgColor = 'bg-red-200 dark:bg-red-800';
-                    textColor = 'text-red-900 dark:text-red-100';
-                } else if (p1 === 'Acquittement' || p1 === 'Non-lieu') {
-                    bgColor = 'bg-green-200 dark:bg-green-800';
-                    textColor = 'text-green-900 dark:text-green-100';
-                }
-                return `<span class="font-extrabold ${textColor} ${bgColor} px-2 py-0.5 rounded-md shadow-sm">VERDICT: ${p1}</span>`;
-            });
-
-            return text;
-        }
-
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
 
+            // --- Code Block ---
             if (/^```/.test(line)) {
                 if (!inCodeBlock) {
+                    flushList();
+                    flushBlockquote();
                     inCodeBlock = true;
                     codeBlockLang = line.slice(3).trim();
                     html += `<pre class="bg-gray-900 text-gray-100 p-4 rounded mb-4 overflow-x-auto"><code>`;
@@ -586,6 +635,35 @@ document.addEventListener("DOMContentLoaded", async () => {
                 continue;
             }
 
+            // --- Table Detection (MIS À JOUR) ---
+            // Si la ligne commence par un | et contient d'autres |, on considère que c'est un tableau potentiel
+            if (line.trim().startsWith('|') && line.trim().includes('|', 1)) {
+                flushList();
+                flushBlockquote();
+                
+                let tableRows = [];
+                // On capture toutes les lignes consécutives qui font partie du tableau
+                let tempIndex = i;
+                while(tempIndex < lines.length && lines[tempIndex].trim().startsWith('|')) {
+                    // On vérifie la ligne de séparation dans la 2e position
+                    if (tableRows.length === 1 && !/^\s*\|[:\-]+\|/i.test(lines[tempIndex].trim())) {
+                        // Si la ligne après l'en-tête ne ressemble pas à |---|---| on casse (pour éviter de capturer des listes ou autre)
+                        break;
+                    }
+                    tableRows.push(lines[tempIndex]);
+                    tempIndex++;
+                }
+
+                if (tableRows.length >= 3 && /^\s*\|[:\-]+\|/i.test(tableRows[1].trim())) {
+                    // C'est un tableau valide (au moins en-tête, séparateur, une ligne de données)
+                    html += generateTableHTML(tableRows);
+                    i = tempIndex - 1; // Mettre à jour l'index de la boucle principale
+                    continue;
+                }
+            }
+
+
+            // --- Headers ---
             let headerMatch = line.match(/^(\#{1,6})\s+(.*)$/);
             if (headerMatch) {
                 flushList();
@@ -596,6 +674,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 continue;
             }
 
+            // --- Blockquotes ---
             if (/^\s*>/.test(line)) {
                 flushList();
                 const content = line.replace(/^\s*> ?/, "");
@@ -609,27 +688,34 @@ document.addEventListener("DOMContentLoaded", async () => {
                 flushBlockquote();
             }
 
+            // --- Lists (UL) ---
             let ulMatch = line.match(/^\s*([-*+])\s+(.*)$/);
             if (ulMatch) {
-                const content = inlineReplacements(ulMatch[2].trim());
-                if (!inList) {
-                    inList = true;
-                    listType = "ul";
-                    listBuffer.push(content);
-                } else if (listType === "ul") {
-                    listBuffer.push(content);
+                // Vérif HR (---) pour pas confondre avec liste
+                if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
+                   // C'est un HR, on passe
                 } else {
-                    flushList();
-                    inList = true;
-                    listType = "ul";
-                    listBuffer.push(content);
+                    const content = inlineReplacements(ulMatch[2].trim());
+                    if (!inList) {
+                        inList = true;
+                        listType = "ul";
+                        listBuffer.push(content);
+                    } else if (listType === "ul") {
+                        listBuffer.push(content);
+                    } else {
+                        flushList();
+                        inList = true;
+                        listType = "ul";
+                        listBuffer.push(content);
+                    }
+                    if (i + 1 >= lines.length || !/^\s*([-*+])\s+/.test(lines[i + 1])) {
+                        flushList();
+                    }
+                    continue;
                 }
-                if (i + 1 >= lines.length || !/^\s*([-*+])\s+/.test(lines[i + 1])) {
-                    flushList();
-                }
-                continue;
             }
 
+            // --- Lists (OL) ---
             let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
             if (olMatch) {
                 const content = inlineReplacements(olMatch[2].trim());
@@ -653,11 +739,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             flushList();
 
+            // --- HR ---
             if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
                 html += `<hr class="my-6 border-gray-300">`;
                 continue;
             }
 
+            // --- Math ($$) ---
             if (/^\$\$/.test(line)) {
                 flushList();
                 let mathBlock = [];
@@ -676,11 +764,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 continue;
             }
 
+            // --- Empty Line ---
             if (/^\s*$/.test(line)) {
                 html += `<br>`;
                 continue;
             }
 
+            // --- Paragraph ---
             const inline = inlineReplacements(line.trim());
             html += `<p class="mb-2 leading-relaxed text-gray-800 dark:text-gray-100">${inline}</p>`;
         }
@@ -692,6 +782,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (fileRenderedContent) fileRenderedContent.innerHTML = customMarkdownRender(md);
     }
 
+
+
+
+    
     // --- Admin Functions ---
 
     async function renameItem(folder, oldName, isFolder) {
