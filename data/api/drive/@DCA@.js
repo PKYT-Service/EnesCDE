@@ -441,14 +441,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-
-
-
-
-
-
-
-async function openFile(folder, file) {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    async function openFile(folder, file) {
         try {
             let path = folder === null ? `${BASE_PATH}/${file.name}` : `${BASE_PATH}/${folder}/${file.name}`;
             const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`, {
@@ -495,6 +498,7 @@ async function openFile(folder, file) {
                     if (code) return `<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">${code}</code>`;
                     if (box.toLowerCase() === "x") return `<span class="bg-green-200 dark:bg-green-800 text-green-900 dark:text-green-200 rounded px-1">☑</span>`;
                     if (box.toLowerCase() === "o") return `<span class="bg-red-200 dark:bg-red-800 text-red-900 dark:text-red-200 rounded px-1">☐</span>`;
+                    return match; // Retourne le match original si aucune condition ne correspond
                 }
             );
             text = text.replace(/`([^`\n]+)`/g, '<code class="bg-gray-100 dark:bg-gray-900 rounded px-1 font-mono text-sm">$1</code>');
@@ -543,7 +547,7 @@ async function openFile(folder, file) {
             return text;
         }
 
-        // 2. Helper pour générer le tableau HTML (AJOUTÉ)
+        // 2. Helper pour générer le tableau HTML
         function generateTableHTML(rows) {
             if (rows.length < 2) return rows.join('<br>'); // Pas un tableau valide
             
@@ -615,8 +619,9 @@ async function openFile(folder, file) {
 
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
+            const trimmedLine = line.trim();
 
-            // --- Code Block ---
+            // 1. Code Block (Priorité 1)
             if (/^```/.test(line)) {
                 if (!inCodeBlock) {
                     flushList();
@@ -635,46 +640,58 @@ async function openFile(folder, file) {
                 continue;
             }
 
-            // --- Table Detection (MIS À JOUR) ---
-            // Si la ligne commence par un | et contient d'autres |, on considère que c'est un tableau potentiel
-            if (line.trim().startsWith('|') && line.trim().includes('|', 1)) {
-                flushList();
-                flushBlockquote();
-                
-                let tableRows = [];
-                // On capture toutes les lignes consécutives qui font partie du tableau
-                let tempIndex = i;
-                while(tempIndex < lines.length && lines[tempIndex].trim().startsWith('|')) {
-                    // On vérifie la ligne de séparation dans la 2e position
-                    if (tableRows.length === 1 && !/^\s*\|[:\-]+\|/i.test(lines[tempIndex].trim())) {
-                        // Si la ligne après l'en-tête ne ressemble pas à |---|---| on casse (pour éviter de capturer des listes ou autre)
-                        break;
-                    }
-                    tableRows.push(lines[tempIndex]);
-                    tempIndex++;
-                }
-
-                if (tableRows.length >= 3 && /^\s*\|[:\-]+\|/i.test(tableRows[1].trim())) {
-                    // C'est un tableau valide (au moins en-tête, séparateur, une ligne de données)
-                    html += generateTableHTML(tableRows);
-                    i = tempIndex - 1; // Mettre à jour l'index de la boucle principale
-                    continue;
-                }
-            }
-
-
-            // --- Headers ---
+            // 2. Headers (Priorité 2)
             let headerMatch = line.match(/^(\#{1,6})\s+(.*)$/);
             if (headerMatch) {
                 flushList();
                 flushBlockquote();
                 const level = headerMatch[1].length;
                 const content = inlineReplacements(headerMatch[2].trim());
-                html += `<h${level} class="font-semibold mt-6 mb-2 text-gray-900 dark:text-gray-100">${content}</h${level}>`;
+                // J'ajoute une classe text-3xl/2xl/xl/lg pour améliorer l'apparence des titres
+                const sizeClasses = ['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base'];
+                html += `<h${level} class="font-extrabold ${sizeClasses[level-1]} mt-6 mb-2 text-gray-900 dark:text-gray-100">${content}</h${level}>`;
                 continue;
             }
 
-            // --- Blockquotes ---
+            // 3. Horizontal Rule (Priorité 3)
+            if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
+                flushList();
+                flushBlockquote();
+                html += `<hr class="my-6 border-gray-300 dark:border-gray-700">`;
+                continue;
+            }
+
+            // 4. Table Detection (Priorité 4)
+            if (trimmedLine.startsWith('|') && trimmedLine.includes('|', 1)) {
+                
+                let tableRows = [];
+                let tempIndex = i;
+                
+                // 4a. Capturer les lignes de l'en-tête (ligne i) et du séparateur (ligne i+1)
+                if (tempIndex + 1 < lines.length && lines[tempIndex+1].trim().startsWith('|') && /^\s*\|[:\-]+\|/i.test(lines[tempIndex+1].trim())) {
+                    tableRows.push(lines[tempIndex]);
+                    tableRows.push(lines[tempIndex+1]);
+                    tempIndex += 2; // Avancer après l'en-tête et le séparateur
+
+                    // 4b. Capturer les lignes de données suivantes
+                    while(tempIndex < lines.length && lines[tempIndex].trim().startsWith('|') && lines[tempIndex].trim().includes('|', 1)) {
+                        tableRows.push(lines[tempIndex]);
+                        tempIndex++;
+                    }
+
+                    // 4c. Si on a au moins 3 lignes (Header, Separator, Data)
+                    if (tableRows.length >= 3) {
+                        flushList();
+                        flushBlockquote();
+                        html += generateTableHTML(tableRows);
+                        i = tempIndex - 1; // Mettre à jour l'index pour continuer après le tableau
+                        continue;
+                    }
+                }
+                // Si ce n'était pas un tableau valide, la boucle continue et la ligne sera traitée comme paragraphe.
+            }
+
+            // 5. Blockquotes (Priorité 5)
             if (/^\s*>/.test(line)) {
                 flushList();
                 const content = line.replace(/^\s*> ?/, "");
@@ -688,66 +705,42 @@ async function openFile(folder, file) {
                 flushBlockquote();
             }
 
-            // --- Lists (UL) ---
+            // 6. Lists (Priorité 6)
             let ulMatch = line.match(/^\s*([-*+])\s+(.*)$/);
-            if (ulMatch) {
-                // Vérif HR (---) pour pas confondre avec liste
-                if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
-                   // C'est un HR, on passe
-                } else {
-                    const content = inlineReplacements(ulMatch[2].trim());
-                    if (!inList) {
-                        inList = true;
-                        listType = "ul";
-                        listBuffer.push(content);
-                    } else if (listType === "ul") {
-                        listBuffer.push(content);
-                    } else {
-                        flushList();
-                        inList = true;
-                        listType = "ul";
-                        listBuffer.push(content);
-                    }
-                    if (i + 1 >= lines.length || !/^\s*([-*+])\s+/.test(lines[i + 1])) {
-                        flushList();
-                    }
-                    continue;
-                }
-            }
-
-            // --- Lists (OL) ---
             let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
-            if (olMatch) {
-                const content = inlineReplacements(olMatch[2].trim());
+            
+            if (ulMatch || olMatch) {
+                const match = ulMatch || olMatch;
+                const type = ulMatch ? "ul" : "ol";
+                const content = inlineReplacements(match[2].trim());
+
                 if (!inList) {
                     inList = true;
-                    listType = "ol";
+                    listType = type;
                     listBuffer.push(content);
-                } else if (listType === "ol") {
+                } else if (listType === type) {
                     listBuffer.push(content);
                 } else {
                     flushList();
                     inList = true;
-                    listType = "ol";
+                    listType = type;
                     listBuffer.push(content);
                 }
-                if (i + 1 >= lines.length || !/^\s*\d+\.\s+/.test(lines[i + 1])) {
+                
+                // Check if the next line continues the list (heuristic: check for the same list type prefix)
+                const nextLine = lines[i + 1] || '';
+                const continuesList = (type === "ul" && /^\s*([-*+])\s+/.test(nextLine)) || 
+                                     (type === "ol" && /^\s*\d+\.\s+/.test(nextLine));
+
+                if (i + 1 >= lines.length || !continuesList) {
                     flushList();
                 }
                 continue;
             }
-
             flushList();
 
-            // --- HR ---
-            if (/^(\*\s*){3,}$/.test(line) || /^(-\s*){3,}$/.test(line) || /^(_\s*){3,}$/.test(line)) {
-                html += `<hr class="my-6 border-gray-300">`;
-                continue;
-            }
-
-            // --- Math ($$) ---
+            // 7. Math Block ($$) (Priorité 7)
             if (/^\$\$/.test(line)) {
-                flushList();
                 let mathBlock = [];
                 if (/^\$\$(.*)\$\$$/.test(line)) {
                     const content = line.replace(/^\$\$(.*)\$\$$/, "$1");
@@ -760,17 +753,23 @@ async function openFile(folder, file) {
                     i++;
                 }
                 const content = mathBlock.join("\n");
-                html += `<div class="math-block my-4 p-2 bg-gray-100 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
+                html += `<div class="math-block my-4 p-2 bg-gray-100 dark:bg-gray-900 rounded font-mono whitespace-pre-wrap">${escapeHtml(content)}</div>`;
                 continue;
             }
 
-            // --- Empty Line ---
+            // 8. Empty Line (Priorité 8)
             if (/^\s*$/.test(line)) {
-                html += `<br>`;
+                // Sauf si la ligne est vide après un blocquote qui vient d'être flushé (le flushBlockquote gère déjà la fin)
+                // Ici, on gère les vrais sauts de ligne entre paragraphes
+                if (i > 0 && !/^\s*$/.test(lines[i-1])) {
+                    html += `<br>`;
+                } else if (i === 0) {
+                     html += `<br>`;
+                }
                 continue;
             }
 
-            // --- Paragraph ---
+            // 9. Paragraph (Dernière Priorité)
             const inline = inlineReplacements(line.trim());
             html += `<p class="mb-2 leading-relaxed text-gray-800 dark:text-gray-100">${inline}</p>`;
         }
@@ -782,11 +781,17 @@ async function openFile(folder, file) {
         if (fileRenderedContent) fileRenderedContent.innerHTML = customMarkdownRender(md);
     }
 
-
-
-
     
-    // --- Admin Functions ---
+    
+    
+    
+    
+    
+    
+    
+    
+    
+// --- Admin Functions ---
 
     async function renameItem(folder, oldName, isFolder) {
         const newName = prompt("Nouveau nom :", oldName.replace(/\.md$/i, ""));
