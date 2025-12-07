@@ -451,7 +451,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     
     
-    async function openFile(folder, file) {
+async function openFile(folder, file) {
         try {
             let path = folder === null ? `${BASE_PATH}/${file.name}` : `${BASE_PATH}/${folder}/${file.name}`;
             const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`, {
@@ -549,13 +549,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 2. Helper pour générer le tableau HTML
         function generateTableHTML(rows) {
-            if (rows.length < 2) return rows.join('<br>'); // Pas un tableau valide
+            // rows doit contenir [Header, Separator, Data1, Data2, ...]
+            if (rows.length < 3) return rows.join('<br>'); // Pas un tableau valide
             
             // Nettoyage des barres verticales | au début et fin
             const parseRow = (row) => row.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
             
             const headerRow = parseRow(rows[0]);
-            // rows[1] est la ligne de séparation |---|---| qu'on ignore
+            // rows[1] est la ligne de séparation |---|---| qu'on ignore dans le rendu
             const bodyRows = rows.slice(2); 
 
             let html = '<div class="overflow-x-auto my-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">';
@@ -647,7 +648,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 flushBlockquote();
                 const level = headerMatch[1].length;
                 const content = inlineReplacements(headerMatch[2].trim());
-                // J'ajoute une classe text-3xl/2xl/xl/lg pour améliorer l'apparence des titres
+                // J'ajoute une classe text-4xl/3xl/2xl/xl/lg pour améliorer l'apparence des titres
                 const sizeClasses = ['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base'];
                 html += `<h${level} class="font-extrabold ${sizeClasses[level-1]} mt-6 mb-2 text-gray-900 dark:text-gray-100">${content}</h${level}>`;
                 continue;
@@ -661,34 +662,75 @@ document.addEventListener("DOMContentLoaded", async () => {
                 continue;
             }
 
-            // 4. Table Detection (Priorité 4)
+            // 4. Table Detection (Priorité 4) - Amélioration de la robustesse aux lignes vides
             if (trimmedLine.startsWith('|') && trimmedLine.includes('|', 1)) {
                 
-                let tableRows = [];
-                let tempIndex = i;
-                
-                // 4a. Capturer les lignes de l'en-tête (ligne i) et du séparateur (ligne i+1)
-                if (tempIndex + 1 < lines.length && lines[tempIndex+1].trim().startsWith('|') && /^\s*\|[:\-]+\|/i.test(lines[tempIndex+1].trim())) {
-                    tableRows.push(lines[tempIndex]);
-                    tableRows.push(lines[tempIndex+1]);
-                    tempIndex += 2; // Avancer après l'en-tête et le séparateur
+                let tableRows = [line]; // Commence avec la ligne d'en-tête potentielle
+                let separatorFound = false;
+                let tempIndex = i + 1;
+                let dataLineCount = 0;
 
-                    // 4b. Capturer les lignes de données suivantes
-                    while(tempIndex < lines.length && lines[tempIndex].trim().startsWith('|') && lines[tempIndex].trim().includes('|', 1)) {
-                        tableRows.push(lines[tempIndex]);
-                        tempIndex++;
+                // 4a. Recherche du séparateur (|---|), en sautant les lignes vides
+                while (tempIndex < lines.length) {
+                    const nextLine = lines[tempIndex];
+                    const trimmedNextLine = nextLine.trim();
+
+                    if (trimmedNextLine === '') {
+                        tempIndex++; // Sauter la ligne vide
+                        continue;
                     }
 
-                    // 4c. Si on a au moins 3 lignes (Header, Separator, Data)
-                    if (tableRows.length >= 3) {
+                    // Le séparateur a été trouvé
+                    if (/^\s*\|[:\-]+\|/i.test(trimmedNextLine)) {
+                        tableRows.push(nextLine);
+                        separatorFound = true;
+                        tempIndex++;
+                        break; // Passer à la recherche des lignes de données
+                    }
+                    
+                    // Si on rencontre une ligne non vide, non séparateur et non bloc de tableau, on arrête.
+                    if (!trimmedNextLine.startsWith('|')) {
+                        break; 
+                    }
+
+                    // Si on arrive ici, c'est une ligne qui commence par '|' mais qui n'est pas le séparateur
+                    // dans la position attendue, on considère que le bloc est cassé.
+                    break;
+                }
+                
+                // 4b. Si le séparateur est trouvé, collecter les lignes de données, en sautant les lignes vides
+                if (separatorFound) {
+                    while(tempIndex < lines.length) {
+                        const nextLine = lines[tempIndex];
+                        const trimmedNextLine = nextLine.trim();
+                        
+                        if (trimmedNextLine === '') {
+                            tempIndex++; // Sauter la ligne vide
+                            continue;
+                        }
+
+                        // Ligne de données valide?
+                        if (trimmedNextLine.startsWith('|') && trimmedNextLine.includes('|', 1)) {
+                            tableRows.push(nextLine);
+                            dataLineCount++;
+                            tempIndex++;
+                            continue;
+                        }
+                        
+                        // Arrêt si on rencontre un autre type de contenu
+                        break;
+                    }
+                    
+                    // 4c. Doit avoir au moins une ligne de données
+                    if (dataLineCount > 0) {
                         flushList();
                         flushBlockquote();
                         html += generateTableHTML(tableRows);
-                        i = tempIndex - 1; // Mettre à jour l'index pour continuer après le tableau
+                        i = tempIndex - 1; // Mettre à jour l'index
                         continue;
                     }
                 }
-                // Si ce n'était pas un tableau valide, la boucle continue et la ligne sera traitée comme paragraphe.
+                // Si la vérification échoue, la ligne i continue vers le paragraphe (9).
             }
 
             // 5. Blockquotes (Priorité 5)
@@ -727,12 +769,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     listBuffer.push(content);
                 }
                 
-                // Check if the next line continues the list (heuristic: check for the same list type prefix)
+                // Check if the next line continues the list (heuristic: check for the same list type prefix or indent)
                 const nextLine = lines[i + 1] || '';
                 const continuesList = (type === "ul" && /^\s*([-*+])\s+/.test(nextLine)) || 
-                                     (type === "ol" && /^\s*\d+\.\s+/.test(nextLine));
+                                     (type === "ol" && /^\s*\d+\.\s+/.test(nextLine)) || 
+                                     /^\s{2,}/.test(nextLine); // Check for indentation for nested/multi-line items
 
-                if (i + 1 >= lines.length || !continuesList) {
+                if (i + 1 >= lines.length || (!continuesList && nextLine.trim() !== '')) {
                     flushList();
                 }
                 continue;
@@ -759,12 +802,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 8. Empty Line (Priorité 8)
             if (/^\s*$/.test(line)) {
-                // Sauf si la ligne est vide après un blocquote qui vient d'être flushé (le flushBlockquote gère déjà la fin)
-                // Ici, on gère les vrais sauts de ligne entre paragraphes
+                // Seulement ajouter un <br> si la ligne précédente n'était pas déjà un bloc de type non-paragraphique ou vide.
                 if (i > 0 && !/^\s*$/.test(lines[i-1])) {
                     html += `<br>`;
-                } else if (i === 0) {
-                     html += `<br>`;
                 }
                 continue;
             }
