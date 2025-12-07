@@ -662,44 +662,45 @@ async function openFile(folder, file) {
                 continue;
             }
 
-            // 4. Table Detection (Priorité 4) - Amélioration de la robustesse aux lignes vides
+            // 4. Table Detection (Priorité 4) - V3: Beaucoup plus robuste aux lignes vides et espaces
+            // Vérifier si la ligne actuelle est un potentiel début de tableau (ligne d'en-tête)
             if (trimmedLine.startsWith('|') && trimmedLine.includes('|', 1)) {
                 
                 let tableRows = [line]; // Commence avec la ligne d'en-tête potentielle
                 let separatorFound = false;
                 let tempIndex = i + 1;
-                let dataLineCount = 0;
 
                 // 4a. Recherche du séparateur (|---|), en sautant les lignes vides
                 while (tempIndex < lines.length) {
                     const nextLine = lines[tempIndex];
                     const trimmedNextLine = nextLine.trim();
-
+                    
                     if (trimmedNextLine === '') {
                         tempIndex++; // Sauter la ligne vide
                         continue;
                     }
 
-                    // Le séparateur a été trouvé
-                    if (/^\s*\|[:\-]+\|/i.test(trimmedNextLine)) {
+                    // Le séparateur a été trouvé (doit commencer et finir par | et contenir des ---)
+                    if (/^\s*\|.*[:\-]+.*\|/i.test(trimmedNextLine) && !/[a-zA-Z]/.test(trimmedNextLine)) {
                         tableRows.push(nextLine);
                         separatorFound = true;
                         tempIndex++;
-                        break; // Passer à la recherche des lignes de données
+                        break; // Séparateur trouvé, passer à la collecte des données
                     }
                     
-                    // Si on rencontre une ligne non vide, non séparateur et non bloc de tableau, on arrête.
+                    // Si on rencontre une ligne non vide et qui n'est pas un séparateur/début de tableau, on arrête
                     if (!trimmedNextLine.startsWith('|')) {
                         break; 
                     }
 
-                    // Si on arrive ici, c'est une ligne qui commence par '|' mais qui n'est pas le séparateur
-                    // dans la position attendue, on considère que le bloc est cassé.
+                    // Si la ligne commence par '|' mais n'est pas le séparateur attendu
+                    // C'est probablement une table qui manque le séparateur, ou le format est cassé. On arrête la détection de table.
                     break;
                 }
                 
                 // 4b. Si le séparateur est trouvé, collecter les lignes de données, en sautant les lignes vides
                 if (separatorFound) {
+                    let dataLineCount = 0;
                     while(tempIndex < lines.length) {
                         const nextLine = lines[tempIndex];
                         const trimmedNextLine = nextLine.trim();
@@ -732,14 +733,14 @@ async function openFile(folder, file) {
                 }
                 // Si la vérification échoue, la ligne i continue vers le paragraphe (9).
             }
-
+            
             // 5. Blockquotes (Priorité 5)
             if (/^\s*>/.test(line)) {
                 flushList();
                 const content = line.replace(/^\s*> ?/, "");
                 inBlockquote = true;
                 blockquoteBuffer.push(inlineReplacements(content));
-                if (i + 1 >= lines.length || !/^\s*>/.test(lines[i + 1])) {
+                if (i + 1 >= lines.length || (!/^\s*>/.test(lines[i + 1]) && lines[i+1].trim() !== '')) {
                     flushBlockquote();
                 }
                 continue;
