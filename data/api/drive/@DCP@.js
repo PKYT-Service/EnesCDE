@@ -819,3 +819,92 @@ document.addEventListener("DOMContentLoaded", async () => {
     faLink.referrerPolicy = "no-referrer";
     document.head.appendChild(faLink);
 })();
+
+
+
+(function () {
+    // 1. Inject CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        #resizer {
+            width: 4px;
+            background-color: #d1d5db;
+            cursor: col-resize;
+            user-select: none;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        #resizer.hidden {
+            display: none;
+        }
+        #resizer:hover {
+            background-color: #60a5fa; /* blue-400 */
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Inject Resizer Element
+    // We assume the structure is: Section(List) -> Resizer -> Section(View)
+    // We try to find the file-view-section and insert before it.
+    const fileViewSection = document.getElementById('file-view-section');
+    if (!fileViewSection) {
+        console.warn("Resizer: #file-view-section not found.");
+        return;
+    }
+
+    let resizer = document.getElementById('resizer');
+    if (!resizer) {
+        resizer = document.createElement('div');
+        resizer.id = 'resizer';
+        resizer.className = 'hidden'; // Start hidden, controlled by app logic or auto
+        // Insert before fileViewSection
+        fileViewSection.parentNode.insertBefore(resizer, fileViewSection);
+    }
+
+    // 3. Logic
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", (e) => {
+        isResizing = true;
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (!isResizing) return;
+        // Calculate width from the right side of the screen
+        const newWidth = window.innerWidth - e.clientX;
+
+        // Min width 200px, Max width 80% of screen
+        if (newWidth > 200 && newWidth < (window.innerWidth * 0.8)) {
+            if (fileViewSection) {
+                fileViewSection.style.width = `${newWidth}px`;
+                fileViewSection.style.flex = "none";
+            }
+        }
+    });
+
+    document.addEventListener("mouseup", () => {
+        if (isResizing) {
+            isResizing = false;
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+        }
+    });
+
+    // Optional: Observer to show/hide resizer based on view visibility
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                if (fileViewSection.classList.contains('hidden')) {
+                    resizer.classList.add('hidden');
+                } else {
+                    resizer.classList.remove('hidden');
+                }
+            }
+        });
+    });
+    observer.observe(fileViewSection, { attributes: true });
+
+})();
