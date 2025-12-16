@@ -121,6 +121,9 @@ document.write(`
     ></ul>
 </section>
 
+<!-- Resizer -->
+<div id="resizer" class="w-1 bg-gray-300 hover:bg-blue-400 cursor-col-resize hidden select-none transition-colors z-10 flex-shrink-0"></div>
+
 <section
     id="file-view-section"
     class="w-[28rem] bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 border-l border-gray-300 flex flex-col overflow-hidden hidden"
@@ -214,6 +217,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnToggleView = document.getElementById("btn-toggle-view");
     const btnCreateFolder = document.getElementById("btn-create-folder");
     const btnCreateFile = document.getElementById("btn-create-file");
+    const resizer = document.getElementById("resizer");
     const driveAdmDiv = document.getElementById("drive/adm");
 
     // --- State ---
@@ -366,6 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (fileViewSection) fileViewSection.classList.add("hidden");
+        if (resizer) resizer.classList.add("hidden");
         currentFile = null;
 
         contentUl.innerHTML = '<li class="p-4 text-gray-500">Chargement...</li>';
@@ -447,17 +452,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-async function openFile(folder, file) {
+    async function openFile(folder, file) {
         try {
             let path = folder === null ? `${BASE_PATH}/${file.name}` : `${BASE_PATH}/${folder}/${file.name}`;
             const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`, {
@@ -473,6 +468,7 @@ async function openFile(folder, file) {
             renderMarkdown(content);
 
             fileViewSection.classList.remove("hidden");
+            if (resizer) resizer.classList.remove("hidden");
 
             // Reset view mode
             isEditing = false;
@@ -520,7 +516,7 @@ async function openFile(folder, file) {
             text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-2 rounded shadow-md"/>');
             text = text.replace(/\[\{(.+?)\}\]/g, '<a class="inline-block text-white bg-blue-500 hover:bg-blue-600 font-semibold text-sm px-3 py-1 rounded-full shadow transition duration-150">$1</a>');
             text = text.replace(/(\*\*\*|___)(.+?)\1/g, '<strong class="font-bold"><em class="italic">$2</em></strong>');
-            
+
             // Legal
             text = text.replace(/\[\[Procès:\s*(.+?)\]\]/g, '<span class="font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900 px-1 rounded">$1</span>');
             text = text.replace(/\(\(Avocat:\s*(.+?)\)\)/g, '<span class="font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 px-1 rounded">$1</span>');
@@ -557,17 +553,17 @@ async function openFile(folder, file) {
         function generateTableHTML(rows) {
             // rows doit contenir [Header, Separator, Data1, Data2, ...]
             if (rows.length < 3) return rows.join('<br>'); // Pas un tableau valide
-            
+
             // Nettoyage des barres verticales | au début et fin
             const parseRow = (row) => row.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
-            
+
             const headerRow = parseRow(rows[0]);
             // rows[1] est la ligne de séparation |---|---| qu'on ignore dans le rendu
-            const bodyRows = rows.slice(2); 
+            const bodyRows = rows.slice(2);
 
             let html = '<div class="overflow-x-auto my-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">';
             html += '<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800 text-sm">';
-            
+
             // Header
             html += '<thead class="bg-gray-100 dark:bg-gray-900"><tr>';
             headerRow.forEach(cell => {
@@ -656,7 +652,7 @@ async function openFile(folder, file) {
                 const content = inlineReplacements(headerMatch[2].trim());
                 // J'ajoute une classe text-4xl/3xl/2xl/xl/lg pour améliorer l'apparence des titres
                 const sizeClasses = ['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base'];
-                html += `<h${level} class="font-extrabold ${sizeClasses[level-1]} mt-6 mb-2 text-gray-900 dark:text-gray-100">${content}</h${level}>`;
+                html += `<h${level} class="font-extrabold ${sizeClasses[level - 1]} mt-6 mb-2 text-gray-900 dark:text-gray-100">${content}</h${level}>`;
                 continue;
             }
 
@@ -671,7 +667,7 @@ async function openFile(folder, file) {
             // 4. Table Detection (Priorité 4) - V3: Beaucoup plus robuste aux lignes vides et espaces
             // Vérifier si la ligne actuelle est un potentiel début de tableau (ligne d'en-tête)
             if (trimmedLine.startsWith('|') && trimmedLine.includes('|', 1)) {
-                
+
                 let tableRows = [line]; // Commence avec la ligne d'en-tête potentielle
                 let separatorFound = false;
                 let tempIndex = i + 1;
@@ -680,7 +676,7 @@ async function openFile(folder, file) {
                 while (tempIndex < lines.length) {
                     const nextLine = lines[tempIndex];
                     const trimmedNextLine = nextLine.trim();
-                    
+
                     if (trimmedNextLine === '') {
                         tempIndex++; // Sauter la ligne vide
                         continue;
@@ -693,24 +689,24 @@ async function openFile(folder, file) {
                         tempIndex++;
                         break; // Séparateur trouvé, passer à la collecte des données
                     }
-                    
+
                     // Si on rencontre une ligne non vide et qui n'est pas un séparateur/début de tableau, on arrête
                     if (!trimmedNextLine.startsWith('|')) {
-                        break; 
+                        break;
                     }
 
                     // Si la ligne commence par '|' mais n'est pas le séparateur attendu
                     // C'est probablement une table qui manque le séparateur, ou le format est cassé. On arrête la détection de table.
                     break;
                 }
-                
+
                 // 4b. Si le séparateur est trouvé, collecter les lignes de données, en sautant les lignes vides
                 if (separatorFound) {
                     let dataLineCount = 0;
-                    while(tempIndex < lines.length) {
+                    while (tempIndex < lines.length) {
                         const nextLine = lines[tempIndex];
                         const trimmedNextLine = nextLine.trim();
-                        
+
                         if (trimmedNextLine === '') {
                             tempIndex++; // Sauter la ligne vide
                             continue;
@@ -723,11 +719,11 @@ async function openFile(folder, file) {
                             tempIndex++;
                             continue;
                         }
-                        
+
                         // Arrêt si on rencontre un autre type de contenu
                         break;
                     }
-                    
+
                     // 4c. Doit avoir au moins une ligne de données
                     if (dataLineCount > 0) {
                         flushList();
@@ -739,14 +735,14 @@ async function openFile(folder, file) {
                 }
                 // Si la vérification échoue, la ligne i continue vers le paragraphe (9).
             }
-            
+
             // 5. Blockquotes (Priorité 5)
             if (/^\s*>/.test(line)) {
                 flushList();
                 const content = line.replace(/^\s*> ?/, "");
                 inBlockquote = true;
                 blockquoteBuffer.push(inlineReplacements(content));
-                if (i + 1 >= lines.length || (!/^\s*>/.test(lines[i + 1]) && lines[i+1].trim() !== '')) {
+                if (i + 1 >= lines.length || (!/^\s*>/.test(lines[i + 1]) && lines[i + 1].trim() !== '')) {
                     flushBlockquote();
                 }
                 continue;
@@ -757,7 +753,7 @@ async function openFile(folder, file) {
             // 6. Lists (Priorité 6)
             let ulMatch = line.match(/^\s*([-*+])\s+(.*)$/);
             let olMatch = line.match(/^\s*(\d+)\.\s+(.*)$/);
-            
+
             if (ulMatch || olMatch) {
                 const match = ulMatch || olMatch;
                 const type = ulMatch ? "ul" : "ol";
@@ -775,12 +771,12 @@ async function openFile(folder, file) {
                     listType = type;
                     listBuffer.push(content);
                 }
-                
+
                 // Check if the next line continues the list (heuristic: check for the same list type prefix or indent)
                 const nextLine = lines[i + 1] || '';
-                const continuesList = (type === "ul" && /^\s*([-*+])\s+/.test(nextLine)) || 
-                                     (type === "ol" && /^\s*\d+\.\s+/.test(nextLine)) || 
-                                     /^\s{2,}/.test(nextLine); // Check for indentation for nested/multi-line items
+                const continuesList = (type === "ul" && /^\s*([-*+])\s+/.test(nextLine)) ||
+                    (type === "ol" && /^\s*\d+\.\s+/.test(nextLine)) ||
+                    /^\s{2,}/.test(nextLine); // Check for indentation for nested/multi-line items
 
                 if (i + 1 >= lines.length || (!continuesList && nextLine.trim() !== '')) {
                     flushList();
@@ -810,7 +806,7 @@ async function openFile(folder, file) {
             // 8. Empty Line (Priorité 8)
             if (/^\s*$/.test(line)) {
                 // Seulement ajouter un <br> si la ligne précédente n'était pas déjà un bloc de type non-paragraphique ou vide.
-                if (i > 0 && !/^\s*$/.test(lines[i-1])) {
+                if (i > 0 && !/^\s*$/.test(lines[i - 1])) {
                     html += `<br>`;
                 }
                 continue;
@@ -828,17 +824,7 @@ async function openFile(folder, file) {
         if (fileRenderedContent) fileRenderedContent.innerHTML = customMarkdownRender(md);
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-// --- Admin Functions ---
+    // --- Admin Functions ---
 
     async function renameItem(folder, oldName, isFolder) {
         const newName = prompt("Nouveau nom :", oldName.replace(/\.md$/i, ""));
@@ -892,6 +878,7 @@ async function openFile(folder, file) {
 
     btnCloseView.onclick = () => {
         fileViewSection.classList.add("hidden");
+        if (resizer) resizer.classList.add("hidden");
         currentFile = null;
     };
 
@@ -1027,6 +1014,39 @@ async function openFile(folder, file) {
             alert("Erreur sauvegarde: " + e.message);
         }
     };
+
+    // --- Resizer Logic ---
+    let isResizing = false;
+
+    if (resizer) {
+        resizer.addEventListener("mousedown", (e) => {
+            isResizing = true;
+            document.body.style.cursor = "col-resize";
+            document.body.style.userSelect = "none"; // Prevent text selection
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isResizing) return;
+            // Calculate width from the right side of the screen
+            const newWidth = window.innerWidth - e.clientX;
+            // Min width 200px, Max width 80% of screen
+            if (newWidth > 200 && newWidth < (window.innerWidth * 0.8)) {
+                if (fileViewSection) {
+                    fileViewSection.style.width = `${newWidth}px`;
+                    // Ensure flex doesn't mess it up
+                    fileViewSection.style.flex = "none";
+                }
+            }
+        });
+
+        document.addEventListener("mouseup", () => {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.cursor = "";
+                document.body.style.userSelect = "";
+            }
+        });
+    }
 
     // --- Start ---
     await loadToken();
