@@ -424,6 +424,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             text = text.replace(/\(Témoin:\s*([^\)]+)\)/g, '<span class="font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 px-1 rounded-sm">Témoin: $1</span>');
             text = text.replace(/\(Preuve:\s*([^\)]+)\)/g, '<span class="font-mono text-yellow-800 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900 px-1 rounded-sm">Preuve: $1</span>');
             text = text.replace(/\(ArtLoi:\s*([^\)]+)\)/g, '<span class="font-semibold text-indigo-800 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900 px-1 rounded-sm">Article de loi: $1</span>');
+            
+            // Code block style
+            text = text.replace(/```([\s\S]+?)```/g, '<code class="font-mono text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded block whitespace-pre-wrap">$1</code>');
+            
             text = text.replace(/\(Verdict:\s*(Culpabilité|Acquittement|Non-lieu)\)/g, (match, p1) => {
                 let bgColor = '';
                 let textColor = '';
