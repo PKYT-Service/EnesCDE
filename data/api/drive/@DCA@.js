@@ -826,6 +826,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- Admin Functions ---
 
+    async function moveFolder(oldPath, newPath) {
+        // 1. Lister le contenu du dossier
+        let contents = [];
+        try {
+            const res = await githubApi(oldPath);
+            if (Array.isArray(res)) {
+                contents = res;
+            }
+        } catch (e) {
+            // Si le dossier est vide ou n'existe pas (ce qui est bizarre si on le renomme), on ignore
+            console.warn("Dossier vide ou erreur lecture:", oldPath, e);
+            return;
+        }
+
+        // 2. Créer le dossier destination (via un fichier .keep si nécessaire, ou implicitement par les fichiers)
+        // GitHub crée les dossiers automatiquement quand on crée un fichier dedans.
+
+        // 3. Parcourir et déplacer
+        for (const item of contents) {
+            const itemOldPath = item.path; // ex: NEW*DRIVE/Forum/OldFolder/file.md
+            const itemName = item.name;
+            const itemNewPath = `${newPath}/${itemName}`;
+
+            if (item.type === "file") {
+                // Déplacer fichier
+                try {
+                    // a. Lire contenu
+                    const fileRes = await githubApi(itemOldPath);
+                    const content = decodeURIComponent(escape(atob(fileRes.content.replace(/\n/g, ""))));
+
+                    // b. Créer nouveau fichier
+                    await createFile(itemNewPath, content, `Move ${itemName} to new folder`);
+
+                    // c. Supprimer ancien fichier
+                    await deleteFile(itemOldPath, `Moved ${itemName}`);
+                } catch (err) {
+                    console.error(`Erreur déplacement fichier ${itemName}:`, err);
+                    alert(`Erreur lors du déplacement de ${itemName}: ` + err.message);
+                }
+            } else if (item.type === "dir") {
+                // Récursion pour les sous-dossiers
+                await moveFolder(itemOldPath, itemNewPath);
+            }
+        }
+    }
+
     async function renameItem(folder, oldName, isFolder) {
         const newName = prompt("Nouveau nom :", oldName.replace(/\.md$/i, ""));
         if (!newName || newName === oldName.replace(/\.md$/i, "")) return;
@@ -837,7 +883,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (confirm(`Renommer "${oldName}" en "${finalNewName}" ?`)) {
             try {
                 if (isFolder) {
-                    alert("Le renommage de dossier n'est pas encore supporté (nécessite de déplacer tous les fichiers).");
+                    // IMPLEMENTATION DU RENOMMAGE DOSSIER
+                    alert("Renommage du dossier en cours... Cela peut prendre du temps selon le nombre de fichiers.");
+                    await moveFolder(oldPath, newPath);
+                    alert("Dossier renommé (déplacé) avec succès !");
+                    openFolder(folder); // Refresh parent
                     return;
                 }
 
