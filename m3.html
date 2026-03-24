@@ -154,6 +154,96 @@
             width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
             display: grid; place-items: center;
         }
+        /* --- Grille de Widgets --- */
+.m3-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+/* --- Widget Image --- */
+.m3-card-image {
+    position: relative;
+    height: 200px;
+    border-radius: 28px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.m3-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.m3-card-image:hover img { transform: scale(1.1); }
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+}
+
+/* --- Chips (Petites étiquettes) --- */
+.chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.m3-chip {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--m3-surface-variant);
+    color: var(--m3-on-surface-variant);
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--m3-outline);
+    cursor: pointer;
+}
+
+/* --- Modal (Dialogue) --- */
+.m3-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    backdrop-filter: blur(4px);
+}
+.m3-modal-overlay.active { opacity: 1; visibility: visible; }
+
+.m3-modal {
+    background: var(--m3-surface);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 28px;
+    padding: 24px;
+    transform: translateY(20px);
+    transition: 0.4s cubic-bezier(0.17, 0.67, 0.16, 0.99);
+}
+.m3-modal-overlay.active .m3-modal { transform: translateY(0); }
+
+/* --- Barre de progression --- */
+.m3-progress {
+    width: 100%;
+    height: 4px;
+    background: var(--m3-surface-variant);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+.m3-progress-bar {
+    height: 100%;
+    background: var(--m3-primary);
+    width: 65%; /* Valeur de test */
+    border-radius: 2px;
+}
+
     </style>
 </head>
 <body>
@@ -195,6 +285,70 @@
             <h2>Navigation Bar</h2>
             <p>Regarde en bas de ton écran ! Une barre de navigation M3 a été ajoutée pour une expérience plus proche d'une application native.</p>
         </div>
+        <div class="m3-card-image" style="height: 300px;">
+    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Abstrait">
+    <div class="image-overlay">
+        <h2 style="margin:0">Bienvenue dans l'Expressivité</h2>
+        <p style="margin:4px 0 0; opacity:0.8">Material Design 3 redéfinit votre expérience.</p>
+    </div>
+</div>
+
+<div class="m3-grid">
+    
+    <div class="m3-card">
+        <h2>Stockage Cloud</h2>
+        <div class="m3-progress"><div class="m3-progress-bar"></div></div>
+        <p style="font-size: 12px;">12.4 Go sur 20 Go utilisés</p>
+        <div class="chip-group">
+            <span class="m3-chip">Photos</span>
+            <span class="m3-chip">Docs</span>
+            <span class="m3-chip">Système</span>
+        </div>
+        <button class="m3-btn m3-btn-filled" style="width:100%; margin-top:10px;" onclick="openModal()">
+            Gérer le stockage
+        </button>
+    </div>
+
+    <div class="m3-card" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h2 style="margin:0; color:inherit;">Paris</h2>
+                <p style="font-size:32px; font-weight:bold; margin:8px 0;">22°C</p>
+            </div>
+            <span class="material-symbols-outlined" style="font-size:48px;">light_mode</span>
+        </div>
+        <p>Ensoleillé • Ressenti 24°C</p>
+    </div>
+
+</div>
+
+<div class="m3-card" style="margin-top:24px;">
+    <h2>Dernières photos</h2>
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:12px;">
+        <div style="aspect-ratio:1; border-radius:12px; overflow:hidden;">
+            <img src="https://picsum.photos/200/200?random=1" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div style="aspect-ratio:1; border-radius:12px; overflow:hidden;">
+            <img src="https://picsum.photos/200/200?random=2" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div style="aspect-ratio:1; border-radius:12px; overflow:hidden;">
+            <img src="https://picsum.photos/200/200?random=3" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+    </div>
+</div>
+
+<div class="m3-modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="m3-modal" onclick="event.stopPropagation()">
+        <span class="material-symbols-outlined" style="color: var(--m3-primary); font-size: 32px;">info</span>
+        <h2 style="margin-top:16px;">Confirmation requise</h2>
+        <p>Voulez-vous vraiment synchroniser vos données avec le serveur Material You ? Cette action consommera 15 Mo de données.</p>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+            <button class="m3-btn" style="background:transparent; color:var(--m3-primary);" onclick="closeModal()">Annuler</button>
+            <button class="m3-btn m3-btn-filled" onclick="closeModal()">Confirmer</button>
+        </div>
+    </div>
+</div>
+
     </main>
 
     <nav class="m3-nav-bar">
@@ -250,6 +404,24 @@
         applyMaterialYouTheme();
         window.addEventListener('storage', applyMaterialYouTheme);
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyMaterialYouTheme);
+        
+        
+        // --- GESTION DE LA MODALE ---
+function openModal() {
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+}
+
+// Optionnel : Fermer avec la touche Echap
+window.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") closeModal();
+});
+
+
+
     </script>
 </body>
 </html>
