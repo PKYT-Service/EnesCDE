@@ -3,50 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Material Expressive 3 Luxe</title>
+    <title>Material Expressive 3 - Pro</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <style>
         :root {
-            /* Palette de base dynamique */
+            /* Variables par défaut */
             --base-color: #386A20; 
             --page-bg: #F8F9FF;
             --page-text: #1C1B1F;
             
-            /* Logique Material You Expressive */
+            /* Logique Expressive 3 via color-mix */
             --m3-primary: var(--base-color);
             --m3-on-primary: #FFFFFF;
-            --m3-primary-container: color-mix(in srgb, var(--base-color) 20%, #FFFFFF);
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 25%, #FFFFFF);
             --m3-on-primary-container: color-mix(in srgb, var(--base-color) 80%, black);
 
-            --m3-secondary-container: color-mix(in srgb, var(--base-color) 10%, #E8DEF8);
+            --m3-secondary-container: color-mix(in srgb, var(--base-color) 15%, #E8DEF8);
             --m3-on-secondary-container: #1D192B;
 
-            --m3-surface: color-mix(in srgb, var(--base-color) 2%, #FFFFFF);
-            --m3-surface-variant: color-mix(in srgb, var(--base-color) 8%, #E7E0EC);
+            --m3-surface: color-mix(in srgb, var(--base-color) 5%, #FFFFFF);
             --m3-on-surface: var(--page-text);
+            --m3-surface-variant: color-mix(in srgb, var(--base-color) 12%, #E7E0EC);
             --m3-on-surface-variant: #49454F;
             
-            --m3-outline: color-mix(in srgb, var(--base-color) 20%, #79747E);
-            
-            /* Motion & Shapes */
-            --m3-radius-xl: 28px;
-            --m3-transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            --m3-outline: #79747E;
+            --m3-radius: 28px;
+            --m3-transition: all 0.4s cubic-bezier(0.17, 0.67, 0.16, 0.99);
         }
 
         :root.dark {
             --page-bg: #141318;
             --page-text: #E6E1E5;
-            --m3-primary: color-mix(in srgb, var(--base-color) 80%, white);
-            --m3-on-primary: color-mix(in srgb, var(--base-color) 40%, black);
-            --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, #21005D);
+            --m3-primary: color-mix(in srgb, var(--base-color) 70%, white);
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 50%, black);
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, #4F378B);
             --m3-on-primary-container: #EADDFF;
-            --m3-surface: #1D1B20;
-            --m3-surface-variant: #49454F;
+            --m3-surface: color-mix(in srgb, var(--base-color) 10%, #1C1B1F);
             --m3-on-surface: #E6E1E5;
-            --m3-on-surface-variant: #CAC4D0;
         }
 
         body {
@@ -54,252 +50,168 @@
             background-color: var(--page-bg);
             color: var(--m3-on-surface);
             margin: 0;
-            padding: 0;
             transition: var(--m3-transition);
         }
 
-        /* --- Top App Bar Glassmorphism --- */
-        .m3-top-app-bar {
+        /* --- Top App Bar Glass --- */
+        .m3-top-bar {
             display: flex;
             align-items: center;
-            padding: 0 16px;
             height: 64px;
-            background-color: color-mix(in srgb, var(--m3-surface) 80%, transparent);
-            backdrop-filter: blur(12px);
+            padding: 0 16px;
+            background: color-mix(in srgb, var(--m3-surface) 70%, transparent);
+            backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
-            z-index: 10;
-            border-bottom: 1px solid color-mix(in srgb, var(--m3-outline) 10%, transparent);
-        }
-
-        .m3-top-app-bar h1 {
-            font-size: 24px;
-            font-weight: 400;
-            margin-left: 12px;
-            flex-grow: 1;
-            letter-spacing: -0.5px;
-        }
-
-        /* --- Boutons avec State Layers --- */
-        .m3-icon-button {
-            background: transparent;
-            border: none;
-            color: var(--m3-on-surface);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: grid;
-            place-items: center;
-            position: relative;
-            overflow: hidden;
-            transition: var(--m3-transition);
-        }
-
-        .m3-icon-button::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-color: var(--m3-on-surface);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .m3-icon-button:hover::after { opacity: 0.08; }
-        .m3-icon-button:active::after { opacity: 0.12; }
-
-        /* --- Navigation Drawer Modernisé --- */
-        .m3-drawer {
-            position: fixed;
-            top: 0;
-            left: -360px;
-            width: 320px;
-            height: 100vh;
-            background-color: var(--m3-surface);
             z-index: 100;
-            transition: var(--m3-transition);
-            border-radius: 0 var(--m3-radius-xl) var(--m3-radius-xl) 0;
-            box-shadow: 0 0 40px rgba(0,0,0,0.1);
-            padding: 20px;
+            border-bottom: 1px solid color-mix(in srgb, var(--m3-outline) 15%, transparent);
         }
 
-        .m3-drawer.open { transform: translateX(360px); }
+        .m3-top-bar h1 { font-size: 22px; font-weight: 400; flex-grow: 1; margin-left: 12px; }
 
-        .drawer-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 14px 20px;
-            text-decoration: none;
-            color: var(--m3-on-surface-variant);
-            border-radius: 100px;
-            font-weight: 500;
-            transition: var(--m3-transition);
-        }
+        /* --- Cards --- */
+        .container { max-width: 800px; margin: 32px auto; padding: 0 16px; }
 
-        .drawer-item.active {
-            background-color: var(--m3-secondary-container);
-            color: var(--m3-on-secondary-container);
-        }
-
-        /* --- Cartes Interactives --- */
         .m3-card {
             background-color: var(--m3-surface-variant);
-            border-radius: var(--m3-radius-xl);
-            padding: 32px;
+            border-radius: var(--m3-radius);
+            padding: 24px;
             margin-bottom: 24px;
             transition: var(--m3-transition);
-            border: 1px solid transparent;
         }
 
-        .m3-card:hover {
-            transform: translateY(-4px);
-            background-color: color-mix(in srgb, var(--m3-surface-variant) 95%, var(--m3-primary));
-            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        .m3-card:hover { transform: scale(1.01); }
+
+        /* --- Debug Badge --- */
+        .debug-panel {
+            background: var(--m3-primary-container);
+            color: var(--m3-on-primary-container);
+            padding: 16px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 13px;
+            display: flex;
+            gap: 20px;
         }
 
         .m3-btn {
-            padding: 12px 28px;
-            border-radius: 100px;
+            background: var(--m3-primary);
+            color: var(--m3-on-primary);
             border: none;
+            padding: 12px 24px;
+            border-radius: 100px;
             font-weight: 500;
             cursor: pointer;
-            transition: var(--m3-transition);
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .m3-btn-filled { 
-            background: var(--m3-primary); 
-            color: var(--m3-on-primary); 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .m3-btn-filled:hover { 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            filter: brightness(1.1);
+        .m3-icon-btn {
+            background: transparent; border: none; color: var(--m3-on-surface);
+            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
         }
 
-        /* --- Settings Panel --- */
-        .settings-card {
-            background: var(--m3-primary-container);
-            color: var(--m3-on-primary-container);
-            border-radius: 20px;
-            padding: 16px;
-            margin-top: 40px;
-        }
+        .m3-icon-btn:hover { background: var(--m3-surface-variant); }
 
-        input[type="color"] {
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            background: none;
-        }
-
-        .m3-fab {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 64px;
-            height: 64px;
-            border-radius: 20px;
-            background: var(--m3-primary-container);
-            color: var(--m3-on-primary-container);
-            border: none;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: var(--m3-transition);
-        }
-
-        .m3-fab:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
+        /* Scrim & Drawer */
+        .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 150; }
+        .scrim.show { opacity: 1; visibility: visible; }
+        .drawer { position: fixed; left: -320px; top: 0; width: 300px; height: 100%; background: var(--m3-surface); z-index: 200; transition: 0.4s; border-radius: 0 28px 28px 0; padding: 20px; }
+        .drawer.open { left: 0; }
     </style>
 </head>
 <body>
 
-    <div class="m3-scrim" id="scrim" onclick="toggleDrawer()" style="position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:90; visibility:hidden; opacity:0; transition:0.3s;"></div>
-
-    <aside class="m3-drawer" id="drawer">
-        <h2 style="padding: 0 20px; font-size: 14px; text-transform: uppercase; opacity: 0.6;">Menu</h2>
-        <nav>
-            <a href="#" class="drawer-item active"><span class="material-symbols-outlined">home</span> Accueil</a>
-            <a href="#" class="drawer-item"><span class="material-symbols-outlined">auto_awesome</span> Explorer</a>
-            <a href="#" class="drawer-item"><span class="material-symbols-outlined">settings</span> Réglages</a>
-        </nav>
+    <div class="scrim" id="scrim" onclick="toggleMenu()"></div>
+    
+    <aside class="drawer" id="drawer">
+        <h2 style="font-size: 14px; text-transform: uppercase; color: var(--m3-on-surface-variant)">Navigation</h2>
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+            <div class="m3-card" style="padding: 12px 20px; margin: 0; background: var(--m3-secondary-container); color: var(--m3-on-secondary-container)">Accueil</div>
+        </div>
     </aside>
 
-    <header class="m3-top-app-bar">
-        <button class="m3-icon-button" onclick="toggleDrawer()">
+    <header class="m3-top-bar">
+        <button class="m3-icon-btn" onclick="toggleMenu()">
             <span class="material-symbols-outlined">menu</span>
         </button>
-        <h1>Expressive 3</h1>
-        <button class="m3-icon-button" onclick="toggleTheme()">
-            <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+        <h1>Mon Application</h1>
+        <button class="m3-icon-btn" onclick="cycleTheme()">
+            <span class="material-symbols-outlined">palette</span>
         </button>
     </header>
 
-    <main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+    <main class="container">
         <div class="m3-card">
-            <h2 style="font-size: 32px; margin-bottom: 12px;">Modernité & Fluidité</h2>
-            <p style="font-size: 18px; line-height: 1.6; opacity: 0.8;">Découvrez l'évolution de votre interface. Les surfaces sont plus douces, les animations plus naturelles et la couleur s'adapte à vos envies.</p>
-            <div style="display: flex; gap: 12px; margin-top: 30px;">
-                <button class="m3-btn m3-btn-filled">Commencer</button>
-                <button class="m3-btn" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);">Détails</button>
+            <h2>Statut du Thème</h2>
+            <div class="debug-panel">
+                <div>Thème: <b id="debug-theme">?</b></div>
+                <div>Couleur: <b id="debug-color">?</b></div>
             </div>
         </div>
 
-        <div class="settings-card">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <div style="flex-grow: 1;">
-                    <h3 style="margin: 0;">Personnaliser la couleur</h3>
-                    <p style="margin: 4px 0 0 0; opacity: 0.8;">Changez la graine (seed) de Material You.</p>
-                </div>
-                <input type="color" id="colorPicker" value="#386A20" oninput="updateColor(this.value)">
+        <div class="m3-card" style="background: var(--m3-surface); border: 1px solid var(--m3-outline)">
+            <h2>Contrôle manuel</h2>
+            <p>Ces boutons modifient le <code>localStorage</code> pour tester ton script en direct.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="m3-btn" onclick="updateStorage('theme', 'sombre')">Mode Sombre</button>
+                <button class="m3-btn" onclick="updateStorage('theme', 'clair')">Mode Clair</button>
+                <button class="m3-btn" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container)" onclick="updateStorage('color', '#D0BCFF')">Violet</button>
+                <button class="m3-btn" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container)" onclick="updateStorage('color', '#386A20')">Vert</button>
+                <button class="m3-btn" onclick="updateStorage('color', 'auto')">Auto</button>
             </div>
         </div>
     </main>
 
-    <button class="m3-fab">
-        <span class="material-symbols-outlined">edit</span>
-    </button>
-
     <script>
-        function updateColor(val) {
-            document.documentElement.style.setProperty('--base-color', val);
-            localStorage.setItem('m3-seed-color', val);
+        function applyMaterialYouTheme() {
+            const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
+            const color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
+
+            // 1. Thème Clair / Sombre
+            const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const htmlElement = document.documentElement;
+            
+            if (theme === 'sombre' || (theme === 'systeme' && isSystemDark)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+
+            // 2. Couleur de Base
+            if (color !== 'auto' && color !== '') {
+                htmlElement.style.setProperty('--base-color', color);
+            } else {
+                htmlElement.style.removeProperty('--base-color');
+            }
+
+            // Debug UI
+            document.getElementById('debug-theme').innerText = theme;
+            document.getElementById('debug-color').innerText = color;
         }
 
-        function toggleDrawer() {
-            const d = document.getElementById('drawer');
-            const s = document.getElementById('scrim');
-            const isOpen = d.classList.toggle('open');
-            s.style.visibility = isOpen ? 'visible' : 'hidden';
-            s.style.opacity = isOpen ? '1' : '0';
+        // --- Fonctions utilitaires pour la démo ---
+        function updateStorage(key, value) {
+            window.localStorage.setItem('material_you_' + key + (key === 'color' ? '_expresive' : ''), value);
+            applyMaterialYouTheme();
         }
 
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            const isDark = html.classList.contains('dark');
-            document.getElementById('themeIcon').innerText = isDark ? 'light_mode' : 'dark_mode';
-            localStorage.setItem('m3-theme', isDark ? 'dark' : 'light');
+        function toggleMenu() {
+            document.getElementById('drawer').classList.toggle('open');
+            document.getElementById('scrim').classList.toggle('show');
         }
 
-        // Init
-        const savedColor = localStorage.getItem('m3-seed-color');
-        if(savedColor) {
-            document.getElementById('colorPicker').value = savedColor;
-            updateColor(savedColor);
+        function cycleTheme() {
+            const current = window.localStorage.getItem('material_you_theme');
+            const next = current === 'sombre' ? 'clair' : 'sombre';
+            updateStorage('theme', next);
         }
-        
-        if(localStorage.getItem('m3-theme') === 'dark') {
-            document.documentElement.classList.add('dark');
-            document.getElementById('themeIcon').innerText = 'light_mode';
-        }
+
+        // Initialisation
+        applyMaterialYouTheme();
+        window.addEventListener('storage', applyMaterialYouTheme);
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyMaterialYouTheme);
     </script>
 </body>
 </html>
