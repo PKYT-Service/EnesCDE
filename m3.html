@@ -214,3 +214,153 @@
     </script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="fr" class="transition-colors duration-300">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E‑CDE Expressive</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+ tailwind.config = {
+  darkMode: 'class',
+  theme: {
+   extend: {
+    fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+    borderRadius: { expressive:'32px' },
+    boxShadow: { expressive:'0 12px 40px rgba(0,0,0,0.14)' },
+    colors: {
+     m3: {
+      'primary':'var(--m3-primary)',
+      'on-primary':'var(--m3-on-primary)',
+      'primary-container':'var(--m3-primary-container)',
+      'on-primary-container':'var(--m3-on-primary-container)',
+      'secondary-container':'var(--m3-secondary-container)',
+      'on-secondary-container':'var(--m3-on-secondary-container)',
+      'surface':'var(--m3-surface)',
+      'on-surface':'var(--m3-on-surface)',
+      'surface-variant':'var(--m3-surface-variant)',
+      'on-surface-variant':'var(--m3-on-surface-variant)',
+      'background':'var(--m3-background)',
+      'on-background':'var(--m3-on-background)',
+      'outline':'var(--m3-outline)',
+      'outline-variant':'var(--m3-outline-variant)',
+     }
+    }
+   }
+  }
+ }
+</script>
+
+<style>
+:root{
+ --base-color:#386A20;
+ --m3-primary:var(--base-color);
+ --m3-on-primary:#fff;
+ --m3-background:#FDFBFF;
+ --m3-on-background:#1B1B1F;
+ --m3-surface:#FDFBFF;
+ --m3-on-surface:#1B1B1F;
+ --m3-surface-variant:#E7E0EC;
+ --m3-on-surface-variant:#49454F;
+ --m3-outline:#79747E;
+ --m3-outline-variant:#C9C5D0;
+ --m3-secondary-container:color-mix(in srgb,var(--base-color)12%,#E8DEF8);
+ --m3-on-secondary-container:#1D192B;
+ --m3-primary-container:color-mix(in srgb,var(--base-color)20%,#FDFBFF);
+ --m3-on-primary-container:color-mix(in srgb,var(--base-color)80%,#000);
+}
+:root.dark{
+ --m3-background:#1B1B1F;
+ --m3-on-background:#E3E2E6;
+ --m3-surface:#1B1B1F;
+ --m3-on-surface:#E3E2E6;
+ --m3-surface-variant:#49454F;
+ --m3-on-surface-variant:#C9C5D0;
+ --m3-outline:#938F99;
+ --m3-outline-variant:#49454F;
+ --m3-secondary-container:color-mix(in srgb,var(--base-color)25%,#4A4458);
+ --m3-on-secondary-container:#E8DEF8;
+ --m3-primary-container:color-mix(in srgb,var(--base-color)30%,#001D35);
+ --m3-on-primary-container:#D1E4FF;
+}
+.blob{border-radius:60% 40% 50% 70% / 60% 40% 60% 40%;}
+</style>
+</head>
+
+<body class="bg-m3-background text-m3-on-background font-sans min-h-screen flex">
+
+<!-- ===== DESKTOP NAV RAIL EXPRESSIVE ===== -->
+<nav class="hidden lg:flex flex-col items-center w-28 py-10 relative">
+
+ <!-- floating background pill -->
+ <div class="absolute inset-y-0 left-4 w-20 bg-m3-surface-variant/20 rounded-expressive blur-xl"></div>
+
+ <div class="relative flex flex-col items-center gap-10 z-10">
+
+  <div class="w-14 h-14 rounded-2xl bg-m3-primary text-m3-on-primary flex items-center justify-center shadow-expressive">
+   <span class="material-symbols-outlined text-3xl">rocket_launch</span>
+  </div>
+
+  <div class="flex flex-col items-center gap-8 mt-8">
+
+   <div class="flex flex-col items-center">
+    <div class="px-5 py-2 bg-m3-secondary-container rounded-full shadow-sm">
+     <span class="material-symbols-outlined text-m3-primary">home</span>
+    </div>
+    <span class="text-xs mt-2 font-semibold">Accueil</span>
+   </div>
+
+   <div class="flex flex-col items-center opacity-60 hover:opacity-100 transition">
+    <span class="material-symbols-outlined">apps</span>
+    <span class="text-xs mt-2">Apps</span>
+   </div>
+
+   <div class="flex flex-col items-center opacity-60 hover:opacity-100 transition">
+    <span class="material-symbols-outlined">library_books</span>
+    <span class="text-xs mt-2">Docs</span>
+   </div>
+
+  </div>
+ </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="flex-1">
+ <section class="p-12">
+  <h1 class="text-5xl font-black mb-6">Menu Expressive</h1>
+  <p class="text-m3-on-surface-variant max-w-xl">
+   Navigation plus organique, flottante et premium.
+  </p>
+ </section>
+</main>
+
+<!-- ===== MOBILE BOTTOM BAR EXPRESSIVE ===== -->
+<nav class="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] bg-m3-surface/90 backdrop-blur-xl rounded-expressive shadow-expressive px-6 py-4 flex justify-between items-center z-50">
+
+ <div class="flex flex-col items-center flex-1">
+  <div class="px-4 py-1.5 bg-m3-secondary-container rounded-full">
+   <span class="material-symbols-outlined text-m3-primary">home</span>
+  </div>
+  <span class="text-[11px] mt-1 font-semibold">Accueil</span>
+ </div>
+
+ <div class="flex flex-col items-center flex-1 opacity-60">
+  <span class="material-symbols-outlined">apps</span>
+  <span class="text-[11px] mt-1">Apps</span>
+ </div>
+
+ <div class="flex flex-col items-center flex-1 opacity-60">
+  <span class="material-symbols-outlined">library_books</span>
+  <span class="text-[11px] mt-1">Docs</span>
+ </div>
+
+</nav>
+
+</body>
+</html>
