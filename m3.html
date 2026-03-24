@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Material You</title>
+    <style>
+        :root {
+            /* Couleurs Material Design 3 par défaut (Clair) */
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-background: #FFFBFE;
+            --md-sys-color-on-background: #1C1B1F;
+            --md-sys-color-surface: #F4EFF4;
+            --md-sys-color-on-surface: #1C1B1F;
+            
+            --border-radius: 28px;
+            --border-radius-small: 16px;
+        }
+
+        /* Thème Sombre */
+        [data-theme="dark"] {
+            --md-sys-color-primary: #D0BCFF;
+            --md-sys-color-on-primary: #381E72;
+            --md-sys-color-background: #1C1B1F;
+            --md-sys-color-on-background: #E6E1E5;
+            --md-sys-color-surface: #49454F;
+            --md-sys-color-on-surface: #CAC4D0;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 32px;
+            opacity: 0.8;
+        }
+
+        .fab {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 100px; /* Fully rounded buttons in M3 */
+            cursor: pointer;
+            transition: filter 0.2s, background-color 0.3s, color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .fab:hover {
+            filter: brightness(0.9);
+        }
+        
+        .debug-info {
+            margin-top: 40px;
+            font-family: monospace;
+            background: rgba(128,128,128,0.1);
+            padding: 12px;
+            border-radius: var(--border-radius-small);
+            font-size: 12px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Démo Material You</h1>
+        <p>Cette page Web lit instantanément le <code>localStorage</code> injecté par ton application Android pour adapter l'interface.</p>
+        
+        <button class="fab" onclick="alert('Bouton cliqué !')">Test Composant</button>
+        
+        <div class="debug-info">
+            <strong>Variables reçues par l'App :</strong><br>
+            <br>
+            • Thème : <span id="debug-theme">...</span><br>
+            • Couleur : <span id="debug-color">...</span>
+        </div>
+    </div>
+
+    <script>
+        function applyMaterialYouTheme() {
+            // 1. Lire les valeurs depuis le localStorage
+            const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
+            let color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
+
+            // 2. Détection du mode clair/sombre
+            const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (theme === 'sombre' || (theme === 'systeme' && isSystemDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+
+            // 3. Application de la couleur d'accentuation
+            // Si une couleur custom est envoyée, on remplace la variable CSS principale
+            if (color !== 'auto' && color !== '') {
+                // On applique la couleur primaire
+                document.documentElement.style.setProperty('--md-sys-color-primary', color);
+                // On met le texte du bouton en blanc par défaut pour s'assurer qu'il soit lisible
+                document.documentElement.style.setProperty('--md-sys-color-on-primary', '#FFFFFF');
+            } else {
+                // Si 'auto', on retire l'override JS pour revenir aux couleurs par défaut définies dans le CSS
+                document.documentElement.style.removeProperty('--md-sys-color-primary');
+                document.documentElement.style.removeProperty('--md-sys-color-on-primary');
+            }
+
+            // Mise à jour de la console/debug visuel
+            document.getElementById('debug-theme').innerText = theme;
+            document.getElementById('debug-color').innerText = color;
+        }
+
+        // On déclenche l'application du thème immédiatement au chargement
+        applyMaterialYouTheme();
+
+        // Si jamais le localStorage change pendant que la page est ouverte, on la met à jour en temps réel
+        window.addEventListener('storage', applyMaterialYouTheme);
+    </script>
+</body>
+</html>
