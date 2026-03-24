@@ -1,160 +1,164 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="transition-colors duration-300">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Material You</title>
+    <title>Material You avec Tailwind</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // On connecte Tailwind à nos variables CSS dynamiques
+                        m3: {
+                            primary: 'var(--m3-primary)',
+                            onPrimary: 'var(--m3-on-primary)',
+                            
+                            primaryContainer: 'var(--m3-primary-container)',
+                            onPrimaryContainer: 'var(--m3-on-primary-container)',
+                            
+                            surface: 'var(--m3-surface)',
+                            onSurface: 'var(--m3-on-surface)',
+                            
+                            background: 'var(--m3-background)',
+                            onBackground: 'var(--m3-on-background)',
+                        }
+                    },
+                    borderRadius: {
+                        'full': '9999px',
+                        'xl': '24px',
+                        'lg': '16px',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        /* Magie CSS moderne : on génère des couleurs dérivées (claires/foncées) à partir d'une seule couleur de base */
         :root {
-            /* Couleurs Material Design 3 par défaut (Clair) */
-            --md-sys-color-primary: #6750A4;
-            --md-sys-color-on-primary: #FFFFFF;
-            --md-sys-color-background: #FFFBFE;
-            --md-sys-color-on-background: #1C1B1F;
-            --md-sys-color-surface: #F4EFF4;
-            --md-sys-color-on-surface: #1C1B1F;
+            /* Couleur de base et couleur de page (blanc ou noir selon le thème) */
+            --page-bg: #FCFCFF;
+            --page-text: #1A1C1E;
             
-            --border-radius: 28px;
-            --border-radius-small: 16px;
+            /* Violet par défaut (si "auto") */
+            --base-color: #6750A4; 
+            
+            /*=== Variables de couleurs M3 dynamiques (calculées nativement avec color-mix !) ===*/
+            --m3-primary: var(--base-color);
+            --m3-on-primary: #FFFFFF;
+            
+            /* Un fond très légèrement teinté de la couleur primaire */
+            --m3-background: color-mix(in srgb, var(--base-color) 4%, var(--page-bg));
+            --m3-on-background: var(--page-text);
+            
+            /* Une "carte" (surface) un peu plus teintée */
+            --m3-surface: color-mix(in srgb, var(--base-color) 8%, var(--page-bg));
+            --m3-on-surface: color-mix(in srgb, var(--page-text) 90%, var(--base-color));
+            
+            /* Les conteneurs secondaires (très clairs en mode jour) */
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 20%, var(--page-bg));
+            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 80%, var(--page-text));
         }
 
-        /* Thème Sombre */
-        [data-theme="dark"] {
-            --md-sys-color-primary: #D0BCFF;
-            --md-sys-color-on-primary: #381E72;
-            --md-sys-color-background: #1C1B1F;
-            --md-sys-color-on-background: #E6E1E5;
-            --md-sys-color-surface: #49454F;
-            --md-sys-color-on-surface: #CAC4D0;
-        }
+        /* Mode Sombre */
+        :root.dark {
+            --page-bg: #1A1C1E;
+            --page-text: #E2E2E6;
+            
+            /* En mode sombre, material you éclaircit un peu les primaires pour être plus lisibles, on simule ça */
+            --m3-primary: color-mix(in srgb, var(--base-color) 80%, white);
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 60%, black);
 
-        body {
-            margin: 0;
-            padding: 24px;
-            font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
-            transition: background-color 0.3s, color 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .card {
-            background-color: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface);
-            padding: 24px;
-            border-radius: var(--border-radius);
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-top: 0;
-            margin-bottom: 16px;
-        }
-
-        p {
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 32px;
-            opacity: 0.8;
-        }
-
-        .fab {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            border: none;
-            padding: 16px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 100px; /* Fully rounded buttons in M3 */
-            cursor: pointer;
-            transition: filter 0.2s, background-color 0.3s, color 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .fab:hover {
-            filter: brightness(0.9);
-        }
-        
-        .debug-info {
-            margin-top: 40px;
-            font-family: monospace;
-            background: rgba(128,128,128,0.1);
-            padding: 12px;
-            border-radius: var(--border-radius-small);
-            font-size: 12px;
-            text-align: left;
-            width: 100%;
-            box-sizing: border-box;
+            --m3-surface: color-mix(in srgb, var(--base-color) 12%, var(--page-bg));
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, var(--page-bg));
+            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 90%, white);
         }
     </style>
 </head>
-<body>
+<body class="bg-m3-background text-m3-on-background min-h-screen p-6 font-sans antialiased transition-colors duration-300">
 
-    <div class="card">
-        <h1>Démo Material You</h1>
-        <p>Cette page Web lit instantanément le <code>localStorage</code> injecté par ton application Android pour adapter l'interface.</p>
+    <div class="max-w-md mx-auto space-y-6 mt-10 relative">
         
-        <button class="fab" onclick="alert('Bouton cliqué !')">Test Composant</button>
-        
-        <div class="debug-info">
-            <strong>Variables reçues par l'App :</strong><br>
-            <br>
-            • Thème : <span id="debug-theme">...</span><br>
-            • Couleur : <span id="debug-color">...</span>
+        <!-- En-tête -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold tracking-tight text-m3-on-background">Material Tailwind</h1>
+            <p class="mt-2 text-m3-on-background/80">Couleurs 100% dynamiques et générées à la volée !</p>
+        </header>
+
+        <!-- Carte Principale (Surface) -->
+        <div class="bg-m3-surface p-6 rounded-xl shadow-sm transition-colors duration-300">
+            <h2 class="text-xl font-semibold mb-2">Composant Surface</h2>
+            <p class="text-m3-on-surface/80 leading-relaxed mb-6">
+                Le fond de cette carte (`m3-surface`) et la couleur de ce texte (`m3-on-surface`) 
+                sont doucement teintés de ta couleur personnalisée pour donner une harmonie visuelle comme sur Android 12+.
+            </p>
+            
+            <!-- Bouton Primaire -->
+            <button onclick="alert('Bouton cliqué !')" class="w-full bg-m3-primary text-m3-on-primary hover:opacity-90 font-medium py-3 px-6 rounded-full shadow-md transition-all active:scale-[0.98]">
+                Bouton Primaire
+            </button>
         </div>
+
+        <!-- Conteneur Secondaire -->
+        <div class="bg-m3-primaryContainer p-6 rounded-xl transition-colors duration-300 shadow-sm border border-m3-primary/10">
+            <div class="flex items-center gap-4">
+                <!-- Icone factice -->
+                <div class="h-12 w-12 rounded-full bg-m3-primary flex items-center justify-center text-m3-on-primary font-bold text-xl">
+                    MD
+                </div>
+                <div>
+                    <h3 class="font-bold text-m3-onPrimaryContainer">Primary Container</h3>
+                    <p class="text-sm text-m3-onPrimaryContainer/80">Idéal pour mettre en valeur un contenu ou un widget.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations Debug -->
+        <div class="bg-black/5 dark:bg-white/5 p-4 rounded-lg font-mono text-xs overflow-hidden mt-8">
+            <div class="font-bold mb-2">Données localStorage :</div>
+            <div>Thème  : <span id="debug-theme" class="text-m3-primary font-bold">...</span></div>
+            <div>Couleur: <span id="debug-color" class="text-m3-primary font-bold">...</span></div>
+        </div>
+
     </div>
 
+    <!-- SCRIPT DE SYNCHRONISATION -->
     <script>
         function applyMaterialYouTheme() {
-            // 1. Lire les valeurs depuis le localStorage
             const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
-            let color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
+            const color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
 
-            // 2. Détection du mode clair/sombre
+            // 1. Thème Clair / Sombre
             const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const htmlElement = document.documentElement;
             
             if (theme === 'sombre' || (theme === 'systeme' && isSystemDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
+                htmlElement.classList.add('dark');
             } else {
-                document.documentElement.setAttribute('data-theme', 'light');
+                htmlElement.classList.remove('dark');
             }
 
-            // 3. Application de la couleur d'accentuation
-            // Si une couleur custom est envoyée, on remplace la variable CSS principale
+            // 2. Couleur de Base
             if (color !== 'auto' && color !== '') {
-                // On applique la couleur primaire
-                document.documentElement.style.setProperty('--md-sys-color-primary', color);
-                // On met le texte du bouton en blanc par défaut pour s'assurer qu'il soit lisible
-                document.documentElement.style.setProperty('--md-sys-color-on-primary', '#FFFFFF');
+                // Si custom, on remplace la variable --base-color 
+                // et TOUT le reste de la page (fonds, cartes, textes) 
+                // va se recalculer automatiquement grâce au CSS color-mix !
+                htmlElement.style.setProperty('--base-color', color);
             } else {
-                // Si 'auto', on retire l'override JS pour revenir aux couleurs par défaut définies dans le CSS
-                document.documentElement.style.removeProperty('--md-sys-color-primary');
-                document.documentElement.style.removeProperty('--md-sys-color-on-primary');
+                // "auto" -> on retire la propriété, ça reprend la valeur par défaut violette
+                htmlElement.style.removeProperty('--base-color');
             }
 
-            // Mise à jour de la console/debug visuel
+            // Debug UI
             document.getElementById('debug-theme').innerText = theme;
             document.getElementById('debug-color').innerText = color;
         }
 
-        // On déclenche l'application du thème immédiatement au chargement
         applyMaterialYouTheme();
-
-        // Si jamais le localStorage change pendant que la page est ouverte, on la met à jour en temps réel
         window.addEventListener('storage', applyMaterialYouTheme);
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyMaterialYouTheme);
     </script>
 </body>
 </html>
