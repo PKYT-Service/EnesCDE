@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-CDE Responsive Material</title>
+    <title>E-CDE Material Expressive 3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -16,16 +16,22 @@
                             'on-primary': 'var(--m3-on-primary)',
                             'primary-container': 'var(--m3-primary-container)',
                             'on-primary-container': 'var(--m3-on-primary-container)',
+                            'secondary-container': 'var(--m3-secondary-container)',
+                            'on-secondary-container': 'var(--m3-on-secondary-container)',
                             'surface': 'var(--m3-surface)',
                             'on-surface': 'var(--m3-on-surface)',
+                            'surface-variant': 'var(--m3-surface-variant)',
+                            'on-surface-variant': 'var(--m3-on-surface-variant)',
                             'background': 'var(--m3-background)',
                             'on-background': 'var(--m3-on-background)',
+                            'outline': 'var(--m3-outline)',
                         }
                     },
                     borderRadius: {
                         'full': '9999px',
-                        'xl': '28px',
-                        'lg': '16px',
+                        '3xl': '28px',
+                        '2xl': '24px',
+                        'xl': '16px',
                     }
                 }
             }
@@ -33,101 +39,151 @@
     </script>
     <style>
         :root {
-            --page-bg: #FCFCFF;
-            --page-text: #1A1C1E;
-            --base-color: #386A20; /* Vert par défaut */
+            --page-bg: #F8F9FF; /* Un fond encore plus doux */
+            --page-text: #1C1B1F;
+            --base-color: #386A20; 
             
+            /* Tonal Palettes logic for Expressive 3 */
             --m3-primary: var(--base-color);
             --m3-on-primary: #FFFFFF;
-            --m3-background: color-mix(in srgb, var(--base-color) 4%, var(--page-bg));
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 25%, #FFFFFF);
+            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 80%, black);
+
+            --m3-secondary-container: color-mix(in srgb, var(--base-color) 15%, #E8DEF8);
+            --m3-on-secondary-container: #1D192B;
+
+            --m3-background: var(--page-bg);
             --m3-on-background: var(--page-text);
-            --m3-surface: color-mix(in srgb, var(--base-color) 8%, var(--page-bg));
-            --m3-on-surface: color-mix(in srgb, var(--page-text) 90%, var(--base-color));
-            --m3-primary-container: color-mix(in srgb, var(--base-color) 20%, var(--page-bg));
-            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 80%, var(--page-text));
+
+            --m3-surface: color-mix(in srgb, var(--base-color) 5%, #FFFFFF);
+            --m3-on-surface: var(--page-text);
+            --m3-surface-variant: color-mix(in srgb, var(--base-color) 12%, #E7E0EC);
+            --m3-on-surface-variant: #49454F;
+            
+            --m3-outline: #79747E;
         }
 
         :root.dark {
-            --page-bg: #1A1C1E;
-            --page-text: #E2E2E6;
-            --m3-primary: color-mix(in srgb, var(--base-color) 80%, white);
-            --m3-on-primary: color-mix(in srgb, var(--base-color) 40%, black);
-            --m3-background: color-mix(in srgb, var(--base-color) 4%, var(--page-bg));
+            --page-bg: #141318;
+            --page-text: #E6E1E5;
+            
+            --m3-primary: color-mix(in srgb, var(--base-color) 70%, white);
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 50%, black);
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, #4F378B);
+            --m3-on-primary-container: #EADDFF;
+
+            --m3-secondary-container: #4A4458;
+            --m3-on-secondary-container: #E8DEF8;
+
+            --m3-background: #1C1B1F;
             --m3-on-background: var(--page-text);
-            --m3-surface: color-mix(in srgb, var(--base-color) 12%, var(--page-bg));
-            --m3-on-surface: color-mix(in srgb, var(--page-text) 90%, var(--base-color));
-            --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, var(--page-bg));
-            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 90%, white);
+
+            --m3-surface: color-mix(in srgb, var(--base-color) 10%, #1C1B1F);
+            --m3-on-surface: #E6E1E5;
+            --m3-surface-variant: #49454F;
+            --m3-on-surface-variant: #CAC4D0;
+            
+            --m3-outline: #938F99;
         }
     </style>
 </head>
 <body class="bg-m3-background text-m3-on-background min-h-screen font-sans antialiased transition-colors duration-300 lg:flex">
 
-    <!-- NAVIGATION RAIL (PC / Grand écran - Apparaît à GAUCHE) -->
-    <nav class="hidden lg:flex flex-col w-24 bg-m3-surface border-r border-m3-primary/10 items-center py-8 space-y-12 shrink-0">
-        <div class="h-12 w-12 rounded-xl bg-m3-primary text-m3-on-primary flex items-center justify-center font-bold text-xl shadow-lg">E</div>
-        <div class="space-y-10 flex flex-col items-center">
-            <div class="p-4 bg-m3-primary-container text-m3-on-primary-container rounded-full cursor-pointer hover:scale-110 transition-all shadow-sm">🏠</div>
-            <div class="p-4 text-m3-on-surface opacity-60 cursor-pointer hover:opacity-100 transition-all">📂</div>
-            <div class="p-4 text-m3-on-surface opacity-60 cursor-pointer hover:opacity-100 transition-all">⚙️</div>
+    <!-- NAVIGATION RAIL (Expressive) -->
+    <nav class="hidden lg:flex flex-col w-24 bg-m3-surface items-center py-10 space-y-12 shrink-0 border-r border-m3-outline/10">
+        <div class="h-14 w-14 rounded-2xl bg-m3-primary text-m3-on-primary flex items-center justify-center font-bold text-2xl shadow-lg ring-4 ring-m3-primary/20">E</div>
+        <div class="space-y-10 flex flex-col items-center flex-1 py-10">
+            <div class="group relative flex flex-col items-center cursor-pointer">
+                <div class="p-4 bg-m3-secondary-container text-m3-on-secondary-container rounded-3xl group-hover:scale-110 transition-transform">🏠</div>
+                <span class="text-[10px] font-bold mt-2 text-m3-on-surface opacity-80 uppercase tracking-tighter">Accueil</span>
+            </div>
+            <div class="group relative flex flex-col items-center cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
+                <div class="p-4 rounded-3xl group-hover:bg-m3-surface-variant transition-colors">📂</div>
+                <span class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Docs</span>
+            </div>
+            <div class="group relative flex flex-col items-center cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
+                <div class="p-4 rounded-3xl group-hover:bg-m3-surface-variant transition-colors">⚙️</div>
+                <span class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Param</span>
+            </div>
         </div>
     </nav>
 
-    <!-- ZONE PRINCIPALE -->
-    <main class="flex-1 p-6 pb-28 lg:pb-8 lg:ml-0 overflow-y-auto">
-        <div class="max-w-xl mx-auto space-y-8 mt-6">
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 min-h-screen flex flex-col relative pb-32 lg:pb-0">
+        
+        <!-- LARGE TOP APP BAR (Expressive style) -->
+        <header class="p-8 lg:p-12 space-y-4">
+            <h1 class="text-5xl lg:text-7xl font-black tracking-tighter text-m3-on-background leading-none">
+                Expressive <br><span class="text-m3-primary">Design 3</span>
+            </h1>
+            <p class="text-xl lg:text-2xl text-m3-on-background opacity-60 font-medium max-w-2xl">
+                Une interface vivante qui s'adapte à ta couleur préférée avec l'élégance de Material You.
+            </p>
+        </header>
+
+        <section class="p-6 lg:p-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <header class="mb-10 text-center lg:text-left">
-                <h1 class="text-4xl font-black tracking-tight text-m3-on-background">E-CDE Material</h1>
-                <p class="mt-3 text-lg text-m3-on-background opacity-70">Le design Android de demain, aujourd'hui !</p>
-            </header>
+            <!-- FEATURE CARD (High emphasis) -->
+            <div class="md:col-span-2 bg-m3-primary-container p-8 lg:p-10 rounded-3xl shadow-sm border border-m3-primary/10 group cursor-pointer overflow-hidden relative">
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-extrabold text-m3-on-primary-container mb-4">Puissance des couleurs</h2>
+                    <p class="text-m3-on-primary-container opacity-70 text-lg mb-8 max-w-lg leading-relaxed">
+                        Toutes les teintes que tu vois sont calculées mathématiquement à partir de ta couleur personnalisée. Le contraste est garanti !
+                    </p>
+                    <button class="bg-m3-on-primary-container text-m3-primary-container py-4 px-10 rounded-full font-black uppercase tracking-widest text-sm shadow-xl active:scale-95 transition-transform">
+                        Essayer maintenant
+                    </button>
+                </div>
+                <!-- Abstract shape in bg -->
+                <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-m3-primary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
+            </div>
 
-            <!-- Grande Carte -->
-            <section class="bg-m3-surface p-8 rounded-xl shadow-xl transition-all duration-300 border border-white/5">
-                <h2 class="text-2xl font-bold mb-4">Responsive & Adaptatif</h2>
-                <p class="text-m3-on-surface opacity-80 leading-relaxed mb-8 text-lg">
-                    Ton site détecte automatiquement si tu es sur Mobile ou sur PC pour déplacer le menu au meilleur endroit !
+            <!-- SECONDARY CARDS (Medium emphasis) -->
+            <div class="bg-m3-surface p-8 rounded-3xl border border-m3-outline/10 shadow-sm hover:shadow-xl transition-shadow">
+                <div class="w-12 h-12 bg-m3-secondary-container rounded-2xl flex items-center justify-center text-2xl mb-6">⚡</div>
+                <h3 class="text-2xl font-bold mb-3">Vitesse native</h3>
+                <p class="text-m3-on-surface opacity-70 leading-relaxed">
+                    Un rendu rapide grâce à Tailwind CSS et aux nouvelles fonctions de couleur CSS.
                 </p>
-                <button onclick="alert('Action Material !')" class="w-full lg:w-auto bg-m3-primary text-m3-on-primary hover:brightness-110 font-bold py-4 px-10 rounded-full shadow-lg transition-all active:scale-95">
-                    Tester l'App
-                </button>
-            </section>
-
-            <!-- Grille de widgets -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-m3-primary-container p-6 rounded-xl border border-m3-primary opacity-90 shadow-md">
-                    <h3 class="font-bold text-m3-on-primary-container text-xl mb-2">Widget A</h3>
-                    <p class="text-m3-on-primary-container opacity-80">Parfait pour des infos rapides.</p>
-                </div>
-                <div class="bg-m3-surface p-6 rounded-xl border border-m3-primary/10 shadow-md">
-                    <h3 class="font-bold text-m3-on-surface text-xl mb-2">Widget B</h3>
-                    <p class="text-m3-on-surface opacity-80">Un design épuré et lisible.</p>
-                </div>
             </div>
 
-            <!-- Infos de synchronisation -->
-            <div class="bg-black/10 dark:bg-white/10 p-5 rounded-lg font-mono text-sm border-l-4 border-m3-primary mt-12">
-                <div class="font-bold opacity-60 uppercase tracking-widest text-[10px] mb-3">Logs Configuration</div>
-                <div class="flex justify-between"><span>Active Theme :</span> <span id="debug-theme" class="text-m3-primary font-bold">...</span></div>
-                <div class="flex justify-between"><span>Accent Color :</span> <span id="debug-color" class="text-m3-primary font-bold">...</span></div>
+            <div class="bg-m3-surface-variant p-8 rounded-3xl shadow-sm border border-black/5">
+                <div class="w-12 h-12 bg-m3-primary rounded-2xl flex items-center justify-center text-2xl mb-6 text-m3-on-primary">📱</div>
+                <h3 class="text-2xl font-bold mb-3">Adaptatif</h3>
+                <p class="text-m3-on-surface-variant opacity-70 leading-relaxed">
+                    Chaque pixel respecte les grilles sacrées de Google Material Expressive.
+                </p>
             </div>
 
-        </div>
+            <!-- CHIPS / TAGS -->
+            <div class="md:col-span-2 flex flex-wrap gap-3 mt-4">
+                <div class="bg-m3-secondary-container px-6 py-2 rounded-full text-sm font-bold border border-m3-outline/5 transition-colors">#Frontend</div>
+                <div class="bg-m3-surface-variant px-6 py-2 rounded-full text-sm font-bold opacity-60 border border-m3-outline/5">#Android</div>
+                <div class="bg-m3-surface-variant px-6 py-2 rounded-full text-sm font-bold opacity-60 border border-m3-outline/5">#Material3</div>
+            </div>
+
+        </section>
+
+        <!-- FLOATING ACTION BUTTON (FAB) -->
+        <button class="fixed bottom-10 right-10 lg:bottom-16 lg:right-16 h-16 w-16 lg:h-20 lg:w-20 bg-m3-primary rounded-[28px] shadow-2xl flex items-center justify-center text-3xl text-m3-on-primary hover:rotate-12 active:scale-90 transition-all z-[60]">
+            ＋
+        </button>
+
     </main>
 
-    <!-- NAVIGATION BAR (MOBILE - Apparaît en BAS) -->
-    <nav class="lg:hidden fixed bottom-6 left-6 right-6 bg-m3-surface/95 backdrop-blur-md border border-white/10 rounded-full px-4 py-3 flex justify-around items-center space-x-2 z-50 shadow-2xl transition-all duration-300">
-        <div class="flex flex-col items-center py-1 px-6 bg-m3-primary-container text-m3-on-primary-container rounded-full">
-            <span class="text-xl">🏠</span>
-            <span class="text-[9px] font-bold uppercase mt-0.5">Home</span>
+    <!-- NAVIGATION BAR (Mobile Expressive) -->
+    <nav class="lg:hidden fixed bottom-4 left-4 right-4 bg-m3-surface/90 backdrop-blur-xl border border-white/10 rounded-[32px] px-4 py-4 flex justify-around items-center z-50 shadow-2xl">
+        <div class="flex flex-col items-center flex-1">
+            <div class="bg-m3-secondary-container px-8 py-2 rounded-full mb-1">🏠</div>
+            <span class="text-[10px] font-black uppercase tracking-tight">Accueil</span>
         </div>
-        <div class="flex flex-col items-center py-1 px-6 opacity-40">
-            <span class="text-xl">📂</span>
-            <span class="text-[9px] font-bold uppercase mt-0.5">Docs</span>
+        <div class="flex flex-col items-center flex-1 opacity-40">
+            <div class="px-8 py-2 rounded-full mb-1">📂</div>
+            <span class="text-[10px] font-black uppercase tracking-tight">Docs</span>
         </div>
-        <div class="flex flex-col items-center py-1 px-6 opacity-40">
-            <span class="text-xl">⚙️</span>
-            <span class="text-[9px] font-bold uppercase mt-0.5">Settings</span>
+        <div class="flex flex-col items-center flex-1 opacity-40">
+            <div class="px-8 py-2 rounded-full mb-1">⚙️</div>
+            <span class="text-[10px] font-black uppercase tracking-tight">Param</span>
         </div>
     </nav>
 
@@ -150,9 +206,6 @@
             } else {
                 htmlElement.style.removeProperty('--base-color');
             }
-
-            document.getElementById('debug-theme').innerText = theme;
-            document.getElementById('debug-color').innerText = color;
         }
 
         applyMaterialYouTheme();
