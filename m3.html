@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Material Expressive 3 - Pro</title>
+    <title>Material Expressive 3 - Fixed</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <style>
         :root {
-            /* Variables par défaut */
             --base-color: #386A20; 
             --page-bg: #F8F9FF;
             --page-text: #1C1B1F;
             
-            /* Logique Expressive 3 via color-mix */
             --m3-primary: var(--base-color);
             --m3-on-primary: #FFFFFF;
             --m3-primary-container: color-mix(in srgb, var(--base-color) 25%, #FFFFFF);
             --m3-on-primary-container: color-mix(in srgb, var(--base-color) 80%, black);
-
             --m3-secondary-container: color-mix(in srgb, var(--base-color) 15%, #E8DEF8);
             --m3-on-secondary-container: #1D192B;
 
@@ -34,15 +31,18 @@
             --m3-transition: all 0.4s cubic-bezier(0.17, 0.67, 0.16, 0.99);
         }
 
-        :root.dark {
+        /* CORRECTION MODE SOMBRE */
+        html.dark {
             --page-bg: #141318;
             --page-text: #E6E1E5;
             --m3-primary: color-mix(in srgb, var(--base-color) 70%, white);
-            --m3-on-primary: color-mix(in srgb, var(--base-color) 50%, black);
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 40%, black);
             --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, #4F378B);
             --m3-on-primary-container: #EADDFF;
-            --m3-surface: color-mix(in srgb, var(--base-color) 10%, #1C1B1F);
+            --m3-surface: #1D1B20;
+            --m3-surface-variant: #2B2930; /* BG plus sombre pour les cartes en dark mode */
             --m3-on-surface: #E6E1E5;
+            --m3-on-surface-variant: #CAC4D0;
         }
 
         body {
@@ -50,27 +50,81 @@
             background-color: var(--page-bg);
             color: var(--m3-on-surface);
             margin: 0;
-            transition: var(--m3-transition);
+            transition: background-color 0.3s ease;
+            padding-bottom: 80px; /* Espace pour la barre du bas */
         }
 
-        /* --- Top App Bar Glass --- */
+        /* --- Barre du haut (Glassmorphism) --- */
         .m3-top-bar {
             display: flex;
             align-items: center;
             height: 64px;
             padding: 0 16px;
-            background: color-mix(in srgb, var(--m3-surface) 70%, transparent);
+            background: color-mix(in srgb, var(--m3-surface) 80%, transparent);
             backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid color-mix(in srgb, var(--m3-outline) 15%, transparent);
         }
-
         .m3-top-bar h1 { font-size: 22px; font-weight: 400; flex-grow: 1; margin-left: 12px; }
 
-        /* --- Cards --- */
-        .container { max-width: 800px; margin: 32px auto; padding: 0 16px; }
+        /* --- Navigation Drawer (Correction du dépassement) --- */
+        .drawer { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 320px; 
+            max-width: 80vw;
+            height: 100%; 
+            background: var(--m3-surface); 
+            z-index: 200; 
+            transform: translateX(-105%); /* Totalement sorti */
+            transition: var(--m3-transition); 
+            border-radius: 0 28px 28px 0; 
+            padding: 24px 16px;
+            box-sizing: border-box;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+        }
+        .drawer.open { transform: translateX(0); }
+
+        /* --- Navigation Bar (Menu du bas mobile) --- */
+        .m3-nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--m3-surface);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid color-mix(in srgb, var(--m3-outline) 10%, transparent);
+            z-index: 90;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--m3-on-surface-variant);
+            text-decoration: none;
+            font-size: 12px;
+            gap: 4px;
+        }
+
+        .nav-item.active .icon-container {
+            background: var(--m3-secondary-container);
+            color: var(--m3-on-secondary-container);
+        }
+
+        .icon-container {
+            padding: 4px 20px;
+            border-radius: 16px;
+            transition: var(--m3-transition);
+        }
+
+        /* --- Cartes --- */
+        .container { max-width: 800px; margin: 24px auto; padding: 0 16px; }
 
         .m3-card {
             background-color: var(--m3-surface-variant);
@@ -78,47 +132,28 @@
             padding: 24px;
             margin-bottom: 24px;
             transition: var(--m3-transition);
+            color: var(--m3-on-surface-variant);
         }
+        .m3-card h2 { color: var(--m3-on-surface); margin-top: 0; }
 
-        .m3-card:hover { transform: scale(1.01); }
-
-        /* --- Debug Badge --- */
         .debug-panel {
             background: var(--m3-primary-container);
             color: var(--m3-on-primary-container);
             padding: 16px;
             border-radius: 20px;
             font-family: monospace;
-            font-size: 13px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .m3-btn {
-            background: var(--m3-primary);
-            color: var(--m3-on-primary);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 100px;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
+            display: grid;
             gap: 8px;
         }
+
+        .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 150; }
+        .scrim.show { opacity: 1; visibility: visible; }
 
         .m3-icon-btn {
             background: transparent; border: none; color: var(--m3-on-surface);
             width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+            display: grid; place-items: center;
         }
-
-        .m3-icon-btn:hover { background: var(--m3-surface-variant); }
-
-        /* Scrim & Drawer */
-        .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 150; }
-        .scrim.show { opacity: 1; visibility: visible; }
-        .drawer { position: fixed; left: -320px; top: 0; width: 300px; height: 100%; background: var(--m3-surface); z-index: 200; transition: 0.4s; border-radius: 0 28px 28px 0; padding: 20px; }
-        .drawer.open { left: 0; }
     </style>
 </head>
 <body>
@@ -126,19 +161,24 @@
     <div class="scrim" id="scrim" onclick="toggleMenu()"></div>
     
     <aside class="drawer" id="drawer">
-        <h2 style="font-size: 14px; text-transform: uppercase; color: var(--m3-on-surface-variant)">Navigation</h2>
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
-            <div class="m3-card" style="padding: 12px 20px; margin: 0; background: var(--m3-secondary-container); color: var(--m3-on-secondary-container)">Accueil</div>
-        </div>
+        <div style="padding: 16px; font-weight: 500; color: var(--m3-on-surface-variant)">Menu Expressif</div>
+        <nav style="display: flex; flex-direction: column; gap: 4px;">
+            <a href="#" class="nav-item active" style="flex-direction: row; gap: 12px; padding: 12px; border-radius: 100px;">
+                <span class="material-symbols-outlined">home</span> Accueil
+            </a>
+            <a href="#" class="nav-item" style="flex-direction: row; gap: 12px; padding: 12px; border-radius: 100px;">
+                <span class="material-symbols-outlined">settings</span> Paramètres
+            </a>
+        </nav>
     </aside>
 
     <header class="m3-top-bar">
         <button class="m3-icon-btn" onclick="toggleMenu()">
             <span class="material-symbols-outlined">menu</span>
         </button>
-        <h1>Mon Application</h1>
+        <h1>Material Pro</h1>
         <button class="m3-icon-btn" onclick="cycleTheme()">
-            <span class="material-symbols-outlined">palette</span>
+            <span class="material-symbols-outlined">contrast</span>
         </button>
     </header>
 
@@ -146,55 +186,53 @@
         <div class="m3-card">
             <h2>Statut du Thème</h2>
             <div class="debug-panel">
-                <div>Thème: <b id="debug-theme">?</b></div>
-                <div>Couleur: <b id="debug-color">?</b></div>
+                <div>MODE: <span id="debug-theme">...</span></div>
+                <div>COULEUR: <span id="debug-color">...</span></div>
             </div>
         </div>
 
         <div class="m3-card" style="background: var(--m3-surface); border: 1px solid var(--m3-outline)">
-            <h2>Contrôle manuel</h2>
-            <p>Ces boutons modifient le <code>localStorage</code> pour tester ton script en direct.</p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="m3-btn" onclick="updateStorage('theme', 'sombre')">Mode Sombre</button>
-                <button class="m3-btn" onclick="updateStorage('theme', 'clair')">Mode Clair</button>
-                <button class="m3-btn" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container)" onclick="updateStorage('color', '#D0BCFF')">Violet</button>
-                <button class="m3-btn" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container)" onclick="updateStorage('color', '#386A20')">Vert</button>
-                <button class="m3-btn" onclick="updateStorage('color', 'auto')">Auto</button>
-            </div>
+            <h2>Navigation Bar</h2>
+            <p>Regarde en bas de ton écran ! Une barre de navigation M3 a été ajoutée pour une expérience plus proche d'une application native.</p>
         </div>
     </main>
+
+    <nav class="m3-nav-bar">
+        <a href="#" class="nav-item active">
+            <div class="icon-container"><span class="material-symbols-outlined">home</span></div>
+            <span>Accueil</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="icon-container"><span class="material-symbols-outlined">search</span></div>
+            <span>Explorer</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="icon-container"><span class="material-symbols-outlined">person</span></div>
+            <span>Profil</span>
+        </a>
+    </nav>
 
     <script>
         function applyMaterialYouTheme() {
             const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
             const color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
-
-            // 1. Thème Clair / Sombre
             const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const htmlElement = document.documentElement;
             
+            // Correction de l'application de la classe dark sur html
             if (theme === 'sombre' || (theme === 'systeme' && isSystemDark)) {
-                htmlElement.classList.add('dark');
+                document.documentElement.classList.add('dark');
             } else {
-                htmlElement.classList.remove('dark');
+                document.documentElement.classList.remove('dark');
             }
 
-            // 2. Couleur de Base
             if (color !== 'auto' && color !== '') {
-                htmlElement.style.setProperty('--base-color', color);
+                document.documentElement.style.setProperty('--base-color', color);
             } else {
-                htmlElement.style.removeProperty('--base-color');
+                document.documentElement.style.removeProperty('--base-color');
             }
 
-            // Debug UI
-            document.getElementById('debug-theme').innerText = theme;
-            document.getElementById('debug-color').innerText = color;
-        }
-
-        // --- Fonctions utilitaires pour la démo ---
-        function updateStorage(key, value) {
-            window.localStorage.setItem('material_you_' + key + (key === 'color' ? '_expresive' : ''), value);
-            applyMaterialYouTheme();
+            document.getElementById('debug-theme').innerText = theme.toUpperCase();
+            document.getElementById('debug-color').innerText = color.toUpperCase();
         }
 
         function toggleMenu() {
@@ -205,10 +243,10 @@
         function cycleTheme() {
             const current = window.localStorage.getItem('material_you_theme');
             const next = current === 'sombre' ? 'clair' : 'sombre';
-            updateStorage('theme', next);
+            window.localStorage.setItem('material_you_theme', next);
+            applyMaterialYouTheme();
         }
 
-        // Initialisation
         applyMaterialYouTheme();
         window.addEventListener('storage', applyMaterialYouTheme);
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyMaterialYouTheme);
