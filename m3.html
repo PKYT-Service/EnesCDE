@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Material You avec Tailwind</title>
+    <title>E-CDE Responsive Material</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,24 +11,20 @@
             theme: {
                 extend: {
                     colors: {
-                        // On connecte Tailwind à nos variables CSS dynamiques
                         m3: {
                             'primary': 'var(--m3-primary)',
                             'on-primary': 'var(--m3-on-primary)',
-                            
                             'primary-container': 'var(--m3-primary-container)',
                             'on-primary-container': 'var(--m3-on-primary-container)',
-                            
                             'surface': 'var(--m3-surface)',
                             'on-surface': 'var(--m3-on-surface)',
-                            
                             'background': 'var(--m3-background)',
                             'on-background': 'var(--m3-on-background)',
                         }
                     },
                     borderRadius: {
                         'full': '9999px',
-                        'xl': '24px',
+                        'xl': '28px',
                         'lg': '16px',
                     }
                 }
@@ -36,106 +32,110 @@
         }
     </script>
     <style>
-        /* Magie CSS moderne : on génère des couleurs dérivées (claires/foncées) à partir d'une seule couleur de base */
         :root {
-            /* Couleur de base et couleur de page (blanc ou noir selon le thème) */
             --page-bg: #FCFCFF;
             --page-text: #1A1C1E;
+            --base-color: #386A20; /* Vert par défaut */
             
-            /* Violet par défaut (si "auto") */
-            --base-color: #6750A4; 
-            
-            /*=== Variables de couleurs M3 dynamiques (calculées nativement avec color-mix !) ===*/
             --m3-primary: var(--base-color);
             --m3-on-primary: #FFFFFF;
-            
-            /* Un fond très légèrement teinté de la couleur primaire */
             --m3-background: color-mix(in srgb, var(--base-color) 4%, var(--page-bg));
             --m3-on-background: var(--page-text);
-            
-            /* Une "carte" (surface) un peu plus teintée */
             --m3-surface: color-mix(in srgb, var(--base-color) 8%, var(--page-bg));
             --m3-on-surface: color-mix(in srgb, var(--page-text) 90%, var(--base-color));
-            
-            /* Les conteneurs secondaires (très clairs en mode jour) */
             --m3-primary-container: color-mix(in srgb, var(--base-color) 20%, var(--page-bg));
             --m3-on-primary-container: color-mix(in srgb, var(--base-color) 80%, var(--page-text));
         }
 
-        /* Mode Sombre */
         :root.dark {
             --page-bg: #1A1C1E;
             --page-text: #E2E2E6;
-            
-            /* En mode sombre, material you éclaircit un peu les primaires pour être plus lisibles, on simule ça */
             --m3-primary: color-mix(in srgb, var(--base-color) 80%, white);
             --m3-on-primary: color-mix(in srgb, var(--base-color) 40%, black);
-
             --m3-background: color-mix(in srgb, var(--base-color) 4%, var(--page-bg));
             --m3-on-background: var(--page-text);
-
             --m3-surface: color-mix(in srgb, var(--base-color) 12%, var(--page-bg));
             --m3-on-surface: color-mix(in srgb, var(--page-text) 90%, var(--base-color));
-
             --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, var(--page-bg));
             --m3-on-primary-container: color-mix(in srgb, var(--base-color) 90%, white);
         }
     </style>
 </head>
-<body class="bg-m3-background text-m3-on-background min-h-screen p-6 font-sans antialiased transition-colors duration-300">
+<body class="bg-m3-background text-m3-on-background min-h-screen font-sans antialiased transition-colors duration-300 lg:flex">
 
-    <div class="max-w-md mx-auto space-y-6 mt-10 relative">
-        
-        <!-- En-tête -->
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold tracking-tight text-m3-on-background">Material Tailwind</h1>
-            <p class="mt-2 text-m3-on-background opacity-80">Couleurs 100% dynamiques et générées à la volée !</p>
-        </header>
-
-        <!-- Carte Principale (Surface) -->
-        <div class="bg-m3-surface p-6 rounded-xl shadow-sm transition-colors duration-300">
-            <h2 class="text-xl font-semibold mb-2">Composant Surface</h2>
-            <p class="text-m3-on-surface opacity-80 leading-relaxed mb-6">
-                Le fond de cette carte (`m3-surface`) et la couleur de ce texte (`m3-on-surface`) 
-                sont doucement teintés de ta couleur personnalisée pour donner une harmonie visuelle comme sur Android 12+.
-            </p>
-            
-            <!-- Bouton Primaire -->
-            <button onclick="alert('Bouton cliqué !')" class="w-full bg-m3-primary text-m3-on-primary hover:opacity-90 font-medium py-3 px-6 rounded-full shadow-md transition-all active:scale-[0.98]">
-                Bouton Primaire
-            </button>
+    <!-- NAVIGATION RAIL (PC / Grand écran - Apparaît à GAUCHE) -->
+    <nav class="hidden lg:flex flex-col w-24 bg-m3-surface border-r border-m3-primary/10 items-center py-8 space-y-12 shrink-0">
+        <div class="h-12 w-12 rounded-xl bg-m3-primary text-m3-on-primary flex items-center justify-center font-bold text-xl shadow-lg">E</div>
+        <div class="space-y-10 flex flex-col items-center">
+            <div class="p-4 bg-m3-primary-container text-m3-on-primary-container rounded-full cursor-pointer hover:scale-110 transition-all shadow-sm">🏠</div>
+            <div class="p-4 text-m3-on-surface opacity-60 cursor-pointer hover:opacity-100 transition-all">📂</div>
+            <div class="p-4 text-m3-on-surface opacity-60 cursor-pointer hover:opacity-100 transition-all">⚙️</div>
         </div>
+    </nav>
 
-        <!-- Conteneur Secondaire -->
-        <div class="bg-m3-primaryContainer p-6 rounded-xl transition-colors duration-300 shadow-sm border border-m3-primary opacity-90">
-            <div class="flex items-center gap-4">
-                <!-- Icone factice -->
-                <div class="h-12 w-12 rounded-full bg-m3-primary flex items-center justify-center text-m3-on-primary font-bold text-xl">
-                    MD
+    <!-- ZONE PRINCIPALE -->
+    <main class="flex-1 p-6 pb-28 lg:pb-8 lg:ml-0 overflow-y-auto">
+        <div class="max-w-xl mx-auto space-y-8 mt-6">
+            
+            <header class="mb-10 text-center lg:text-left">
+                <h1 class="text-4xl font-black tracking-tight text-m3-on-background">E-CDE Material</h1>
+                <p class="mt-3 text-lg text-m3-on-background opacity-70">Le design Android de demain, aujourd'hui !</p>
+            </header>
+
+            <!-- Grande Carte -->
+            <section class="bg-m3-surface p-8 rounded-xl shadow-xl transition-all duration-300 border border-white/5">
+                <h2 class="text-2xl font-bold mb-4">Responsive & Adaptatif</h2>
+                <p class="text-m3-on-surface opacity-80 leading-relaxed mb-8 text-lg">
+                    Ton site détecte automatiquement si tu es sur Mobile ou sur PC pour déplacer le menu au meilleur endroit !
+                </p>
+                <button onclick="alert('Action Material !')" class="w-full lg:w-auto bg-m3-primary text-m3-on-primary hover:brightness-110 font-bold py-4 px-10 rounded-full shadow-lg transition-all active:scale-95">
+                    Tester l'App
+                </button>
+            </section>
+
+            <!-- Grille de widgets -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-m3-primary-container p-6 rounded-xl border border-m3-primary opacity-90 shadow-md">
+                    <h3 class="font-bold text-m3-on-primary-container text-xl mb-2">Widget A</h3>
+                    <p class="text-m3-on-primary-container opacity-80">Parfait pour des infos rapides.</p>
                 </div>
-                <div>
-                    <h3 class="font-bold text-m3-on-primary-container">Primary Container</h3>
-                    <p class="text-sm text-m3-on-primary-container opacity-80">Idéal pour mettre en valeur un contenu ou un widget.</p>
+                <div class="bg-m3-surface p-6 rounded-xl border border-m3-primary/10 shadow-md">
+                    <h3 class="font-bold text-m3-on-surface text-xl mb-2">Widget B</h3>
+                    <p class="text-m3-on-surface opacity-80">Un design épuré et lisible.</p>
                 </div>
             </div>
+
+            <!-- Infos de synchronisation -->
+            <div class="bg-black/10 dark:bg-white/10 p-5 rounded-lg font-mono text-sm border-l-4 border-m3-primary mt-12">
+                <div class="font-bold opacity-60 uppercase tracking-widest text-[10px] mb-3">Logs Configuration</div>
+                <div class="flex justify-between"><span>Active Theme :</span> <span id="debug-theme" class="text-m3-primary font-bold">...</span></div>
+                <div class="flex justify-between"><span>Accent Color :</span> <span id="debug-color" class="text-m3-primary font-bold">...</span></div>
+            </div>
+
         </div>
+    </main>
 
-        <!-- Informations Debug -->
-        <div class="bg-black/5 dark:bg-white/5 p-4 rounded-lg font-mono text-xs overflow-hidden mt-8">
-            <div class="font-bold mb-2">Données localStorage :</div>
-            <div>Thème  : <span id="debug-theme" class="text-m3-primary font-bold">...</span></div>
-            <div>Couleur: <span id="debug-color" class="text-m3-primary font-bold">...</span></div>
+    <!-- NAVIGATION BAR (MOBILE - Apparaît en BAS) -->
+    <nav class="lg:hidden fixed bottom-6 left-6 right-6 bg-m3-surface/95 backdrop-blur-md border border-white/10 rounded-full px-4 py-3 flex justify-around items-center space-x-2 z-50 shadow-2xl transition-all duration-300">
+        <div class="flex flex-col items-center py-1 px-6 bg-m3-primary-container text-m3-on-primary-container rounded-full">
+            <span class="text-xl">🏠</span>
+            <span class="text-[9px] font-bold uppercase mt-0.5">Home</span>
         </div>
+        <div class="flex flex-col items-center py-1 px-6 opacity-40">
+            <span class="text-xl">📂</span>
+            <span class="text-[9px] font-bold uppercase mt-0.5">Docs</span>
+        </div>
+        <div class="flex flex-col items-center py-1 px-6 opacity-40">
+            <span class="text-xl">⚙️</span>
+            <span class="text-[9px] font-bold uppercase mt-0.5">Settings</span>
+        </div>
+    </nav>
 
-    </div>
-
-    <!-- SCRIPT DE SYNCHRONISATION -->
     <script>
         function applyMaterialYouTheme() {
             const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
             const color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
 
-            // 1. Thème Clair / Sombre
             const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             const htmlElement = document.documentElement;
             
@@ -145,18 +145,12 @@
                 htmlElement.classList.remove('dark');
             }
 
-            // 2. Couleur de Base
             if (color !== 'auto' && color !== '') {
-                // Si custom, on remplace la variable --base-color 
-                // et TOUT le reste de la page (fonds, cartes, textes) 
-                // va se recalculer automatiquement grâce au CSS color-mix !
                 htmlElement.style.setProperty('--base-color', color);
             } else {
-                // "auto" -> on retire la propriété, ça reprend la valeur par défaut violette
                 htmlElement.style.removeProperty('--base-color');
             }
 
-            // Debug UI
             document.getElementById('debug-theme').innerText = theme;
             document.getElementById('debug-color').innerText = color;
         }
