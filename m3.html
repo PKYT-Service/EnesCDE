@@ -69,9 +69,14 @@
             
             /* En mode sombre, material you éclaircit un peu les primaires pour être plus lisibles, on simule ça */
             --m3-primary: color-mix(in srgb, var(--base-color) 80%, white);
-            --m3-on-primary: color-mix(in srgb, var(--base-color) 60%, black);
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 40%, black);
+
+            --m3-background: color-mix(in srgb, var(--base-color) 4%, var(--page-bg));
+            --m3-on-background: var(--page-text);
 
             --m3-surface: color-mix(in srgb, var(--base-color) 12%, var(--page-bg));
+            --m3-on-surface: color-mix(in srgb, var(--page-text) 90%, var(--base-color));
+
             --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, var(--page-bg));
             --m3-on-primary-container: color-mix(in srgb, var(--base-color) 90%, white);
         }
@@ -162,4 +167,3 @@
     </script>
 </body>
 </html>
-
