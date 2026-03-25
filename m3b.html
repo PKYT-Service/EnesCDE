@@ -3,59 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Material Expressive 3 - App Mode</title>
+    <title>Material Expressive 3 - App Mode Dynamique</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <style>
+        /* --- MODE CLAIR (Généré à 100% depuis --base-color) --- */
         :root {
-            /* On remplace le vert terne par un émeraude électrique ultra-vibrant ⚡ */
-            --base-color: #00E676; 
-            --page-bg: #F0F4F8; /* Un fond un poil plus contrasté */
-            --page-text: #0F172A; /* Un slate ultra profond pour un contraste optimal */
+            --base-color: #00E676; /* Couleur modifiable dynamiquement */
             
+            /* Fonds et textes globaux teintés par la couleur de base */
+            --page-bg: color-mix(in srgb, var(--base-color) 4%, #F8FAFC);
+            --page-text: color-mix(in srgb, var(--base-color) 80%, #0F172A);
+            
+            /* Couleurs primaires */
             --m3-primary: var(--base-color);
-            --m3-on-primary: #000000; /* Noir sur fluo, c'est insolent mais ça claque */
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 85%, #000000); 
             
-            /* On booste la présence de la couleur de base dans les mix (40% au lieu de 25%) */
-            --m3-primary-container: color-mix(in srgb, var(--base-color) 40%, #FFFFFF);
-            --m3-on-primary-container: #004D28; /* On garde une lisibilité parfaite */
+            /* Conteneurs primaires (clairs en light mode) */
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 25%, #FFFFFF);
+            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 90%, #000000);
             
-            --m3-secondary-container: color-mix(in srgb, var(--base-color) 20%, #E0F2FE);
-            --m3-on-secondary-container: #0369A1;
+            /* Conteneurs secondaires */
+            --m3-secondary-container: color-mix(in srgb, var(--base-color) 15%, #E0F2FE);
+            --m3-on-secondary-container: color-mix(in srgb, var(--base-color) 85%, #0369A1);
 
-            --m3-surface: #FFFFFF;
+            /* Surfaces et variantes */
+            --m3-surface: color-mix(in srgb, var(--base-color) 2%, #FFFFFF);
             --m3-on-surface: var(--page-text);
+            
             --m3-surface-variant: color-mix(in srgb, var(--base-color) 10%, #F1F5F9);
-            --m3-on-surface-variant: #334155;
+            --m3-on-surface-variant: color-mix(in srgb, var(--base-color) 60%, #334155);
             
-            --m3-outline: color-mix(in srgb, var(--base-color) 60%, #94A3B8);
+            --m3-outline: color-mix(in srgb, var(--base-color) 40%, #94A3B8);
+            
             --m3-radius: 28px;
-            
-            /* Une transition un peu farfelue avec un léger effet rebond (bouncy) 🎾 */
             --m3-transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
         }
 
-        /* CORRECTION MODE SOMBRE : Ambiance Cyberpunk / OLED 🌃 */
+        /* --- MODE SOMBRE (Généré à 100% depuis --base-color) --- */
         html.dark {
-            --page-bg: #090B10; /* Un noir abyssal poétique */
-            --page-text: #F8FAFC;
+            --page-bg: color-mix(in srgb, var(--base-color) 5%, #090B10);
+            --page-text: color-mix(in srgb, var(--base-color) 10%, #F8FAFC);
             
-            /* Un vert néon qui perce l'obscurité comme un phare dans la nuit */
-            --m3-primary: #10B981; 
-            --m3-on-primary: #000000;
-            --m3-primary-container: color-mix(in srgb, var(--base-color) 35%, #064E3B);
-            --m3-on-primary-container: #6EE7B7;
+            /* En sombre, la couleur primaire s'éclaircit (pastel) pour contraster */
+            --m3-primary: color-mix(in srgb, var(--base-color) 85%, #FFFFFF); 
+            --m3-on-primary: color-mix(in srgb, var(--base-color) 90%, #000000);
             
-            --m3-surface: #111827;
-            --m3-surface-variant: #1E293B;
-            --m3-on-surface: #F8FAFC;
-            --m3-on-surface-variant: #CBD5E1;
-            --m3-outline: color-mix(in srgb, var(--base-color) 40%, #475569);
+            /* Les conteneurs deviennent sombres, le texte devient clair */
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 30%, #000000);
+            --m3-on-primary-container: color-mix(in srgb, var(--base-color) 85%, #FFFFFF);
+            
+            --m3-secondary-container: color-mix(in srgb, var(--base-color) 20%, #1E293B);
+            --m3-on-secondary-container: color-mix(in srgb, var(--base-color) 80%, #E2E8F0);
+
+            --m3-surface: color-mix(in srgb, var(--base-color) 6%, #111827);
+            --m3-on-surface: var(--page-text);
+            
+            --m3-surface-variant: color-mix(in srgb, var(--base-color) 15%, #1E293B);
+            --m3-on-surface-variant: color-mix(in srgb, var(--base-color) 20%, #CBD5E1);
+            
+            --m3-outline: color-mix(in srgb, var(--base-color) 30%, #475569);
         }
 
-        /* Base & Reset App-like */
+        /* --- LE RESTE DU CSS RESTE INCHANGÉ --- */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--page-bg);
@@ -67,257 +79,102 @@
             user-select: none;
         }
 
-        /* --- Barre du haut (Glassmorphism) --- */
         .m3-top-bar {
-            display: flex;
-            align-items: center;
-            height: 64px;
-            padding: 0 16px;
+            display: flex; align-items: center; height: 64px; padding: 0 16px;
             background: color-mix(in srgb, var(--page-bg) 85%, transparent);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 100;
         }
-        .m3-top-bar h1 { 
-            font-size: 22px; 
-            font-weight: 400; 
-            flex-grow: 1; 
-            margin-left: 12px; 
-        }
+        .m3-top-bar h1 { font-size: 22px; font-weight: 400; flex-grow: 1; margin-left: 12px; }
 
-        /* --- Navigation Drawer --- */
         .drawer { 
-            position: fixed; 
-            left: 0; 
-            top: 0; 
-            width: 320px; 
-            max-width: 80vw;
-            height: 100%; 
-            background: var(--m3-surface); 
-            z-index: 200; 
-            transform: translateX(-105%);
+            position: fixed; left: 0; top: 0; width: 320px; max-width: 80vw; height: 100%; 
+            background: var(--m3-surface); z-index: 200; transform: translateX(-105%);
             transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1); 
-            border-radius: 0 28px 28px 0; 
-            padding: 24px 16px;
-            box-sizing: border-box;
+            border-radius: 0 28px 28px 0; padding: 24px 16px; box-sizing: border-box;
             box-shadow: 4px 0 16px rgba(0,0,0,0.05); 
         }
         .drawer.open { transform: translateX(0); }
-
-        .drawer-header {
-            padding: 16px; 
-            font-weight: 500; 
-            color: var(--m3-on-surface-variant);
-            margin-bottom: 8px;
-        }
-
+        .drawer-header { padding: 16px; font-weight: 500; color: var(--m3-on-surface-variant); margin-bottom: 8px; }
         .drawer-item {
-            display: flex; 
-            align-items: center;
-            gap: 12px; 
-            padding: 16px; 
-            border-radius: 100px; 
-            color: var(--m3-on-surface-variant);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--m3-transition);
-            margin-bottom: 4px;
+            display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 100px; 
+            color: var(--m3-on-surface-variant); text-decoration: none; font-weight: 500;
+            transition: var(--m3-transition); margin-bottom: 4px;
         }
         .drawer-item:hover { background: color-mix(in srgb, var(--m3-on-surface) 8%, transparent); }
-        .drawer-item.active {
-            background: var(--m3-secondary-container);
-            color: var(--m3-on-secondary-container);
-        }
+        .drawer-item.active { background: var(--m3-secondary-container); color: var(--m3-on-secondary-container); }
 
-        /* --- Navigation Bar (Bottom) --- */
         .m3-nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
             background: color-mix(in srgb, var(--m3-surface) 95%, transparent);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 90;
-            padding-bottom: env(safe-area-inset-bottom);
+            backdrop-filter: blur(10px); display: flex; justify-content: space-around;
+            align-items: center; z-index: 90; padding-bottom: env(safe-area-inset-bottom);
         }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--m3-on-surface-variant);
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 500;
-            gap: 4px;
-            width: 64px;
-        }
-
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--m3-on-surface-variant); text-decoration: none; font-size: 12px; font-weight: 500; gap: 4px; width: 64px; }
         .nav-item.active { color: var(--m3-on-surface); }
-        .nav-item.active .icon-container {
-            background: var(--m3-secondary-container);
-            color: var(--m3-on-secondary-container);
-            width: 64px;
-        }
+        .nav-item.active .icon-container { background: var(--m3-secondary-container); color: var(--m3-on-secondary-container); width: 64px; }
+        .icon-container { display: flex; justify-content: center; align-items: center; height: 32px; width: 32px; border-radius: 16px; transition: var(--m3-transition); }
 
-        .icon-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 32px;
-            width: 32px;
-            border-radius: 16px;
-            transition: var(--m3-transition);
-        }
-
-        /* --- Cartes & Layout --- */
         .container { max-width: 800px; margin: 16px auto; padding: 0 16px; }
-
         .m3-card {
-            background-color: var(--m3-surface-variant);
-            border-radius: var(--m3-radius);
-            padding: 20px;
-            margin-bottom: 16px;
-            transition: var(--m3-transition);
-            color: var(--m3-on-surface-variant);
-            border: 1px solid transparent;
+            background-color: var(--m3-surface-variant); border-radius: var(--m3-radius);
+            padding: 20px; margin-bottom: 16px; transition: var(--m3-transition);
+            color: var(--m3-on-surface-variant); border: 1px solid transparent;
         }
-        .m3-card.outlined {
-            background: var(--m3-surface);
-            border-color: var(--m3-outline);
-        }
+        .m3-card.outlined { background: var(--m3-surface); border-color: var(--m3-outline); }
         .m3-card h2 { color: var(--m3-on-surface); margin-top: 0; font-size: 20px; }
 
-        /* --- Boutons M3 Innovants --- */
         .m3-btn {
-            height: 40px;
-            padding: 0 24px;
-            border-radius: 20px;
-            font-family: inherit;
-            font-weight: 500;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            transition: var(--m3-transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: transparent;
-            color: var(--m3-primary);
+            height: 40px; padding: 0 24px; border-radius: 20px; font-family: inherit;
+            font-weight: 500; font-size: 14px; border: none; cursor: pointer;
+            transition: var(--m3-transition); display: inline-flex; align-items: center;
+            justify-content: center; gap: 8px; background: transparent; color: var(--m3-primary);
         }
         .m3-btn:hover { background: color-mix(in srgb, var(--m3-primary) 8%, transparent); }
         
         .m3-btn-filled {
-            background: var(--m3-primary);
-            color: var(--m3-on-primary);
-            /* Lueur néon qui utilise ta couleur dynamique */
+            background: var(--m3-primary); color: var(--m3-on-primary);
             box-shadow: 0 4px 14px color-mix(in srgb, var(--m3-primary) 40%, transparent); 
         }
         .m3-btn-filled:hover {
             background: color-mix(in srgb, var(--m3-primary) 85%, white);
-            box-shadow: 0 6px 20px color-mix(in srgb, var(--m3-primary) 60%, transparent);
-            transform: translateY(-2px); /* Petit soulèvement jouissif au survol */
+            box-shadow: 0 6px 20px color-mix(in srgb, var(--m3-primary) 60%, transparent); transform: translateY(-2px);
         }
 
         .m3-icon-btn {
-            background: transparent; border: none; color: var(--m3-on-surface);
-            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
-            display: grid; place-items: center;
-            transition: background 0.2s;
+            background: transparent; border: none; color: var(--m3-on-surface); width: 48px; height: 48px;
+            border-radius: 50%; cursor: pointer; display: grid; place-items: center; transition: background 0.2s;
         }
         .m3-icon-btn:hover { background: color-mix(in srgb, var(--m3-on-surface) 8%, transparent); }
 
-        /* --- Composants divers --- */
-        .debug-panel {
-            background: var(--m3-primary-container);
-            color: var(--m3-on-primary-container);
-            padding: 16px;
-            border-radius: 20px;
-            font-family: monospace;
-            display: grid;
-            gap: 8px;
-        }
-
+        .debug-panel { background: var(--m3-primary-container); color: var(--m3-on-primary-container); padding: 16px; border-radius: 20px; font-family: monospace; display: grid; gap: 8px; }
         .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 150; }
         .scrim.show { opacity: 1; visibility: visible; }
+        .m3-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 
-        .m3-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-        }
-
-        .m3-card-image {
-            position: relative;
-            height: 220px;
-            border-radius: var(--m3-radius);
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
+        .m3-card-image { position: relative; height: 220px; border-radius: var(--m3-radius); overflow: hidden; margin-bottom: 16px; }
         .m3-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .m3-card-image:hover img { transform: scale(1.05); }
-        
-        .image-overlay {
-            position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 16px 16px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: white;
-        }
+        .image-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 16px 16px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; }
 
         .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
-        .m3-chip {
-            padding: 6px 16px;
-            border-radius: 8px;
-            background: var(--m3-surface);
-            color: var(--m3-on-surface-variant);
-            font-size: 13px;
-            font-weight: 500;
-            border: 1px solid var(--m3-outline);
-            cursor: pointer;
-            transition: var(--m3-transition);
-        }
+        .m3-chip { padding: 6px 16px; border-radius: 8px; background: var(--m3-surface); color: var(--m3-on-surface-variant); font-size: 13px; font-weight: 500; border: 1px solid var(--m3-outline); cursor: pointer; transition: var(--m3-transition); }
         .m3-chip:hover { background: var(--m3-surface-variant); }
 
-        /* --- Modal (Dialogue) --- */
-        .m3-modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s;
-        }
+        .m3-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .m3-modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .m3-modal {
-            background: var(--m3-surface);
-            width: 90%; max-width: 400px;
-            border-radius: var(--m3-radius);
-            padding: 24px;
-            transform: scale(0.9) translateY(10px);
-            transition: 0.3s cubic-bezier(0.2, 0, 0, 1);
-        }
+        .m3-modal { background: var(--m3-surface); width: 90%; max-width: 400px; border-radius: var(--m3-radius); padding: 24px; transform: scale(0.9) translateY(10px); transition: 0.3s cubic-bezier(0.2, 0, 0, 1); }
         .m3-modal-overlay.active .m3-modal { transform: scale(1) translateY(0); }
 
-        /* --- Barre de progression --- */
-        .m3-progress {
-            width: 100%; height: 4px;
-            background: var(--m3-surface-variant);
-            border-radius: 2px; overflow: hidden; margin: 12px 0;
-        }
-        .m3-progress-bar {
-            height: 100%; background: var(--m3-primary);
-            width: 65%; border-radius: 2px;
-            transition: width 1s ease-out;
-        }
+        .m3-progress { width: 100%; height: 4px; background: var(--m3-surface-variant); border-radius: 2px; overflow: hidden; margin: 12px 0; }
+        .m3-progress-bar { height: 100%; background: var(--m3-primary); width: 65%; border-radius: 2px; transition: width 1s ease-out; }
 
-        /* Utilitaire pour images en grille */
         .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
         .photo-grid div { aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
         .photo-grid img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Input couleur invisible pour le bouton de la topbar */
+        #color-picker { opacity: 0; position: absolute; width: 0; height: 0; }
     </style>
 </head>
 <body>
@@ -344,6 +201,12 @@
             <span class="material-symbols-outlined">menu</span>
         </button>
         <h1>Material Pro</h1>
+        
+        <input type="color" id="color-picker" value="#00E676" oninput="changeColor(this.value)">
+        <button class="m3-icon-btn" onclick="document.getElementById('color-picker').click()">
+            <span class="material-symbols-outlined">palette</span>
+        </button>
+        
         <button class="m3-icon-btn" onclick="cycleTheme()">
             <span class="material-symbols-outlined">contrast</span>
         </button>
@@ -360,8 +223,8 @@
         </div>
 
         <div class="m3-card outlined">
-            <h2>Navigation Native</h2>
-            <p>Regarde en bas de ton écran ! Une barre de navigation fluide a été ajoutée pour une expérience identique à une application.</p>
+            <h2>Tester la palette dynamique</h2>
+            <p>Clique sur l'icône <strong>Palette</strong> en haut à droite pour choisir une couleur. Regarde comment TOUTE l'interface s'adapte en temps réel, en clair comme en sombre !</p>
         </div>
 
         <div class="m3-card-image">
@@ -442,7 +305,7 @@
     <script>
         function applyMaterialYouTheme() {
             const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
-            const color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
+            const color = window.localStorage.getItem('material_you_color_expresive') || '#00E676';
             const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             
             if (theme === 'sombre' || (theme === 'systeme' && isSystemDark)) {
@@ -451,14 +314,16 @@
                 document.documentElement.classList.remove('dark');
             }
 
-            if (color !== 'auto' && color !== '') {
-                document.documentElement.style.setProperty('--base-color', color);
-            } else {
-                document.documentElement.style.removeProperty('--base-color');
-            }
+            document.documentElement.style.setProperty('--base-color', color);
+            document.getElementById('color-picker').value = color;
 
             document.getElementById('debug-theme').innerText = theme.toUpperCase();
             document.getElementById('debug-color').innerText = color.toUpperCase();
+        }
+
+        function changeColor(hexColor) {
+            window.localStorage.setItem('material_you_color_expresive', hexColor);
+            applyMaterialYouTheme();
         }
 
         function toggleMenu() {
@@ -477,18 +342,9 @@
         window.addEventListener('storage', applyMaterialYouTheme);
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyMaterialYouTheme);
         
-        // --- GESTION DE LA MODALE ---
-        function openModal() {
-            document.getElementById('modalOverlay').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") closeModal();
-        });
+        function openModal() { document.getElementById('modalOverlay').classList.add('active'); }
+        function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+        window.addEventListener('keydown', (e) => { if (e.key === "Escape") closeModal(); });
     </script>
 </body>
 </html>
