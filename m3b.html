@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Material Expressive 3 - App Mode</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            /* On remplace le vert terne par un émeraude électrique ultra-vibrant ⚡ */
+            --base-color: #00E676; 
+            --page-bg: #F0F4F8; /* Un fond un poil plus contrasté */
+            --page-text: #0F172A; /* Un slate ultra profond pour un contraste optimal */
+            
+            --m3-primary: var(--base-color);
+            --m3-on-primary: #000000; /* Noir sur fluo, c'est insolent mais ça claque */
+            
+            /* On booste la présence de la couleur de base dans les mix (40% au lieu de 25%) */
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 40%, #FFFFFF);
+            --m3-on-primary-container: #004D28; /* On garde une lisibilité parfaite */
+            
+            --m3-secondary-container: color-mix(in srgb, var(--base-color) 20%, #E0F2FE);
+            --m3-on-secondary-container: #0369A1;
+
+            --m3-surface: #FFFFFF;
+            --m3-on-surface: var(--page-text);
+            --m3-surface-variant: color-mix(in srgb, var(--base-color) 10%, #F1F5F9);
+            --m3-on-surface-variant: #334155;
+            
+            --m3-outline: color-mix(in srgb, var(--base-color) 60%, #94A3B8);
+            --m3-radius: 28px;
+            
+            /* Une transition un peu farfelue avec un léger effet rebond (bouncy) 🎾 */
+            --m3-transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+
+        /* CORRECTION MODE SOMBRE : Ambiance Cyberpunk / OLED 🌃 */
+        html.dark {
+            --page-bg: #090B10; /* Un noir abyssal poétique */
+            --page-text: #F8FAFC;
+            
+            /* Un vert néon qui perce l'obscurité comme un phare dans la nuit */
+            --m3-primary: #10B981; 
+            --m3-on-primary: #000000;
+            --m3-primary-container: color-mix(in srgb, var(--base-color) 35%, #064E3B);
+            --m3-on-primary-container: #6EE7B7;
+            
+            --m3-surface: #111827;
+            --m3-surface-variant: #1E293B;
+            --m3-on-surface: #F8FAFC;
+            --m3-on-surface-variant: #CBD5E1;
+            --m3-outline: color-mix(in srgb, var(--base-color) 40%, #475569);
+        }
+
+        /* Base & Reset App-like */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--page-bg);
+            color: var(--m3-on-surface);
+            margin: 0;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            padding-bottom: 90px;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* --- Barre du haut (Glassmorphism) --- */
+        .m3-top-bar {
+            display: flex;
+            align-items: center;
+            height: 64px;
+            padding: 0 16px;
+            background: color-mix(in srgb, var(--page-bg) 85%, transparent);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .m3-top-bar h1 { 
+            font-size: 22px; 
+            font-weight: 400; 
+            flex-grow: 1; 
+            margin-left: 12px; 
+        }
+
+        /* --- Navigation Drawer --- */
+        .drawer { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 320px; 
+            max-width: 80vw;
+            height: 100%; 
+            background: var(--m3-surface); 
+            z-index: 200; 
+            transform: translateX(-105%);
+            transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1); 
+            border-radius: 0 28px 28px 0; 
+            padding: 24px 16px;
+            box-sizing: border-box;
+            box-shadow: 4px 0 16px rgba(0,0,0,0.05); 
+        }
+        .drawer.open { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 16px; 
+            font-weight: 500; 
+            color: var(--m3-on-surface-variant);
+            margin-bottom: 8px;
+        }
+
+        .drawer-item {
+            display: flex; 
+            align-items: center;
+            gap: 12px; 
+            padding: 16px; 
+            border-radius: 100px; 
+            color: var(--m3-on-surface-variant);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--m3-transition);
+            margin-bottom: 4px;
+        }
+        .drawer-item:hover { background: color-mix(in srgb, var(--m3-on-surface) 8%, transparent); }
+        .drawer-item.active {
+            background: var(--m3-secondary-container);
+            color: var(--m3-on-secondary-container);
+        }
+
+        /* --- Navigation Bar (Bottom) --- */
+        .m3-nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: color-mix(in srgb, var(--m3-surface) 95%, transparent);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 90;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--m3-on-surface-variant);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            gap: 4px;
+            width: 64px;
+        }
+
+        .nav-item.active { color: var(--m3-on-surface); }
+        .nav-item.active .icon-container {
+            background: var(--m3-secondary-container);
+            color: var(--m3-on-secondary-container);
+            width: 64px;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 32px;
+            width: 32px;
+            border-radius: 16px;
+            transition: var(--m3-transition);
+        }
+
+        /* --- Cartes & Layout --- */
+        .container { max-width: 800px; margin: 16px auto; padding: 0 16px; }
+
+        .m3-card {
+            background-color: var(--m3-surface-variant);
+            border-radius: var(--m3-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: var(--m3-transition);
+            color: var(--m3-on-surface-variant);
+            border: 1px solid transparent;
+        }
+        .m3-card.outlined {
+            background: var(--m3-surface);
+            border-color: var(--m3-outline);
+        }
+        .m3-card h2 { color: var(--m3-on-surface); margin-top: 0; font-size: 20px; }
+
+        /* --- Boutons M3 Innovants --- */
+        .m3-btn {
+            height: 40px;
+            padding: 0 24px;
+            border-radius: 20px;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: var(--m3-transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--m3-primary);
+        }
+        .m3-btn:hover { background: color-mix(in srgb, var(--m3-primary) 8%, transparent); }
+        
+        .m3-btn-filled {
+            background: var(--m3-primary);
+            color: var(--m3-on-primary);
+            /* Lueur néon qui utilise ta couleur dynamique */
+            box-shadow: 0 4px 14px color-mix(in srgb, var(--m3-primary) 40%, transparent); 
+        }
+        .m3-btn-filled:hover {
+            background: color-mix(in srgb, var(--m3-primary) 85%, white);
+            box-shadow: 0 6px 20px color-mix(in srgb, var(--m3-primary) 60%, transparent);
+            transform: translateY(-2px); /* Petit soulèvement jouissif au survol */
+        }
+
+        .m3-icon-btn {
+            background: transparent; border: none; color: var(--m3-on-surface);
+            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+            display: grid; place-items: center;
+            transition: background 0.2s;
+        }
+        .m3-icon-btn:hover { background: color-mix(in srgb, var(--m3-on-surface) 8%, transparent); }
+
+        /* --- Composants divers --- */
+        .debug-panel {
+            background: var(--m3-primary-container);
+            color: var(--m3-on-primary-container);
+            padding: 16px;
+            border-radius: 20px;
+            font-family: monospace;
+            display: grid;
+            gap: 8px;
+        }
+
+        .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 150; }
+        .scrim.show { opacity: 1; visibility: visible; }
+
+        .m3-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .m3-card-image {
+            position: relative;
+            height: 220px;
+            border-radius: var(--m3-radius);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .m3-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .m3-card-image:hover img { transform: scale(1.05); }
+        
+        .image-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 16px 16px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+        }
+
+        .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+        .m3-chip {
+            padding: 6px 16px;
+            border-radius: 8px;
+            background: var(--m3-surface);
+            color: var(--m3-on-surface-variant);
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid var(--m3-outline);
+            cursor: pointer;
+            transition: var(--m3-transition);
+        }
+        .m3-chip:hover { background: var(--m3-surface-variant); }
+
+        /* --- Modal (Dialogue) --- */
+        .m3-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .m3-modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .m3-modal {
+            background: var(--m3-surface);
+            width: 90%; max-width: 400px;
+            border-radius: var(--m3-radius);
+            padding: 24px;
+            transform: scale(0.9) translateY(10px);
+            transition: 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .m3-modal-overlay.active .m3-modal { transform: scale(1) translateY(0); }
+
+        /* --- Barre de progression --- */
+        .m3-progress {
+            width: 100%; height: 4px;
+            background: var(--m3-surface-variant);
+            border-radius: 2px; overflow: hidden; margin: 12px 0;
+        }
+        .m3-progress-bar {
+            height: 100%; background: var(--m3-primary);
+            width: 65%; border-radius: 2px;
+            transition: width 1s ease-out;
+        }
+
+        /* Utilitaire pour images en grille */
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+        .photo-grid div { aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
+        .photo-grid img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <div class="scrim" id="scrim" onclick="toggleMenu()"></div>
+    
+    <aside class="drawer" id="drawer">
+        <div class="drawer-header">Menu Expressif</div>
+        <nav style="display: flex; flex-direction: column;">
+            <a href="#" class="drawer-item active">
+                <span class="material-symbols-outlined">home</span> Accueil
+            </a>
+            <a href="#" class="drawer-item">
+                <span class="material-symbols-outlined">settings</span> Paramètres
+            </a>
+            <a href="#" class="drawer-item">
+                <span class="material-symbols-outlined">palette</span> Personnaliser
+            </a>
+        </nav>
+    </aside>
+
+    <header class="m3-top-bar">
+        <button class="m3-icon-btn" onclick="toggleMenu()">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <h1>Material Pro</h1>
+        <button class="m3-icon-btn" onclick="cycleTheme()">
+            <span class="material-symbols-outlined">contrast</span>
+        </button>
+    </header>
+
+    <main class="container">
+        
+        <div class="m3-card">
+            <h2>Statut du Thème</h2>
+            <div class="debug-panel">
+                <div>MODE: <span id="debug-theme">...</span></div>
+                <div>COULEUR: <span id="debug-color">...</span></div>
+            </div>
+        </div>
+
+        <div class="m3-card outlined">
+            <h2>Navigation Native</h2>
+            <p>Regarde en bas de ton écran ! Une barre de navigation fluide a été ajoutée pour une expérience identique à une application.</p>
+        </div>
+
+        <div class="m3-card-image">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Abstrait">
+            <div class="image-overlay">
+                <h2 style="margin:0; color:white;">L'Expressivité M3</h2>
+                <p style="margin:4px 0 0; opacity:0.9; font-size: 14px;">Une expérience utilisateur redéfinie.</p>
+            </div>
+        </div>
+
+        <div class="m3-grid">
+            <div class="m3-card">
+                <h2>Stockage Cloud</h2>
+                <div class="m3-progress"><div class="m3-progress-bar"></div></div>
+                <p style="font-size: 13px; margin: 0;">12.4 Go sur 20 Go utilisés</p>
+                <div class="chip-group">
+                    <span class="m3-chip">Photos</span>
+                    <span class="m3-chip">Docs</span>
+                    <span class="m3-chip">Vidéos</span>
+                </div>
+                <button class="m3-btn m3-btn-filled" style="width:100%; margin-top:16px;" onclick="openModal()">
+                    Gérer le stockage
+                </button>
+            </div>
+
+            <div class="m3-card" style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container);">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <h2 style="margin:0; color:inherit;">Paris</h2>
+                        <p style="font-size:40px; font-weight:300; margin:8px 0;">22°</p>
+                    </div>
+                    <span class="material-symbols-outlined" style="font-size:40px;">light_mode</span>
+                </div>
+                <p style="margin:0; font-weight:500;">Ensoleillé • Ressenti 24°</p>
+            </div>
+        </div>
+
+        <div class="m3-card">
+            <h2>Dernières photos</h2>
+            <div class="photo-grid">
+                <div><img src="https://picsum.photos/200/200?random=1" alt="random 1"></div>
+                <div><img src="https://picsum.photos/200/200?random=2" alt="random 2"></div>
+                <div><img src="https://picsum.photos/200/200?random=3" alt="random 3"></div>
+            </div>
+        </div>
+
+        <div class="m3-modal-overlay" id="modalOverlay" onclick="closeModal()">
+            <div class="m3-modal" onclick="event.stopPropagation()">
+                <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+                    <span class="material-symbols-outlined" style="color: var(--m3-primary); font-size: 36px; margin-bottom: 16px;">cloud_sync</span>
+                    <h2 style="margin:0 0 16px 0;">Synchronisation</h2>
+                    <p style="margin:0; color: var(--m3-on-surface-variant);">Voulez-vous vraiment synchroniser vos données avec le serveur ? Cela consommera 15 Mo.</p>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:32px;">
+                    <button class="m3-btn" onclick="closeModal()">Annuler</button>
+                    <button class="m3-btn m3-btn-filled" onclick="closeModal()">Confirmer</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="m3-nav-bar">
+        <a href="#" class="nav-item active">
+            <div class="icon-container"><span class="material-symbols-outlined">home</span></div>
+            <span>Accueil</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="icon-container"><span class="material-symbols-outlined">explore</span></div>
+            <span>Explorer</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="icon-container"><span class="material-symbols-outlined">person</span></div>
+            <span>Profil</span>
+        </a>
+    </nav>
+
+    <script>
+        function applyMaterialYouTheme() {
+            const theme = window.localStorage.getItem('material_you_theme') || 'systeme';
+            const color = window.localStorage.getItem('material_you_color_expresive') || 'auto';
+            const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (theme === 'sombre' || (theme === 'systeme' && isSystemDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            if (color !== 'auto' && color !== '') {
+                document.documentElement.style.setProperty('--base-color', color);
+            } else {
+                document.documentElement.style.removeProperty('--base-color');
+            }
+
+            document.getElementById('debug-theme').innerText = theme.toUpperCase();
+            document.getElementById('debug-color').innerText = color.toUpperCase();
+        }
+
+        function toggleMenu() {
+            document.getElementById('drawer').classList.toggle('open');
+            document.getElementById('scrim').classList.toggle('show');
+        }
+
+        function cycleTheme() {
+            const current = window.localStorage.getItem('material_you_theme');
+            const next = current === 'sombre' ? 'clair' : 'sombre';
+            window.localStorage.setItem('material_you_theme', next);
+            applyMaterialYouTheme();
+        }
+
+        applyMaterialYouTheme();
+        window.addEventListener('storage', applyMaterialYouTheme);
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyMaterialYouTheme);
+        
+        // --- GESTION DE LA MODALE ---
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeModal();
+        });
+    </script>
+</body>
+</html>
