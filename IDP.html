@@ -294,7 +294,7 @@
           <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Publier sur votre Supabase (Lien court)</label>
           <span class="text-[10px] text-green-500 font-bold bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 px-1.5 py-0.5 rounded">sb.js connecté</span>
         </div>
-        <p class="text-xs text-slate-500">Sauvegarde le document dans votre table <code class="font-mono bg-slate-100 dark:bg-slate-950 px-1 py-0.5 rounded">IDN_documents</code> pour un lien permanent plus court.</p>
+        <p class="text-xs text-slate-500">Sauvegarde le document dans votre table <code class="font-mono bg-slate-100 dark:bg-slate-950 px-1 py-0.5 rounded">idedesnation_documents</code> pour un lien permanent plus court.</p>
         
         <div class="flex flex-col space-y-2">
           <!-- Button to trigger Supabase publish -->
@@ -552,7 +552,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
 
     async function initDriveFromSupabase() {
       // Load expansion state
-      const expanded = localStorage.getItem('IDN_drive_expanded');
+      const expanded = localStorage.getItem('idedesnation_drive_expanded');
       if (expanded) {
         try { driveState.expandedFolders = JSON.parse(expanded); } catch (e) { driveState.expandedFolders = {}; }
       } else {
@@ -576,13 +576,13 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
 
         // Fetch folders
         const { data: folders, error: fError } = await window.supabase
-          .from('IDN_folders')
+          .from('idedesnation_folders')
           .select('*');
         if (fError) throw fError;
 
         // Fetch files (metadata only)
         const { data: files, error: filesError } = await window.supabase
-          .from('IDN_files')
+          .from('idedesnation_files')
           .select('id, name, folder_id, updated_at');
         if (filesError) throw filesError;
 
@@ -625,7 +625,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         // Insert folders
         for (const folder of DEFAULT_DRIVE.folders) {
           const { error } = await window.supabase
-            .from('IDN_folders')
+            .from('idedesnation_folders')
             .insert({ id: folder.id, name: folder.name, parent_id: folder.parentId });
           if (error) throw error;
         }
@@ -633,7 +633,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         // Insert files
         for (const file of DEFAULT_DRIVE.files) {
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .insert({ id: file.id, name: file.name, folder_id: file.folderId, content: file.content });
           if (error) throw error;
         }
@@ -792,7 +792,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         driveState.expandedFolders[folderId] = true;
       }
       
-      localStorage.setItem('IDN_drive_expanded', JSON.stringify(driveState.expandedFolders));
+      localStorage.setItem('idedesnation_drive_expanded', JSON.stringify(driveState.expandedFolders));
       renderDrive();
     }
 
@@ -826,7 +826,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
           if (!name.toLowerCase().endsWith('.md')) name += '.md';
           
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .insert({ id, name, folder_id: currentImportFolderId, content });
             
           if (error) throw error;
@@ -1020,7 +1020,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
       for (const folderId of foldersToMove) {
         try {
           const { error } = await window.supabase
-            .from('IDN_folders')
+            .from('idedesnation_folders')
             .update({ parent_id: targetId })
             .eq('id', folderId);
           if (error) throw error;
@@ -1038,7 +1038,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
       for (const fileId of filesToMove) {
         try {
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .update({ folder_id: targetId })
             .eq('id', fileId);
           if (error) throw error;
@@ -1080,7 +1080,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         for (const fileId of driveState.selectedItems.files) {
           try {
             const { error } = await window.supabase
-              .from('IDN_files')
+              .from('idedesnation_files')
               .delete()
               .eq('id', fileId);
             if (error) throw error;
@@ -1100,7 +1100,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         for (const folderId of driveState.selectedItems.folders) {
           try {
             const { error } = await window.supabase
-              .from('IDN_folders')
+              .from('idedesnation_folders')
               .delete()
               .eq('id', folderId);
             if (error) throw error;
@@ -1147,7 +1147,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         showLoadingViewer("Chargement du contenu...");
         try {
           const { data, error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .select('content')
             .eq('id', fileId)
             .single();
@@ -1211,7 +1211,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         saveTimeout = setTimeout(async () => {
           try {
             const { error } = await window.supabase
-              .from('IDN_files')
+              .from('idedesnation_files')
               .update({ content: file.content, updated_at: new Date() })
               .eq('id', file.id);
             if (error) throw error;
@@ -1243,7 +1243,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         
         try {
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .update({ name: newName })
             .eq('id', file.id);
           if (error) throw error;
@@ -1266,7 +1266,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         
         try {
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .delete()
             .eq('id', fileId);
           if (error) throw error;
@@ -1302,7 +1302,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
         if (type === 'folder') {
           const id = 'f_' + Date.now();
           const { error } = await window.supabase
-            .from('IDN_folders')
+            .from('idedesnation_folders')
             .insert({ id, name: name.trim(), parent_id: activeFolderId });
           if (error) throw error;
 
@@ -1316,7 +1316,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
           const defaultContent = `# ${fName.slice(0, -3)}\nÉcrivez ici...`;
 
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .insert({ id, name: fName, folder_id: activeFolderId, content: defaultContent });
           if (error) throw error;
 
@@ -1342,7 +1342,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
       try {
         if (type === 'folder') {
           const { error } = await window.supabase
-            .from('IDN_folders')
+            .from('idedesnation_folders')
             .update({ name: name.trim() })
             .eq('id', id);
           if (error) throw error;
@@ -1354,7 +1354,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
           if (!fName.toLowerCase().endsWith('.md')) fName += '.md';
           
           const { error } = await window.supabase
-            .from('IDN_files')
+            .from('idedesnation_files')
             .update({ name: fName })
             .eq('id', id);
           if (error) throw error;
@@ -1381,7 +1381,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
       if (confirm("Supprimer ce dossier et TOUT son contenu de la base SQL ?")) {
         try {
           const { error } = await window.supabase
-            .from('IDN_folders')
+            .from('idedesnation_folders')
             .delete()
             .eq('id', folderId);
           if (error) throw error;
@@ -1777,9 +1777,9 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
           throw new Error("Client Supabase non initialisé");
         }
 
-        // Insert into your 'IDN_documents' table
+        // Insert into your 'idedesnation_documents' table
         const { data, error } = await window.supabase
-          .from('IDN_documents')
+          .from('idedesnation_documents')
           .insert({
             titre: activeFile.name.replace('.md', ''),
             description: 'Créé via Howard Markdown Drive',
@@ -1836,7 +1836,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
           }
 
           const { data, error } = await window.supabase
-            .from('IDN_documents')
+            .from('idedesnation_documents')
             .select('titre, contenu')
             .eq('id_doc', idDoc)
             .single();
@@ -1920,7 +1920,7 @@ Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabas
       try {
         // Save to SQL database
         const { error } = await window.supabase
-          .from('IDN_files')
+          .from('idedesnation_files')
           .insert({
             id: newId,
             name: sharedDocumentData.name,
