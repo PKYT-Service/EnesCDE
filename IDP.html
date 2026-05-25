@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-CDE - IDN</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Custom Scrollbar for premium feel */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.25);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.45);
+    }
+    
+    /* Glassmorphism utility */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dark .glass-panel {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Custom mark background transition */
+    mark {
+      padding: 0.1em 0.3em;
+      border-radius: 0.25em;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 h-screen flex flex-col transition-colors duration-300 font-sans overflow-hidden">
+
+  <!-- Header / Navigation Bar -->
+  <header class="h-16 border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between glass-panel sticky top-0 z-40 shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-blue-500/20">
+        <i data-lucide="scale" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300 bg-clip-text text-transparent">Campyskerie</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400">IDN - Portail Documents -  par le parlement, l'institut et les nations</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <!-- Read Only Badge -->
+      <div id="readOnlyBadge" class="hidden flex items-center space-x-1.5 px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-xs font-semibold rounded-full border border-amber-200 dark:border-amber-800">
+        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+        <span>Lecture Seule (Clé manquante)</span>
+      </div>
+
+      <!-- Shared Badge (Conditional) -->
+      <div id="sharedBadge" class="hidden flex items-center space-x-1.5 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 text-xs font-semibold rounded-full border border-yellow-200 dark:border-yellow-800">
+        <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+        <span>Document Partagé</span>
+      </div>
+
+      <!-- Import Button for Shared View -->
+      <button id="importBtn" class="hidden edit-only-control flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-sm font-semibold rounded-lg shadow-md transition duration-200" onclick="importSharedToDrive()">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Importer dans mon Drive</span>
+      </button>
+
+      <!-- Theme toggle -->
+      <button onclick="toggleTheme()" class="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition">
+        <i data-lucide="sun" id="themeSun" class="w-5 h-5 hidden"></i>
+        <i data-lucide="moon" id="themeMoon" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="flex flex-1 overflow-hidden min-h-0">
+    
+    <!-- Sidebar: Drive Tree Explorer -->
+    <aside id="sidebar" class="w-80 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 flex flex-col shrink-0 transition-transform duration-300 relative">
+      
+      <!-- Explorer Search & Controls -->
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800/80 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase">Documents</span>
+          <div class="flex items-center space-x-1 edit-only-control">
+            <button onclick="promptCreate('folder')" title="Nouveau Dossier" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-500">
+              <i data-lucide="folder-plus" class="w-4 h-4"></i>
+            </button>
+            <button onclick="promptCreate('file')" title="Nouveau Fichier MD" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-500">
+              <i data-lucide="file-plus" class="w-4 h-4"></i>
+            </button>
+            <button onclick="triggerMultiImport(event, null)" title="Importer des fichiers MD" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-green-500">
+              <i data-lucide="upload" class="w-4 h-4"></i>
+            </button>
+            <button id="toggleOrganizeBtn" onclick="toggleOrganizeMode()" title="Organiser / Sélection multiple" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-500">
+              <i data-lucide="check-square" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <input type="text" id="searchBar" oninput="filterDrive()" placeholder="Rechercher un fichier..." class="w-full pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:text-slate-200">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+        </div>
+      </div>
+
+      <!-- File Tree Container -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-1" id="fileTree">
+        <!-- Loader during supabase load -->
+        <div class="flex flex-col items-center justify-center py-10 space-y-2 text-slate-400">
+          <div class="w-6 h-6 rounded-full border-2 border-slate-400/20 border-t-blue-500 animate-spin"></div>
+          <span class="text-xs">Chargement...</span>
+        </div>
+      </div>
+
+      <!-- Selection Floating Action Bar -->
+      <div id="selectionBar" class="absolute bottom-16 left-3 right-3 bg-slate-900 dark:bg-white text-white dark:text-slate-950 p-2.5 flex items-center justify-between rounded-xl shadow-2xl z-30 transition-all duration-300 transform translate-y-full opacity-0">
+        <div class="flex items-center space-x-1.5 min-w-0 flex-1 mr-2">
+          <i data-lucide="check-square" class="w-4 h-4 text-blue-500 shrink-0"></i>
+          <span id="selectionCount" class="text-xs font-bold truncate">0 sélectionné(s)</span>
+        </div>
+        <div class="flex space-x-1 shrink-0">
+          <button onclick="openMoveModal()" class="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[11px] font-semibold transition">Déplacer</button>
+          <button onclick="deleteSelectedItems()" class="px-2 py-1 bg-red-100 hover:bg-red-200 dark:bg-red-950/30 dark:hover:bg-red-950/50 text-red-600 dark:text-red-400 rounded-lg text-[11px] font-semibold transition">Supprimer</button>
+        </div>
+      </div>
+
+      <!-- Storage Info Footer -->
+      <div class="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30 text-xs text-slate-400 dark:text-slate-500 flex items-center justify-between">
+        <div class="flex items-center space-x-1">
+          <i data-lucide="cloud" class="w-3.5 h-3.5"></i>
+          <span>Base de données SQL</span>
+        </div>
+        <span id="syncState">Connecté</span>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main class="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-950 overflow-hidden relative min-h-0">
+      
+      <!-- Top Actions Header -->
+      <div id="workspaceHeader" class="hidden h-14 border-b border-slate-200 dark:border-slate-800 px-6 items-center justify-between bg-white dark:bg-slate-900/40 shrink-0">
+        <!-- Breadcrumb / Rename field -->
+        <div class="flex items-center space-x-2 overflow-hidden flex-1 mr-4">
+          <i data-lucide="folder-open" class="w-4 h-4 text-slate-400 shrink-0"></i>
+          <span id="currentPathLabel" class="text-xs text-slate-400 dark:text-slate-500 shrink-0 font-medium"></span>
+          <span class="text-slate-300 dark:text-slate-700 shrink-0">/</span>
+          <input type="text" id="fileNameInput" onchange="renameCurrentFile(this.value)" class="text-sm font-semibold bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/80 focus:bg-white dark:focus:bg-slate-900 px-2 py-0.5 rounded border border-transparent focus:border-slate-300 dark:focus:border-slate-700 outline-none text-slate-800 dark:text-slate-100 transition truncate max-w-xs">
+          <span class="text-xs text-slate-400 italic" id="savedIndicator"></span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center space-x-2 shrink-0">
+          <!-- Edit / Preview toggle -->
+          <div id="modeTogglerContainer" class="flex bg-slate-100 dark:bg-slate-900 rounded-lg p-0.5 border border-slate-200 dark:border-slate-800">
+            <button onclick="setMode('preview')" id="btnModePreview" class="flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-800 shadow-sm text-slate-800 dark:text-slate-100">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span>Rendu</span>
+            </button>
+            <button onclick="setMode('edit')" id="btnModeEdit" class="flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              <span>Éditeur</span>
+            </button>
+          </div>
+
+          <button onclick="openShareModal()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800/80 text-blue-600 dark:text-blue-400 rounded-lg text-xs font-semibold transition">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+            <span>Partager</span>
+          </button>
+
+          <button onclick="deleteCurrentFile()" title="Supprimer le fichier" class="edit-only-control p-2 border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Content Workspace -->
+      <div class="flex-1 flex overflow-hidden min-h-0">
+        
+        <!-- Editor View -->
+        <div id="editorView" class="hidden flex-1 flex flex-col h-full bg-white dark:bg-slate-900/20 overflow-hidden min-h-0">
+          <textarea id="mdEditor" oninput="onEditorChange()" placeholder="# Écrivez votre markdown ici..." class="flex-1 p-6 w-full resize-none bg-transparent border-0 outline-none text-slate-800 dark:text-slate-100 font-mono text-sm leading-relaxed focus:ring-0"></textarea>
+          <!-- Cheat Sheet Footer -->
+          <div class="h-9 px-6 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between text-[11px] text-slate-400">
+            <span>Balises : [[Procès: Nom]] | ((Avocat: Nom)) | {{Juge: Nom}} | [Décret: Réf] | (Verdict: Culpabilité)</span>
+            <span>Raccourcis : **Gras** | *Italique* | `Code` | [o]/[x] Case</span>
+          </div>
+        </div>
+
+        <!-- Rendered HTML Preview -->
+        <div id="previewView" class="flex-1 overflow-y-auto p-6 md:p-10 h-full min-h-0">
+          <article id="previewContent" class="max-w-4xl mx-auto bg-white dark:bg-slate-900/30 p-8 md:p-12 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm leading-relaxed prose dark:prose-invert">
+            <!-- Rendered output -->
+          </article>
+        </div>
+
+        <!-- Empty State (No file open) -->
+        <div id="emptyState" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/50 dark:bg-slate-950">
+          <div class="w-20 h-20 rounded-2xl bg-blue-50 dark:bg-slate-900 border border-blue-100 dark:border-slate-800 flex items-center justify-center text-blue-500 mb-6 shadow-md animate-bounce">
+            <i data-lucide="file-text" class="w-10 h-10"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">Aucun document ouvert</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-6">
+            Sélectionnez un document dans votre drive cloud Supabase ou créez-en un nouveau si vous disposez d'une clé d'accès.
+          </p>
+          <div class="flex items-center space-x-3">
+            <button onclick="promptCreate('file')" class="edit-only-control flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-semibold rounded-lg shadow-md transition duration-200">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Créer un Fichier</span>
+            </button>
+            <button onclick="initializeDatabaseWithDefaults()" class="edit-only-control flex items-center space-x-2 px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-semibold rounded-lg transition duration-200">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>Initialiser la base</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Share Document Modal -->
+  <div id="shareModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 text-blue-600 dark:text-blue-400">
+          <i data-lucide="share-2" class="w-5 h-5"></i>
+          <h4 class="text-lg font-bold text-slate-800 dark:text-slate-100">Partager le document</h4>
+        </div>
+        <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Share option 1: Simple Local Link -->
+      <div class="space-y-2">
+        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Partager via lien direct (Contenu inclus)</label>
+        <p class="text-xs text-slate-500">Ce lien contient l'intégralité du contenu compressé directement dans l'URL. Fonctionne n'importe où, sans base de données.</p>
+        <div class="flex space-x-2">
+          <input type="text" id="shareLocalUrlInput" readonly class="flex-1 text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg outline-none text-slate-600 dark:text-slate-300 font-mono truncate">
+          <button onclick="copyToClipboard('shareLocalUrlInput')" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition shrink-0">Copier</button>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="flex items-center my-4">
+        <hr class="flex-1 border-slate-200 dark:border-slate-800" />
+        <span class="mx-3 text-xs text-slate-400 font-semibold uppercase">Ou</span>
+        <hr class="flex-1 border-slate-200 dark:border-slate-800" />
+      </div>
+
+      <!-- Share option 2: Supabase database sharing -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Publier sur votre Supabase (Lien court)</label>
+          <span class="text-[10px] text-green-500 font-bold bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 px-1.5 py-0.5 rounded">sb.js connecté</span>
+        </div>
+        <p class="text-xs text-slate-500">Sauvegarde le document dans votre table <code class="font-mono bg-slate-100 dark:bg-slate-950 px-1 py-0.5 rounded">IDN_documents</code> pour un lien permanent plus court.</p>
+        
+        <div class="flex flex-col space-y-2">
+          <!-- Button to trigger Supabase publish -->
+          <button id="supabasePublishBtn" onclick="publishToSupabase()" class="w-full flex items-center justify-center space-x-2 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold rounded-lg text-sm transition shadow-md animate-none">
+            <i data-lucide="cloud-lightning" class="w-4 h-4"></i>
+            <span id="supabasePublishBtnText">Publier sur Supabase</span>
+          </button>
+
+          <!-- Supabase Result URL (Hidden initially) -->
+          <div id="supabaseResultContainer" class="hidden flex space-x-2 mt-2">
+            <input type="text" id="shareSupabaseUrlInput" readonly class="flex-1 text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg outline-none text-slate-600 dark:text-slate-300 font-mono truncate">
+            <button onclick="copyToClipboard('shareSupabaseUrlInput')" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition shrink-0">Copier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Move Items Modal -->
+  <div id="moveModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 text-blue-600 dark:text-blue-400">
+          <i data-lucide="folder-symlink" class="w-5 h-5"></i>
+          <h4 class="text-lg font-bold text-slate-800 dark:text-slate-100">Déplacer les éléments</h4>
+        </div>
+        <button onclick="closeMoveModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-500">Choisissez le dossier de destination pour les éléments sélectionnés :</p>
+      
+      <!-- Target Folder Selector -->
+      <div class="max-h-60 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl p-3 space-y-1 bg-slate-50 dark:bg-slate-950/50" id="moveFolderList">
+        <!-- Will be populated dynamically -->
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="closeMoveModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition">Annuler</button>
+        <button id="confirmMoveBtn" onclick="confirmMoveItems()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition">Déplacer ici</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Input for Multi Import -->
+  <input type="file" id="multiImportInput" multiple accept=".md" class="hidden" onchange="handleMultiImport(this)">
+
+  <!-- Global Toast Notification -->
+  <div id="toast" class="opacity-0 translate-y-4 pointer-events-none fixed bottom-6 right-6 z-50 flex items-center space-x-2 bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 transform">
+    <i data-lucide="info" class="w-4 h-4" id="toastIcon"></i>
+    <span id="toastMessage" class="text-xs font-semibold">Message de notification</span>
+  </div>
+
+  <!-- Load Supabase Library from ESM.sh -->
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    // Global Supabase client configured from your details
+    const supabaseUrl = 'https://buowykniuotmzhypurkx.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1b3d5a25pdW90bXpoeXB1cmt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4NTcwODQsImV4cCI6MjA3MjQzMzA4NH0.b4C85MHgsEDzTvxojI4JGfWoGamYOPe6RLoA5lrj8qQ';
+
+    window.supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false
+      }
+    });
+
+    console.log("🟢 Supabase prêt et lié à l'interface");
+    
+    // Check if URL has shared parameters when Supabase loads
+    initDriveFromSupabase();
+  </script>
+
+  <!-- Drive Application Logic -->
+  <script>
+    // Global State
+    let driveState = {
+      folders: [],
+      files: [], // Objects: { id, name, folderId, content (lazy-loaded), updated_at }
+      activeFileId: null,
+      selectedFolderId: null,
+      mode: 'preview', // 'preview' or 'edit'
+      expandedFolders: {},
+      organizeMode: false,
+      selectedItems: { files: [], folders: [] }
+    };
+
+    // Shared State (read-only document loaded via URL)
+    let isSharedDocument = false;
+    let sharedDocumentData = null;
+
+    // Default File Database template if database is completely empty
+    const DEFAULT_DRIVE = {
+      folders: [
+        { id: 'f1', name: '⚖️ Dossiers Judiciaires', parentId: null },
+        { id: 'f2', name: '📝 Modèles & Chartes', parentId: null }
+      ],
+      files: [
+        { 
+          id: 'file1', 
+          name: 'Affaire Lafarge.md', 
+          folderId: 'f1', 
+          content: `# Procès Lafarge
+[[Procès: Affaire Lafarge contre État]]
+(Dossier: FR-2026-X82)
+(Audience: 2026-06-25)
+
+---
+
+## Acteurs de l'audience
+- **Juge principal** : {{Juge: Mme la Présidente Valérie Berger}}
+- **Conseil de la défense** : ((Avocat: Me Alexandre Dupont))
+- **Plaignant** : (Plaignant: Ministère Public)
+- **Accusé** : (Accusé: SARL Lafarge Logistique)
+
+---
+
+## Pièces de dossier & Preuves
+1. Rapport de gendarmerie : [Document: GEND-2026-01]
+2. Contrat fictif identifié : (Preuve: Facture modifiée F-982-B)
+3. Témoignage de l'ex-salarié : (Témoin: M. Charles Martin, comptable)
+
+---
+
+## Dispositions Légales
+Les faits reprochés visent spécifiquement les dispositions suivantes :
+(ArtLoi: Code Pénal Art. 441-1 sur le faux et usage de faux)
+(ArtLoi: Code du Travail L-1234)
+
+---
+
+## Verdict Prononcé
+(Verdict: Acquittement) ou (Verdict: Culpabilité) selon les délibérés.` 
+        },
+        { 
+          id: 'file2', 
+          name: 'Charte Interne.md', 
+          folderId: 'f2', 
+          content: `# Charte Éthique & Déontologie
+[Document: CHARTE-E-2026]
+
+---
+
+## Directives Générales
+Toutes les équipes doivent suivre les directives suivantes :
+
+- [x] Conserver le secret professionnel absolu
+- [o] Répondre aux convocations d'audience sous 24 heures
+- [x] Valider les pièces avec signature certifiée
+- [o] Remplir les rapports mensuels d'affaires
+
+---
+
+## Décrets d'application RH
+Veuillez vous référer au décret d'exercice :
+[Décret: Décret n° 2026-482/RH]`
+        },
+        { 
+          id: 'file3', 
+          name: 'Bienvenue.md', 
+          folderId: null, 
+          content: `# Bienvenue sur votre Howard Drive !
+
+Bienvenue dans votre gestionnaire de fichiers Markdown synchronisé avec Supabase.
+
+## Fonctionnalités principales
+- **Gestion Cloud SQL** : Les dossiers et fichiers sont stockés directement dans vos tables Supabase.
+- **Rôle & Sécurité** : L'accès à l'édition est vérifié en vérifiant la présence de la clé d'habilitation dans le stockage local de votre navigateur.
+- **Rendu Markdown Custom** : Le rendu intègre vos styles de plaidoirie, avocats, verdicts, et listes de contrôle.
+
+---
+
+### Exemples d'éléments customisés :
+- Bouton interactif : [{Découvrir les exemples}]
+- Checklist interactive : [x] Fait | [o] À faire
+- Surlignage de texte : ::Ce texte est très important::
+- Éléments administratifs : [Certificat: CERT-98212] | [Décret: DEC-2026-09]`
+        }
+      ]
+    };
+
+    // Initialize application
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      checkEditorAccess();
+    });
+
+    // Theme Management
+    function initTheme() {
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeSun').classList.remove('hidden');
+        document.getElementById('themeMoon').classList.add('hidden');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeSun').classList.add('hidden');
+        document.getElementById('themeMoon').classList.remove('hidden');
+      }
+    }
+
+    function toggleTheme() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+        document.getElementById('themeSun').classList.add('hidden');
+        document.getElementById('themeMoon').classList.remove('hidden');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+        document.getElementById('themeSun').classList.remove('hidden');
+        document.getElementById('themeMoon').classList.add('hidden');
+      }
+    }
+
+    // Security Gate check
+    function checkEditorAccess() {
+      // LocalStorage security key validation
+      const hasAccess = localStorage.getItem('CAMP_SES_UIS20345923') !== null;
+      
+      const editControls = document.querySelectorAll('.edit-only-control');
+      editControls.forEach(el => {
+        if (hasAccess) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      const mdEditor = document.getElementById('mdEditor');
+      const fileNameInput = document.getElementById('fileNameInput');
+      if (mdEditor) mdEditor.readOnly = !hasAccess;
+      if (fileNameInput) fileNameInput.readOnly = !hasAccess;
+
+      const modeToggler = document.getElementById('modeTogglerContainer');
+      const readOnlyBadge = document.getElementById('readOnlyBadge');
+
+      if (!hasAccess) {
+        setMode('preview');
+        if (modeToggler) modeToggler.classList.add('hidden');
+        if (readOnlyBadge) readOnlyBadge.classList.remove('hidden');
+      } else {
+        if (modeToggler) modeToggler.classList.remove('hidden');
+        if (readOnlyBadge) readOnlyBadge.classList.add('hidden');
+      }
+
+      return hasAccess;
+    }
+
+    // --- SUPABASE DIRECT INTEGRATION ---
+
+    async function initDriveFromSupabase() {
+      // Load expansion state
+      const expanded = localStorage.getItem('IDN_drive_expanded');
+      if (expanded) {
+        try { driveState.expandedFolders = JSON.parse(expanded); } catch (e) { driveState.expandedFolders = {}; }
+      } else {
+        driveState.expandedFolders = { 'f1': true, 'f2': true };
+      }
+
+      // Check if viewing shared link first
+      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash;
+      if (params.has('doc') || (hash && hash.startsWith('#share='))) {
+        await checkForSharedLink();
+      }
+
+      await loadDriveFromSupabase();
+    }
+
+    async function loadDriveFromSupabase() {
+      const container = document.getElementById('fileTree');
+      try {
+        if (!window.supabase) throw new Error("Supabase non initialisé");
+
+        // Fetch folders
+        const { data: folders, error: fError } = await window.supabase
+          .from('IDN_folders')
+          .select('*');
+        if (fError) throw fError;
+
+        // Fetch files (metadata only)
+        const { data: files, error: filesError } = await window.supabase
+          .from('IDN_files')
+          .select('id, name, folder_id, updated_at');
+        if (filesError) throw filesError;
+
+        driveState.folders = (folders || []).map(f => ({
+          id: f.id,
+          name: f.name,
+          parentId: f.parent_id
+        }));
+
+        driveState.files = (files || []).map(f => ({
+          id: f.id,
+          name: f.name,
+          folderId: f.folder_id,
+          updated_at: f.updated_at
+        }));
+
+        renderDrive();
+
+        // If files are empty and client has edit keys, offer to populate initial data templates
+        if (driveState.folders.length === 0 && driveState.files.length === 0 && checkEditorAccess()) {
+          container.innerHTML = `
+            <div class="text-center py-6">
+              <p class="text-xs text-slate-400 mb-3">La base Supabase est vide.</p>
+              <button onclick="initializeDatabaseWithDefaults()" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-semibold px-3 py-1.5 rounded-lg">Initialiser avec les exemples</button>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Erreur de connexion SQL : " + err.message, "alert-triangle");
+        container.innerHTML = `<div class="text-center py-8 text-xs text-red-500 flex flex-col justify-center items-center space-y-2"><span>Erreur de chargement SQL</span><button onclick="loadDriveFromSupabase()" class="px-2 py-1 bg-slate-800 text-slate-200 rounded border border-slate-700 hover:bg-slate-700">Réessayer</button></div>`;
+      }
+    }
+
+    async function initializeDatabaseWithDefaults() {
+      if (!checkEditorAccess()) return;
+      showToast("Initialisation de la base SQL...");
+      
+      try {
+        // Insert folders
+        for (const folder of DEFAULT_DRIVE.folders) {
+          const { error } = await window.supabase
+            .from('IDN_folders')
+            .insert({ id: folder.id, name: folder.name, parent_id: folder.parentId });
+          if (error) throw error;
+        }
+
+        // Insert files
+        for (const file of DEFAULT_DRIVE.files) {
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .insert({ id: file.id, name: file.name, folder_id: file.folderId, content: file.content });
+          if (error) throw error;
+        }
+
+        showToast("Base SQL initialisée !", "check");
+        await loadDriveFromSupabase();
+      } catch (err) {
+        console.error(err);
+        showToast("Erreur d'initialisation : " + err.message);
+      }
+    }
+
+    // Render folder tree view
+    function renderDrive() {
+      const container = document.getElementById('fileTree');
+      container.innerHTML = '';
+
+      // Root folders
+      const rootFolders = driveState.folders.filter(f => !f.parentId);
+      rootFolders.forEach(folder => {
+        container.appendChild(createFolderDOM(folder, 0));
+      });
+
+      // Root files
+      const rootFiles = driveState.files.filter(f => !f.folderId);
+      rootFiles.forEach(file => {
+        container.appendChild(createFileDOM(file, 0));
+      });
+
+      if (driveState.folders.length === 0 && driveState.files.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-400 text-xs">
+            Le drive est vide
+          </div>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    function createFolderDOM(folder, level) {
+      const folderDiv = document.createElement('div');
+      folderDiv.className = 'select-none';
+      
+      const isExpanded = !!driveState.expandedFolders[folder.id];
+      const isSelected = driveState.selectedFolderId === folder.id;
+      const paddingLeft = level * 16;
+      const hasAccess = localStorage.getItem('CAMP_SES_UIS20345923') !== null;
+      const isChecked = driveState.organizeMode && driveState.selectedItems.folders.includes(folder.id);
+
+      const folderHeader = document.createElement('div');
+      folderHeader.className = `flex items-center justify-between px-2 py-1.5 rounded-lg text-sm cursor-pointer group transition duration-150 ${
+        isSelected 
+          ? 'bg-blue-50/70 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold border border-blue-200/50 dark:border-blue-800/40' 
+          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+      }`;
+      folderHeader.style.paddingLeft = `${paddingLeft + 8}px`;
+
+      // Checkbox prefix if in organization mode
+      const checkboxHTML = driveState.organizeMode && hasAccess
+        ? `<input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleItemSelection('folder', '${folder.id}', this.checked)" onclick="event.stopPropagation()" class="mr-2 rounded border-slate-300 dark:border-slate-800 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 shrink-0 transition cursor-pointer">`
+        : '';
+
+      folderHeader.innerHTML = `
+        <div class="flex items-center space-x-2 overflow-hidden flex-1" onclick="${driveState.organizeMode ? `toggleItemSelection('folder', '${folder.id}', !document.getElementById('chk-${folder.id}').checked)` : `selectFolder('${folder.id}', event)`}">
+          ${checkboxHTML ? checkboxHTML.replace('class="', `id="chk-${folder.id}" class="`) : ''}
+          <i data-lucide="${isExpanded ? 'folder-open' : 'folder'}" class="w-4 h-4 text-blue-500 shrink-0"></i>
+          <span class="truncate">${folder.name}</span>
+        </div>
+        <div class="flex items-center space-x-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ${hasAccess && !driveState.organizeMode ? '' : 'hidden'}">
+          <button onclick="event.stopPropagation(); promptCreate('folder', '${folder.id}')" title="Nouveau sous-dossier" class="p-0.5 hover:text-blue-500 rounded text-slate-400">
+            <i data-lucide="folder-plus" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="event.stopPropagation(); promptCreate('file', '${folder.id}')" title="Nouveau fichier" class="p-0.5 hover:text-blue-500 rounded text-slate-400">
+            <i data-lucide="file-plus" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="event.stopPropagation(); triggerMultiImport(event, '${folder.id}')" title="Importer des documents" class="p-0.5 hover:text-green-500 rounded text-slate-400">
+            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="event.stopPropagation(); promptRename('folder', '${folder.id}', '${folder.name}')" title="Renommer" class="p-0.5 hover:text-blue-500 rounded text-slate-400">
+            <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="event.stopPropagation(); deleteFolder('${folder.id}')" title="Supprimer" class="p-0.5 hover:text-red-500 rounded text-slate-400">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `;
+
+      folderDiv.appendChild(folderHeader);
+
+      if (isExpanded) {
+        const childrenContainer = document.createElement('div');
+        childrenContainer.className = 'space-y-0.5 mt-0.5';
+
+        // Child folders
+        const childFolders = driveState.folders.filter(f => f.parentId === folder.id);
+        childFolders.forEach(cf => {
+          childrenContainer.appendChild(createFolderDOM(cf, level + 1));
+        });
+
+        // Child files
+        const childFiles = driveState.files.filter(f => f.folderId === folder.id);
+        childFiles.forEach(cf => {
+          childrenContainer.appendChild(createFileDOM(cf, level + 1));
+        });
+
+        folderDiv.appendChild(childrenContainer);
+      }
+
+      return folderDiv;
+    }
+
+    function createFileDOM(file, level) {
+      const paddingLeft = level * 16;
+      const isActive = driveState.activeFileId === file.id;
+      const hasAccess = localStorage.getItem('CAMP_SES_UIS20345923') !== null;
+      const isChecked = driveState.organizeMode && driveState.selectedItems.files.includes(file.id);
+
+      const fileItem = document.createElement('div');
+      fileItem.className = `flex items-center justify-between px-2 py-1.5 rounded-lg text-sm cursor-pointer group transition duration-150 ${
+        isActive 
+          ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' 
+          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+      }`;
+      fileItem.style.paddingLeft = `${paddingLeft + 8}px`;
+
+      // Checkbox prefix if in organization mode
+      const checkboxHTML = driveState.organizeMode && hasAccess
+        ? `<input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleItemSelection('file', '${file.id}', this.checked)" onclick="event.stopPropagation()" class="mr-2 rounded border-slate-300 dark:border-slate-800 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 shrink-0 transition cursor-pointer">`
+        : '';
+
+      fileItem.innerHTML = `
+        <div class="flex items-center space-x-2 overflow-hidden flex-1" onclick="${driveState.organizeMode ? `toggleItemSelection('file', '${file.id}', !document.getElementById('chk-${file.id}').checked)` : `openFile('${file.id}')`}">
+          ${checkboxHTML ? checkboxHTML.replace('class="', `id="chk-${file.id}" class="`) : ''}
+          <i data-lucide="file-text" class="w-4 h-4 ${isActive ? 'text-blue-500' : 'text-slate-400'} shrink-0"></i>
+          <span class="truncate">${file.name}</span>
+        </div>
+        <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ${hasAccess && !driveState.organizeMode ? '' : 'hidden'}">
+          <button onclick="event.stopPropagation(); promptRename('file', '${file.id}', '${file.name}')" title="Renommer" class="p-1 hover:text-blue-500 rounded text-slate-400">
+            <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `;
+
+      return fileItem;
+    }
+
+    // Select Folder and Toggle Expanded state
+    function selectFolder(folderId, event) {
+      if (event) event.stopPropagation();
+      
+      // If click on selected folder, toggle expand, else select and auto-expand
+      if (driveState.selectedFolderId === folderId) {
+        driveState.expandedFolders[folderId] = !driveState.expandedFolders[folderId];
+      } else {
+        driveState.selectedFolderId = folderId;
+        driveState.expandedFolders[folderId] = true;
+      }
+      
+      localStorage.setItem('IDN_drive_expanded', JSON.stringify(driveState.expandedFolders));
+      renderDrive();
+    }
+
+    // Trigger multi-import file picker
+    let currentImportFolderId = null;
+    function triggerMultiImport(event, folderId) {
+      if (event) event.stopPropagation();
+      if (!checkEditorAccess()) return;
+      
+      currentImportFolderId = folderId;
+      document.getElementById('multiImportInput').click();
+    }
+
+    // Handle files loaded from multi-import picker
+    async function handleMultiImport(input) {
+      if (!input.files || input.files.length === 0) return;
+      
+      const filesArray = Array.from(input.files);
+      showToast(`Importation de ${filesArray.length} fichier(s)...`);
+      
+      let importedCount = 0;
+      let errorCount = 0;
+      
+      for (const file of filesArray) {
+        try {
+          const content = await readFileAsText(file);
+          // Generate unique ID
+          const id = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          
+          let name = file.name;
+          if (!name.toLowerCase().endsWith('.md')) name += '.md';
+          
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .insert({ id, name, folder_id: currentImportFolderId, content });
+            
+          if (error) throw error;
+          
+          driveState.files.push({ id, name, folderId: currentImportFolderId, content });
+          importedCount++;
+        } catch (e) {
+          console.error("Error importing file:", file.name, e);
+          errorCount++;
+        }
+      }
+      
+      showToast(`${importedCount} fichier(s) importé(s) ! ${errorCount > 0 ? `(${errorCount} erreur(s))` : ''}`, "check");
+      
+      if (currentImportFolderId) {
+        driveState.expandedFolders[currentImportFolderId] = true;
+      }
+      
+      input.value = ''; // Clear file input
+      renderDrive();
+    }
+
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(file);
+      });
+    }
+
+    // --- MULTI-SELECT MOVE / DELETE (ORGANIZATION MODE) ---
+
+    // Toggle checklist organization mode
+    function toggleOrganizeMode(forceState) {
+      if (!checkEditorAccess()) return;
+      
+      driveState.organizeMode = forceState !== undefined ? forceState : !driveState.organizeMode;
+      driveState.selectedItems = { files: [], folders: [] };
+      
+      const btn = document.getElementById('toggleOrganizeBtn');
+      
+      if (driveState.organizeMode) {
+        btn.classList.add('bg-blue-100', 'text-blue-600', 'dark:bg-blue-900/30', 'dark:text-blue-400');
+        btn.classList.remove('text-slate-500', 'dark:text-slate-400');
+      } else {
+        btn.classList.remove('bg-blue-100', 'text-blue-600', 'dark:bg-blue-900/30', 'dark:text-blue-400');
+        btn.classList.add('text-slate-500', 'dark:text-slate-400');
+      }
+      
+      updateSelectionBar();
+      renderDrive();
+    }
+
+    // Toggle individual file/folder selection
+    function toggleItemSelection(type, id, isChecked) {
+      const list = type === 'folder' ? driveState.selectedItems.folders : driveState.selectedItems.files;
+      if (isChecked) {
+        if (!list.includes(id)) list.push(id);
+      } else {
+        const index = list.indexOf(id);
+        if (index > -1) list.splice(index, 1);
+      }
+      updateSelectionBar();
+      
+      // Update checkbox visual checked state directly
+      const el = document.getElementById(`chk-${id}`);
+      if (el) el.checked = isChecked;
+    }
+
+    // Update selection action bar visibility & count
+    function updateSelectionBar() {
+      const folderCount = driveState.selectedItems.folders.length;
+      const fileCount = driveState.selectedItems.files.length;
+      const total = folderCount + fileCount;
+      
+      const bar = document.getElementById('selectionBar');
+      const countLabel = document.getElementById('selectionCount');
+      
+      if (driveState.organizeMode && total > 0) {
+        bar.classList.remove('translate-y-full', 'opacity-0');
+        bar.classList.add('translate-y-0', 'opacity-100');
+        countLabel.textContent = `${total} sélectionné(s)`;
+      } else {
+        bar.classList.add('translate-y-full', 'opacity-0');
+        bar.classList.remove('translate-y-0', 'opacity-100');
+      }
+    }
+
+    // Open Move target modal & load folder list
+    let targetMoveFolderId = null;
+    function openMoveModal() {
+      if (!checkEditorAccess()) return;
+      
+      const container = document.getElementById('moveFolderList');
+      container.innerHTML = '';
+      targetMoveFolderId = null; // Default to Root
+      
+      // 1. Add Root option
+      const rootDiv = document.createElement('div');
+      rootDiv.className = 'flex items-center space-x-2 p-2 rounded-lg text-sm cursor-pointer bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold border border-blue-200/40';
+      rootDiv.id = 'move-folder-root';
+      rootDiv.innerHTML = `<i data-lucide="hard-drive" class="w-4 h-4 shrink-0"></i><span>Racine (Racine du drive)</span>`;
+      rootDiv.onclick = () => selectMoveTarget(null, rootDiv);
+      container.appendChild(rootDiv);
+      
+      // Helper function to check if a folder is descendant of any selected folders
+      const isDescendantOfSelected = (folderId) => {
+        let current = driveState.folders.find(f => f.id === folderId);
+        while (current) {
+          if (driveState.selectedItems.folders.includes(current.id)) return true;
+          current = driveState.folders.find(f => f.id === current.parentId);
+        }
+        return false;
+      };
+
+      // 2. Recursive folder builder (excluding selected folders and their descendants)
+      const renderFolderSelectionItem = (folderId, depth) => {
+        const subFolders = driveState.folders.filter(f => f.parentId === folderId);
+        subFolders.forEach(folder => {
+          if (driveState.selectedItems.folders.includes(folder.id) || isDescendantOfSelected(folder.id)) {
+            return; // Cannot move inside itself or children
+          }
+          
+          const div = document.createElement('div');
+          div.className = 'flex items-center space-x-2 p-2 rounded-lg text-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 transition';
+          div.style.paddingLeft = `${(depth + 1) * 16}px`;
+          div.id = `move-folder-${folder.id}`;
+          div.innerHTML = `<i data-lucide="folder" class="w-4 h-4 text-blue-500 shrink-0"></i><span class="truncate">${folder.name}</span>`;
+          div.onclick = () => selectMoveTarget(folder.id, div);
+          container.appendChild(div);
+          
+          renderFolderSelectionItem(folder.id, depth + 1);
+        });
+      };
+      
+      // Start tree rendering
+      const rootFolders = driveState.folders.filter(f => !f.parentId);
+      rootFolders.forEach(folder => {
+        if (driveState.selectedItems.folders.includes(folder.id) || isDescendantOfSelected(folder.id)) return;
+        
+        const div = document.createElement('div');
+        div.className = 'flex items-center space-x-2 p-2 rounded-lg text-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 transition';
+        div.style.paddingLeft = `16px`;
+        div.id = `move-folder-${folder.id}`;
+        div.innerHTML = `<i data-lucide="folder" class="w-4 h-4 text-blue-500 shrink-0"></i><span class="truncate">${folder.name}</span>`;
+        div.onclick = () => selectMoveTarget(folder.id, div);
+        container.appendChild(div);
+        
+        renderFolderSelectionItem(folder.id, 1);
+      });
+      
+      document.getElementById('moveModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+    
+    // Handle select target in move modal
+    function selectMoveTarget(folderId, element) {
+      targetMoveFolderId = folderId;
+      
+      const list = document.getElementById('moveFolderList');
+      const items = list.getElementsByTagName('div');
+      for (const item of items) {
+        // Reset classes
+        item.className = 'flex items-center space-x-2 p-2 rounded-lg text-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 transition';
+      }
+      
+      // Style selected item
+      element.className = 'flex items-center space-x-2 p-2 rounded-lg text-sm cursor-pointer bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold border border-blue-200/40';
+    }
+    
+    // Close target move modal
+    function closeMoveModal() {
+      document.getElementById('moveModal').classList.add('hidden');
+    }
+
+    // Execute bulk moves in Supabase
+    async function confirmMoveItems() {
+      if (!checkEditorAccess()) return;
+      
+      const foldersToMove = driveState.selectedItems.folders;
+      const filesToMove = driveState.selectedItems.files;
+      const targetId = targetMoveFolderId;
+      
+      showToast("Déplacement des éléments...");
+      
+      let successCount = 0;
+      let errorCount = 0;
+      
+      // Move Folders
+      for (const folderId of foldersToMove) {
+        try {
+          const { error } = await window.supabase
+            .from('IDN_folders')
+            .update({ parent_id: targetId })
+            .eq('id', folderId);
+          if (error) throw error;
+          
+          const folder = driveState.folders.find(f => f.id === folderId);
+          if (folder) folder.parentId = targetId;
+          successCount++;
+        } catch (e) {
+          console.error("Error moving folder:", folderId, e);
+          errorCount++;
+        }
+      }
+      
+      // Move Files
+      for (const fileId of filesToMove) {
+        try {
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .update({ folder_id: targetId })
+            .eq('id', fileId);
+          if (error) throw error;
+          
+          const file = driveState.files.find(f => f.id === fileId);
+          if (file) file.folderId = targetId;
+          successCount++;
+        } catch (e) {
+          console.error("Error moving file:", fileId, e);
+          errorCount++;
+        }
+      }
+      
+      showToast(`${successCount} élément(s) déplacé(s) ! ${errorCount > 0 ? `(${errorCount} erreur(s))` : ''}`, "check");
+      
+      if (targetId) {
+        driveState.expandedFolders[targetId] = true;
+      }
+      
+      closeMoveModal();
+      toggleOrganizeMode(false);
+    }
+
+    // Delete selected items bulk
+    async function deleteSelectedItems() {
+      if (!checkEditorAccess()) return;
+      
+      const folderCount = driveState.selectedItems.folders.length;
+      const fileCount = driveState.selectedItems.files.length;
+      const total = folderCount + fileCount;
+      
+      if (confirm(`Voulez-vous vraiment supprimer ces ${total} élément(s) de la base SQL ? (Les dossiers supprimeront récursivement tout leur contenu)`)) {
+        showToast("Suppression en cours...");
+        
+        let successCount = 0;
+        let errorCount = 0;
+        
+        // Delete files
+        for (const fileId of driveState.selectedItems.files) {
+          try {
+            const { error } = await window.supabase
+              .from('IDN_files')
+              .delete()
+              .eq('id', fileId);
+            if (error) throw error;
+            
+            driveState.files = driveState.files.filter(f => f.id !== fileId);
+            if (driveState.activeFileId === fileId) {
+              closeWorkspace();
+            }
+            successCount++;
+          } catch (e) {
+            console.error("Error deleting file:", fileId, e);
+            errorCount++;
+          }
+        }
+        
+        // Delete folders
+        for (const folderId of driveState.selectedItems.folders) {
+          try {
+            const { error } = await window.supabase
+              .from('IDN_folders')
+              .delete()
+              .eq('id', folderId);
+            if (error) throw error;
+            
+            const deleteFolderRecursively = (fId) => {
+              driveState.files = driveState.files.filter(f => f.folderId !== fId);
+              const children = driveState.folders.filter(f => f.parentId === fId);
+              children.forEach(c => deleteFolderRecursively(c.id));
+              driveState.folders = driveState.folders.filter(f => f.id !== fId);
+            };
+            
+            deleteFolderRecursively(folderId);
+            successCount++;
+          } catch (e) {
+            console.error("Error deleting folder:", folderId, e);
+            errorCount++;
+          }
+        }
+        
+        showToast(`${successCount} élément(s) supprimé(s) de la base ! ${errorCount > 0 ? `(${errorCount} erreur(s))` : ''}`, "check");
+        toggleOrganizeMode(false);
+      }
+    }
+
+    // File Actions
+    async function openFile(fileId) {
+      // Handle shared state reset
+      if (isSharedDocument && fileId !== 'shared_view') {
+        isSharedDocument = false;
+        document.getElementById('sharedBadge').classList.add('hidden');
+        document.getElementById('importBtn').classList.add('hidden');
+      }
+
+      driveState.activeFileId = fileId;
+      const file = driveState.files.find(f => f.id === fileId);
+      
+      if (!file) {
+        closeWorkspace();
+        return;
+      }
+
+      // LAZY LOADING: Fetch content from Supabase if not cached locally
+      if (file.content === undefined) {
+        showLoadingViewer("Chargement du contenu...");
+        try {
+          const { data, error } = await window.supabase
+            .from('IDN_files')
+            .select('content')
+            .eq('id', fileId)
+            .single();
+          
+          if (error) throw error;
+          file.content = data.content || '';
+        } catch (err) {
+          console.error(err);
+          showToast("Erreur lors de la récupération du fichier");
+          hideLoadingViewer();
+          return;
+        }
+      }
+
+      // Populate workspaces
+      document.getElementById('mdEditor').value = file.content;
+      document.getElementById('fileNameInput').value = file.name;
+      
+      // Update folder label
+      let parentPath = "Racine";
+      if (file.folderId) {
+        const folder = driveState.folders.find(f => f.id === file.folderId);
+        if (folder) parentPath = folder.name;
+      }
+      document.getElementById('currentPathLabel').textContent = parentPath;
+
+      // Update visibility
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('workspaceHeader').classList.remove('hidden');
+      document.getElementById('workspaceHeader').classList.add('flex');
+      
+      // Update rendering
+      setMode(driveState.mode);
+      renderDrive();
+    }
+
+    function closeWorkspace() {
+      driveState.activeFileId = null;
+      document.getElementById('emptyState').classList.remove('hidden');
+      document.getElementById('workspaceHeader').classList.add('hidden');
+      document.getElementById('workspaceHeader').classList.remove('flex');
+      document.getElementById('editorView').classList.add('hidden');
+      document.getElementById('previewView').classList.add('hidden');
+      renderDrive();
+    }
+
+    // Auto-save typing state with SQL
+    let saveTimeout = null;
+    function onEditorChange() {
+      if (!checkEditorAccess()) return;
+
+      const file = driveState.files.find(f => f.id === driveState.activeFileId);
+      if (file) {
+        file.content = document.getElementById('mdEditor').value;
+        
+        // Show subtle save indicator
+        const ind = document.getElementById('savedIndicator');
+        ind.textContent = "enregistrement...";
+
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(async () => {
+          try {
+            const { error } = await window.supabase
+              .from('IDN_files')
+              .update({ content: file.content, updated_at: new Date() })
+              .eq('id', file.id);
+            if (error) throw error;
+            ind.textContent = "sauvegardé SQL";
+            setTimeout(() => { if (ind.textContent === "sauvegardé SQL") ind.textContent = ""; }, 1000);
+          } catch (e) {
+            console.error("SQL Auto-save error", e);
+            ind.textContent = "Erreur de synchro SQL";
+          }
+        }, 1000);
+
+        if (driveState.mode === 'preview') {
+          renderPreview();
+        }
+      }
+    }
+
+    async function renameCurrentFile(newName) {
+      if (!newName.trim() || !driveState.activeFileId || !checkEditorAccess()) return;
+      
+      if (!newName.toLowerCase().endsWith('.md')) {
+        newName += '.md';
+      }
+
+      const file = driveState.files.find(f => f.id === driveState.activeFileId);
+      if (file) {
+        file.name = newName;
+        document.getElementById('fileNameInput').value = newName;
+        
+        try {
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .update({ name: newName })
+            .eq('id', file.id);
+          if (error) throw error;
+          showToast("Fichier renommé SQL !");
+        } catch (e) {
+          console.error(e);
+          showToast("Erreur renommage SQL");
+        }
+        
+        renderDrive();
+      }
+    }
+
+    async function deleteCurrentFile() {
+      if (!driveState.activeFileId || !checkEditorAccess()) return;
+      if (isSharedDocument) return;
+
+      if (confirm("Voulez-vous vraiment supprimer ce fichier de la base SQL ?")) {
+        const fileId = driveState.activeFileId;
+        
+        try {
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .delete()
+            .eq('id', fileId);
+          if (error) throw error;
+          
+          driveState.files = driveState.files.filter(f => f.id !== fileId);
+          closeWorkspace();
+          showToast("Fichier supprimé de la base SQL");
+        } catch (e) {
+          console.error(e);
+          showToast("Erreur suppression SQL");
+        }
+      }
+    }
+
+    // Create item in Supabase
+    async function promptCreate(type, targetFolderId = null) {
+      if (!checkEditorAccess()) return;
+
+      const name = prompt(`Nom du ${type === 'folder' ? 'dossier' : 'fichier (ex: Rapport.md)'} :`);
+      if (!name || !name.trim()) return;
+
+      let activeFolderId = targetFolderId;
+      if (activeFolderId === null) {
+        // Fallback to selected folder or active file's folder
+        activeFolderId = driveState.selectedFolderId;
+        if (!activeFolderId && driveState.activeFileId) {
+          const file = driveState.files.find(f => f.id === driveState.activeFileId);
+          if (file) activeFolderId = file.folderId;
+        }
+      }
+
+      try {
+        if (type === 'folder') {
+          const id = 'f_' + Date.now();
+          const { error } = await window.supabase
+            .from('IDN_folders')
+            .insert({ id, name: name.trim(), parent_id: activeFolderId });
+          if (error) throw error;
+
+          driveState.folders.push({ id, name: name.trim(), parentId: activeFolderId });
+          if (activeFolderId) driveState.expandedFolders[activeFolderId] = true;
+          showToast("Dossier créé SQL !");
+        } else {
+          const id = 'file_' + Date.now();
+          let fName = name.trim();
+          if (!fName.toLowerCase().endsWith('.md')) fName += '.md';
+          const defaultContent = `# ${fName.slice(0, -3)}\nÉcrivez ici...`;
+
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .insert({ id, name: fName, folder_id: activeFolderId, content: defaultContent });
+          if (error) throw error;
+
+          driveState.files.push({ id, name: fName, folderId: activeFolderId, content: defaultContent });
+          driveState.activeFileId = id;
+          setTimeout(() => openFile(id), 50);
+          showToast("Fichier créé SQL !");
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Erreur SQL lors de l'insertion");
+      }
+
+      renderDrive();
+    }
+
+    // Rename file or folder from tree menu
+    async function promptRename(type, id, oldName) {
+      if (!checkEditorAccess()) return;
+      const name = prompt("Entrez le nouveau nom :", oldName);
+      if (!name || !name.trim()) return;
+
+      try {
+        if (type === 'folder') {
+          const { error } = await window.supabase
+            .from('IDN_folders')
+            .update({ name: name.trim() })
+            .eq('id', id);
+          if (error) throw error;
+          
+          const folder = driveState.folders.find(f => f.id === id);
+          if (folder) folder.name = name.trim();
+        } else {
+          let fName = name.trim();
+          if (!fName.toLowerCase().endsWith('.md')) fName += '.md';
+          
+          const { error } = await window.supabase
+            .from('IDN_files')
+            .update({ name: fName })
+            .eq('id', id);
+          if (error) throw error;
+
+          const file = driveState.files.find(f => f.id === id);
+          if (file) {
+            file.name = fName;
+            if (driveState.activeFileId === id) {
+              document.getElementById('fileNameInput').value = fName;
+            }
+          }
+        }
+        showToast("Renommé SQL !");
+      } catch (e) {
+        console.error(e);
+        showToast("Erreur renommage SQL");
+      }
+      renderDrive();
+    }
+
+    // Delete Folder from tree menu
+    async function deleteFolder(folderId) {
+      if (!checkEditorAccess()) return;
+      if (confirm("Supprimer ce dossier et TOUT son contenu de la base SQL ?")) {
+        try {
+          const { error } = await window.supabase
+            .from('IDN_folders')
+            .delete()
+            .eq('id', folderId);
+          if (error) throw error;
+
+          // Recursive helper to clean state locally matching cascade delete
+          function cleanLocalStateAfterDelete(fId) {
+            driveState.files = driveState.files.filter(file => file.folderId !== fId);
+            const subs = driveState.folders.filter(f => f.parentId === fId);
+            subs.forEach(sf => cleanLocalStateAfterDelete(sf.id));
+            driveState.folders = driveState.folders.filter(f => f.id !== fId);
+          }
+
+          cleanLocalStateAfterDelete(folderId);
+          closeWorkspace();
+          showToast("Dossier supprimé de la base SQL");
+        } catch (e) {
+          console.error(e);
+          showToast("Erreur suppression dossier SQL");
+        }
+      }
+    }
+
+    // Mode Toggle (Preview vs Edit)
+    function setMode(mode) {
+      driveState.mode = mode;
+      
+      const editBtn = document.getElementById('btnModeEdit');
+      const prevBtn = document.getElementById('btnModePreview');
+      const editView = document.getElementById('editorView');
+      const prevView = document.getElementById('previewView');
+
+      if (mode === 'edit') {
+        if (!checkEditorAccess() || isSharedDocument) {
+          showToast("Lecture seule activée.");
+          setMode('preview');
+          return;
+        }
+
+        editBtn.className = "flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-800 shadow-sm text-slate-800 dark:text-slate-100";
+        prevBtn.className = "flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200";
+        editView.classList.remove('hidden');
+        prevView.classList.add('hidden');
+      } else {
+        prevBtn.className = "flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-800 shadow-sm text-slate-800 dark:text-slate-100";
+        editBtn.className = "flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200";
+        prevView.classList.remove('hidden');
+        editView.classList.add('hidden');
+        renderPreview();
+      }
+    }
+
+    // Search bar filter
+    function filterDrive() {
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      if (!query) {
+        renderDrive();
+        return;
+      }
+
+      const container = document.getElementById('fileTree');
+      container.innerHTML = '';
+
+      const matchedFiles = driveState.files.filter(f => f.name.toLowerCase().includes(query));
+      
+      if (matchedFiles.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">Aucun fichier correspond</div>`;
+        return;
+      }
+
+      matchedFiles.forEach(file => {
+        container.appendChild(createFileDOM(file, 0));
+      });
+      lucide.createIcons();
+    }
+
+    // --- MARKDOWN RENDER SYSTEM ---
+    
+    function inlineReplacements(text) {
+      if (!text) return '';
+
+      // coche + cases [o/x] avec adaptation dark mode
+      text = text.replace(
+        /`([^`\n]+)`|\[([oxOX])\]/g,
+        (match, code, box) => {
+          if (code) {
+            // backticks
+            return `<code class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded px-1.5 py-0.5 font-mono text-xs border border-slate-200/50 dark:border-slate-800/80">${code}</code>`;
+          }
+      
+          if (box.toLowerCase() === "x") {
+            // case cochée
+            return `<span class="bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-300 rounded px-1.5 py-0.5 border border-green-200 dark:border-green-900 text-sm font-semibold select-none">☑ Fait</span>`;
+          }
+      
+          if (box.toLowerCase() === "o") {
+            // case non cochée
+            return `<span class="bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 rounded px-1.5 py-0.5 border border-red-200 dark:border-red-900 text-sm font-semibold select-none">☐ À faire</span>`;
+          }
+        }
+      );
+
+      // Code inline
+      text = text.replace(/`([^`\n]+)`/g, '<code class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded px-1.5 py-0.5 font-mono text-xs border border-slate-200/50 dark:border-slate-800/80">$1</code>');
+
+      // Gras
+      text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-slate-900 dark:text-white">$1</strong>');
+      text = text.replace(/__(.+?)__/g, '<strong class="font-bold text-slate-900 dark:text-white">$1</strong>');
+
+      // Italique
+      text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em class="italic text-slate-800 dark:text-slate-200">$1</em>');
+      text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em class="italic text-slate-800 dark:text-slate-200">$1</em>');
+
+      // Barré (Strikethrough)
+      text = text.replace(/~~(.+?)~~/g, '<s class="line-through text-slate-400 dark:text-slate-600">$1</s>');
+
+      // Surligné/Marqué
+      text = text.replace(/::(.*?)::/g, '<mark class="bg-amber-100 dark:bg-amber-900/60 dark:text-amber-100 text-amber-900 border-b-2 border-amber-300 dark:border-amber-700">$1</mark>');
+
+      // Math inline (votre syntaxe personnalisée)
+      text = text.replace(/\$(.+?)\$/g, '<span class="font-mono bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 px-1 rounded">$1</span>');
+
+      // Notes de bas de page (renvois)
+      text = text.replace(/\[\^([^\]]+)\]/g, '<sup id="footnote-$1" class="text-xs align-super text-blue-500 dark:text-blue-400 font-bold hover:underline cursor-pointer">$1</sup>');
+
+      // Liens
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300">$1</a>');
+
+      // Images
+      text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full my-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-md"/>');
+
+      // Boutons personnalisés ([{Texte du Bouton}])
+      text = text.replace(
+        /\[\{(.+?)\}\]/g,
+        '<a class="inline-block text-white bg-blue-600 hover:bg-blue-500 font-semibold text-xs px-3.5 py-1.5 rounded-full shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 transition cursor-pointer select-none">$1</a>'
+      );
+
+      // --- NOUVELLES FONCTIONNALITÉS: Éléments Juridiques et Administratifs (existants) ---
+
+      // Procès / Affaire : [[Procès: Nom de l'affaire]]
+      text = text.replace(/\[\[Procès:\s*(.+?)\]\]/g, '<span class="inline-flex items-center space-x-1 font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 px-2 py-0.5 rounded-md"><i class="w-3.5 h-3.5 mr-1" data-lucide="scale"></i>Procès: $1</span>');
+
+      // Avocat : ((Avocat: Nom de l'avocat))
+      text = text.replace(/\(\(Avocat:\s*(.+?)\)\)/g, '<span class="inline-flex items-center space-x-1 font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 px-2 py-0.5 rounded-md"><i class="w-3.5 h-3.5 mr-1" data-lucide="shield-check"></i>$1</span>');
+
+      // Juge : {{Juge: Nom du juge}}
+      text = text.replace(/\{\{Juge:\s*(.+?)\}\}/g, '<span class="inline-flex items-center space-x-1 font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 px-2 py-0.5 rounded-md"><i class="w-3.5 h-3.5 mr-1" data-lucide="award"></i>Juge $1</span>');
+
+      // Décret : [Décret: Référence]
+      text = text.replace(/\[Décret:\s*(.+?)\]/g, '<span class="font-mono text-xs text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 px-1.5 py-0.5 rounded"><i class="w-3 h-3 inline mr-1" data-lucide="scroll"></i>Décret: $1</span>');
+
+      // Certificat : [Certificat: Type/Numéro]
+      text = text.replace(/\[Certificat:\s*(.+?)\]/g, '<span class="font-mono text-xs text-indigo-800 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 px-1.5 py-0.5 rounded"><i class="w-3 h-3 inline mr-1" data-lucide="file-check-2"></i>Certificat: $1</span>');
+
+      // Document Générique (Autres) : [Document: Type/Référence]
+      text = text.replace(/\[Document:\s*(.+?)\]/g, '<span class="font-mono text-xs text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded"><i class="w-3 h-3 inline mr-1" data-lucide="file"></i>Doc: $1</span>');
+
+      // --- NOUVELLES FONCTIONNALITÉS: Tribunal ---
+
+      // Numéro de Dossier : (Dossier: [Numéro])
+      text = text.replace(/\(Dossier:\s*([^\)]+)\)/g, '<span class="font-mono text-xs text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">Dossier #$1</span>');
+
+      // Date de l'Audience : (Audience: [AAAA-MM-JJ])
+      text = text.replace(/\(Audience:\s*([^\)]+)\)/g, '<span class="inline-flex items-center text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 px-2 py-0.5 rounded"><i class="w-3.5 h-3.5 mr-1" data-lucide="calendar"></i>Audience: $1</span>');
+
+      // Plaignant/Accusateur : (Plaignant: [Nom])
+      text = text.replace(/\(Plaignant:\s*([^\)]+)\)/g, '<span class="font-medium text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 px-2 py-0.5 rounded">Plaignant: $1</span>');
+
+      // Accusé/Défendeur : (Accusé: [Nom])
+      text = text.replace(/\(Accusé:\s*([^\)]+)\)/g, '<span class="font-medium text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 px-2 py-0.5 rounded">Accusé: $1</span>');
+
+      // Témoin : (Témoin: [Nom])
+      text = text.replace(/\(Témoin:\s*([^\)]+)\)/g, '<span class="font-medium text-xs text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 px-2 py-0.5 rounded">Témoin: $1</span>');
+
+      // Preuve : (Preuve: [Description ou Référence])
+      text = text.replace(/\(Preuve:\s*([^\)]+)\)/g, '<span class="font-mono text-xs text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 px-2 py-0.5 rounded">Preuve: $1</span>');
+
+      // Article de Loi Cité : (ArtLoi: [Référence de l'article])
+      text = text.replace(/\(ArtLoi:\s*([^\)]+)\)/g, '<span class="font-semibold text-xs text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 px-2 py-0.5 rounded">Art. Loi: $1</span>');
+
+      // Verdict Final : (Verdict: [Décision])
+      text = text.replace(/\(Verdict:\s*(Culpabilité|Acquittement|Non-lieu)\)/g, (match, p1) => {
+        let bgColor = '';
+        let textColor = '';
+        let borderColor = '';
+        if (p1 === 'Culpabilité') {
+          bgColor = 'bg-red-100 dark:bg-red-950/50';
+          textColor = 'text-red-800 dark:text-red-300';
+          borderColor = 'border-red-200 dark:border-red-900';
+        } else if (p1 === 'Acquittement' || p1 === 'Non-lieu') {
+          bgColor = 'bg-green-100 dark:bg-green-950/50';
+          textColor = 'text-green-800 dark:text-green-300';
+          borderColor = 'border-green-200 dark:border-green-900';
+        }
+        return `<span class="font-bold text-sm ${textColor} ${bgColor} ${borderColor} border px-3 py-1 rounded-lg shadow-sm select-none">VERDICT: ${p1.toUpperCase()}</span>`;
+      });
+
+      return text;
+    }
+
+    function customMarkdownRender(text) {
+      if (!text) return '<p class="text-slate-400 italic">Aucun contenu.</p>';
+      
+      const lines = text.split('\n');
+      let html = '';
+      let inCodeBlock = false;
+      let codeBlockLang = '';
+      let codeBlockContent = [];
+      let inList = false;
+      let listType = ''; 
+      let listItems = [];
+
+      const escapeHtml = (unsafe) => {
+        return unsafe
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      };
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+
+        // Code block check
+        if (/^```/.test(line)) {
+          if (!inCodeBlock) {
+            inCodeBlock = true;
+            codeBlockLang = line.slice(3).trim();
+            codeBlockContent = [];
+          } else {
+            inCodeBlock = false;
+            let codeText = escapeHtml(codeBlockContent.join('\n'));
+            html += `<pre class="bg-slate-900 text-slate-100 p-4 rounded-xl mb-4 overflow-x-auto border border-slate-800 font-mono text-sm leading-relaxed relative group">
+              <div class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick="copyPreContent(this)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-2 py-1 rounded text-xs">Copier</button>
+              </div>
+              <code class="language-${codeBlockLang}">${codeText}</code>
+            </pre>`;
+          }
+          continue;
+        }
+
+        if (inCodeBlock) {
+          codeBlockContent.push(line);
+          continue;
+        }
+
+        // Horizontal Rule
+        if (/^(---|\*\*\*|___)$/.test(line.trim())) {
+          if (inList) { html += closeList(); inList = false; }
+          html += `<hr class="my-6 border-slate-200 dark:border-slate-800"/>`;
+          continue;
+        }
+
+        // Lists checks
+        let isUnordered = /^[-*]\s(.+)$/.test(line);
+        let isOrdered = /^\d+\.\s(.+)$/.test(line);
+
+        if (isUnordered || isOrdered) {
+          let currentType = isUnordered ? 'ul' : 'ol';
+          let content = line.replace(/^([-*]|\d+\.)\s/, '');
+
+          if (!inList) {
+            inList = true;
+            listType = currentType;
+            listItems = [content];
+          } else if (listType !== currentType) {
+            html += closeList();
+            listType = currentType;
+            listItems = [content];
+          } else {
+            listItems.push(content);
+          }
+          continue;
+        } else {
+          if (inList) {
+            html += closeList();
+            inList = false;
+          }
+        }
+
+        // Blockquotes
+        if (/^>\s(.+)$/.test(line)) {
+          let quote = line.slice(2);
+          html += `<blockquote class="border-l-4 border-slate-300 dark:border-slate-700 pl-4 py-1 italic my-4 text-slate-500 dark:text-slate-400">${inlineReplacements(quote)}</blockquote>`;
+          continue;
+        }
+
+        // Blank lines
+        if (line.trim() === '') {
+          html += `<div class="h-2"></div>`;
+          continue;
+        }
+
+        // Headings (ordered reverse to match completely)
+        if (/^######\s(.*)$/.test(line)) {
+          html += `<h6 class="text-xs font-bold uppercase tracking-wider mt-4 mb-1.5 text-slate-400 dark:text-slate-500">${inlineReplacements(line.slice(7))}</h6>`;
+        } else if (/^#####\s(.*)$/.test(line)) {
+          html += `<h5 class="text-sm font-bold mt-4 mb-2 text-slate-800 dark:text-slate-200">${inlineReplacements(line.slice(6))}</h5>`;
+        } else if (/^####\s(.*)$/.test(line)) {
+          html += `<h4 class="text-base font-semibold mt-5 mb-2 text-slate-900 dark:text-slate-100">${inlineReplacements(line.slice(5))}</h4>`;
+        } else if (/^###\s(.*)$/.test(line)) {
+          html += `<h3 class="text-lg font-bold mt-5 mb-2 text-slate-900 dark:text-slate-100">${inlineReplacements(line.slice(4))}</h3>`;
+        } else if (/^##\s(.*)$/.test(line)) {
+          html += `<h2 class="text-2xl font-bold mt-6 mb-3 pb-1.5 border-b border-slate-100 dark:border-slate-800/80 text-slate-900 dark:text-slate-100">${inlineReplacements(line.slice(3))}</h2>`;
+        } else if (/^#\s(.*)$/.test(line)) {
+          html += `<h1 class="text-3xl font-extrabold mt-6 mb-4 pb-2 border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">${inlineReplacements(line.slice(2))}</h1>`;
+        } else {
+          // Standard Paragraph
+          html += `<p class="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed">${inlineReplacements(line)}</p>`;
+        }
+      }
+
+      // Flush remaining list items
+      if (inList) {
+        html += closeList();
+      }
+
+      function closeList() {
+        let tag = listType === 'ul' ? 'ul' : 'ol';
+        let listClass = listType === 'ul' ? 'list-disc' : 'list-decimal';
+        let res = `<${tag} class="${listClass} ml-6 mb-4 space-y-2">`;
+        listItems.forEach(item => {
+          res += `<li class="text-slate-700 dark:text-slate-300">${inlineReplacements(item)}</li>`;
+        });
+        res += `</${tag}>`;
+        listItems = [];
+        return res;
+      }
+
+      return html;
+    }
+
+    function renderPreview() {
+      const content = document.getElementById('mdEditor').value;
+      const renderArea = document.getElementById('previewContent');
+      renderArea.innerHTML = customMarkdownRender(content);
+      lucide.createIcons();
+    }
+
+    function copyPreContent(button) {
+      const code = button.closest('pre').querySelector('code').textContent;
+      navigator.clipboard.writeText(code);
+      showToast("Code copié dans le presse-papier !");
+    }
+
+    // --- SHARING UTILITIES ---
+    
+    function openShareModal() {
+      const activeFile = driveState.files.find(f => f.id === driveState.activeFileId);
+      if (!activeFile) return;
+
+      // 1. Generate Direct Local link (Base64 encode file content)
+      try {
+        const payload = {
+          name: activeFile.name,
+          content: activeFile.content
+        };
+        const base64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+        const shareLink = `${window.location.origin}${window.location.pathname}#share=${base64}`;
+        document.getElementById('shareLocalUrlInput').value = shareLink;
+      } catch (err) {
+        console.error("Local link encoding error", err);
+      }
+
+      // Show modal
+      document.getElementById('shareModal').classList.remove('hidden');
+      
+      // Reset Supabase buttons
+      document.getElementById('supabaseResultContainer').classList.add('hidden');
+      document.getElementById('supabasePublishBtnText').textContent = "Publier sur Supabase";
+      document.getElementById('supabasePublishBtn').disabled = false;
+      
+      lucide.createIcons();
+    }
+
+    function closeShareModal() {
+      document.getElementById('shareModal').classList.add('hidden');
+    }
+
+    async function publishToSupabase() {
+      const activeFile = driveState.files.find(f => f.id === driveState.activeFileId);
+      if (!activeFile) return;
+
+      const publishBtn = document.getElementById('supabasePublishBtn');
+      const publishText = document.getElementById('supabasePublishBtnText');
+
+      publishText.textContent = "Publication en cours...";
+      publishBtn.disabled = true;
+
+      try {
+        if (!window.supabase) {
+          throw new Error("Client Supabase non initialisé");
+        }
+
+        // Insert into your 'IDN_documents' table
+        const { data, error } = await window.supabase
+          .from('IDN_documents')
+          .insert({
+            titre: activeFile.name.replace('.md', ''),
+            description: 'Créé via Howard Markdown Drive',
+            contenu: activeFile.content,
+            type_fichier: 'md',
+            id_createur: 15,
+            visibilite_public: true
+          })
+          .select('id_doc');
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const idDoc = data[0].id_doc;
+          const shareLink = `${window.location.origin}${window.location.pathname}?doc=${idDoc}`;
+          
+          document.getElementById('shareSupabaseUrlInput').value = shareLink;
+          document.getElementById('supabaseResultContainer').classList.remove('hidden');
+          publishText.textContent = "Publié !";
+          showToast("Document enregistré sur Supabase !");
+        } else {
+          throw new Error("Aucune donnée retournée par le serveur");
+        }
+
+      } catch (err) {
+        console.error(err);
+        publishText.textContent = "Erreur de publication";
+        publishBtn.disabled = false;
+        showToast("Erreur Supabase : " + (err.message || err));
+      }
+    }
+
+    function copyToClipboard(inputId) {
+      const input = document.getElementById(inputId);
+      input.select();
+      input.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(input.value);
+      showToast("Lien copié !");
+    }
+
+    // Checking incoming links
+    async function checkForSharedLink() {
+      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash;
+
+      // Case 1: Supabase sharing via query parameter ?doc=XXX
+      if (params.has('doc')) {
+        const idDoc = params.get('doc');
+        showLoadingViewer("Chargement depuis Supabase...");
+        
+        try {
+          if (!window.supabase) {
+            throw new Error("Supabase n'est pas encore prêt");
+          }
+
+          const { data, error } = await window.supabase
+            .from('IDN_documents')
+            .select('titre, contenu')
+            .eq('id_doc', idDoc)
+            .single();
+
+          if (error) throw error;
+
+          if (data) {
+            setupSharedView(data.titre + '.md', data.contenu);
+          } else {
+            throw new Error("Document introuvable");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erreur de chargement depuis Supabase : " + err.message);
+          window.location.href = window.location.pathname; 
+        }
+        return;
+      }
+
+      // Case 2: Local sharing via hash #share=BASE64
+      if (hash && hash.startsWith('#share=')) {
+        const base64 = hash.split('#share=')[1];
+        try {
+          const payload = JSON.parse(decodeURIComponent(escape(atob(base64))));
+          setupSharedView(payload.name, payload.content);
+        } catch (err) {
+          console.error("Local link decode error", err);
+          alert("Le lien de partage semble invalide ou corrompu.");
+          window.location.hash = '';
+        }
+      }
+    }
+
+    function showLoadingViewer(msg) {
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('workspaceHeader').classList.add('hidden');
+      document.getElementById('editorView').classList.add('hidden');
+      document.getElementById('previewView').classList.remove('hidden');
+      document.getElementById('previewContent').innerHTML = `
+        <div class="flex flex-col items-center justify-center py-20 space-y-4">
+          <div class="w-12 h-12 rounded-full border-4 border-blue-600/30 border-t-blue-600 animate-spin"></div>
+          <p class="text-sm font-semibold text-slate-500">${msg}</p>
+        </div>
+      `;
+    }
+
+    function hideLoadingViewer() {
+      // Stub wrapper
+    }
+
+    function setupSharedView(name, content) {
+      isSharedDocument = true;
+      sharedDocumentData = { name, content };
+
+      const sharedFile = {
+        id: 'shared_view',
+        name: name,
+        folderId: null,
+        content: content
+      };
+
+      driveState.files = driveState.files.filter(f => f.id !== 'shared_view');
+      driveState.files.push(sharedFile);
+      
+      document.getElementById('sharedBadge').classList.remove('hidden');
+      
+      // Only show import button if user has access key to write to Supabase
+      if (localStorage.getItem('CAMP_SES_UIS20345923') !== null) {
+        document.getElementById('importBtn').classList.remove('hidden');
+      }
+
+      openFile('shared_view');
+      showToast("Document partagé ouvert avec succès !");
+    }
+
+    async function importSharedToDrive() {
+      if (!isSharedDocument || !sharedDocumentData || !checkEditorAccess()) return;
+
+      const newId = 'file_' + Date.now();
+      
+      try {
+        // Save to SQL database
+        const { error } = await window.supabase
+          .from('IDN_files')
+          .insert({
+            id: newId,
+            name: sharedDocumentData.name,
+            folder_id: null,
+            content: sharedDocumentData.content
+          });
+        if (error) throw error;
+
+        driveState.files.push({
+          id: newId,
+          name: sharedDocumentData.name,
+          folderId: null,
+          content: sharedDocumentData.content
+        });
+
+        driveState.files = driveState.files.filter(f => f.id !== 'shared_view');
+        
+        isSharedDocument = false;
+        sharedDocumentData = null;
+
+        document.getElementById('sharedBadge').classList.add('hidden');
+        document.getElementById('importBtn').classList.add('hidden');
+
+        // Clear parameter from URL
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+
+        openFile(newId);
+        showToast("Document importé dans votre base SQL !");
+      } catch (err) {
+        console.error(err);
+        showToast("Erreur SQL lors de l'import");
+      }
+    }
+
+    // Toast Utility
+    function showToast(message, iconName = 'info') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = message;
+      toastIcon.setAttribute('data-lucide', iconName);
+      lucide.createIcons();
+
+      toast.className = "fixed bottom-6 right-6 z-50 flex items-center space-x-2 bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 transform opacity-100 translate-y-0";
+      
+      setTimeout(() => {
+        toast.className = "opacity-0 translate-y-4 pointer-events-none fixed bottom-6 right-6 z-50 flex items-center space-x-2 bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 transform";
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
